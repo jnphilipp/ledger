@@ -1,0 +1,5 @@
+*.pyc
+ledger/settings.ini
+media/*
+static/*
+venv/*
