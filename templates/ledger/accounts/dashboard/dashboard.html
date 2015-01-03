@@ -1,0 +1,26 @@
+{% extends "ledger/base.html" %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<ul>
+		<li class="active">dashboard</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="dashboard">
+	<div style="text-align: right;">
+		<form action="{% url 'add_account' %}">
+			<button class="btn" type="submit">add new account</button>
+		</form>
+	</div>
+	{% if accounts %}
+		{% for account in accounts %}
+			{% include "ledger/accounts/dashboard/partials/_shape.html" with account=account %}
+		{% endfor %}
+	{% else %}
+		<p>No accounts are available.</p>
+	{% endif %}
+</div>
+{% endblock %}

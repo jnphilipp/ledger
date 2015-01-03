@@ -1,0 +1,14 @@
+{% load accounts_tags %}
+
+<div class="shape">
+	<div class="title">
+		<a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
+	</div>
+	<div class="content">
+		<ul>
+			<li><b>balance:</b> {{ account.balance|colorfy:account.unit }}</li>
+			<li><b>entries:</b> {{ account.entry_set.count }}</li>
+			<li><b>last entry:</b> {{ account.entry_set.last.day|date:'D., d. F Y' }}</li>
+		</ul>
+	</div>
+</div>

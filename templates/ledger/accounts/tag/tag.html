@@ -1,0 +1,70 @@
+{% extends "ledger/base.html" %}
+{% load static accounts_tags chartkick %}
+
+{% block extrahead %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'chartkick.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<ul>
+		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+		<li><a href="{% url 'tags' %}">tags</a><span class="divider"></span></li>
+		<li class="active">{{ tag.name|lower }}</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="shape category">
+	<div class="title"><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></div>
+	<div class="content">
+		{% if data_monthly %}
+			{% column_chart data_monthly with library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':'white', 'style':{'textShadow':'0 0 3px black'}, 'format':'{point.y:.2f}'}}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}]}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2}} %}
+		{% endif %}
+		{% if data_yearly %}
+			{% column_chart data_yearly with library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':'white', 'style':{'textShadow':'0 0 3px black'}, 'format':'{point.y:.2f}'}}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}]}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2}} %}
+		{% endif %}
+	</div>
+</div>
+<div class="shape category" style="margin-top: 15px;">
+	<div class="title"><a href="{% url 'tag_entries' tag.slug %}">entries</a></div>
+	<div class="content">
+		<div class="entries">
+			<table>
+				<thead>
+					<tr>
+						<th>account</th>
+						<th colspan="2">day</th>
+						<th>amount</th>
+						<th>category</th>
+						<th>additional</th>
+						<th>tags</th>
+						{% if options %}
+							<th></th>
+						{% endif %}
+					</tr>
+				</thead>
+					{% for entry in entries %}
+						<tr>
+							<td><a href="{% url 'account' entry.account.slug %}">{{ entry.account.name|lower }}</a></td>
+							<td>{{ entry.day|date:'d.m.Y' }}</td>
+							<td>{{ entry.day|date:'D'|lower }}</td>
+							<td style="text-align: right;">{{ entry.amount|colorfy:entry.account.unit }}</td>
+							<td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
+							<td>{{ entry.additional|lower }}</td>
+							<td>
+								{% for tag in entry.tags.all %}
+									<a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
+								{% endfor %}
+							</td>
+						</tr>
+					{% endfor %}
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

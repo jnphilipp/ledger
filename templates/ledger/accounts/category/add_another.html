@@ -1,0 +1,36 @@
+{% extends "ledger/base.html" %}
+{% load i18n %}
+
+{% block content %}
+{{ form.media }}
+<div class="shape form-horizontal">
+	<form action="{% url 'category_add_another_create' %}" method="post">
+		{% csrf_token %}
+		<div class="title">add category</div>
+		<div class="content">
+			{% for field in form %}
+				<div class="form-row{{ field.errors|yesno:' error,' }}">
+					<div>
+						<div class="control-label">
+							<label {% if field.field.required %}class="required"{% endif %} for="{{ field.auto_id }}">{{ field.label }}:</label>
+						</div>
+						<div class="controls">
+							{{ field }}
+							<div class="help-inline">{{ field.help_text }}</div>
+							<div class="help-inline">{{ field.errors }}</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+			<div class="form-row">
+				<div>
+					<div class="control-label"></div>
+					<div class="controls">
+						<button class="btn" name="_add_category" value="_add_category" type="submit">save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock%}

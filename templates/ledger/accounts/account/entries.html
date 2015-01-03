@@ -1,0 +1,39 @@
+{% extends "ledger/base.html" %}
+{% load accounts_tags %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<ul>
+		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+		<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
+		<li class="active">entries</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="entries">
+	<header>
+		<span class="left">
+			<b>balance:</b> {{ account.balance|floatdot }} {{ account.unit.symbol }}
+		</span>
+		<span class="right">
+			<form action="{% url 'entry_add' account.slug %}">
+				<button class="btn" type="submit">add entry</button>
+			</form>
+		</span>
+	</header>
+	{% include "ledger/accounts/account/partials/_table.html" with entries=entries options=True %}
+	<footer>
+		<a href="{% url 'account_entries' account.slug %}?page={% if page == 1 %}{{ page }}{% else %}{{ page|decrement }}{% endif %}">&lt;</a>
+		{% for p in paginator.page_range %}
+			{% if p == page %}
+				{{ p }}
+			{% else %}
+				<a href="{% url 'account_entries' account.slug %}?page={{ p }}">{{ p }}</a>
+			{% endif %}
+		{% endfor %}
+		<a href="{% url 'account_entries' account.slug %}?page={% if page == paginator.num_pages %}{{ page }}{% else %}{{ page|increment }}{% endif %}">&gt;</a>
+	</footer>
+</div>
+{% endblock %}

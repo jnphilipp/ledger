@@ -1,0 +1,30 @@
+{% extends "ledger/base.html" %}
+{% load accounts_tags %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<ul>
+		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+		<li><a href="{% url 'tags' %}">tags</a><span class="divider"></span></li>
+		<li><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a><span class="divider"></span></li>
+		<li class="active">entries</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="entries">
+	{% include "ledger/accounts/tag/partials/_table.html" with entries=entries options=True %}
+	<footer>
+		<a href="{% url 'tag_entries' tag.slug %}?page={% if page == 1 %}{{ page }}{% else %}{{ page|decrement }}{% endif %}">&lt;</a>
+		{% for p in paginator.page_range %}
+			{% if p == page %}
+				{{ p }}
+			{% else %}
+				<a href="{% url 'tag_entries' tag.slug %}?page={{ p }}">{{ p }}</a>
+			{% endif %}
+		{% endfor %}
+		<a href="{% url 'tag_entries' tag.slug %}?page={% if page == paginator.num_pages %}{{ page }}{% else %}{{ page|increment }}{% endif %}">&gt;</a>
+	</footer>
+</div>
+{% endblock %}

@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 from configparser import RawConfigParser
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+import chartkick
 import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -47,6 +48,7 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'accounts',
+	'chartkick',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,6 +87,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, 'assets'),
+	chartkick.js(),
 )
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',

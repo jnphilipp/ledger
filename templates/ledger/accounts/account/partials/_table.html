@@ -1,0 +1,59 @@
+{% load accounts_tags %}
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th colspan="2">day</th>
+			<th>amount</th>
+			<th>category</th>
+			<th>additional</th>
+			<th>tags</th>
+			{% if options %}
+				<th></th>
+			{% endif %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for entry in entries %}
+			<tr>
+				<td>{{ entry.serial_number }}</td>
+				<td>{{ entry.day|date:'d.m.Y' }}</td>
+				<td>{{ entry.day|date:'D'|lower }}</td>
+				<td style="text-align: right;">{{ entry.amount|colorfy:account.unit }}</td>
+				<td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
+				<td>{{ entry.additional|lower }}</td>
+				<td>
+					{% for tag in entry.tags.all %}
+						<a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
+					{% endfor %}
+				</td>
+				{% if options %}
+					<td>
+						<a href="{% url 'entry_change' account.slug entry.id %}?page={{ page }}"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
+						{% with entries|previous:forloop.counter0 as previous %}
+						{% with entries|next:forloop.counter0 as next %}
+							{% if previous or last_prev %}
+								<form action="{% url 'entry_swap' account.slug %}?page={% if previous %}{{ page }}{% else %}{{ page|decrement }}{% endif %}" method="post" style="display: inline-block;">
+									{% csrf_token %}
+									<input type="hidden" name="e1" value="{% if previous %}{{ previous.id }}{% else %}{{ last_prev.id }}{% endif %}">
+									<input type="hidden" name="e2" value="{{ entry.id }}">
+									<button class="linkButton" type="submit"><i class="ui-icon ui-icon-triangle-1-n" style="display: inline-block;"></i></button>
+								</form>
+							{% endif %}
+							{% if next or first_next %}
+								<form action="{% url 'entry_swap' account.slug %}?page={% if next %}{{ page }}{% else %}{{ page|increment }}{% endif %}" method="post" style="display: inline-block;">
+									{% csrf_token %}
+									<input type="hidden" name="e1" value="{{ entry.id }}">
+									<input type="hidden" name="e2" value="{% if next %}{{ next.id }}{% else %}{{ first_next.id }}{% endif %}">
+									<button class="linkButton" type="submit"><i class="ui-icon ui-icon-triangle-1-s" style="display: inline-block;"></i></button>
+								</form>
+							{% endif %}
+						{% endwith %}
+						{% endwith %}
+					</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

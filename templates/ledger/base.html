@@ -1,0 +1,24 @@
+{% load admin_urls static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
+		<link rel="stylesheet" href="{% static 'css/ledger.css' %}"/>
+		<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}"/>
+		<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+		{% include 'autocomplete_light/static.html' %}
+		<title>{% block title %}ledger{% endblock %}</title>
+		{% block extrahead %}{% endblock %}
+	</head>
+	<body>
+		<section>
+			{% block breadcrumbs %}{% endblock %}
+		</section>
+		<div id="content">
+			{% block content %}{% endblock %}
+		</div>
+	</body>
+</html>

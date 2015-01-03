@@ -1,0 +1,48 @@
+{% extends "ledger/base.html" %}
+{% load accounts_tags %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<ul>
+		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+		<li class="active">categories</li>
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="shape category">
+	<div class="title"><a href="{% url 'categories' %}">categories</a></div>
+	<div class="content">
+		<div class="entries">
+			<table>
+				<thead>
+					<tr>
+						<th>category</th>
+						<th>entries</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for category in categories %}
+						<tr>
+							<td><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></td>
+							<td>{{ category.entry_set.count }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<footer>
+				<a href="{% url 'categories' %}?page={% if page == 1 %}{{ page }}{% else %}{{ page|decrement }}{% endif %}">&lt;</a>
+				{% for p in paginator.page_range %}
+					{% if p == page %}
+						{{ p }}
+					{% else %}
+						<a href="{% url 'categories' %}?page={{ p }}">{{ p }}</a>
+					{% endif %}
+				{% endfor %}
+				<a href="{% url 'categories' %}?page={% if page == paginator.num_pages %}{{ page }}{% else %}{{ page|increment }}{% endif %}">&gt;</a>
+			</footer>
+		</div>
+	</div>
+</div>
+{% endblock %}

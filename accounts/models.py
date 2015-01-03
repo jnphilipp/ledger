@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -34,6 +35,9 @@ class Category(models.Model):
 	name = TextFieldSingleLine(unique=True)
 	slug = models.SlugField(unique=True)
 
+	def get_absolute_url(self):
+		return reverse('category', args=[self.slug])
+
 	def save(self, *args, **kwargs):
 		if not self.slug:
 			self.slug = slugify(self.name)
@@ -56,6 +60,9 @@ class Tag(models.Model):
 
 	name = TextFieldSingleLine(unique=True)
 	slug = models.SlugField(unique=True)
+
+	def get_absolute_url(self):
+		return reverse('tag', args=[self.slug])
 
 	def save(self, *args, **kwargs):
 		if not self.slug:
@@ -81,10 +88,10 @@ class Account(models.Model):
 	balance = models.FloatField(default=0)
 	unit = models.ForeignKey(Unit)
 
-	def __str__(self):
-		return self.name
+	def get_absolute_url(self):
+		return reverse('account', args=[self.slug])
 
-	def save(self):
+	def save(self, *args, **kwargs):
 		self.balance = sum(entry.amount for entry in self.entry_set.all())
 		if not self.slug:
 			self.slug = slugify(self.name)
@@ -93,6 +100,9 @@ class Account(models.Model):
 			if orig.name != self.name:
 				self.slug = slugify(self.name)
 		super(Account, self).save(*args, **kwargs)
+
+	def __str__(self):
+		return self.name
 
 	class Meta:
 		ordering = ('name',)
