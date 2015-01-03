@@ -96,3 +96,26 @@ class Account(models.Model):
 
 	class Meta:
 		ordering = ('name',)
+
+class Entry(models.Model):
+	updated_at = models.DateTimeField(auto_now=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	account = models.ForeignKey(Account)
+	serial_number = models.IntegerField()
+	day = models.DateField()
+	amount = models.FloatField(default=0)
+	category = models.ForeignKey(Category)
+	additional = TextFieldSingleLine(blank=True, null=True)
+	tags = models.ManyToManyField(Tag, blank=True, null=True, related_name='entries')
+
+	def save(self, *args, **kwargs):
+		if not self.id:
+			self.serial_number = Entry.objects.filter(account=self.account).last().serial_number + 1
+		super(Entry, self).save()
+		self.account.save()
+
+	class Meta:
+		ordering = ('account', 'serial_number')
+		unique_together = ('account', 'serial_number')
+		verbose_name_plural = 'Entries'
