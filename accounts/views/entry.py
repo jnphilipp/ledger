@@ -16,7 +16,7 @@ def add(request, slug):
 			form.instance.account = account
 			entry = form.save()
 
-			response = redirect('entries', slug=account.slug)
+			response = redirect('account_entries', slug=account.slug)
 			if page: response['Location'] += '?page=%s' % page
 			return response
 		else:
@@ -37,7 +37,7 @@ def change(request, slug, entry_id):
 			form.instance.account = account
 			entry = form.save()
 
-			response = redirect('entries', slug=account.slug)
+			response = redirect('account_entries', slug=account.slug)
 			if page: response['Location'] += '?page=%s' % page
 			return response
 		else:
@@ -65,8 +65,8 @@ def swap(request, slug):
 		e2.serial_number = tmp
 		e2.save()
 
-		response = redirect('entries', slug=account.slug)
+		response = redirect('account_entries', slug=account.slug)
 		if page: response['Location'] += '?page=%s' % page
 		return response
 	else:
-		return redirect('entries', slug=account.slug)
+		return redirect('account_entries', slug=account.slug)

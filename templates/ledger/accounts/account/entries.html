@@ -15,7 +15,7 @@
 <div class="entries">
 	<header>
 		<span class="left">
-			<b>balance:</b> {{ account.balance|floatdot }} {{ account.unit.symbol }}
+			<b>balance:</b> {{ account.balance|colorfy:account.unit }}
 		</span>
 		<span class="right">
 			<form action="{% url 'entry_add' account.slug %}">

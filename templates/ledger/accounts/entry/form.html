@@ -6,7 +6,7 @@
 	<ul>
 		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
 		<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
-		<li><a href="{% url 'entries' account.slug %}">entries</a><span class="divider"></span></li>
+		<li><a href="{% url 'account_entries' account.slug %}">entries</a><span class="divider"></span></li>
 		<li>{% if entry.id %}change entry{% else %}add entry{% endif %}</li>
 	</ul>
 </div>

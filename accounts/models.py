@@ -121,7 +121,7 @@ class Entry(models.Model):
 
 	def save(self, *args, **kwargs):
 		if not self.id:
-			self.serial_number = Entry.objects.filter(account=self.account).last().serial_number + 1
+			self.serial_number = Entry.objects.filter(account=self.account).last().serial_number + 1 if Entry.objects.filter(account=self.account).exists() else 1
 		super(Entry, self).save()
 		self.account.save()
 
