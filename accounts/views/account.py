@@ -13,7 +13,7 @@ def dashboard(request):
 
 def account(request, slug):
 	account = get_object_or_404(Account, slug=slug)
-	entries = account.entry_set.all().reverse()[:7]
+	entries = account.entry_set.all().reverse()[:5]
 
 	cs = Entry.objects.filter(account=account).values('category__name').annotate(count=Count('category')).order_by('category__name')
 	categories = {}
@@ -45,7 +45,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[25]
 	except InvalidPage:
 		last_prev = None
 

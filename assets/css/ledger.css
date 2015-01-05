@@ -26,14 +26,14 @@ a:active {position: relative;
 /*### breadcrumbs ###*/
 
 .breadcrumbs {background: #7c7c7c;
-	height: 40px;}
+	height: 30px;}
 
 .breadcrumbs ul {margin: 0;
-	padding: 0 0 0 20px;;
+	padding: 0 0 0 15px;
 	list-style: none;}
+
 .breadcrumbs ul li {display: inline-block;
-	margin: 12px 0;
-	font-size: 11pt;
+	margin: 7px 0;
 	font-weight: bold;}
 
 .breadcrumbs ul li.active {color: black;}
@@ -50,22 +50,12 @@ a:active {position: relative;
 	padding: 0;
 	float: left;}
 
-/*#dashboard {margin: 1em;
-	padding: 0;
-	text-align: justify;
-	text-align-last: justify;}
-
-#dashboard:after {content: " __________________________________________________________";
-	line-height: 0;
-	visibility: hidden;}*/
-
 
 
 /*### account shape ###*/
 
 .shape {display: inline-block;
 	width: 350px;
-	/*height: 130px;*/
 	margin: 10px 10px 20px 10px;}
 
 .shape .title {display: inline-block;
@@ -146,7 +136,6 @@ a:active {position: relative;
 .entries footer {background: linear-gradient(to bottom, #4c4c4c, #000000); 
 	margin: 5px 0px 0px 0px;
 	text-align: center;
-	font-size: 11pt;
 	color: gray;}
 
 
@@ -176,7 +165,7 @@ a:active {position: relative;
 	border: 1px solid #000000;
 	border-width: 0px 1px 1px 0px;
 	text-align: left;
-	padding: 7px;
+	padding: 5px;
 	font-weight: normal;
 	color: #000000;}
 
@@ -190,9 +179,9 @@ a:active {position: relative;
 	text-align: center;
 	vertical-align: middle;
 	border-width: 0px 0px 1px 1px;
-	font-size: 12pt;
+	font-size: 11pt;
 	font-weight: bold;
-	padding: 7px 0px;
+	padding: 5px 0px;
 	color: #ffffff;}
 
 .entries a {color: #555555;}
@@ -200,7 +189,7 @@ a:active {position: relative;
 .category {display: block;
 	width: inherit;
 	height: auto;
-	margin: 5px;
+	margin: 3px;
 	padding: 0px;}
 
 .category .content {padding-right: 1px;
@@ -212,7 +201,6 @@ a:active {position: relative;
 	border: none;
 	margin: 0;
 	padding: 0;
-	font-size: 10pt;
 	font-weight: bold;
 	text-decoration: none;
 	color: white;

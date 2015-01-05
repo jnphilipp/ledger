@@ -23,7 +23,7 @@ def categories(request):
 
 def category(request, slug):
 	category = get_object_or_404(Category, slug=slug)
-	entries = category.entry_set.all().reverse()[:7]
+	entries = category.entry_set.all().reverse()[:5]
 
 	months = category.entry_set.dates('day', 'month')
 	years = category.entry_set.dates('day', 'year')
@@ -72,7 +72,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[27]
 	except InvalidPage:
 		last_prev = None
 

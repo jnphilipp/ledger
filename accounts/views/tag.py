@@ -24,7 +24,7 @@ def tags(request):
 
 def tag(request, slug):
 	tag = get_object_or_404(Tag, slug=slug)
-	entries = tag.entries.all().reverse()[:7]
+	entries = tag.entries.all().reverse()[:5]
 
 	months = tag.entries.dates('day', 'month')
 	years = tag.entries.dates('day', 'year')
@@ -73,7 +73,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[27]
 	except InvalidPage:
 		last_prev = None
 
