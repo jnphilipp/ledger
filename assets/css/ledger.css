@@ -131,9 +131,11 @@ a:active {position: relative;
 .entries header {margin: 0px 0px 5px 0px;
 	height: 25px;}
 
+.entries header.small {margin: 0px 0px 0px 0px;}
+
 .entries header .left {float: left;}
 .entries header .right {float: right;}
-.entries footer {background: linear-gradient(to bottom, #4c4c4c, #000000); 
+.entries footer {background: linear-gradient(to bottom, #4c4c4c, #000000);
 	margin: 5px 0px 0px 0px;
 	text-align: center;
 	color: gray;}

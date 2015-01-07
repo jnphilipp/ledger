@@ -1,5 +1,6 @@
 from accounts.forms import AccountForm
 from accounts.models import Category, Entry, Account, Unit
+from collections import OrderedDict
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Count, Q
@@ -18,14 +19,14 @@ def account(request, slug):
 	cs = Entry.objects.filter(account=account).values('category__name').annotate(count=Count('category')).order_by('category__name')
 	categories = {}
 	for c in cs:
-		categories[c['category__name'].lower()] = c['count']
-	category_data = [{'data':categories, 'name':'entries'}]
+		categories[c['category__name'].lower() if len(c['category__name']) <= 15 else '%s…' % c['category__name'][0:13].lower()] = c['count']
+	category_data = [{'data':OrderedDict(sorted(categories.items())), 'name':'entries'}]
 
 	ts = Entry.objects.filter(account=account).filter(tags__isnull=False).values('tags__name').annotate(count=Count('tags')).order_by('tags__name')
 	tags = {}
 	for t in ts:
 		tags[t['tags__name'].lower()] = t['count']
-	tag_data = [{'data':tags, 'name':'entries'}]
+	tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
 
 	return render(request, 'ledger/accounts/account/account.html', locals())
 

@@ -20,6 +20,11 @@
 	<div class="title"><a href="{% url 'account_entries' account.slug %}">entries</a></div>
 	<div class="content">
 		<div class="entries">
+			<header class="small">
+				<span class="left">
+					<b>balance:</b> {{ account.balance|colorfy:account.unit }}
+				</span>
+			</header>
 			{% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
 		</div>
 	</div>
@@ -28,7 +33,7 @@
 	<div class="shape category">
 		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
 		<div class="content">
-			{% column_chart category_data with library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
+			{% column_chart category_data with height="290px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
 		</div>
 	</div>
 {% endif %}
@@ -36,7 +41,7 @@
 	<div class="shape category">
 		<div class="title"><a href="{% url 'tags' %}">tags</a></div>
 		<div class="content">
-			{% column_chart tag_data with library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
+			{% column_chart tag_data with height="290px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
 		</div>
 	</div>
 {% endif %}
