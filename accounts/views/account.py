@@ -45,7 +45,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[25]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
 	except InvalidPage:
 		last_prev = None
 
