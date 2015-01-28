@@ -2,6 +2,7 @@ from accounts.models import Category, Tag
 from accounts.forms import CategoryForm, TagForm
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.views import generic
 
 import autocomplete_light
 autocomplete_light.autodiscover()
