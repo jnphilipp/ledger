@@ -1,3 +1,4 @@
+from accounts.charts import tag_chart
 from accounts.models import Tag, Unit
 from collections import OrderedDict
 from django.contrib import messages
@@ -26,36 +27,7 @@ def tag(request, slug):
 	tag = get_object_or_404(Tag, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in tag.entries.filter(account__unit=unit)), 2) for unit in set(tag.entries.values_list('account__unit', flat=True))}
 	entries = tag.entries.all().reverse()[:5]
-
-	months = tag.entries.dates('day', 'month')
-	years = tag.entries.dates('day', 'year')
-	monthly = {}
-	names = {month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}
-	yearly = {}
-	for entry in tag.entries.all().order_by('day'):
-		if not entry.account.name in monthly:
-			monthly[entry.account.name] = {}
-			for month in months:
-				monthly[entry.account.name][month.strftime('%B %Y')] = 0
-
-		if not entry.account.name in yearly:
-			yearly[entry.account.name] = {}
-			for year in years:
-				yearly[entry.account.name][year.strftime('%Y')] = 0
-
-		monthly[entry.account.name][entry.day.strftime('%B %Y')] = monthly[entry.account.name][entry.day.strftime('%B %Y')] + entry.amount
-		yearly[entry.account.name][entry.day.strftime('%Y')] = yearly[entry.account.name][entry.day.strftime('%Y')] + entry.amount
-
-	data_monthly = []
-	for key, value in monthly.items():
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: names[t[0]]))
-		data_monthly.append({'data':data, 'name':key})
-
-	data_yearly = []
-	for key, value in yearly.items():
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: t[0]))
-		data_yearly.append({'data':data, 'name':key})
-
+	monthly_data, yearly_data, library = tag_chart(tag)
 	return render(request, 'ledger/accounts/tag/tag.html', locals())
 
 def entries(request, slug):

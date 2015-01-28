@@ -1,5 +1,5 @@
+from accounts.charts import category_chart
 from accounts.models import Category, Unit
-from collections import OrderedDict
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
@@ -25,36 +25,7 @@ def category(request, slug):
 	category = get_object_or_404(Category, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__unit=unit)), 2) for unit in set(category.entry_set.values_list('account__unit', flat=True))}
 	entries = category.entry_set.all().reverse()[:5]
-
-	months = category.entry_set.dates('day', 'month')
-	years = category.entry_set.dates('day', 'year')
-	monthly = {}
-	names = {month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}
-	yearly = {}
-	for entry in category.entry_set.all().order_by('day'):
-		if not entry.account.name in monthly:
-			monthly[entry.account.name] = {}
-			for month in months:
-				monthly[entry.account.name][month.strftime('%B %Y')] = 0
-
-		if not entry.account.name in yearly:
-			yearly[entry.account.name] = {}
-			for year in years:
-				yearly[entry.account.name][year.strftime('%Y')] = 0
-
-		monthly[entry.account.name][entry.day.strftime('%B %Y')] = monthly[entry.account.name][entry.day.strftime('%B %Y')] + entry.amount
-		yearly[entry.account.name][entry.day.strftime('%Y')] = yearly[entry.account.name][entry.day.strftime('%Y')] + entry.amount
-
-	data_monthly = []
-	for key, value in monthly.items():
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: names[t[0]]))
-		data_monthly.append({'data':data, 'name':key})
-
-	data_yearly = []
-	for key, value in yearly.items():
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: t[0]))
-		data_yearly.append({'data':data, 'name':key})
-
+	monthly_data, yearly_data, library = category_chart(category)
 	return render(request, 'ledger/accounts/category/category.html', locals())
 
 def entries(request, slug):
