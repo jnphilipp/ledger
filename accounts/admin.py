@@ -5,7 +5,6 @@ from django.forms import TextInput
 import autocomplete_light
 
 class AccountAdmin(admin.ModelAdmin):
-	form = autocomplete_light.modelform_factory(Account, exclude=[])
 	list_display = ('name', 'balance', 'unit', 'updated_at')
 	list_filter = ('unit',)
 	readonly_fields = ('slug',)
@@ -33,7 +32,6 @@ class CategoryAdmin(admin.ModelAdmin):
 	]
 
 class EntryAdmin(admin.ModelAdmin):
-	form = autocomplete_light.modelform_factory(Entry, exclude=[])
 	list_display = ('account', 'serial_number', 'day', 'category', 'additional')
 	list_filter = ('account', 'category', 'day', 'tags')
 
