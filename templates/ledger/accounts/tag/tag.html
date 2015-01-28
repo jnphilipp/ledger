@@ -20,6 +20,13 @@
 <div class="shape category">
 	<div class="title"><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></div>
 	<div class="content">
+		<div class="entries">
+			<header class="small">
+				<span class="left">
+					<b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
+				</span>
+			</header>
+		</div>
 		{% if data_monthly %}
 			{% column_chart data_monthly with library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':'white', 'style':{'textShadow':'0 0 3px black'}, 'format':'{point.y:.2f}'}}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}]}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2}} %}
 		{% endif %}

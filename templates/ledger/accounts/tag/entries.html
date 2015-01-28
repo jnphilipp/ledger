@@ -14,6 +14,11 @@
 
 {% block content %}
 <div class="entries">
+	<header>
+		<span class="left">
+			<b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
+		</span>
+	</header>
 	{% include "ledger/accounts/tag/partials/_table.html" with entries=entries options=True %}
 	<footer>
 		<a href="{% url 'tag_entries' tag.slug %}?page={% if page == 1 %}{{ page }}{% else %}{{ page|decrement }}{% endif %}">&lt;</a>
