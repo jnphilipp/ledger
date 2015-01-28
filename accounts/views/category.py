@@ -1,4 +1,4 @@
-from accounts.models import Category
+from accounts.models import Category, Unit
 from collections import OrderedDict
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
@@ -23,6 +23,7 @@ def categories(request):
 
 def category(request, slug):
 	category = get_object_or_404(Category, slug=slug)
+	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__unit=unit)), 2) for unit in set(category.entry_set.values_list('account__unit', flat=True))}
 	entries = category.entry_set.all().reverse()[:5]
 
 	months = category.entry_set.dates('day', 'month')
@@ -58,8 +59,9 @@ def category(request, slug):
 
 def entries(request, slug):
 	category = get_object_or_404(Category, slug=slug)
+	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__unit=unit)), 2) for unit in set(category.entry_set.values_list('account__unit', flat=True))}
 
-	paginator = Paginator(category.entry_set.all().order_by('day'), 27)
+	paginator = Paginator(category.entry_set.all().order_by('day'), 25)
 	page = request.GET.get('page')
 	try:
 		entries = paginator.page(page)
@@ -72,7 +74,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[26]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
 	except InvalidPage:
 		last_prev = None
 
