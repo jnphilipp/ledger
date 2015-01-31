@@ -1,13 +1,18 @@
-from accounts.models import Category, Entry, Tag
+from accounts.models import Account, Category, Entry, Tag, Unit
 from django import forms
 from django.contrib.admin import site, widgets
 from django.db import models
 
 import autocomplete_light
 
-class AccountForm(forms.Form):
-	name = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off'}), required=True)
-	unit = autocomplete_light.ChoiceField('UnitAutocomplete', required=True)
+class AccountForm(autocomplete_light.ModelForm):
+	class Meta:
+		model = Account
+		fields = ('name','unit')
+
+	def __init__(self, *args, **kwargs):
+		super(AccountForm, self).__init__(*args, **kwargs)
+		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
 
 class CategoryForm(forms.ModelForm):
 	class Meta:
@@ -37,3 +42,13 @@ class TagForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(TagForm, self).__init__(*args, **kwargs)
 		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
+
+class UnitForm(forms.ModelForm):
+	class Meta:
+		model = Unit
+		fields = ('name','symbol')
+
+	def __init__(self, *args, **kwargs):
+		super(UnitForm, self).__init__(*args, **kwargs)
+		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
+		self.fields['symbol'].widget = forms.TextInput(attrs={'autocomplete':'off'})

@@ -1,5 +1,5 @@
-from accounts.models import Category, Tag
-from accounts.forms import CategoryForm, TagForm
+from accounts.models import Category, Tag, Unit
+from accounts.forms import CategoryForm, TagForm, UnitForm
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.views import generic
@@ -27,6 +27,7 @@ urlpatterns = patterns('',
 	url(r'^accounts/tag/add_another/$', autocomplete_light.CreateView.as_view(model=Tag, form_class=TagForm, template_name='ledger/accounts/tag/add_another.html'), name='tag_add_another_create'),
 	url(r'^accounts/tag/(?P<slug>[\w-]+)/$', 'accounts.views.tag.tag', name='tag'),
 	url(r'^accounts/tag/(?P<slug>[\w-]+)/entries/$', 'accounts.views.tag.entries', name='tag_entries'),
+	url(r'^accounts/unit/add_another/$', autocomplete_light.CreateView.as_view(model=Unit, form_class=UnitForm, template_name='ledger/accounts/unit/add_another.html'), name='unit_add_another_create'),
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^autocomplete/', include('autocomplete_light.urls')),
 )

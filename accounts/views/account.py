@@ -62,7 +62,7 @@ def add_account(request):
 	if request.method == 'POST':
 		form = AccountForm(request.POST)
 		if form.is_valid():
-			unit = get_object_or_404(Unit, id=form.cleaned_data['unit'])
+			unit = form.cleaned_data['unit']
 			account = Account.objects.create(name=form.cleaned_data['name'], unit=unit)
 			messages.add_message(request, messages.SUCCESS, 'The account %s has successfully been created.' % account.name)
 			return redirect('account', slug=account.slug)

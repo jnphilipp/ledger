@@ -50,4 +50,5 @@ autocomplete_light.register(Unit,
 		'data-widget-maximum-values': 6,
 		'class': 'modern-style',
 	},
+	add_another_url_name='unit_add_another_create',
 )
