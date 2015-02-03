@@ -1,3 +1,4 @@
+from accounts.charts import account_chart
 from accounts.forms import AccountForm
 from accounts.models import Category, Entry, Account, Unit
 from collections import OrderedDict
@@ -28,6 +29,8 @@ def account(request, slug):
 		tags[t['tags__name'].lower()] = t['count']
 	tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
 
+	account_chart_monthly_data, account_chart_yearly_data, library = account_chart(account)
+
 	return render(request, 'ledger/accounts/account/account.html', locals())
 
 def entries(request, slug):
@@ -56,6 +59,25 @@ def entries(request, slug):
 		first_next = None
 
 	return render(request, 'ledger/accounts/account/entries.html', locals())
+
+def statistics(request, slug):
+	account = get_object_or_404(Account, slug=slug)
+
+	cs = Entry.objects.filter(account=account).values('category__name').annotate(count=Count('category')).order_by('category__name')
+	categories = {}
+	for c in cs:
+		categories[c['category__name'].lower() if len(c['category__name']) <= 15 else '%s…' % c['category__name'][0:13].lower()] = c['count']
+	category_data = [{'data':OrderedDict(sorted(categories.items())), 'name':'entries'}]
+
+	ts = Entry.objects.filter(account=account).filter(tags__isnull=False).values('tags__name').annotate(count=Count('tags')).order_by('tags__name')
+	tags = {}
+	for t in ts:
+		tags[t['tags__name'].lower()] = t['count']
+	tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
+
+	account_chart_monthly_data, account_chart_yearly_data, library = account_chart(account)
+
+	return render(request, 'ledger/accounts/account/statistics.html', locals())
 
 @csrf_protect
 def add_account(request):

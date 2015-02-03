@@ -29,6 +29,15 @@
 		</div>
 	</div>
 </div>
+{% if account_chart_monthly_data or account_chart_yearly_data %}
+	<div class="shape category">
+		<div class="title"><a href="{% url 'account_statistics' account.slug %}">statistics</a></div>
+		<div class="content">
+			{% column_chart account_chart_monthly_data with height="300px" library=library %}
+			{% column_chart account_chart_yearly_data with height="300px" library=library %}
+		</div>
+	</div>
+{% endif %}
 {% if category_data %}
 	<div class="shape category">
 		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
