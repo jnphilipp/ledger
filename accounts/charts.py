@@ -1,54 +1,63 @@
-from accounts.models import Unit
-from collections import OrderedDict
+from accounts.models import Category, Unit
+from collections import defaultdict, OrderedDict
 
-def account_chart(account):
-	months = account.entry_set.dates('day', 'month')
-	years = account.entry_set.dates('day', 'year')
+def account_chart(account, year=None, month=None, category=None):
+	if year and month and category:
+		series = defaultdict(int)
+		for entry in account.entry_set.filter(day__year=year).filter(day__month=month).filter(category=category).order_by('day'):
+			series[entry.day.strftime('%d.%m.%Y')] += entry.amount
+		data = []
+		if series:
+			data.append({'data':OrderedDict(sorted(series.items(), key=lambda t: t[0])), 'name':category.name.lower()})
 
-	names = {month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}
-	monthly_earnings = {}
-	monthly_spendings = {}
-	yearly_earnings = {}
-	yearly_spendings = {}
-	for entry in account.entry_set.all().order_by('day'):
-		if not entry.day.strftime('%B %Y') in monthly_earnings:
-			monthly_earnings[entry.day.strftime('%B %Y')] = 0
-		if not entry.day.strftime('%B %Y') in monthly_spendings:
-			monthly_spendings[entry.day.strftime('%B %Y')] = 0
-		if not entry.day.strftime('%Y') in yearly_earnings:
-			yearly_earnings[entry.day.strftime('%Y')] = 0
-		if not entry.day.strftime('%Y') in yearly_spendings:
-			yearly_spendings[entry.day.strftime('%Y')] = 0
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'enabled':False}}
 
-		if entry.amount > 0:
-			monthly_earnings[entry.day.strftime('%B %Y')] = monthly_earnings[entry.day.strftime('%B %Y')] + entry.amount
-		elif entry.amount < 0:
-			monthly_spendings[entry.day.strftime('%B %Y')] = monthly_spendings[entry.day.strftime('%B %Y')] + entry.amount
+		return (data, library)
+	elif year and month:
+		categories = {}
+		for category in Category.objects.filter(id__in=account.entry_set.filter(day__year=year).filter(day__month=month).values_list('category', flat=True)):
+			categories[category] = 0
+		for entry in account.entry_set.filter(day__year=year).filter(day__month=month).order_by('day'):
+			categories[entry.category] += entry.amount
+		data = []
+		for key, value in categories.items():
+			data.append({'data':{key.name.lower():value}, 'name':key.name.lower()})
 
-		if entry.amount > 0:
-			yearly_earnings[entry.day.strftime('%Y')] = yearly_earnings[entry.day.strftime('%Y')] + entry.amount
-		elif entry.amount < 0:
-			yearly_spendings[entry.day.strftime('%Y')] = yearly_spendings[entry.day.strftime('%Y')] + entry.amount
+		library = {'plotOptions':{'column':{'stacking':'normal'}},'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
 
-	monthly_data = []
-	if monthly_earnings:
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in monthly_earnings.items()}.items(), key=lambda t: names[t[0]]))
-		monthly_data.append({'data':data, 'name':'earnings'})
-	if monthly_spendings:
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in monthly_spendings.items()}.items(), key=lambda t: names[t[0]]))
-		monthly_data.append({'data':data, 'name':'spendings'})
+		return (data, library)
+	elif year:
+		months = account.entry_set.filter(day__year=year).dates('day', 'month')
+		monthly = {}
+		for category in Category.objects.filter(id__in=account.entry_set.filter(day__year=year).values_list('category', flat=True)):
+			monthly[category] = {month.strftime('%B %Y'):0 for month in months}
+		names = OrderedDict(sorted({month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}.items(), key=lambda t:t[1]))
+		for entry in account.entry_set.filter(day__year=year).order_by('day'):
+			monthly[entry.category][entry.day.strftime('%B %Y')] += entry.amount
 
-	yearly_data = []
-	if yearly_earnings:
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in yearly_earnings.items()}.items(), key=lambda t: t[0]))
-		yearly_data.append({'data':data, 'name':'earnings'})
-	if yearly_spendings:
-		data = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in yearly_spendings.items()}.items(), key=lambda t: t[0]))
-		yearly_data.append({'data':data, 'name':'spendings'})
+		data = []
+		for key, value in monthly.items():
+			data.append({'data':OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: names[t[0]])), 'name':key.name.lower()})
 
-	library = {'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':'white', 'style':{'textShadow':'0 0 3px black'}, 'format':'{point.y:.2f} %s' % account.unit.symbol}}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
 
-	return (monthly_data, yearly_data, library)
+		return (data, library)
+	else:
+		years = account.entry_set.dates('day', 'year')
+		yearly = {}
+		for category in Category.objects.filter(id__in=account.entry_set.values_list('category', flat=True)):
+			yearly[category] = {year.strftime('%Y'):0 for year in years}
+		for entry in account.entry_set.all().order_by('day'):
+			yearly[entry.category][entry.day.strftime('%Y')] += entry.amount
+
+		data = []
+		for key, value in yearly.items():
+			s = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: t[0]))
+			data.append({'data':s, 'name':key.name.lower()})
+
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
+
+		return (data, library)
 
 def category_chart(category):
 	units = Unit.objects.filter(id__in=set(category.entry_set.values_list('account__unit', flat=True)))

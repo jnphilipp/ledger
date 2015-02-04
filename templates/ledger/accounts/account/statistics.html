@@ -11,22 +11,64 @@
 	<ul>
 		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
 		<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
-		<li class="active">statistics</li>
+		{% if not year %}
+			<li class="active">statistics</li>
+		{% else %}
+			<li><a href="{% url 'account_statistics' account.slug %}">statistics</a><span class="divider"></span></li>
+			{% if month %}
+				<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}">{{ year }}</a><span class="divider"></span></li>
+				{% if category %}
+					<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}&amp;month={{ month }}">{{ month_name }}</a><span class="divider"></span></li>
+					<li class="active">{{ category|lower }}</li>
+				{% else %}
+					<li class="active">{{ month_name }}</li>
+				{% endif %}
+			{% else %}
+				<li class="active">{{ year }}</li>
+			{% endif %}
+		{% endif %}
 	</ul>
 </div>
 {% endblock %}
 
 {% block content %}
-{% if account_chart_monthly_data or account_chart_yearly_data %}
+{% if data %}
 	<div class="shape category">
-		<div class="title"><a href="{% url 'account_statistics' account.slug %}">statistics</a></div>
+		<div class="title"><a href="{% url 'account_statistics' account.slug %}">
+			{% if not year %}
+				statistics
+			{% else %}
+				{% if month %}{{ month_name }} {% endif %}{{ year }}{% if category %} - {{ category|lower }}{% endif %}
+			{% endif %}
+			</a></div>
 		<div class="content">
-			{% column_chart account_chart_monthly_data with height="400px" library=library %}
-			{% column_chart account_chart_yearly_data with height="400px" library=library %}
+			{% if not year %}
+				<p class="entries">show statistics for: {% for year in years %}<a href="?year={{ year|date:'Y' }}">{{ year|date:'Y' }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+			{% else %}
+				{% if not month %}
+					<p class="entries">show statistics for: {% for month in months %}<a href="?year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+				{% else %}
+					{% if not category %}
+						<p class="entries">show statistics for: {% for category in categories %}<a href="?year={{ year }}&amp;month={{ month }}&amp;category={{ category.slug }}">{{ category|lower }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+			{% column_chart data with height="800px" library=library %}
 		</div>
 	</div>
 {% endif %}
-{% if category_data %}
+{% if False and account_chart_monthly_data or account_chart_yearly_data and False %}
+	<div class="shape category">
+		<div class="title"><a href="{% url 'account_statistics' account.slug %}">statistics</a></div>
+		<div class="content">
+			{% column_chart account_chart_monthly_data with height="600px" library=library %}
+			{% if account_chart_yearly_data %}
+				{% column_chart account_chart_yearly_data with height="600px" library=library %}
+			{% endif %}
+		</div>
+	</div>
+{% endif %}
+{% if category_data and False %}
 	<div class="shape category">
 		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
 		<div class="content">
@@ -34,7 +76,7 @@
 		</div>
 	</div>
 {% endif %}
-{% if tag_data %}
+{% if tag_data and False %}
 	<div class="shape category">
 		<div class="title"><a href="{% url 'tags' %}">tags</a></div>
 		<div class="content">
