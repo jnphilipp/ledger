@@ -11,7 +11,6 @@ from django.views.decorators.csrf import csrf_protect
 
 def dashboard(request):
 	accounts = Account.objects.all()
-
 	return render(request, 'ledger/accounts/dashboard/dashboard.html', locals())
 
 def account(request, slug):

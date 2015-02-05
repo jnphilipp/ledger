@@ -1,0 +1,66 @@
+{% extends "ledger/base.html" %}
+{% load accounts_tags chartkick static %}
+
+{% block extrahead %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'chartkick.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<ul>
+		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+		{% if unit_slug %}
+			<li><a href="{% url 'statistics' %}">statistics</a><span class="divider"></span></li>
+			{% if year %}
+				<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}">{{ units.first|lower }}</a><span class="divider"></span></li>
+				{% if month %}
+					<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;year={{ year }}">{{ year }}</a><span class="divider"></span></li>
+					<li class="active">{{ month_name }}</li>
+				{% else %}
+					<li class="active">{{ year }}</li>
+				{% endif %}
+			{% else %}
+				<li class="active">{{ units.first|lower }}</li>
+			{% endif %}
+		{% else %}
+			<li class="active">statistics</li>
+		{% endif %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block content %}
+{% for unit in units %}
+	<div class="shape category">
+		<div class="title">
+			<a href="{% url 'statistics' %}?unit={{ unit.slug }}">
+				{{ unit|lower }}{% if year %} - {% if month %}{{ month_name }} {% endif %}{{ year }}{% endif %}
+			</a>
+		</div>
+		<div class="content">
+			{% if unit_slug %}
+				{% if year %}
+					{% if not month %}
+						<p class="entries">show statistics for: {% for month in months %}<a href="?unit={{ unit_slug }}&amp;year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+					{% endif %}
+				{% else %}
+					<p class="entries">show statistics for: {% for year in years %}<a href="?unit={{ unit_slug }}&amp;year={{ year|date:'Y' }}">{{ year|date:'Y' }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+				{% endif %}
+			{% endif %}
+			{% with data=datas|lookup:unit library=libraries|lookup:unit %}
+				{% column_chart data with height="800px" library=library %}
+			{% endwith %}
+		</div>
+	</div>
+{% empty %}
+	<div class="shape category">
+		<div class="title"><a href="{% url 'statistics' %}">statistics</a></div>
+		<div class="content">
+			<div class="entries">
+				<p>No statistics available.</p>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+{% endblock %}

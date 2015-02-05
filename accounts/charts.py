@@ -1,4 +1,4 @@
-from accounts.models import Account, Category, Unit
+from accounts.models import Account, Category, Entry, Unit
 from collections import defaultdict, OrderedDict
 
 def account_chart(account, year=None, month=None, category=None):
@@ -106,3 +106,51 @@ def tag_chart(tag):
 	library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % units[0].symbol if units.count() == 1 else ''}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % units[0].symbol if units.count() == 1 else ''}}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2, 'valueSuffix':units[0].symbol if units.count() == 1 else ''}}
 
 	return (monthly_data, yearly_data, library)
+
+def statistics_chart(unit, year=None, month=None):
+	if month and year:
+		days = Entry.objects.filter(account__in=Account.objects.filter(unit=unit)).filter(day__year=year).filter(day__month=month).dates('day', 'day')
+		dayly = {}
+		for category in Category.objects.filter(entry__account__unit=unit).filter(entry__day__year=year).filter(entry__day__month=month):
+			dayly[category] = {int(day.strftime('%d')):0 for day in days}
+		for entry in Entry.objects.filter(account__unit=unit).filter(day__year=year).filter(day__month=month):
+			dayly[entry.category][int(entry.day.strftime('%d'))] += entry.amount
+
+		data = []
+		for key, value in dayly.items():
+			data.append({'data':OrderedDict(sorted({k: round(v, 2) for k, v in value.items()}.items(), key=lambda t: t[0])), 'name':key.name.lower()})
+
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':unit.symbol}}
+
+		return (data, library)
+	elif year:
+		months = Entry.objects.filter(account__in=Account.objects.filter(unit=unit)).filter(day__year=year).dates('day', 'month')
+		monthly = {}
+		for category in Category.objects.filter(entry__account__unit=unit).filter(entry__day__year=year):
+			monthly[category] = {month.strftime('%B %Y').lower():0 for month in months}
+		names = OrderedDict(sorted({month.strftime('%B %Y').lower():month.strftime('%Y-%m') for month in months}.items(), key=lambda t:t[1]))
+		for entry in Entry.objects.filter(account__unit=unit).filter(day__year=year):
+			monthly[entry.category][entry.day.strftime('%B %Y').lower()] += entry.amount
+
+		data = []
+		for key, value in monthly.items():
+			data.append({'data':OrderedDict(sorted({k: round(v, 2) for k, v in value.items()}.items(), key=lambda t: names[t[0]])), 'name':key.name.lower()})
+
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':unit.symbol}}
+
+		return (data, library)
+	else:
+		years = Entry.objects.filter(account__in=Account.objects.filter(unit=unit)).dates('day', 'year')
+		yearly = {}
+		for category in Category.objects.filter(entry__account__unit=unit):
+			yearly[category] = {year.strftime('%Y'):0 for year in years}
+		for entry in Entry.objects.filter(account__unit=unit):
+			yearly[entry.category][entry.day.strftime('%Y')] += entry.amount
+
+		data = []
+		for key, value in yearly.items():
+			data.append({'data':OrderedDict(sorted({k: round(v, 2) for k, v in value.items()}.items(), key=lambda t: t[0])), 'name':key.name.lower()})
+
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':unit.symbol}}
+
+		return (data, library)

@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 	url(r'^accounts/tag/(?P<slug>[\w-]+)/$', 'accounts.views.tag.tag', name='tag'),
 	url(r'^accounts/tag/(?P<slug>[\w-]+)/entries/$', 'accounts.views.tag.entries', name='tag_entries'),
 	url(r'^accounts/unit/add_another/$', autocomplete_light.CreateView.as_view(model=Unit, form_class=UnitForm, template_name='ledger/accounts/unit/add_another.html'), name='unit_add_another_create'),
+	url(r'^accounts/statistics/$', 'accounts.views.statistics.statistics', name='statistics'),
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^autocomplete/', include('autocomplete_light.urls')),
 )
