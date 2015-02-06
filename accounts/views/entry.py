@@ -1,5 +1,6 @@
 from accounts.forms import EntryForm
 from accounts.models import Account, Entry
+from datetime import date
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
@@ -46,6 +47,21 @@ def change(request, slug, entry_id):
 		form = EntryForm(instance=entry)
 		return render(request, 'ledger/accounts/entry/form.html', locals())
 
+def delete(request, slug, entry_id):
+	account = get_object_or_404(Account, slug=slug)
+	entry = get_object_or_404(Entry, id=entry_id)
+	entry.delete()
+	return redirect('account_entries', slug=account.slug)
+
+def duplicate(request, slug, entry_id):
+	account = get_object_or_404(Account, slug=slug)
+	entry = get_object_or_404(Entry, id=entry_id)
+
+	new = Entry.objects.create(account=account, day=date.today(), amount=entry.amount, category=entry.category, additional=entry.additional)
+	for tag in entry.tags.all():
+		new.tags.add(tag.id)
+	new.save()
+	return redirect('account_entries', slug=account.slug)
 
 @csrf_protect
 def swap(request, slug):
