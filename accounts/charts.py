@@ -5,7 +5,7 @@ def account_chart(account, year=None, month=None, category=None):
 	if year and month and category:
 		series = defaultdict(int)
 		for entry in account.entry_set.filter(day__year=year).filter(day__month=month).filter(category=category).order_by('day'):
-			series[entry.day.strftime('%d.%m.%Y')] += entry.amount
+			series[int(entry.day.strftime('%d'))] += entry.amount
 		data = []
 		if series:
 			data.append({'data':OrderedDict(sorted(series.items(), key=lambda t: t[0])), 'name':category.name.lower()})
@@ -23,23 +23,23 @@ def account_chart(account, year=None, month=None, category=None):
 		for key, value in categories.items():
 			data.append({'data':{key.name.lower():value}, 'name':key.name.lower()})
 
-		library = {'plotOptions':{'column':{'stacking':'normal'}},'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
 
 		return (data, library)
 	elif year:
 		months = account.entry_set.filter(day__year=year).dates('day', 'month')
 		monthly = {}
 		for category in Category.objects.filter(id__in=account.entry_set.filter(day__year=year).values_list('category', flat=True)):
-			monthly[category] = {month.strftime('%B %Y'):0 for month in months}
-		names = OrderedDict(sorted({month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}.items(), key=lambda t:t[1]))
+			monthly[category] = {month.strftime('%B').lower():0 for month in months}
+		names = OrderedDict(sorted({month.strftime('%B').lower():month.strftime('%m') for month in months}.items(), key=lambda t:t[1]))
 		for entry in account.entry_set.filter(day__year=year).order_by('day'):
-			monthly[entry.category][entry.day.strftime('%B %Y')] += entry.amount
+			monthly[entry.category][entry.day.strftime('%B').lower()] += entry.amount
 
 		data = []
 		for key, value in monthly.items():
 			data.append({'data':OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: names[t[0]])), 'name':key.name.lower()})
 
-		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
 
 		return (data, library)
 	else:
@@ -55,7 +55,7 @@ def account_chart(account, year=None, month=None, category=None):
 			s = OrderedDict(sorted({k: round(v, 2) if v != 0 else None for k, v in value.items()}.items(), key=lambda t: t[0]))
 			data.append({'data':s, 'name':key.name.lower()})
 
-		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
+		library = {'plotOptions':{'column':{'stacking':'normal'}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % account.unit.symbol}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % account.unit.symbol}}, 'legend':{'enabled':False}, 'tooltip':{'shared':False, 'valueDecimals':2, 'valueSuffix':account.unit.symbol}}
 
 		return (data, library)
 
@@ -127,10 +127,10 @@ def statistics_chart(unit, year=None, month=None):
 		months = Entry.objects.filter(account__in=Account.objects.filter(unit=unit)).filter(day__year=year).dates('day', 'month')
 		monthly = {}
 		for category in Category.objects.filter(entry__account__unit=unit).filter(entry__day__year=year):
-			monthly[category] = {month.strftime('%B %Y').lower():0 for month in months}
-		names = OrderedDict(sorted({month.strftime('%B %Y').lower():month.strftime('%Y-%m') for month in months}.items(), key=lambda t:t[1]))
+			monthly[category] = {month.strftime('%B').lower():0 for month in months}
+		names = OrderedDict(sorted({month.strftime('%B').lower():month.strftime('%m') for month in months}.items(), key=lambda t:t[1]))
 		for entry in Entry.objects.filter(account__unit=unit).filter(day__year=year):
-			monthly[entry.category][entry.day.strftime('%B %Y').lower()] += entry.amount
+			monthly[entry.category][entry.day.strftime('%B').lower()] += entry.amount
 
 		data = []
 		for key, value in monthly.items():

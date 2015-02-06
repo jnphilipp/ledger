@@ -39,7 +39,7 @@
 			{% if not year %}
 				statistics
 			{% else %}
-				{% if month %}{{ month_name }} {% endif %}{{ year }}{% if category %} - {{ category|lower }}{% endif %}
+				{% if category %}{{ category|lower }} - {% endif %}{% if month %}{{ month_name }} {% endif %}{{ year }}
 			{% endif %}
 			</a></div>
 		<div class="content">
