@@ -30,7 +30,9 @@
 				</td>
 				{% if options %}
 					<td>
-						<a href="{% url 'entry_change' account.slug entry.id %}?page={{ page }}"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
+						<a href="{% url 'entry_change' account.slug entry.id %}?page={{ page }}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
+						<a href="{% url 'entry_duplicate' account.slug entry.id %}" title="duplicate entry"><i class="ui-icon ui-icon-copy" style="display: inline-block;"></i></a>
+						<a href="{% url 'entry_delete' account.slug entry.id %}" title="delete entry"><i class="ui-icon ui-icon-trash" style="display: inline-block;"></i></a>
 						{% with entries|previous:forloop.counter0 as previous %}
 						{% with entries|next:forloop.counter0 as next %}
 							{% if previous or last_prev %}
@@ -38,7 +40,7 @@
 									{% csrf_token %}
 									<input type="hidden" name="e1" value="{% if previous %}{{ previous.id }}{% else %}{{ last_prev.id }}{% endif %}">
 									<input type="hidden" name="e2" value="{{ entry.id }}">
-									<button class="linkButton" type="submit"><i class="ui-icon ui-icon-triangle-1-n" style="display: inline-block;"></i></button>
+									<button class="linkButton" type="submit" title="move up"><i class="ui-icon ui-icon-triangle-1-n" style="display: inline-block;"></i></button>
 								</form>
 							{% endif %}
 							{% if next or first_next %}
@@ -46,7 +48,7 @@
 									{% csrf_token %}
 									<input type="hidden" name="e1" value="{{ entry.id }}">
 									<input type="hidden" name="e2" value="{% if next %}{{ next.id }}{% else %}{{ first_next.id }}{% endif %}">
-									<button class="linkButton" type="submit"><i class="ui-icon ui-icon-triangle-1-s" style="display: inline-block;"></i></button>
+									<button class="linkButton" type="submit" title="move down"><i class="ui-icon ui-icon-triangle-1-s" style="display: inline-block;"></i></button>
 								</form>
 							{% endif %}
 						{% endwith %}

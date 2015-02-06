@@ -7,7 +7,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404, redirect, rende
 from django.views.decorators.csrf import csrf_protect
 
 def categories(request):
-	paginator = Paginator(Category.objects.all(), 28)
+	paginator = Paginator(Category.objects.all().extra(select={'lname':'LOWER(name)'}).order_by('lname'), 28)
 	page = request.GET.get('page')
 	try:
 		categories = paginator.page(page)
@@ -24,7 +24,7 @@ def categories(request):
 def category(request, slug):
 	category = get_object_or_404(Category, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__unit=unit)), 2) for unit in set(category.entry_set.values_list('account__unit', flat=True))}
-	entries = category.entry_set.all().reverse()[:5]
+	entries = category.entry_set.all().order_by('day').reverse()[:5]
 	monthly_data, yearly_data, library = category_chart(category)
 	return render(request, 'ledger/accounts/category/category.html', locals())
 

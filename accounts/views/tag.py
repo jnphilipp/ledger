@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from json import dumps
 
 def tags(request):
-	paginator = Paginator(Tag.objects.all(), 28)
+	paginator = Paginator(Tag.objects.all().extra(select={'lname':'lower(name)'}).order_by('lname'), 28)
 	page = request.GET.get('page')
 	try:
 		tags = paginator.page(page)
@@ -26,7 +26,7 @@ def tags(request):
 def tag(request, slug):
 	tag = get_object_or_404(Tag, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in tag.entries.filter(account__unit=unit)), 2) for unit in set(tag.entries.values_list('account__unit', flat=True))}
-	entries = tag.entries.all().reverse()[:5]
+	entries = tag.entries.all().order_by('day').reverse()[:5]
 	monthly_data, yearly_data, library = tag_chart(tag)
 	return render(request, 'ledger/accounts/tag/tag.html', locals())
 
