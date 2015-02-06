@@ -21,13 +21,15 @@ def account(request, slug):
 	categories = {}
 	for c in cs:
 		categories[c['category__name'].lower() if len(c['category__name']) <= 15 else '%s…' % c['category__name'][0:13].lower()] = c['count']
-	category_data = [{'data':OrderedDict(sorted(categories.items())), 'name':'entries'}]
+	if categories:
+		category_data = [{'data':OrderedDict(sorted(categories.items())), 'name':'entries'}]
 
 	ts = Entry.objects.filter(account=account).filter(tags__isnull=False).values('tags__name').annotate(count=Count('tags')).order_by('tags__name')
 	tags = {}
 	for t in ts:
 		tags[t['tags__name'].lower()] = t['count']
-	tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
+	if tags:
+		tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
 
 	account_chart_data, library = account_chart(account)
 
