@@ -7,7 +7,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404, redirect, rende
 from django.views.decorators.csrf import csrf_protect
 
 def categories(request):
-	paginator = Paginator(Category.objects.all(), 28)
+	paginator = Paginator(Category.objects.all().extra(select={'lname':'LOWER(name)'}).order_by('lname'), 28)
 	page = request.GET.get('page')
 	try:
 		categories = paginator.page(page)

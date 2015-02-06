@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from json import dumps
 
 def tags(request):
-	paginator = Paginator(Tag.objects.all(), 28)
+	paginator = Paginator(Tag.objects.all().extra(select={'lname':'lower(name)'}).order_by('lname'), 28)
 	page = request.GET.get('page')
 	try:
 		tags = paginator.page(page)
