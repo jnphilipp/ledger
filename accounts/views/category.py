@@ -24,7 +24,7 @@ def categories(request):
 def category(request, slug):
 	category = get_object_or_404(Category, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__unit=unit)), 2) for unit in set(category.entry_set.values_list('account__unit', flat=True))}
-	entries = category.entry_set.all().reverse()[:5]
+	entries = category.entry_set.all().order_by('day').reverse()[:5]
 	monthly_data, yearly_data, library = category_chart(category)
 	return render(request, 'ledger/accounts/category/category.html', locals())
 
