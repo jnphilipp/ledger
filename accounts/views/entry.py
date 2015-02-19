@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_protect
 def add(request, slug):
 	account = get_object_or_404(Account, slug=slug)
 	page = request.GET.get('page')
+	today = date.today()
 
 	if request.method == 'POST':
 		form = EntryForm(request.POST)
@@ -31,6 +32,7 @@ def change(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug)
 	entry = get_object_or_404(Entry, id=entry_id)
 	page = request.GET.get('page')
+	today = date.today()
 
 	if request.method == 'POST':
 		form = EntryForm(instance=entry, data=request.POST)

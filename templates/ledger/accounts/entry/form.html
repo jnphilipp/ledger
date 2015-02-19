@@ -15,7 +15,7 @@
 {% block content %}
 <script>
 	$(function() {
-		$( "#id_day" ).datepicker({dateFormat:'yy-mm-dd'});
+		$('#id_day').datepicker({dateFormat:'yy-mm-dd'});
 	});
 </script>
 {{ form.media }}
@@ -32,6 +32,16 @@
 						</div>
 						<div class="controls">
 							{{ field }}
+							{% if field.auto_id == 'id_day' %}
+								<a id="date_today" href="" style="color: #555555;">today</a>
+								<script>
+									$('#date_today').click(function() {
+										$('#id_day').val('{{ today|date:'Y-m-d' }}');
+										$('#id_amount').focus();
+										return false;
+									});
+								</script>
+							{% endif %}
 							<div class="help-inline">{{ field.help_text }}</div>
 							<div class="help-inline">{{ field.errors }}</div>
 						</div>
