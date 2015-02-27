@@ -24,6 +24,11 @@
 				<span class="left">
 					<b>balance:</b> {{ account.balance|colorfy:account.unit }}
 				</span>
+				<span class="right">
+					<form action="{% url 'entry_add' account.slug %}">
+						<button class="btn" type="submit">add entry</button>
+					</form>
+				</span>
 			</header>
 			{% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
 		</div>
