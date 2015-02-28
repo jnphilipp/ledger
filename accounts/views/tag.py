@@ -34,7 +34,7 @@ def entries(request, slug):
 	tag = get_object_or_404(Tag, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in tag.entries.filter(account__unit=unit)), 2) for unit in set(tag.entries.values_list('account__unit', flat=True))}
 
-	paginator = Paginator(tag.entries.all().order_by('day'), 25)
+	paginator = Paginator(tag.entries.all().order_by('day'), 28)
 	page = request.GET.get('page')
 	try:
 		entries = paginator.page(page)
@@ -47,7 +47,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[27]
 	except InvalidPage:
 		last_prev = None
 

@@ -19,7 +19,8 @@ a:active {position: relative;
 	top: 1px;
 	right: -1px;}
 
-#content {margin: 1em 0 0 0;}
+#content {margin: 1em;
+	padding: 0;}
 
 
 
@@ -45,9 +46,6 @@ a:active {position: relative;
 
 
 /*### dashboard ###*/
-
-#content {margin: 1em;
-	padding: 0em;}
 
 #dashboard {width: 100%;
 	box-sizing: border-box;

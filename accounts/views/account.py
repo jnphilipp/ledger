@@ -38,7 +38,7 @@ def account(request, slug):
 def entries(request, slug):
 	account = get_object_or_404(Account, slug=slug)
 
-	paginator = Paginator(account.entry_set.all(), 25)
+	paginator = Paginator(account.entry_set.all(), 28)
 	page = request.GET.get('page')
 	try:
 		entries = paginator.page(page)
@@ -51,7 +51,7 @@ def entries(request, slug):
 		entries = paginator.page(paginator.num_pages)
 
 	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[24]
+		last_prev = paginator.page(entries.previous_page_number()).object_list[27]
 	except InvalidPage:
 		last_prev = None
 
