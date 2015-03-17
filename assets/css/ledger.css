@@ -60,6 +60,7 @@ a:active {position: relative;
 	margin: 10px 10px 20px 10px;}
 
 .shape .title {display: inline-block;
+	vertical-align: top;
 	text-decoration: none;
 
 	margin: 0;
