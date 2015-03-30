@@ -1,6 +1,6 @@
 {% load accounts_tags %}
 
-<table>
+<table class="table table-striped table-hover table-bordered">
 	<thead>
 		<tr>
 			<th>account</th>
@@ -30,7 +30,7 @@
 				</td>
 				{% if options %}
 					<td>
-						<a href="{% url 'entry_change' entry.account.slug entry.id %}?page={{ page }}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
+						<a href="{% url 'entry_change' entry.account.slug entry.id %}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
 						<a href="{% url 'entry_duplicate' entry.account.slug entry.id %}" title="duplicate entry"><i class="ui-icon ui-icon-copy" style="display: inline-block;"></i></a>
 						<a href="{% url 'entry_delete' entry.account.slug entry.id %}" title="delete entry"><i class="ui-icon ui-icon-trash" style="display: inline-block;"></i></a>
 					</td>

@@ -1,12 +1,15 @@
-{% load admin_urls static %}
+{% load admin_urls bootstrap3 static %}
 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
-		<link rel="stylesheet" href="{% static 'css/ledger.css' %}"/>
+		{% bootstrap_css %}
 		<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}"/>
+		<link rel="stylesheet" href="{% static 'css/ledger.css' %}"/>
+		{% bootstrap_javascript jquery=1 %}
 		<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 		{% include 'autocomplete_light/static.html' %}
@@ -14,11 +17,30 @@
 		{% block extrahead %}{% endblock %}
 	</head>
 	<body>
-		<section>
-			{% block breadcrumbs %}{% endblock %}
-		</section>
-		<div id="content">
-			{% block content %}{% endblock %}
+		<div class="container-fluid">
+			<div class="row">
+				<ol class="breadcrumb">
+					{% block breadcrumbs %}{% endblock %}
+					{% block option_menu %}
+						<div style="float: right;">
+							{% if user.is_authenticated %}
+								{% if user.is_staff %}
+									<a href="{% url 'admin:index' %}">admin</a>
+									|
+								{% endif %}
+								<a href="{% url 'password_change' %}">change password</a>
+								|
+								<a clas="btn btn-xs" href="{% url 'logout' %}">logout</a>
+							{% endif %}
+						</div>
+					{% endblock %}
+				</ol>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					{% block content %}{% endblock %}
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

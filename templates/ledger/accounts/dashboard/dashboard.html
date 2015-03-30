@@ -1,25 +1,18 @@
 {% extends "ledger/base.html" %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-	<ul>
-		<li class="active">dashboard</li>
-	</ul>
-</div>
+<li class="active">dashboard</li>
 {% endblock %}
 
 {% block content %}
-<div id="dashboard">
-	<div style="height: 35px;">
-		<div style="float: right;">
-			<form action="{% url 'statistics' %}" style="display: inline-block;">
-				<button class="btn" type="submit">statistics</button>
-			</form>
-			<form action="{% url 'add_account' %}" style="display: inline-block;">
-				<button class="btn" type="submit">add new account</button>
-			</form>
-		</div>
+<div class="row">
+	<div class="col-md-2 col-md-offset-10">
+		<a class="btn btn-info" href="{% url 'statistics' %}" role="button">statistics</a>
+		<a class="btn btn-success" href="{% url 'add_account' %}" role="button"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add account</a>
 	</div>
+</div>
+<div class="row">
+	<div id="dashboard" class="col-md-12">
 	{% if accounts %}
 		{% for account in accounts %}
 			{% include "ledger/accounts/dashboard/partials/_shape.html" with account=account %}
@@ -27,5 +20,6 @@
 	{% else %}
 		<p>No accounts are available.</p>
 	{% endif %}
+	</div>
 </div>
 {% endblock %}

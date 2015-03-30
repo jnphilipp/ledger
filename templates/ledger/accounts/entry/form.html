@@ -2,14 +2,10 @@
 {% load i18n %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-	<ul>
-		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-		<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
-		<li><a href="{% url 'account_entries' account.slug %}">entries</a><span class="divider"></span></li>
-		<li>{% if entry.id %}change entry{% else %}add entry{% endif %}</li>
-	</ul>
-</div>
+<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
+<li><a href="{% url 'account_entries' account.slug %}">entries</a><span class="divider"></span></li>
+<li>{% if entry.id %}change entry{% else %}add entry{% endif %}</li>
 {% endblock %}
 
 {% block content %}
@@ -28,12 +24,12 @@
 				<div class="form-row{{ field.errors|yesno:' error,' }}">
 					<div>
 						<div class="control-label">
-							<label {% if field.field.required %}class="required"{% endif %} for="{{ field.auto_id }}">{{ field.label }}:</label>
+							<label {% if field.field.required %}class="required"{% endif %} for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
 						</div>
 						<div class="controls">
 							{{ field }}
 							{% if field.auto_id == 'id_day' %}
-								<a id="date_today" href="" style="color: #555555;">today</a>
+								<a id="date_today" style="cursor: pointer;">today</a>
 								<script>
 									$('#date_today').click(function() {
 										$('#id_day').val('{{ today|date:'Y-m-d' }}');
@@ -42,8 +38,8 @@
 									});
 								</script>
 							{% endif %}
-							<div class="help-inline">{{ field.help_text }}</div>
-							<div class="help-inline">{{ field.errors }}</div>
+							<div class="help-inline">{{ field.help_text|lower }}</div>
+							<div class="help-inline">{{ field.errors|lower }}</div>
 						</div>
 					</div>
 				</div>
@@ -52,7 +48,7 @@
 				<div>
 					<div class="control-label"></div>
 					<div class="controls">
-						<button class="btn" name="_entry_form" value="_entry_form" type="submit">save</button>
+						<button class="btn btn-primary" name="_entry_form" value="_entry_form" type="submit">save</button>
 					</div>
 				</div>
 			</div>

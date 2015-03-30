@@ -7,12 +7,8 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-	<ul>
-		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-		<li class="active">{{ account.name|lower }}</li>
-	</ul>
-</div>
+<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+<li class="active">{{ account.name|lower }}</li>
 {% endblock %}
 
 {% block content %}
@@ -20,17 +16,19 @@
 	<div class="title"><a href="{% url 'account_entries' account.slug %}">entries</a></div>
 	<div class="content">
 		<div class="entries">
-			<header class="small">
-				<span class="left">
+			<div class="row">
+				<div class="col-md-1">
 					<b>balance:</b> {{ account.balance|colorfy:account.unit }}
-				</span>
-				<span class="right">
-					<form action="{% url 'entry_add' account.slug %}">
-						<button class="btn" type="submit">add entry</button>
-					</form>
-				</span>
-			</header>
-			{% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
+				</div>
+				<div class="col-md-1 col-md-offset-10">
+						<a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="buttpn">add entry</a>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px;">
+				<div class="col-md-12">
+					{% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -46,7 +44,7 @@
 	<div class="shape category">
 		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
 		<div class="content">
-			{% column_chart category_data with height="290px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
+			{% column_chart category_data with height="300px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
 		</div>
 	</div>
 {% endif %}
@@ -54,7 +52,7 @@
 	<div class="shape category">
 		<div class="title"><a href="{% url 'tags' %}">tags</a></div>
 		<div class="content">
-			{% column_chart tag_data with height="290px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
+			{% column_chart tag_data with height="300px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
 		</div>
 	</div>
 {% endif %}

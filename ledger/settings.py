@@ -107,3 +107,11 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 	'django.core.context_processors.request',
 	'django.contrib.messages.context_processors.messages',
 )
+
+BOOTSTRAP3 = {
+	'jquery_url':'/static/js/jquery.js',
+	'base_url':None,
+	'css_url':'/static/css/bootstrap.min.css',
+	'theme_url':None,
+	'javascript_url':'/static/js/bootstrap.min.js',
+}

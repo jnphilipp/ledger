@@ -1,0 +1,28 @@
+{% extends 'ledger/base.html' %}
+{% load bootstrap3 i18n %}
+
+{% block breadcrumbs %}
+<li class="active">login</li>
+{% endblock %}
+
+{% block content %}
+<div class="row" style="margin-top: 5%;">
+	<div class="col-md-2 col-md-offset-5">
+		<h1 class="text-center">ledger</h1>
+	</div>
+</div>
+<div class="row" style="margin-top: 20px;">
+	<div class="col-md-2 col-md-offset-5">
+		<form action="{{ app_path }}" method="post" id="login-form">
+			{% csrf_token %}
+			{% bootstrap_form form %}
+			{% buttons %}
+				<button type="submit" class="btn btn-primary">{% trans 'Log in' %}</button>
+			{% endbuttons %}
+		</form>
+		<script type="text/javascript">
+			$('#id_username').focus();
+		</script>
+	</div>
+</div>
+{% endblock %}

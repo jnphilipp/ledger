@@ -1,19 +1,24 @@
+.ui-icon-white {
+  background-image: url("images/ui-icons_ffffff_256x240.png");
+}
+
 header, footer, nav, article, aside {display: block;}
-body {background: #F0F0F0;
-	font-family: monospace;
+body {/*background: #F0F0F0;*/
+	/*font-family: monospace;
 	font-size: 10pt;
 	font-weight: normal;
 	color: black;
 	margin: 0;
-	padding: 0;}
+	padding: 0;*/}
 
-a {font-size: 10pt;
+/*a {font-size: 10pt;
 	font-weight: bold;
 	text-decoration: none;
-	color: white;}
+	color: black;}
 
-a:hover {font-weight: bold;
-	text-decoration: underline;}
+a:hover {color: #02b5fd;
+	font-weight: bold;
+	text-decoration: underline;}*/
 
 a:active {position: relative;
 	top: 1px;
@@ -23,25 +28,9 @@ a:active {position: relative;
 	padding: 0;}
 
 
-
 /*### breadcrumbs ###*/
 
-.breadcrumbs {background: #7c7c7c;
-	height: 30px;}
-
-.breadcrumbs ul {margin: 0;
-	padding: 0 0 0 15px;
-	list-style: none;}
-
-.breadcrumbs ul li {display: inline-block;
-	margin: 7px 0;
-	font-weight: bold;}
-
-.breadcrumbs ul li.active {color: black;}
-.breadcrumbs .divider:before {margin-left: 10px;
-	color: white;
-	text-shadow: 0px 1px 0px rgba(0, 0, 0, .5);
-	content: "»";}
+.breadcrumb > li + li:before {content: "»";}
 
 
 
@@ -66,22 +55,26 @@ a:active {position: relative;
 	margin: 0;
 	padding: 0;
 	padding-left: 10px;
+	padding-right: 50px;
 
 	border-right: 30px solid transparent;
 	border-bottom: 30px solid #4c4c4c;
 
 	height: 0;
 	line-height: 31px;
-	min-width: 150px;
+	min-width: 200px;
 
-	font-size: 13pt;
+	font-size: 12pt;
 	font-weight: bold;
 	color: white;}
+
+.shape .title a {color: white;}
 
 .shape .content {display: block;
 	height: 96px;
 	border: 1px solid #4c4c4c;
-	box-shadow: 0px 0px 15px #888888;}
+	padding-top: 15px;
+	/*box-shadow: 0px 0px 15px #888888;*/}
 
 .shape .content ul {list-style: none;}
 
@@ -116,7 +109,7 @@ a:active {position: relative;
 .form-horizontal .errorlist li {margin: 0;
 	padding: 0;}
 
-.btn {background: linear-gradient(to bottom, #4c4c4c, #000000);
+/*.btn {background: linear-gradient(to bottom, #4c4c4c, #000000);
 	border-radius: 5px;
 	box-shadow: 0px 0px 5px #888888;
 	font-family: Arial;
@@ -128,12 +121,12 @@ a:active {position: relative;
 	cursor: pointer;}
 
 .btn:hover {background: linear-gradient(to bottom, #6c6c6c, #4c4c4c);
-	text-decoration: none;}
+	text-decoration: none;}*/
 
 .entries header {margin: 0px 0px 5px 0px;
 	height: 25px;}
 
-.entries header.small {margin: 0px 0px 4px 0px;}
+/*.entries header.small {margin: 0px 0px 4px 0px;}
 
 .entries header .left,
 .entries header .right {vertical-align: middle;}
@@ -144,13 +137,13 @@ a:active {position: relative;
 	margin: 5px 0px 0px 0px;
 	text-align: center;
 	color: gray;}
-
+*/
 
 
 .entries {margin: 5px;
 	padding: 0px;}
 
-.entries table {border-collapse: collapse;
+/*.entries table {border-collapse: collapse;
 	border-spacing: 0;
 	width: 100%;
 	height: 100%;
@@ -191,7 +184,7 @@ a:active {position: relative;
 	padding: 5px 0px;
 	color: #ffffff;}
 
-.entries a {color: #555555;}
+/*.entries a {color: #555555;}*/
 
 .category {display: block;
 	width: inherit;
@@ -204,7 +197,7 @@ a:active {position: relative;
 	height: auto;}
 
 
-.linkButton {background: none;
+/*.linkButton {background: none;
 	border: none;
 	margin: 0;
 	padding: 0;
@@ -219,6 +212,6 @@ a:active {position: relative;
 .linkButton:active {position: relative;
 	top: 1px;
 	right: -1px;}
-
+*/
 .red {color: red;}
 .green {color: green;}

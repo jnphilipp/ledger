@@ -7,13 +7,9 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-	<ul>
-		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-		<li><a href="{% url 'categories' %}">categories</a><span class="divider"></span></li>
-		<li class="active">{{ category.name|lower }}</li>
-	</ul>
-</div>
+<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+<li><a href="{% url 'categories' %}">categories</a><span class="divider"></span></li>
+<li class="active">{{ category.name|lower }}</li>
 {% endblock %}
 
 {% block content %}
@@ -21,11 +17,11 @@
 	<div class="title"><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></div>
 	<div class="content">
 		<div class="entries">
-			<header class="small">
-				<span class="left">
+			<div class="row">
+				<div class="col-md-1">
 					<b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
-				</span>
-			</header>
+				</div>
+			</div>
 		</div>
 		{% if monthly_data %}
 			{% column_chart monthly_data with library=library %}
@@ -39,7 +35,7 @@
 	<div class="title"><a href="{% url 'category_entries' category.slug %}">entries</a></div>
 	<div class="content">
 		<div class="entries">
-			<table>
+			<table class="table table-striped table-hover table-bordered">
 				<thead>
 					<tr>
 						<th>account</th>

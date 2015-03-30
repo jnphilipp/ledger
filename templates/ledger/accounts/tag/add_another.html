@@ -1,6 +1,9 @@
 {% extends "ledger/base.html" %}
 {% load i18n %}
 
+{% block option_menu %}
+{% endblock %}
+
 {% block content %}
 {{ form.media }}
 <div class="shape form-horizontal">
@@ -26,7 +29,7 @@
 				<div>
 					<div class="control-label"></div>
 					<div class="controls">
-						<button class="btn" name="_add_tag" value="_add_tag" type="submit">save</button>
+						<a class="btn btn-primary" name="_add_tag" value="_add_tag" type="submit">save</a>
 					</div>
 				</div>
 			</div>

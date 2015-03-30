@@ -7,27 +7,23 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-	<ul>
-		<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-		{% if unit_slug %}
-			<li><a href="{% url 'statistics' %}">statistics</a><span class="divider"></span></li>
-			{% if year %}
-				<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}">{{ units.first|lower }}</a><span class="divider"></span></li>
-				{% if month %}
-					<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;year={{ year }}">{{ year }}</a><span class="divider"></span></li>
-					<li class="active">{{ month_name }}</li>
-				{% else %}
-					<li class="active">{{ year }}</li>
-				{% endif %}
-			{% else %}
-				<li class="active">{{ units.first|lower }}</li>
-			{% endif %}
+<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
+{% if unit_slug %}
+	<li><a href="{% url 'statistics' %}">statistics</a><span class="divider"></span></li>
+	{% if year %}
+		<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}">{{ units.first|lower }}</a><span class="divider"></span></li>
+		{% if month %}
+			<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;year={{ year }}">{{ year }}</a><span class="divider"></span></li>
+			<li class="active">{{ month_name }}</li>
 		{% else %}
-			<li class="active">statistics</li>
+			<li class="active">{{ year }}</li>
 		{% endif %}
-	</ul>
-</div>
+	{% else %}
+		<li class="active">{{ units.first|lower }}</li>
+	{% endif %}
+{% else %}
+	<li class="active">statistics</li>
+{% endif %}
 {% endblock %}
 
 {% block content %}

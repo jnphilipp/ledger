@@ -1,6 +1,6 @@
 {% load accounts_tags %}
 
-<table>
+<table class="table table-striped table-hover table-bordered">
 	<thead>
 		<tr>
 			<th></th>
@@ -30,25 +30,25 @@
 				</td>
 				{% if options %}
 					<td>
-						<a href="{% url 'entry_change' account.slug entry.id %}?page={{ page }}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
+						<a href="{% url 'entry_change' account.slug entry.id %}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
 						<a href="{% url 'entry_duplicate' account.slug entry.id %}" title="duplicate entry"><i class="ui-icon ui-icon-copy" style="display: inline-block;"></i></a>
 						<a href="{% url 'entry_delete' account.slug entry.id %}" title="delete entry"><i class="ui-icon ui-icon-trash" style="display: inline-block;"></i></a>
 						{% with entries|previous:forloop.counter0 as previous %}
 						{% with entries|next:forloop.counter0 as next %}
-							{% if previous or last_prev %}
-								<form action="{% url 'entry_swap' account.slug %}?page={% if previous %}{{ page }}{% else %}{{ page|decrement }}{% endif %}" method="post" style="display: inline-block;">
+							{% if previous %}
+								<form action="{% url 'entry_swap' account.slug %}" method="post" style="display: inline-block;">
 									{% csrf_token %}
-									<input type="hidden" name="e1" value="{% if previous %}{{ previous.id }}{% else %}{{ last_prev.id }}{% endif %}">
+									<input type="hidden" name="e1" value="{{ previous.id }}">
 									<input type="hidden" name="e2" value="{{ entry.id }}">
-									<button class="linkButton" type="submit" title="move up"><i class="ui-icon ui-icon-triangle-1-n" style="display: inline-block;"></i></button>
+									<button class="btn btn-link" type="submit" title="move up" style="margin: 0; padding: 0;"><i class="ui-icon ui-icon-triangle-1-n" style="display: inline-block;"></i></button>
 								</form>
 							{% endif %}
-							{% if next or first_next %}
-								<form action="{% url 'entry_swap' account.slug %}?page={% if next %}{{ page }}{% else %}{{ page|increment }}{% endif %}" method="post" style="display: inline-block;">
+							{% if next %}
+								<form action="{% url 'entry_swap' account.slug %}" method="post" style="display: inline-block;">
 									{% csrf_token %}
 									<input type="hidden" name="e1" value="{{ entry.id }}">
-									<input type="hidden" name="e2" value="{% if next %}{{ next.id }}{% else %}{{ first_next.id }}{% endif %}">
-									<button class="linkButton" type="submit" title="move down"><i class="ui-icon ui-icon-triangle-1-s" style="display: inline-block;"></i></button>
+									<input type="hidden" name="e2" value="{{ next.id }}">
+									<button class="btn btn-link" type="submit" title="move down" style="margin: 0; padding: 0;"><i class="ui-icon ui-icon-triangle-1-s" style="display: inline-block;"></i></button>
 								</form>
 							{% endif %}
 						{% endwith %}

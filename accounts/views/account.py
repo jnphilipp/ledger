@@ -4,11 +4,13 @@ from accounts.models import Category, Entry, Account, Unit
 from collections import OrderedDict
 from datetime import date
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Count, Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
+@login_required(login_url='/login/')
 def dashboard(request):
 	accounts = Account.objects.all()
 	return render(request, 'ledger/accounts/dashboard/dashboard.html', locals())
@@ -37,29 +39,7 @@ def account(request, slug):
 
 def entries(request, slug):
 	account = get_object_or_404(Account, slug=slug)
-
-	paginator = Paginator(account.entry_set.all(), 28)
-	page = request.GET.get('page')
-	try:
-		entries = paginator.page(page)
-		page = int(page)
-	except PageNotAnInteger:
-		page = paginator.num_pages
-		entries = paginator.page(paginator.num_pages)
-	except EmptyPage:
-		page = paginator.num_pages
-		entries = paginator.page(paginator.num_pages)
-
-	try:
-		last_prev = paginator.page(entries.previous_page_number()).object_list[27]
-	except InvalidPage:
-		last_prev = None
-
-	try:
-		first_next = paginator.page(entries.next_page_number()).object_list[0]
-	except InvalidPage:
-		first_next = None
-
+	entries = account.entry_set.all().reverse()
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 
 def statistics(request, slug):
