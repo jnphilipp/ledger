@@ -28,7 +28,7 @@
 
 {% block content %}
 {% for unit in units %}
-	<div class="shape category">
+	<div class="shape fullshape">
 		<div class="title">
 			<a href="{% url 'statistics' %}?unit={{ unit.slug }}">
 				{% if year %}{% if month %}{{ month_name }} {% endif %}{{ year }} - {% endif %}{{ unit|lower }}

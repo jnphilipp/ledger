@@ -1001,6 +1001,10 @@ body .ui-tooltip {
 	background-image: url("images/ui-icons_cd0a0a_256x240.png");
 }
 
+.ui-icon-white {
+  background-image: url("images/ui-icons_ffffff_256x240.png");
+}
+
 /* positioning */
 .ui-icon-blank { background-position: 16px 16px; }
 .ui-icon-carat-1-n { background-position: 0 0; }

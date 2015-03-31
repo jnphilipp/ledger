@@ -12,15 +12,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="shape category">
+<div class="shape fullshape">
 	<div class="title"><a href="{% url 'account_entries' account.slug %}">entries</a></div>
 	<div class="content">
 		<div class="entries">
 			<div class="row">
-				<div class="col-md-1">
+				<div class="col-md-2">
 					<b>balance:</b> {{ account.balance|colorfy:account.unit }}
 				</div>
-				<div class="col-md-1 col-md-offset-10">
+				<div class="col-md-1 col-md-offset-9">
 						<a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="buttpn">add entry</a>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 	</div>
 </div>
 {% if account_chart_data %}
-	<div class="shape category">
+	<div class="shape fullshape">
 		<div class="title"><a href="{% url 'account_statistics' account.slug %}">statistics</a></div>
 		<div class="content">
 			{% column_chart account_chart_data with height="300px" library=library %}
@@ -41,7 +41,7 @@
 	</div>
 {% endif %}
 {% if category_data %}
-	<div class="shape category">
+	<div class="shape fullshape">
 		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
 		<div class="content">
 			{% column_chart category_data with height="300px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
@@ -49,7 +49,7 @@
 	</div>
 {% endif %}
 {% if tag_data %}
-	<div class="shape category">
+	<div class="shape fullshape">
 		<div class="title"><a href="{% url 'tags' %}">tags</a></div>
 		<div class="content">
 			{% column_chart tag_data with height="300px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}

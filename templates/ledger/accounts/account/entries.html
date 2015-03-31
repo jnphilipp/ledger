@@ -8,13 +8,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="shape category">
+<div class="shape fullshape">
 	<div class="title">entries</div>
 	<div class="content">
 		<div class="entries">
 			<div class="row">
-				<div class="col-md-1"><b>balance:</b> {{ account.balance|colorfy:account.unit }}</div>
-				<div class="col-md-1 col-md-offset-10"><a class="btn btn-primary" href="{% url 'entry_add' account.slug %}">add entry</a></div>
+				<div class="col-md-2"><b>balance:</b> {{ account.balance|colorfy:account.unit }}</div>
+				<div class="col-md-1 col-md-offset-9"><a class="btn btn-primary" href="{% url 'entry_add' account.slug %}">add entry</a></div>
 			</div>
 			<div class="row" style="margin-top: 10px;">
 				<div class="col-md-12">

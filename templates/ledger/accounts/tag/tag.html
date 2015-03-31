@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="shape category">
+<div class="shape fullshape">
 	<div class="title"><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></div>
 	<div class="content">
 		<div class="entries">
@@ -29,7 +29,7 @@
 		{% endif %}
 	</div>
 </div>
-<div class="shape category" style="margin-top: 15px;">
+<div class="shape fullshape" style="margin-top: 15px;">
 	<div class="title"><a href="{% url 'tag_entries' tag.slug %}">entries</a></div>
 	<div class="content">
 		<div class="entries">
