@@ -39,3 +39,7 @@ def next(value, arg):
 @register.filter(needs_autoescape=True)
 def colorfy(amount, currency=None, autoescape=None):
 	return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, 2), currency.symbol if currency else ''))
+
+@register.filter(name='addcss')
+def addcss(field, css):
+	return field.as_widget(attrs={"class":css})

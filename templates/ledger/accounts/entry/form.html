@@ -15,44 +15,47 @@
 	});
 </script>
 {{ form.media }}
-<div class="shape form-horizontal">
-	<form action="{% if entry.id %}{% url 'entry_change' account.slug entry.id %}{% else %}{% url 'entry_add' account.slug %}{% endif %}" method="post">
-		{% csrf_token %}
-		<div class="title">{% if entry.id %}change entry{% else %}add entry{% endif %}</div>
-		<div class="content">
-			{% for field in form %}
-				<div class="form-row{{ field.errors|yesno:' error,' }}">
-					<div>
-						<div class="control-label">
-							<label {% if field.field.required %}class="required"{% endif %} for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
+
+
+<div class="row">
+	<div class="col-md-4 col-md-offset-4">
+		<div class="shape shapeform">
+			<div class="title">{% if entry.id %}change entry{% else %}add entry{% endif %}</div>
+			<div class="content">
+				<form action="{% if entry.id %}{% url 'entry_change' account.slug entry.id %}{% else %}{% url 'entry_add' account.slug %}{% endif %}" method="post" class="form-horizontal">
+					{% csrf_token %}
+
+					{% for field in form %}
+						<div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
+							<label class="col-sm-3 control-label{% if field.field.required %} required{% endif %}" for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
+							<div class="col-sm-7">
+								{{ field }}
+								<span class="help-block">{{ field.help_text|lower }}</span>
+								<span class="help-block">{{ field.errors|lower }}</span>
+							</div>
+							<div class="col-sm-2">
+								{% if field.auto_id == 'id_day' %}
+									<a id="date_today" style="cursor: pointer;">today</a>
+									<script>
+										$('#date_today').click(function() {
+											$('#id_day').val('{{ today|date:'Y-m-d' }}');
+											$('#id_amount').focus();
+											return false;
+										});
+									</script>
+								{% endif %}
+							</div>
 						</div>
-						<div class="controls">
-							{{ field }}
-							{% if field.auto_id == 'id_day' %}
-								<a id="date_today" style="cursor: pointer;">today</a>
-								<script>
-									$('#date_today').click(function() {
-										$('#id_day').val('{{ today|date:'Y-m-d' }}');
-										$('#id_amount').focus();
-										return false;
-									});
-								</script>
-							{% endif %}
-							<div class="help-inline">{{ field.help_text|lower }}</div>
-							<div class="help-inline">{{ field.errors|lower }}</div>
+					{% endfor %}
+
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<button class="btn btn-primary" name="_add_account" value="_add_account" type="submit">save</button>
 						</div>
 					</div>
-				</div>
-			{% endfor %}
-			<div class="form-row">
-				<div>
-					<div class="control-label"></div>
-					<div class="controls">
-						<button class="btn btn-primary" name="_entry_form" value="_entry_form" type="submit">save</button>
-					</div>
-				</div>
+				</form>
 			</div>
 		</div>
-	</form>
+	</div>
 </div>
 {% endblock%}

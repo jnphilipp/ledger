@@ -12,7 +12,7 @@ class AccountForm(autocomplete_light.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(AccountForm, self).__init__(*args, **kwargs)
-		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
+		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
 class CategoryForm(forms.ModelForm):
 	class Meta:
@@ -21,7 +21,7 @@ class CategoryForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(CategoryForm, self).__init__(*args, **kwargs)
-		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
+		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
 class EntryForm(autocomplete_light.ModelForm):
 	class Meta:
@@ -30,9 +30,9 @@ class EntryForm(autocomplete_light.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(EntryForm, self).__init__(*args, **kwargs)
-		self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off'})
-		self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd'})
-		self.fields['amount'].widget = forms.NumberInput(attrs={'step':'any', 'autocomplete':'off'})
+		self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+		self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'})
+		self.fields['amount'].widget = forms.NumberInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control'})
 
 class TagForm(forms.ModelForm):
 	class Meta:
@@ -41,7 +41,7 @@ class TagForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(TagForm, self).__init__(*args, **kwargs)
-		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
+		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
 class UnitForm(forms.ModelForm):
 	class Meta:
@@ -50,5 +50,5 @@ class UnitForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(UnitForm, self).__init__(*args, **kwargs)
-		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off'})
-		self.fields['symbol'].widget = forms.TextInput(attrs={'autocomplete':'off'})
+		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+		self.fields['symbol'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
