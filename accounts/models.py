@@ -1,8 +1,12 @@
+from app.models import Ledger
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
 
 class TextFieldSingleLine(models.TextField):
+	pass
+
+class ReverseManyToManyField(models.ManyToManyField):
 	pass
 
 class Unit(models.Model):
@@ -87,6 +91,7 @@ class Account(models.Model):
 	slug = models.SlugField(unique=True)
 	balance = models.FloatField(default=0)
 	unit = models.ForeignKey(Unit)
+	ledgers = models.ManyToManyField(Ledger, blank=True, through=Ledger.accounts.through)
 
 	def get_absolute_url(self):
 		return reverse('account', args=[self.slug])

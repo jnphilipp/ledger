@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
                 ('tags', models.ManyToManyField(blank=True, related_name='entries', to='accounts.Tag', null=True)),
             ],
             options={
+                'verbose_name_plural': 'Entries',
                 'ordering': ('account', 'serial_number'),
             },
             bases=(models.Model,),
