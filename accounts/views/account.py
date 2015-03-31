@@ -78,7 +78,7 @@ def add_account(request):
 		if form.is_valid():
 			unit = form.cleaned_data['unit']
 			account = Account.objects.create(name=form.cleaned_data['name'], unit=unit)
-			messages.add_message(request, messages.SUCCESS, 'The account %s has successfully been created.' % account.name)
+			messages.add_message(request, messages.SUCCESS, 'the account %s was successfully created.' % account.name)
 			return redirect('account', slug=account.slug)
 		else:
 			return render(request, 'ledger/accounts/account/add.html', locals())
