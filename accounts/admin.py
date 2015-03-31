@@ -6,7 +6,7 @@ import autocomplete_light
 
 class AccountAdmin(admin.ModelAdmin):
 	list_display = ('name', 'balance', 'unit', 'updated_at')
-	list_filter = ('unit',)
+	list_filter = ('unit', 'ledger')
 	readonly_fields = ('slug',)
 	search_fields = ('name', 'unit__name')
 
@@ -15,8 +15,10 @@ class AccountAdmin(admin.ModelAdmin):
 	}
 
 	fieldsets = [
-		(None, {'fields': ['slug', 'name', 'balance', 'unit']}),
+		(None, {'fields': ['ledgers', 'slug', 'name', 'balance', 'unit']}),
 	]
+
+	filter_horizontal = ('ledgers',)
 
 class CategoryAdmin(admin.ModelAdmin):
 	list_display = ('name', 'updated_at')
