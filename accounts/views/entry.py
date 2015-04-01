@@ -1,5 +1,6 @@
 from accounts.forms import EntryForm
 from accounts.models import Account, Entry
+from accounts.templatetags.accounts_tags import floatdot
 from datetime import date
 from django.contrib import messages
 from django.db.models import Q
@@ -18,6 +19,7 @@ def add(request, slug):
 			form.instance.account = account
 			entry = form.save()
 
+			messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully created.' % entry.serial_number)
 			response = redirect('account_entries', slug=account.slug)
 			if page: response['Location'] += '?page=%s' % page
 			return response
@@ -40,6 +42,7 @@ def change(request, slug, entry_id):
 			form.instance.account = account
 			entry = form.save()
 
+			messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully updated.' % entry.serial_number)
 			response = redirect('account_entries', slug=account.slug)
 			if page: response['Location'] += '?page=%s' % page
 			return response
@@ -53,6 +56,12 @@ def delete(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
 	entry.delete()
+	messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully deleted.' % entry.serial_number)
+
+	for entry in Entry.objects.filter(account=account).filter(serial_number__gt=entry.serial_number):
+		entry.serial_number -= 1
+		entry.save()
+
 	return redirect('account_entries', slug=account.slug)
 
 def duplicate(request, slug, entry_id):
@@ -63,6 +72,7 @@ def duplicate(request, slug, entry_id):
 	for tag in entry.tags.all():
 		new.tags.add(tag.id)
 	new.save()
+	messages.add_message(request, messages.SUCCESS, 'the entry number %s has been successfully duplicated as entry number %s.' % entry.serial_number, new.serial_number)
 	return redirect('account_entries', slug=account.slug)
 
 @csrf_protect
@@ -83,6 +93,7 @@ def swap(request, slug):
 		e2.serial_number = tmp
 		e2.save()
 
+		messages.add_message(request, messages.SUCCESS, 'the entries %s and %s were successfully swaped.' % (e2.serial_number, e1.serial_number))
 		response = redirect('account_entries', slug=account.slug)
 		if page: response['Location'] += '?page=%s' % page
 		return response
