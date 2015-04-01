@@ -59,15 +59,15 @@ def account_chart(account, year=None, month=None, category=None):
 
 		return (data, library)
 
-def category_chart(category):
-	units = Unit.objects.filter(id__in=set(category.entry_set.values_list('account__unit', flat=True)))
-	months = category.entry_set.dates('day', 'month')
-	years = category.entry_set.dates('day', 'year')
+def category_chart(category, ledger):
+	units = Unit.objects.filter(id__in=set(category.entry_set.filter(account__ledger=ledger).values_list('account__unit', flat=True)))
+	months = category.entry_set.filter(account__ledger=ledger).dates('day', 'month')
+	years = category.entry_set.filter(account__ledger=ledger).dates('day', 'year')
 
 	names = {month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}
-	monthly = {account:{month.strftime('%B %Y'):0 for month in months} for account in Account.objects.filter(id__in=category.entry_set.values_list('account', flat=True))}
-	yearly = {account:{year.strftime('%Y'):0 for year in years} for account in Account.objects.filter(id__in=category.entry_set.values_list('account', flat=True))}
-	for entry in category.entry_set.all().order_by('day'):
+	monthly = {account:{month.strftime('%B %Y'):0 for month in months} for account in Account.objects.filter(ledger=ledger).filter(id__in=category.entry_set.values_list('account', flat=True))}
+	yearly = {account:{year.strftime('%Y'):0 for year in years} for account in Account.objects.filter(ledger=ledger).filter(id__in=category.entry_set.values_list('account', flat=True))}
+	for entry in category.entry_set.filter(account__ledger=ledger).order_by('day'):
 		monthly[entry.account][entry.day.strftime('%B %Y')] = monthly[entry.account][entry.day.strftime('%B %Y')] + entry.amount
 		yearly[entry.account][entry.day.strftime('%Y')] = yearly[entry.account][entry.day.strftime('%Y')] + entry.amount
 
@@ -83,15 +83,15 @@ def category_chart(category):
 
 	return (monthly_data, yearly_data, library)
 
-def tag_chart(tag):
-	units = Unit.objects.filter(id__in=set(tag.entries.values_list('account__unit', flat=True)))
-	months = tag.entries.dates('day', 'month')
-	years = tag.entries.dates('day', 'year')
+def tag_chart(tag, ledger):
+	units = Unit.objects.filter(id__in=set(tag.entries.filter(account__ledger=ledger).values_list('account__unit', flat=True)))
+	months = tag.entries.filter(account__ledger=ledger).dates('day', 'month')
+	years = tag.entries.filter(account__ledger=ledger).dates('day', 'year')
 
 	names = {month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}
-	monthly = {account:{month.strftime('%B %Y'):0 for month in months} for account in Account.objects.filter(id__in=tag.entries.values_list('account', flat=True))}
-	yearly = {account:{year.strftime('%Y'):0 for year in years} for account in Account.objects.filter(id__in=tag.entries.values_list('account', flat=True))}
-	for entry in tag.entries.all().order_by('day'):
+	monthly = {account:{month.strftime('%B %Y'):0 for month in months} for account in Account.objects.filter(ledger=ledger).filter(id__in=tag.entries.values_list('account', flat=True))}
+	yearly = {account:{year.strftime('%Y'):0 for year in years} for account in Account.objects.filter(ledger=ledger).filter(id__in=tag.entries.values_list('account', flat=True))}
+	for entry in tag.entries.filter(account__ledger=ledger).order_by('day'):
 		monthly[entry.account][entry.day.strftime('%B %Y')] = monthly[entry.account][entry.day.strftime('%B %Y')] + entry.amount
 		yearly[entry.account][entry.day.strftime('%Y')] = yearly[entry.account][entry.day.strftime('%Y')] + entry.amount
 

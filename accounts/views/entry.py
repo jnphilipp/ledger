@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 
 @csrf_protect
 def add(request, slug):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	page = request.GET.get('page')
 	today = date.today()
 
@@ -29,7 +29,7 @@ def add(request, slug):
 
 @csrf_protect
 def change(request, slug, entry_id):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
 	page = request.GET.get('page')
 	today = date.today()
@@ -50,13 +50,13 @@ def change(request, slug, entry_id):
 		return render(request, 'ledger/accounts/entry/form.html', locals())
 
 def delete(request, slug, entry_id):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
 	entry.delete()
 	return redirect('account_entries', slug=account.slug)
 
 def duplicate(request, slug, entry_id):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
 
 	new = Entry.objects.create(account=account, day=date.today(), amount=entry.amount, category=entry.category, additional=entry.additional)
@@ -67,7 +67,7 @@ def duplicate(request, slug, entry_id):
 
 @csrf_protect
 def swap(request, slug):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	page = request.GET.get('page')
 
 	if request.method == 'POST':

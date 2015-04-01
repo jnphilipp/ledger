@@ -1,6 +1,7 @@
 from accounts.charts import account_chart
 from accounts.forms import AccountForm
 from accounts.models import Category, Entry, Account, Unit
+from app.models import Ledger
 from collections import OrderedDict
 from datetime import date
 from django.contrib import messages
@@ -12,11 +13,11 @@ from django.views.decorators.csrf import csrf_protect
 
 @login_required(login_url='/login/')
 def dashboard(request):
-	accounts = Account.objects.all()
+	accounts = Account.objects.filter(ledger__user=request.user)
 	return render(request, 'ledger/accounts/dashboard/dashboard.html', locals())
 
 def account(request, slug):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entries = account.entry_set.all().reverse()[:5]
 
 	cs = Entry.objects.filter(account=account).values('category__name').annotate(count=Count('category')).order_by('category__name')
@@ -38,12 +39,12 @@ def account(request, slug):
 	return render(request, 'ledger/accounts/account/account.html', locals())
 
 def entries(request, slug):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entries = account.entry_set.all().reverse()
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 
 def statistics(request, slug):
-	account = get_object_or_404(Account, slug=slug)
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	year = request.GET.get('year')
 	month = request.GET.get('month')
 	category = get_object_or_404(Category, slug=request.GET.get('category')) if request.GET.get('category') else None
@@ -78,6 +79,8 @@ def add_account(request):
 		if form.is_valid():
 			unit = form.cleaned_data['unit']
 			account = Account.objects.create(name=form.cleaned_data['name'], unit=unit)
+			ledger = get_object_or_404(Ledger, user=request.user)
+			ledger.accounts.add(account)
 			messages.add_message(request, messages.SUCCESS, 'the account %s was successfully created.' % account.name)
 			return redirect('account', slug=account.slug)
 		else:

@@ -1,9 +1,10 @@
 from accounts.charts import statistics_chart
 from accounts.models import Category, Entry, Account, Unit
+from app.models import Ledger
 from collections import OrderedDict
 from datetime import date
 from django.db.models import Count, Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 def statistics(request):
 	unit_slug = request.GET.get('unit')
@@ -12,7 +13,8 @@ def statistics(request):
 	if year and month:
 		month_name = date(year=int(year), month=int(month), day=1).strftime('%B').lower()
 
-	units = Unit.objects.filter(slug=unit_slug) if unit_slug else Unit.objects.all()
+	ledger = get_object_or_404(Ledger, user=request.user)
+	units = Unit.objects.filter(account__ledger=ledger).filter(slug=unit_slug) if unit_slug else Unit.objects.filter(account__ledger=ledger)
 	datas = {}
 	libraries = {}
 	for unit in units:
