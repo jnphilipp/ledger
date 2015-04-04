@@ -8,7 +8,7 @@ import autocomplete_light
 class AccountForm(autocomplete_light.ModelForm):
 	class Meta:
 		model = Account
-		fields = ('name','unit')
+		fields = ('name', 'category', 'unit')
 
 	def __init__(self, *args, **kwargs):
 		super(AccountForm, self).__init__(*args, **kwargs)

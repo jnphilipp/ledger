@@ -91,6 +91,7 @@ class Account(models.Model):
 	slug = models.SlugField(unique=True)
 	balance = models.FloatField(default=0)
 	unit = models.ForeignKey(Unit)
+	category = models.OneToOneField(Category, null=True)
 	ledgers = models.ManyToManyField(Ledger, blank=True, through=Ledger.accounts.through)
 
 	def get_absolute_url(self):
