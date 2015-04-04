@@ -3,7 +3,7 @@ from accounts.models import Category, Entry, Account, Unit
 from app.models import Ledger
 from collections import OrderedDict
 from datetime import date
-from django.db.models import Count, Q
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 
 @login_required(login_url='/login/')

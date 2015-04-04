@@ -3,6 +3,7 @@ from accounts.models import Account, Entry
 from accounts.templatetags.accounts_tags import floatdot
 from datetime import date
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect

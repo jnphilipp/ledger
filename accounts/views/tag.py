@@ -3,6 +3,7 @@ from accounts.models import Tag, Unit
 from app.models import Ledger
 from collections import OrderedDict
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render

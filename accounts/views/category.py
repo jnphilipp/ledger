@@ -2,6 +2,7 @@ from accounts.charts import category_chart
 from accounts.models import Category, Unit
 from app.models import Ledger
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
