@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
+@login_required(login_url='/login/')
 @csrf_protect
 def add(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
@@ -29,6 +30,7 @@ def add(request, slug):
 		form = EntryForm()
 		return render(request, 'ledger/accounts/entry/form.html', locals())
 
+@login_required(login_url='/login/')
 @csrf_protect
 def change(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
@@ -52,6 +54,7 @@ def change(request, slug, entry_id):
 		form = EntryForm(instance=entry)
 		return render(request, 'ledger/accounts/entry/form.html', locals())
 
+@login_required(login_url='/login/')
 def delete(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
@@ -64,6 +67,7 @@ def delete(request, slug, entry_id):
 
 	return redirect('account_entries', slug=account.slug)
 
+@login_required(login_url='/login/')
 def duplicate(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
@@ -75,6 +79,7 @@ def duplicate(request, slug, entry_id):
 	messages.add_message(request, messages.SUCCESS, 'the entry number %s has been successfully duplicated as entry number %s.' % entry.serial_number, new.serial_number)
 	return redirect('account_entries', slug=account.slug)
 
+@login_required(login_url='/login/')
 @csrf_protect
 def swap(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)

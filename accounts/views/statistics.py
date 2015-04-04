@@ -6,6 +6,7 @@ from datetime import date
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, render
 
+@login_required(login_url='/login/')
 def statistics(request):
 	unit_slug = request.GET.get('unit')
 	year = request.GET.get('year')
