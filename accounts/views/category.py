@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 
 def categories(request):
 	ledger = get_object_or_404(Ledger, user=request.user)
-	categories = Category.objects.filter(entry__account__ledger=ledger).extra(select={'lname':'lower(accounts_category.name)'}).order_by('lname')
+	categories = Category.objects.filter(entry__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_category.name)'}).order_by('lname')
 	return render(request, 'ledger/accounts/category/categories.html', locals())
 
 def category(request, slug):

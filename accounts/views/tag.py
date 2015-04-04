@@ -11,7 +11,7 @@ from json import dumps
 
 def tags(request):
 	ledger = get_object_or_404(Ledger, user=request.user)
-	tags = Tag.objects.filter(entries__account__ledger=ledger).extra(select={'lname':'lower(accounts_tag.name)'}).order_by('lname')
+	tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_tag.name)'}).order_by('lname')
 	return render(request, 'ledger/accounts/tag/tags.html', locals())
 
 def tag(request, slug):

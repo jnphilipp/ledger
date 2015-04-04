@@ -14,7 +14,7 @@ def statistics(request):
 		month_name = date(year=int(year), month=int(month), day=1).strftime('%B').lower()
 
 	ledger = get_object_or_404(Ledger, user=request.user)
-	units = Unit.objects.filter(account__ledger=ledger).filter(slug=unit_slug) if unit_slug else Unit.objects.filter(account__ledger=ledger)
+	units = Unit.objects.filter(account__ledger=ledger).distinct().filter(slug=unit_slug) if unit_slug else Unit.objects.filter(account__ledger=ledger).distinct()
 	datas = {}
 	libraries = {}
 	for unit in units:
