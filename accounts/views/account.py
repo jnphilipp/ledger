@@ -16,6 +16,7 @@ def dashboard(request):
 	accounts = Account.objects.filter(ledger__user=request.user)
 	return render(request, 'ledger/accounts/dashboard/dashboard.html', locals())
 
+@login_required(login_url='/login/')
 def account(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entries = account.entry_set.all().reverse()[:5]
@@ -38,11 +39,13 @@ def account(request, slug):
 
 	return render(request, 'ledger/accounts/account/account.html', locals())
 
+@login_required(login_url='/login/')
 def entries(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entries = account.entry_set.all().reverse()
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 
+@login_required(login_url='/login/')
 def statistics(request, slug):
 	ledger = get_object_or_404(Ledger, user=request.user)
 	account = get_object_or_404(Account, slug=slug, ledger=ledger)
@@ -73,6 +76,7 @@ def statistics(request, slug):
 
 	return render(request, 'ledger/accounts/account/statistics.html', locals())
 
+@login_required(login_url='/login/')
 @csrf_protect
 def add(request):
 	if request.method == 'POST':

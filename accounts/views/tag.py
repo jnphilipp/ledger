@@ -9,11 +9,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
 
+@login_required(login_url='/login/')
 def tags(request):
 	ledger = get_object_or_404(Ledger, user=request.user)
 	tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_tag.name)'}).order_by('lname')
 	return render(request, 'ledger/accounts/tag/tags.html', locals())
 
+@login_required(login_url='/login/')
 def tag(request, slug):
 	ledger = get_object_or_404(Ledger, user=request.user)
 	tag = get_object_or_404(Tag, slug=slug)
@@ -22,6 +24,7 @@ def tag(request, slug):
 	monthly_data, yearly_data, library = tag_chart(tag, ledger)
 	return render(request, 'ledger/accounts/tag/tag.html', locals())
 
+@login_required(login_url='/login/')
 def entries(request, slug):
 	ledger = get_object_or_404(Ledger, user=request.user)
 	tag = get_object_or_404(Tag, slug=slug)
