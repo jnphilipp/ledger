@@ -13,8 +13,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 	url(r'^$', 'accounts.views.account.dashboard', name='dashboard'),
-	url(r'^accounts/account/add/$', 'accounts.views.account.add_account', name='add_account'),
+	url(r'^accounts/account/add/$', 'accounts.views.account.add', name='account_add'),
 	url(r'^accounts/account/(?P<slug>[\w-]+)/$', 'accounts.views.account.account', name='account'),
+	url(r'^accounts/account/(?P<slug>[\w-]+)/edit/$', 'accounts.views.account.edit', name='account_edit'),
+	url(r'^accounts/account/(?P<slug>[\w-]+)/delete/$', 'accounts.views.account.delete', name='account_delete'),
 	url(r'^accounts/account/(?P<slug>[\w-]+)/entries/$', 'accounts.views.account.entries', name='account_entries'),
 	url(r'^accounts/account/(?P<slug>[\w-]+)/entries/add/$', 'accounts.views.entry.add', name='entry_add'),
 	url(r'^accounts/account/(?P<slug>[\w-]+)/entries/swap/$', 'accounts.views.entry.swap', name='entry_swap'),

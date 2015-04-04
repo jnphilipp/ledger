@@ -12,6 +12,15 @@
 {% endblock %}
 
 {% block content %}
+<div class="row">
+	<div class="col-md-3"><h1>{{ account.name|lower }}</h1></div>
+	<div class="col-md-2 col-md-offset-7">
+		<h1>
+			<a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
+			<a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+		</h1>
+	</div>
+</div>
 <div class="shape fullshape">
 	<div class="title"><a href="{% url 'account_entries' account.slug %}">entries</a></div>
 	<div class="content">
@@ -21,7 +30,7 @@
 					<b>balance:</b> {{ account.balance|colorfy:account.unit }}
 				</div>
 				<div class="col-md-1 col-md-offset-9">
-						<a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="buttpn">add entry</a>
+						<a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add entry</a>
 				</div>
 			</div>
 			<div class="row" style="margin-top: 10px;">

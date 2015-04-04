@@ -73,7 +73,7 @@ def statistics(request, slug):
 	return render(request, 'ledger/accounts/account/statistics.html', locals())
 
 @csrf_protect
-def add_account(request):
+def add(request):
 	if request.method == 'POST':
 		form = AccountForm(request.POST)
 		if form.is_valid():
@@ -81,10 +81,34 @@ def add_account(request):
 			account = Account.objects.create(name=form.cleaned_data['name'], unit=unit)
 			ledger = get_object_or_404(Ledger, user=request.user)
 			ledger.accounts.add(account)
-			messages.add_message(request, messages.SUCCESS, 'the account %s was successfully created.' % account.name)
+			messages.add_message(request, messages.SUCCESS, 'the account %s was successfully created.' % account.name.lower())
 			return redirect('account', slug=account.slug)
 		else:
-			return render(request, 'ledger/accounts/account/add.html', locals())
+			return render(request, 'ledger/accounts/account/form.html', locals())
 	else:
 		form = AccountForm()
-		return render(request, 'ledger/accounts/account/add.html', locals())
+		return render(request, 'ledger/accounts/account/form.html', locals())
+
+@csrf_protect
+def edit(request, slug):
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+
+	if request.method == 'POST':
+		form = AccountForm(instance=account, data=request.POST)
+		if form.is_valid():
+			account = form.save()
+
+			messages.add_message(request, messages.SUCCESS, 'the account %s was successfully updated.' % account.name.lower())
+			return redirect('account', slug=account.slug)
+		else:
+			return render(request, 'ledger/accounts/account/form.html', locals())
+	else:
+		form = AccountForm(instance=account)
+		return render(request, 'ledger/accounts/account/form.html', locals())
+
+def delete(request, slug):
+	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+	account.delete()
+	messages.add_message(request, messages.SUCCESS, 'the account %s was successfully deleted.' % account.name.lower())
+
+	return redirect('dashboard')
