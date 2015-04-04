@@ -18,7 +18,7 @@ def statistics(request):
 	datas = {}
 	libraries = {}
 	for unit in units:
-		data, library = statistics_chart(unit, year=year, month=month)
+		data, library = statistics_chart(unit, ledger, year=year, month=month)
 		datas[unit] = data
 		libraries[unit] = library
 

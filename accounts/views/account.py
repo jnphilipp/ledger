@@ -44,7 +44,8 @@ def entries(request, slug):
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 
 def statistics(request, slug):
-	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+	ledger = get_object_or_404(Ledger, user=request.user)
+	account = get_object_or_404(Account, slug=slug, ledger=ledger)
 	year = request.GET.get('year')
 	month = request.GET.get('month')
 	category = get_object_or_404(Category, slug=request.GET.get('category')) if request.GET.get('category') else None
