@@ -95,6 +95,7 @@ def add(request):
 		form = AccountForm()
 		return render(request, 'ledger/accounts/account/form.html', locals())
 
+@login_required(login_url='/login/')
 @csrf_protect
 def edit(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
@@ -110,8 +111,12 @@ def edit(request, slug):
 		form = AccountForm(instance=account)
 		return render(request, 'ledger/accounts/account/form.html', locals())
 
+@login_required(login_url='/login/')
+@csrf_protect
 def delete(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
-	account.delete()
-	messages.add_message(request, messages.SUCCESS, 'the account %s was successfully deleted.' % account.name.lower())
-	return redirect('dashboard')
+	if request.method == 'POST':
+		account.delete()
+		messages.add_message(request, messages.SUCCESS, 'the account %s was successfully deleted.' % account.name.lower())
+		return redirect('dashboard')
+	return render(request, 'ledger/accounts/account/delete.html', locals())

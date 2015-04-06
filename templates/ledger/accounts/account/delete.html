@@ -1,0 +1,42 @@
+{% extends "ledger/base.html" %}
+{% load accounts_tags bootstrap3 %}
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">dashboard</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li class="active">delete</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<div class="shape shapeform">
+			<div class="title">delete {{ account.name|lower }}</div>
+			<div class="content">
+				<form action="{% url 'account_delete' account.slug %}" method="post" class="form">
+					{% csrf_token %}
+					<div class="alert alert-danger" role="alert">
+						<h5><b>confirm deletion</b></h5>
+						<p>are you sure you want to delete this account? all of the following objects and their related items will be deleted:</p>
+
+						<ul>
+							<li>
+								account: <a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
+								{% if account.entry_set %}
+									<ul>
+										{% for entry in account.entry_set.all %}
+											<li>entry: <a href="{% url 'account_entries' account.slug %}">{{ entry.day|date:'D., d. F Y' }} - {{ entry.category.name|lower }}</a></li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</li>
+						</ul>
+						<br/>
+						<button class="btn btn-danger" name="_delete_account" value="_delete_account" type="submit">yes, i'm sure</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock%}

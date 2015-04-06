@@ -56,17 +56,18 @@ def change(request, slug, entry_id):
 		return render(request, 'ledger/accounts/entry/form.html', locals())
 
 @login_required(login_url='/login/')
+@csrf_protect
 def delete(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
-	entry.delete()
-	messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully deleted.' % entry.serial_number)
-
-	for entry in Entry.objects.filter(account=account).filter(serial_number__gt=entry.serial_number):
-		entry.serial_number -= 1
-		entry.save()
-
-	return redirect('account_entries', slug=account.slug)
+	if request.method == 'POST':
+		entry.delete()
+		messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully deleted.' % entry.serial_number)
+		for entry in Entry.objects.filter(account=account).filter(serial_number__gt=entry.serial_number):
+			entry.serial_number -= 1
+			entry.save()
+		return redirect('account_entries', slug=account.slug)
+	return render(request, 'ledger/accounts/entry/delete.html', locals())
 
 @login_required(login_url='/login/')
 def duplicate(request, slug, entry_id):
@@ -77,7 +78,7 @@ def duplicate(request, slug, entry_id):
 	for tag in entry.tags.all():
 		new.tags.add(tag.id)
 	new.save()
-	messages.add_message(request, messages.SUCCESS, 'the entry number %s has been successfully duplicated as entry number %s.' % entry.serial_number, new.serial_number)
+	messages.add_message(request, messages.SUCCESS, 'the entry number %s has been successfully duplicated as entry number %s.' % (entry.serial_number, new.serial_number))
 	return redirect('account_entries', slug=account.slug)
 
 @login_required(login_url='/login/')
