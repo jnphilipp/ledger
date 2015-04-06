@@ -7,16 +7,16 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
+<li><a href="{% url 'dashboard' %}">dashboard</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
 {% if not year %}
 	<li class="active">statistics</li>
 {% else %}
-	<li><a href="{% url 'account_statistics' account.slug %}">statistics</a><span class="divider"></span></li>
+	<li><a href="{% url 'account_statistics' account.slug %}">statistics</a></li>
 	{% if month %}
-		<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}">{{ year }}</a><span class="divider"></span></li>
+		<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}">{{ year }}</a></li>
 		{% if category %}
-			<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}&amp;month={{ month }}">{{ month_name }}</a><span class="divider"></span></li>
+			<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}&amp;month={{ month }}">{{ month_name }}</a></li>
 			<li class="active">{{ category|lower }}</li>
 		{% else %}
 			<li class="active">{{ month_name }}</li>

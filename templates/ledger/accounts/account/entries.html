@@ -2,8 +2,8 @@
 {% load accounts_tags %}
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a><span class="divider"></span></li>
+<li><a href="{% url 'dashboard' %}">dashboard</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
 <li class="active">entries</li>
 {% endblock %}
 

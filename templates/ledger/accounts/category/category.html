@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-<li><a href="{% url 'categories' %}">categories</a><span class="divider"></span></li>
+<li><a href="{% url 'dashboard' %}">dashboard</a></li>
+<li><a href="{% url 'categories' %}">categories</a></li>
 <li class="active">{{ category.name|lower }}</li>
 {% endblock %}
 

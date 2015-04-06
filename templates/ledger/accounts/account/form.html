@@ -2,8 +2,8 @@
 {% load accounts_tags bootstrap3 %}
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a><span class="divider"></span></li>
-<li>add acoount</li>
+<li><a href="{% url 'dashboard' %}">dashboard</a></li>
+<li>{% if account.id %}{{ account.name|lower }}{% else %}add account{% endif %}</li>
 {% endblock %}
 
 {% block content %}
