@@ -20,9 +20,9 @@
 <div class="row">
 	<div class="col-md-6 col-md-offset-3">
 		<div class="shape shapeform">
-			<div class="title">{% if entry.id %}change entry{% else %}add entry{% endif %}</div>
+			<div class="title">{% if entry.id %}edit entry{% else %}add entry{% endif %}</div>
 			<div class="content">
-				<form action="{% if entry.id %}{% url 'entry_change' account.slug entry.id %}{% else %}{% url 'entry_add' account.slug %}{% endif %}" method="post" class="form-horizontal">
+				<form action="{% if entry.id %}{% url 'entry_edit' account.slug entry.id %}{% else %}{% url 'entry_add' account.slug %}{% endif %}" method="post" class="form-horizontal">
 					{% csrf_token %}
 
 					{% for field in form %}

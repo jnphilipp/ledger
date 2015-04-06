@@ -33,7 +33,7 @@ def add(request, slug):
 
 @login_required(login_url='/login/')
 @csrf_protect
-def change(request, slug, entry_id):
+def edit(request, slug, entry_id):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 	entry = get_object_or_404(Entry, id=entry_id)
 	page = request.GET.get('page')

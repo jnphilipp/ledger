@@ -30,7 +30,7 @@
 				</td>
 				{% if options %}
 					<td>
-						<a href="{% url 'entry_change' account.slug entry.id %}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
+						<a href="{% url 'entry_edit' account.slug entry.id %}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
 						<a href="{% url 'entry_duplicate' account.slug entry.id %}" title="duplicate entry"><i class="ui-icon ui-icon-copy" style="display: inline-block;"></i></a>
 						<a href="{% url 'entry_delete' account.slug entry.id %}" title="delete entry"><i class="ui-icon ui-icon-trash" style="display: inline-block;"></i></a>
 						{% with entries|previous:forloop.counter0 as previous %}
