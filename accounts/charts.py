@@ -16,7 +16,7 @@ def account_chart(account, year=None, month=None, category=None):
 		return (data, library)
 	elif year and month:
 		categories = {}
-		for category in Category.objects.filter(id__in=account.entry_set.filter(day__year=year).filter(day__month=month).values_list('category', flat=True)):
+		for category in Category.objects.filter(id__in=account.entry_set.filter(Q(day__year=year) & Q(day__month=month)).values_list('category', flat=True)):
 			categories[category] = 0
 		for entry in account.entry_set.filter(day__year=year).filter(day__month=month).order_by('day'):
 			categories[entry.category] += entry.amount

@@ -24,8 +24,8 @@ def statistics(request):
 		libraries[unit] = library
 
 	if unit_slug:
-		years = Entry.objects.filter(account__in=Account.objects.filter(unit=units.first())).dates('day', 'year')
+		years = Entry.objects.filter(account__in=ledger.accounts.filter(unit=units.first())).dates('day', 'year')
 		if year:
-			months = Entry.objects.filter(account__in=Account.objects.filter(unit=units.first())).filter(day__year=year).dates('day', 'month')
+			months = Entry.objects.filter(account__in=ledger.accounts.filter(unit=units.first())).filter(day__year=year).dates('day', 'month')
 
 	return render(request, 'ledger/accounts/statistics/statistics.html', locals())
