@@ -6,9 +6,9 @@
 			<th></th>
 			<th colspan="2">day</th>
 			<th>amount</th>
-			<th>category</th>
+			<th><a href="{% url 'categories' %}">category</a></th>
 			<th>additional</th>
-			<th>tags</th>
+			<th><a href="{% url 'tags' %}">tags</a></th>
 			{% if options %}
 				<th></th>
 			{% endif %}
