@@ -13,8 +13,17 @@
 {% endblock %}
 
 {% block content %}
+<div class="row">
+	<div class="col-md-10"><h1>{{ tag.name|lower }}</h1></div>
+	<div class="col-md-2">
+		<h1>
+			<a href="{% url 'tag_edit' tag.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
+			<a href="{% url 'tag_delete' tag.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+		</h1>
+	</div>
+</div>
 <div class="shape fullshape">
-	<div class="title"><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></div>
+	<div class="title">{{ tag.name|lower }}</div>
 	<div class="content">
 		<div class="entries">
 			<div class="row">
