@@ -1,4 +1,5 @@
 from accounts.charts import category_chart
+from accounts.forms import CategoryForm
 from accounts.models import Category, Unit
 from app.models import Ledger
 from django.contrib import messages
@@ -32,3 +33,29 @@ def entries(request, slug):
 	entries = category.entry_set.filter(account__ledger=ledger).order_by('day').reverse()
 
 	return render(request, 'ledger/accounts/category/entries.html', locals())
+
+@login_required(login_url='/login/')
+@csrf_protect
+def edit(request, slug):
+	category = get_object_or_404(Category, slug=slug)
+	if request.method == 'POST':
+		form = CategoryForm(instance=category, data=request.POST)
+		if form.is_valid():
+			category = form.save()
+			messages.add_message(request, messages.SUCCESS, 'the category %s was successfully updated.' % category.name.lower())
+			return redirect('category', slug=category.slug)
+		else:
+			return render(request, 'ledger/accounts/category/form.html', locals())
+	else:
+		form = CategoryForm(instance=category)
+		return render(request, 'ledger/accounts/category/form.html', locals())
+
+@login_required(login_url='/login/')
+@csrf_protect
+def delete(request, slug):
+	category = get_object_or_404(Category, slug=slug)
+	if request.method == 'POST':
+		category.delete()
+		messages.add_message(request, messages.SUCCESS, 'the category %s was successfully deleted.' % category.name.lower())
+		return redirect('categories')
+	return render(request, 'ledger/accounts/category/delete.html', locals())
