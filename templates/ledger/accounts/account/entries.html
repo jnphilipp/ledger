@@ -12,9 +12,24 @@
 	<div class="title">entries</div>
 	<div class="content">
 		<div class="entries">
-			<div class="row">
-				<div class="col-md-2"><b>balance:</b> {{ account.balance|colorfy:account.unit }}</div>
-				<div class="col-md-1 col-md-offset-9"><a class="btn btn-primary" href="{% url 'entry_add' account.slug %}">add entry</a></div>
+			<div class="row" style="margin-top: 5px;">
+				<div class="col-md-4"><b>balance:</b> {{ account.balance|colorfy:account.unit }}</div>
+				<div class="col-md-6">
+					<form method="post" class="form-inline">
+						{% csrf_token %}
+
+						{% for field in form %}
+							<div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
+								{{ field }}
+								<span class="help-block">{{ field.help_text|lower }}</span>
+								<span class="help-block">{{ field.errors|lower }}</span>
+							</div>
+						{% endfor %}
+
+						<button class="btn btn-success" type="submit" style="margin-top: -10px;">filter</button>
+					</form>
+				</div>
+				<div class="col-md-2"><a class="btn btn-primary" href="{% url 'entry_add' account.slug %}">add entry</a></div>
 			</div>
 			<div class="row" style="margin-top: 10px;">
 				<div class="col-md-12">

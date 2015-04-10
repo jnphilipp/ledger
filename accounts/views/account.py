@@ -1,5 +1,5 @@
 from accounts.charts import account_chart
-from accounts.forms import AccountForm
+from accounts.forms import AccountForm, FilterForm
 from accounts.models import Category, Entry, Account, Unit
 from app.models import Ledger
 from collections import OrderedDict
@@ -40,9 +40,21 @@ def account(request, slug):
 	return render(request, 'ledger/accounts/account/account.html', locals())
 
 @login_required(login_url='/login/')
+@csrf_protect
 def entries(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
-	entries = account.entry_set.all().reverse()
+
+	if request.method == 'POST':
+		form = FilterForm(request.POST)
+		entries = account.entry_set.all().reverse()
+		if form.is_valid():
+			if form.cleaned_data['category']:
+				entries = entries.filter(category__id=form.cleaned_data['category'])
+			if form.cleaned_data['tag']:
+				entries = entries.filter(tags__id=form.cleaned_data['tag'])
+	else:
+		form = FilterForm()
+		entries = account.entry_set.all().reverse()
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 
 @login_required(login_url='/login/')
