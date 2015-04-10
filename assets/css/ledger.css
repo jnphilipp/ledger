@@ -28,7 +28,7 @@ a:active {position: relative;
 /*### account shape ###*/
 
 .shape {display: inline-block;
-	width: 350px;
+	width: 430px;
 	margin: 10px 10px 20px 10px;}
 
 .shape .title {display: inline-block;
@@ -45,7 +45,7 @@ a:active {position: relative;
 
 	height: 0;
 	line-height: 31px;
-	min-width: 200px;
+	min-width: 250px;
 
 	font-size: 12pt;
 	font-weight: bold;
