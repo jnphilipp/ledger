@@ -13,7 +13,7 @@
 </div>
 <div class="row" style="margin-top: 20px;">
 	<div class="col-md-2 col-md-offset-5">
-		<form action="{{ app_path }}" method="post" id="login-form" class="form">
+		<form action="{{ app_path }}{% if gnext %}?next={{ gnext }}{% endif %}" method="post" id="login-form" class="form">
 			{% csrf_token %}
 			{% bootstrap_form form %}
 			{% buttons %}
