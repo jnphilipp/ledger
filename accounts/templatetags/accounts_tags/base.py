@@ -1,3 +1,4 @@
+from datetime import date
 from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
 from accounts.templatetags.accounts_tags import register
@@ -39,6 +40,12 @@ def next(value, arg):
 @register.filter(needs_autoescape=True)
 def colorfy(amount, currency=None, autoescape=None):
 	return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, 2), currency.symbol if currency else ''))
+
+@register.filter(needs_autoescape=True)
+def balance(account, autoescape=None):
+	balance = sum(entry.amount for entry in account.entry_set.filter(day__lte=date.today()))
+	outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()))
+	return mark_safe('%s (outstanding: %s)' % (colorfy(balance, account.unit), colorfy(outstanding, account.unit)))
 
 @register.filter(name='addcss')
 def addcss(field, css):
