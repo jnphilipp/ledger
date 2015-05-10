@@ -29,8 +29,9 @@
 				<div class="col-md-3">
 					<b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
 				</div>
-				<div class="col-md-2 col-md-offset-7 text-right">
+				<div class="col-md-3 col-md-offset-6 text-right">
 						<a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add entry</a>
+						<a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add standing entry</a>
 				</div>
 			</div>
 			<div class="row" style="margin-top: 10px;">
