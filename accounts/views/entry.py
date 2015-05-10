@@ -66,6 +66,7 @@ def delete(request, slug, entry_id):
 		for entry in Entry.objects.filter(account=account).filter(serial_number__gt=entry.serial_number):
 			entry.serial_number -= 1
 			entry.save()
+		account.save()
 		return redirect('account_entries', slug=account.slug)
 	return render(request, 'ledger/accounts/entry/delete.html', locals())
 
