@@ -6,7 +6,8 @@
 	</div>
 	<div class="content">
 		<ul>
-			<li><b>balance:</b> {{ account.balance|colorfy:account.unit }}</li>
+			<li><b>balance:</b> {{ account|balance }}</li>
+			<li><b>outstanding:</b> {{ account|outstanding }}</li>
 			<li><b>entries:</b> {{ account.entry_set.count }}</li>
 			<li><b>last entry:</b> {{ account.entry_set.last.day|date:'D., d. F Y' }}</li>
 		</ul>

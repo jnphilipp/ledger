@@ -13,7 +13,7 @@
 	<div class="content">
 		<div class="entries">
 			<div class="row" style="margin-top: 5px;">
-				<div class="col-md-4"><b>balance:</b> {{ account|balance }}</div>
+				<div class="col-md-4"><b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})</div>
 				<div class="col-md-6">
 					<form method="post" class="form-inline">
 						{% csrf_token %}

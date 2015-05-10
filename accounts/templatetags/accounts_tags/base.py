@@ -44,8 +44,14 @@ def colorfy(amount, currency=None, autoescape=None):
 @register.filter(needs_autoescape=True)
 def balance(account, autoescape=None):
 	balance = sum(entry.amount for entry in account.entry_set.filter(day__lte=date.today()))
+	return colorfy(balance, account.unit)
+	# outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()))
+	# return mark_safe('%s (outstanding: %s)' % (colorfy(balance, account.unit), colorfy(outstanding, account.unit)))
+
+@register.filter(needs_autoescape=True)
+def outstanding(account, autoescape=None):
 	outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()))
-	return mark_safe('%s (outstanding: %s)' % (colorfy(balance, account.unit), colorfy(outstanding, account.unit)))
+	return colorfy(outstanding, account.unit)
 
 @register.filter(name='addcss')
 def addcss(field, css):
