@@ -92,7 +92,9 @@ def tag_chart(tag, ledger):
 	names = {month.strftime('%B %Y'):month.strftime('%Y-%m') for month in months}
 	monthly = {account:{month.strftime('%B %Y'):0 for month in months} for account in Account.objects.filter(ledger=ledger).filter(id__in=tag.entries.values_list('account', flat=True))}
 	yearly = {account:{year.strftime('%Y'):0 for year in years} for account in Account.objects.filter(ledger=ledger).filter(id__in=tag.entries.values_list('account', flat=True))}
+	total = 0
 	for entry in tag.entries.filter(account__ledger=ledger).order_by('day'):
+		total += entry.amount
 		monthly[entry.account][entry.day.strftime('%B %Y')] = monthly[entry.account][entry.day.strftime('%B %Y')] + entry.amount
 		yearly[entry.account][entry.day.strftime('%Y')] = yearly[entry.account][entry.day.strftime('%Y')] + entry.amount
 
@@ -104,7 +106,12 @@ def tag_chart(tag, ledger):
 	for key, value in yearly.items():
 		yearly_data.append({'data':OrderedDict(sorted({k: round(v, 2) for k, v in value.items()}.items(), key=lambda t: t[0])), 'name':key.name})
 
-	library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % units[0].symbol if units.count() == 1 else ''}, 'plotLines':[{'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % units[0].symbol if units.count() == 1 else ''}}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2, 'valueSuffix':units[0].symbol if units.count() == 1 else ''}}
+# 'plotLines':[{'value':1, 'color':'#ff0000', 'width':1, 'zIndex':1}]
+	print(total / len(names))
+	print(total)
+	print(len(names))
+
+	library = {'plotOptions':{'column':{'stacking':'normal'}}, 'xAxis':{'labels':{'rotation':-45}}, 'yAxis':{'stackLabels':{'enabled':True, 'style':{'fontWeight':'bold', 'color':"(Highcharts.theme && Highcharts.theme.textColor) || 'gray'"}, 'format':'{total:.2f} %s' % units[0].symbol if units.count() == 1 else ''}, 'plotLines':[{'value':total / len(names), 'color':'#00ff00', 'width':1, 'zIndex':1}, {'value':0, 'color':'#ff0000', 'width':1, 'zIndex':1}], 'labels':{'format':'{value:.2f} %s' % units[0].symbol if units.count() == 1 else ''}}, 'legend':{'enabled':False}, 'tooltip':{'shared':True, 'valueDecimals':2, 'valueSuffix':units[0].symbol if units.count() == 1 else ''}}
 
 	return (monthly_data, yearly_data, library)
 
