@@ -1,7 +1,8 @@
+from accounts.functions.dates import get_last_date_current_month
+from accounts.templatetags.accounts_tags import register
 from datetime import date
 from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
-from accounts.templatetags.accounts_tags import register
 
 @register.filter
 def floatdot(value, decimal_pos=2):
@@ -45,12 +46,10 @@ def colorfy(amount, currency=None, autoescape=None):
 def balance(account, autoescape=None):
 	balance = sum(entry.amount for entry in account.entry_set.filter(day__lte=date.today()))
 	return colorfy(balance, account.unit)
-	# outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()))
-	# return mark_safe('%s (outstanding: %s)' % (colorfy(balance, account.unit), colorfy(outstanding, account.unit)))
 
 @register.filter(needs_autoescape=True)
 def outstanding(account, autoescape=None):
-	outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()))
+	outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
 	return colorfy(outstanding, account.unit)
 
 @register.filter(name='addcss')
