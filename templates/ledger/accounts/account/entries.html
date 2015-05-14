@@ -21,12 +21,10 @@
 						{% for field in form %}
 							<div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
 								{{ field }}
-								<span class="help-block">{{ field.help_text|lower }}</span>
-								<span class="help-block">{{ field.errors|lower }}</span>
 							</div>
 						{% endfor %}
 
-						<button class="btn btn-success" type="submit" style="margin-top: -10px;">filter</button>
+						<button class="btn btn-success" type="submit">filter</button>
 					</form>
 				</div>
 				<div class="col-md-3 text-right">

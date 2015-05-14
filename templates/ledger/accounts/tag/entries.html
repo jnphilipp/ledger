@@ -14,7 +14,7 @@
 	<div class="content">
 		<div class="entries">
 			<div class="row">
-				<div class="col-md-2"><b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+				<div class="col-md-3"><b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
 			</div>
 			<div class="row" style="margin-top: 10px;">
 				<div class="col-md-12">
