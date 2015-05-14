@@ -36,3 +36,6 @@ class Filter(autocomplete_light.AutocompleteModelBase):
 
 autocomplete_light.register(Category, Filter, attrs={'placeholder': 'category'})
 autocomplete_light.register(Tag, Filter, attrs={'placeholder': 'tag'})
+
+autocomplete_light.register(Category, Filter, name='CategoriesFilter', attrs={'placeholder': 'categories'})
+autocomplete_light.register(Tag, Filter, name='TagsFilter', attrs={'placeholder': 'tags'})
