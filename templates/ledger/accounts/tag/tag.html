@@ -3,7 +3,6 @@
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'js/charts/tag.js' %}"></script>
 <script src="{% static 'chartkick.js' %}"></script>
 {% endblock %}
 
@@ -29,7 +28,6 @@
 		<div class="entries">
 			<div class="row">
 				<div class="col-md-2"><b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-				</div>
 		</div>
 		{% if monthly_data %}
 			{% column_chart monthly_data with library=ml %}

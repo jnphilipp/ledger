@@ -39,7 +39,6 @@ urlpatterns = patterns('',
 	url(r'^accounts/tag/(?P<slug>[\w-]+)/entries/$', 'accounts.views.tag.entries', name='tag_entries'),
 	url(r'^accounts/unit/add_another/$', autocomplete_light.CreateView.as_view(model=Unit, form_class=UnitForm, template_name='ledger/accounts/unit/add_another.html'), name='unit_add_another_create'),
 	url(r'^accounts/statistics/$', 'accounts.views.statistics.statistics', name='statistics'),
-	url(r'^api/charts/tag/$', 'accounts.views.charts.tag', name='chart_tag'),
 
 	url(r'^login/$', 'app.views.llogin', name='login'),
 	url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
