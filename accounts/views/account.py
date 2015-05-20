@@ -1,4 +1,5 @@
 from accounts.charts import account_chart
+from accounts.functions.dates import get_last_date_current_month
 from accounts.forms import AccountForm, FilterForm
 from accounts.models import Category, Entry, Account, Unit
 from app.models import Ledger
@@ -19,7 +20,7 @@ def dashboard(request):
 @login_required(login_url='/login/')
 def account(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
-	entries = account.entry_set.all().reverse()[:5]
+	entries = account.entry_set.filter(day__lt=get_last_date_current_month()).reverse()[:5]
 
 	cs = Entry.objects.filter(account=account).values('category__name').annotate(count=Count('category')).order_by('category__name')
 	categories = {}
@@ -48,13 +49,13 @@ def entries(request, slug):
 		form = FilterForm(request.POST)
 		entries = account.entry_set.all().reverse()
 		if form.is_valid():
-			if form.cleaned_data['category']:
-				entries = entries.filter(category__id=form.cleaned_data['category'])
-			if form.cleaned_data['tag']:
-				entries = entries.filter(tags__id=form.cleaned_data['tag'])
+			if form.cleaned_data['categories']:
+				entries = entries.filter(category__in=form.cleaned_data['categories'])
+			if form.cleaned_data['tags']:
+				entries = entries.filter(tags__in=form.cleaned_data['tags'])
 	else:
 		form = FilterForm()
-		entries = account.entry_set.all().reverse()
+		entries = account.entry_set.filter(day__lt=get_last_date_current_month()).reverse()
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 
 @login_required(login_url='/login/')

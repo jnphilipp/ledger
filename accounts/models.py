@@ -127,7 +127,14 @@ class Entry(models.Model):
 
 	def save(self, *args, **kwargs):
 		if not self.id:
-			self.serial_number = Entry.objects.filter(account=self.account).last().serial_number + 1 if Entry.objects.filter(account=self.account).exists() else 1
+			if Entry.objects.filter(account=self.account).filter(day__lte=self.day).exists():
+				next_serial_number = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last().serial_number + 1
+			else:
+				next_serial_number = 1
+			for entry in Entry.objects.filter(account=self.account).filter(serial_number__gte=next_serial_number).reverse():
+				entry.serial_number += 1
+				entry.save()
+			self.serial_number = next_serial_number
 		super(Entry, self).save()
 		self.account.save()
 

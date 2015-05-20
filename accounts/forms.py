@@ -82,5 +82,5 @@ class UnitForm(forms.ModelForm):
 		self.fields['symbol'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
 class FilterForm(forms.Form):
-	category = autocomplete_light.ChoiceField('CategoryFilter', required=False)
-	tag = autocomplete_light.ChoiceField('TagFilter', required=False)
+	categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
+	tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)

@@ -22,6 +22,9 @@ config.read(BASE_DIR + '/ledger/settings.ini')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config.get('secrets','SECRET_KEY')
+SESSION_COOKIE_SECURE = config.getboolean('secrets','SESSION_COOKIE_SECURE')
+CSRF_COOKIE_SECURE = config.getboolean('secrets','CSRF_COOKIE_SECURE')
+SESSION_EXPIRE_AT_BROWSER_CLOSE = config.getboolean('secrets','SESSION_EXPIRE_AT_BROWSER_CLOSE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config.getboolean('debug','DEBUG')
@@ -31,6 +34,7 @@ ALLOWED_HOSTS = config.get('host','ALLOWED_HOSTS').split()
 ADMINS = tuple(config.items('admins'))
 
 EMAIL_USE_TLS = config.getboolean('host_email','EMAIL_USE_TLS')
+EMAIL_USE_SSL = config.getboolean('host_email','EMAIL_USE_SSL')
 DEFAULT_FROM_EMAIL = config.get('host_email','DEFAULT_FROM_EMAIL')
 SERVER_EMAIL = config.get('host_email','SERVER_EMAIL')
 EMAIL_HOST = config.get('host_email','EMAIL_HOST')
