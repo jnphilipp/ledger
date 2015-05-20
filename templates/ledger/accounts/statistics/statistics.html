@@ -38,10 +38,10 @@
 			{% if unit_slug %}
 				{% if year %}
 					{% if not month %}
-						<p class="entries">show statistics for: {% for month in months %}<a href="?unit={{ unit_slug }}&amp;year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+						<p class="entries">show statistics for: {% for month in months %}<a href="?unit={{ unit_slug }}&amp;year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 					{% endif %}
 				{% else %}
-					<p class="entries">show statistics for: {% for year in years %}<a href="?unit={{ unit_slug }}&amp;year={{ year|date:'Y' }}">{{ year|date:'Y' }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+					<p class="entries">show statistics for: {% for year in years %}<a href="?unit={{ unit_slug }}&amp;year={{ year|date:'Y' }}">{{ year|date:'Y' }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 				{% endif %}
 			{% endif %}
 			{% with data=datas|lookup:unit library=libraries|lookup:unit %}

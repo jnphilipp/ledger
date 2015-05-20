@@ -39,13 +39,13 @@
 			</a></div>
 		<div class="content">
 			{% if not year %}
-				<p class="entries">show statistics for: {% for year in years %}<a href="?year={{ year|date:'Y' }}">{{ year|date:'Y' }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+				<p class="entries">show statistics for: {% for year in years %}<a href="?year={{ year|date:'Y' }}">{{ year|date:'Y' }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 			{% else %}
 				{% if not month %}
-					<p class="entries">show statistics for: {% for month in months %}<a href="?year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+					<p class="entries">show statistics for: {% for month in months %}<a href="?year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 				{% else %}
 					{% if not category %}
-						<p class="entries">show statistics for: {% for category in categories %}<a href="?year={{ year }}&amp;month={{ month }}&amp;category={{ category.slug }}">{{ category|lower }}{% if not forloop.last %}, {% endif %}</a>{% endfor %}</p>
+						<p class="entries">show statistics for: {% for category in categories %}<a href="?year={{ year }}&amp;month={{ month }}&amp;category={{ category.slug }}">{{ category|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 					{% endif %}
 				{% endif %}
 			{% endif %}
