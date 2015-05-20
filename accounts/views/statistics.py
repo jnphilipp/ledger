@@ -20,8 +20,9 @@ def statistics(request):
 	libraries = {}
 	for unit in units:
 		data, library = statistics_chart(unit, ledger, year=year, month=month)
-		datas[unit] = data
-		libraries[unit] = library
+		if data:
+			datas[unit] = data
+			libraries[unit] = library
 
 	if unit_slug:
 		years = Entry.objects.filter(account__in=ledger.accounts.filter(unit=units.first())).dates('day', 'year')

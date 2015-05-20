@@ -28,27 +28,29 @@
 
 {% block content %}
 {% for unit in units %}
-	<div class="shape fullshape">
-		<div class="title">
-			<a href="{% url 'statistics' %}?unit={{ unit.slug }}">
-				{% if year %}{% if month %}{{ month_name }} {% endif %}{{ year }} - {% endif %}{{ unit|lower }}
-			</a>
-		</div>
-		<div class="content">
-			{% if unit_slug %}
-				{% if year %}
-					{% if not month %}
-						<p class="entries">show statistics for: {% for month in months %}<a href="?unit={{ unit_slug }}&amp;year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+	{% if datas|lookup:unit != None %}
+		<div class="shape fullshape">
+			<div class="title">
+				<a href="{% url 'statistics' %}?unit={{ unit.slug }}">
+					{% if year %}{% if month %}{{ month_name }} {% endif %}{{ year }} - {% endif %}{{ unit|lower }}
+				</a>
+			</div>
+			<div class="content">
+				{% if unit_slug %}
+					{% if year %}
+						{% if not month %}
+							<p class="entries">show statistics for: {% for month in months %}<a href="?unit={{ unit_slug }}&amp;year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+						{% endif %}
+					{% else %}
+						<p class="entries">show statistics for: {% for year in years %}<a href="?unit={{ unit_slug }}&amp;year={{ year|date:'Y' }}">{{ year|date:'Y' }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 					{% endif %}
-				{% else %}
-					<p class="entries">show statistics for: {% for year in years %}<a href="?unit={{ unit_slug }}&amp;year={{ year|date:'Y' }}">{{ year|date:'Y' }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
 				{% endif %}
-			{% endif %}
-			{% with data=datas|lookup:unit library=libraries|lookup:unit %}
-				{% column_chart data with height="800px" library=library %}
-			{% endwith %}
+				{% with data=datas|lookup:unit library=libraries|lookup:unit %}
+					{% column_chart data with height="800px" library=library %}
+				{% endwith %}
+			</div>
 		</div>
-	</div>
+	{% endif %}
 {% empty %}
 	<div class="shape category">
 		<div class="title"><a href="{% url 'statistics' %}">statistics</a></div>

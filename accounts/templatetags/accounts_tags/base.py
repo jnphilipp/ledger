@@ -22,7 +22,7 @@ def increment(value):
 
 @register.filter
 def lookup(d, key):
-	return d[key]
+	return d[key] if key in d else None
 
 @register.filter
 def previous(value, arg):
