@@ -23,7 +23,7 @@ def tag(request, slug):
 	tag = get_object_or_404(Tag, slug=slug)
 	totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in tag.entries.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(tag.entries.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
 	entries = tag.entries.filter(account__ledger=ledger).order_by('day').reverse()[:5]
-	monthly_data, yearly_data, library = tag_chart(tag, ledger)
+	monthly_data, yearly_data, ml, yl = tag_chart(tag, ledger)
 	return render(request, 'ledger/accounts/tag/tag.html', locals())
 
 @login_required(login_url='/login/')
