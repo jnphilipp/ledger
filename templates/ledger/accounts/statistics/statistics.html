@@ -8,18 +8,23 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">dashboard</a></li>
-{% if unit_slug %}
+{% if chart_type %}
 	<li><a href="{% url 'statistics' %}">statistics</a></li>
-	{% if year %}
-		<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}">{{ units.first|lower }}</a></li>
-		{% if month %}
-			<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;year={{ year }}">{{ year }}</a></li>
-			<li class="active">{{ month_name }}</li>
+	{% if unit_slug %}
+		<li><a href="{% url 'statistics' %}?type={{ chart_type }}">{{ chart_type }}</a></li>
+		{% if year %}
+			<li><a href="{% url 'statistics' %}?type={{ chart_type }}&amp;unit={{ unit_slug }}">{{ unit.name|lower }}</a></li>
+			{% if month %}
+				<li><a href="{% url 'statistics' %}?type={{ chart_type }}&amp;unit={{ unit_slug }}&amp;year={{ year }}">{{ year }}</a></li>
+				<li class="active">{{ month_name }}</li>
+			{% else %}
+				<li class="active">{{ year }}</li>
+			{% endif %}
 		{% else %}
-			<li class="active">{{ year }}</li>
+			<li class="active">{{ unit|lower }}</li>
 		{% endif %}
 	{% else %}
-		<li class="active">{{ units.first|lower }}</li>
+		<li class="active">{{ chart_type }}</li>
 	{% endif %}
 {% else %}
 	<li class="active">statistics</li>
@@ -27,38 +32,44 @@
 {% endblock %}
 
 {% block content %}
-{% for unit in units %}
-	{% if datas|lookup:unit != None %}
-		<div class="shape fullshape">
-			<div class="title">
-				<a href="{% url 'statistics' %}?unit={{ unit.slug }}">
-					{% if year %}{% if month %}{{ month_name }} {% endif %}{{ year }} - {% endif %}{{ unit|lower }}
-				</a>
-			</div>
-			<div class="content">
-				{% if unit_slug %}
-					{% if year %}
-						{% if not month %}
-							<p class="entries">show statistics for: {% for month in months %}<a href="?unit={{ unit_slug }}&amp;year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-						{% endif %}
-					{% else %}
-						<p class="entries">show statistics for: {% for year in years %}<a href="?unit={{ unit_slug }}&amp;year={{ year|date:'Y' }}">{{ year|date:'Y' }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+<div class="shape fullshape">
+	<div class="title">
+		statistics
+		{% if chart_type %}
+			| {{ chart_type }}
+			{% if unit_slug %}
+				| {{ unit|lower }}
+				{% if year %}
+					| {{ year }}
+					{% if month %}
+						| {{ month_name }}
 					{% endif %}
 				{% endif %}
-				{% with data=datas|lookup:unit library=libraries|lookup:unit %}
-					{% column_chart data with height="800px" library=library %}
-				{% endwith %}
+			{% endif %}
+		{% endif %}
+	</div>
+	<div class="content">
+		{% if options %}
+			<div class="row">
+				<div class="col-md-12">
+					<div class="btn-group" style="margin-left: 5px;r">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{ option_name }} <span class="caret"></span></button>
+						<ul class="dropdown-menu" role="menu">
+							{% for option in options %}
+								<li><a href="{% url 'statistics' %}?{% if chart_type %}type={{ chart_type }}&amp;{% endif %}{% if unit_slug %}unit={{ unit_slug }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{{ option|lookup:'key' }}={{ option|lookup:'id' }}">{{ option|lookup:'value' }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
 			</div>
-		</div>
-	{% endif %}
-{% empty %}
-	<div class="shape category">
-		<div class="title"><a href="{% url 'statistics' %}">statistics</a></div>
-		<div class="content">
-			<div class="entries">
-				<p>No statistics available.</p>
+		{% endif %}
+		<div class="row">
+			<div class="col-md-12">
+				{% if data %}
+					{% column_chart data with height="870px" library=library %}
+				{% endif %}
 			</div>
 		</div>
 	</div>
-{% endfor %}
+</div>
 {% endblock %}
