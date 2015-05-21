@@ -9,75 +9,76 @@
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">dashboard</a></li>
 <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
-{% if not year %}
-	<li class="active">statistics</li>
-{% else %}
+{% if chart %}
 	<li><a href="{% url 'account_statistics' account.slug %}">statistics</a></li>
-	{% if month %}
-		<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}">{{ year }}</a></li>
-		{% if category %}
-			<li><a href="{% url 'account_statistics' account.slug %}?year={{ year }}&amp;month={{ month }}">{{ month_name }}</a></li>
-			<li class="active">{{ category|lower }}</li>
+	{% if year %}
+		<li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}">{{ chart }}</a></li>
+		{% if month %}
+			<li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
+			{% if category or tag %}
+				<li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{{ month_name }}</a></li>
+				{% if category %}
+					<li class="active">{{ category|lower }}</li>
+				{% endif %}
+				{% if tag %}
+					<li class="active">{{ tag|lower }}</li>
+				{% endif %}
+			{% else %}
+				<li class="active">{{ month_name }}</li>
+			{% endif %}
 		{% else %}
-			<li class="active">{{ month_name }}</li>
+			<li class="active">{{ year }}</li>
 		{% endif %}
 	{% else %}
-		<li class="active">{{ year }}</li>
+		<li class="active">{{ chart }}</li>
 	{% endif %}
+{% else %}
+	<li class="active">statistics</li>
 {% endif %}
 {% endblock %}
 
 {% block content %}
-{% if data %}
-	<div class="shape fullshape">
-		<div class="title"><a href="{% url 'account_statistics' account.slug %}">
-			{% if not year %}
-				statistics
-			{% else %}
-				{% if category %}{{ category|lower }} - {% endif %}{% if month %}{{ month_name }} {% endif %}{{ year }}
-			{% endif %}
-			</a></div>
-		<div class="content">
-			{% if not year %}
-				<p class="entries">show statistics for: {% for year in years %}<a href="?year={{ year|date:'Y' }}">{{ year|date:'Y' }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-			{% else %}
-				{% if not month %}
-					<p class="entries">show statistics for: {% for month in months %}<a href="?year={{ year }}&amp;month={{ month|date:'n' }}">{{ month|date:'F'|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-				{% else %}
-					{% if not category %}
-						<p class="entries">show statistics for: {% for category in categories %}<a href="?year={{ year }}&amp;month={{ month }}&amp;category={{ category.slug }}">{{ category|lower }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+<div class="shape fullshape">
+	<div class="title">
+		{{ account|lower }} statistics
+		{% if chart %}
+			| {{ chart }}
+			{% if year %}
+				| {{ year }}
+				{% if month %}
+					| {{ month_name }}
+					{% if category %}
+						| {{ category|lower }}
+					{% endif %}
+					{% if tag %}
+						| {{ tag|lower }}
 					{% endif %}
 				{% endif %}
 			{% endif %}
-			{% column_chart data with height="800px" library=library %}
+		{% endif %}
+	</div>
+	<div class="content">
+		{% if options %}
+			<div class="row">
+				<div class="col-md-12">
+					<div class="btn-group" style="margin-left: 5px;">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{ option_name }} <span class="caret"></span></button>
+						<ul class="dropdown-menu" role="menu">
+							{% for option in options %}
+								<li><a href="{% url 'account_statistics' account.slug %}?{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{% if month %}month={{ month }}&amp;{% endif %}{{ option|lookup:'key' }}={{ option|lookup:'id' }}">{{ option|lookup:'value' }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+		<div class="row">
+			<div class="col-md-12">
+				{% if data %}
+					{% column_chart data with height="870px" library=library %}
+				{% endif %}
+			</div>
 		</div>
 	</div>
-{% endif %}
-{% if False and account_chart_monthly_data or account_chart_yearly_data and False %}
-	<div class="shape category">
-		<div class="title"><a href="{% url 'account_statistics' account.slug %}">statistics</a></div>
-		<div class="content">
-			{% column_chart account_chart_monthly_data with height="600px" library=library %}
-			{% if account_chart_yearly_data %}
-				{% column_chart account_chart_yearly_data with height="600px" library=library %}
-			{% endif %}
-		</div>
-	</div>
-{% endif %}
-{% if category_data and False %}
-	<div class="shape category">
-		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
-		<div class="content">
-			{% column_chart category_data with height="350px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
-		</div>
-	</div>
-{% endif %}
-{% if tag_data and False %}
-	<div class="shape category">
-		<div class="title"><a href="{% url 'tags' %}">tags</a></div>
-		<div class="content">
-			{% column_chart tag_data with height="350px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
-		</div>
-	</div>
-{% endif %}
+</div>
 {% endblock %}

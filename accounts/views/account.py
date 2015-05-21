@@ -1,7 +1,7 @@
 from accounts.charts import account_chart
 from accounts.functions.dates import get_last_date_current_month
 from accounts.forms import AccountForm, FilterForm
-from accounts.models import Category, Entry, Account, Unit
+from accounts.models import Account, Category, Entry, Tag, Unit
 from app.models import Ledger
 from collections import OrderedDict
 from datetime import date
@@ -36,7 +36,8 @@ def account(request, slug):
 	if tags:
 		tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
 
-	account_chart_data, library = account_chart(account)
+	account_categories_chart_data, categories_chart_library = account_chart('categories', account)
+	account_tags_chart_data, tags_chart_library = account_chart('tags', account)
 
 	return render(request, 'ledger/accounts/account/account.html', locals())
 
@@ -62,30 +63,54 @@ def entries(request, slug):
 def statistics(request, slug):
 	ledger = get_object_or_404(Ledger, user=request.user)
 	account = get_object_or_404(Account, slug=slug, ledger=ledger)
+	chart = request.GET.get('chart')
 	year = request.GET.get('year')
 	month = request.GET.get('month')
 	category = get_object_or_404(Category, slug=request.GET.get('category')) if request.GET.get('category') else None
+	tag = get_object_or_404(Tag, slug=request.GET.get('tag')) if request.GET.get('tag') else None
+	
 	if year and month:
 		month_name = date(year=int(year), month=int(month), day=1).strftime('%B').lower()
 
-	cs = Entry.objects.filter(account=account).values('category__name').annotate(count=Count('category')).order_by('category__name')
-	categories = {}
-	for c in cs:
-		categories[c['category__name'].lower() if len(c['category__name']) <= 15 else '%s…' % c['category__name'][0:13].lower()] = c['count']
-	category_data = [{'data':OrderedDict(sorted(categories.items())), 'name':'entries'}]
+	if not chart:
+		option_name = 'chart'
+		options = [{'id':'categories', 'key':'chart', 'value':'categories'}, {'id':'tags', 'key':'chart', 'value':'tags'}]
+	elif chart and not year:
+		years = account.entry_set.dates('day', 'year')
+		if chart == 'tags':
+			years = years.filter(tags__isnull=False)
 
-	ts = Entry.objects.filter(account=account).filter(tags__isnull=False).values('tags__name').annotate(count=Count('tags')).order_by('tags__name')
-	tags = {}
-	for t in ts:
-		tags[t['tags__name'].lower()] = t['count']
-	tag_data = [{'data':OrderedDict(sorted(tags.items())), 'name':'entries'}]
-
-	data, library = account_chart(account, year=year, month=month, category=category)
-	years = account.entry_set.dates('day', 'year')
-	if year:
+		option_name = 'year'
+		options = [{'id':year.strftime('%Y'), 'key':'year', 'value':year.strftime('%Y')} for year in years]
+		data, library = account_chart(chart, account)
+	elif chart and year and not month:
 		months = account.entry_set.filter(day__year=year).dates('day', 'month')
-		if month:
-			categories = Category.objects.filter(id__in=account.entry_set.filter(day__year=year).filter(day__month=month).values_list('category', flat=True))
+		if chart == 'tags':
+			months = months.filter(tags__isnull=False)
+
+		option_name = 'month'
+		options = [{'id':month.strftime('%m'), 'key':'month', 'value':month.strftime('%B').lower()} for month in months]
+		data, library = account_chart(chart, account, year=year)
+	elif chart and year and month and not category and not tag:
+		data, library = account_chart(chart, account, year=year, month=month)
+
+		if chart == 'categories':
+			option_name = 'category'
+			options = [{'id':category.slug, 'key':'category', 'value':category.name.lower()} for category in Category.objects.filter(Q(entry__account=account) & Q(entry__day__year=year) & Q(entry__day__month=month)).distinct()]
+			print(options)
+		elif chart == 'tags':
+			option_name = 'tag'
+			options = [{'id':tag.slug, 'key':'tag', 'value':tag.name.lower()} for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
+		else:
+			options = []
+	elif chart and year and month and category:
+		data, library = account_chart(chart, account, year=year, month=month, category=category)
+		options = []
+	elif chart and year and month and tag:
+		data, library = account_chart(chart, account, year=year, month=month, tag=tag)
+		options = []
+	else:
+		options = []
 
 	return render(request, 'ledger/accounts/account/statistics.html', locals())
 

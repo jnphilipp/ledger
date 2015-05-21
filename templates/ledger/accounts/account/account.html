@@ -42,11 +42,19 @@
 		</div>
 	</div>
 </div>
-{% if account_chart_data %}
+{% if account_categories_chart_data %}
 	<div class="shape fullshape">
-		<div class="title"><a href="{% url 'account_statistics' account.slug %}">statistics</a></div>
+		<div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=categories">{{ account|lower }} statistics | categories</a></div>
 		<div class="content">
-			{% column_chart account_chart_data with height="300px" library=library %}
+			{% column_chart account_categories_chart_data with height="300px" library=categories_chart_library %}
+		</div>
+	</div>
+{% endif %}
+{% if account_tags_chart_data %}
+	<div class="shape fullshape">
+		<div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=tags">{{ account|lower }} statistics | tags</a></div>
+		<div class="content">
+			{% column_chart account_tags_chart_data with height="300px" library=tags_chart_library %}
 		</div>
 	</div>
 {% endif %}
