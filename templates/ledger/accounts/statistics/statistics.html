@@ -8,23 +8,23 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">dashboard</a></li>
-{% if chart_type %}
+{% if unit_slug %}
 	<li><a href="{% url 'statistics' %}">statistics</a></li>
-	{% if unit_slug %}
-		<li><a href="{% url 'statistics' %}?type={{ chart_type }}">{{ chart_type }}</a></li>
+	{% if chart_type %}
+		<li><a href="{% url 'statistics' %}?&amp;unit={{ unit_slug }}">{{ unit.name|lower }}</a></li>
 		{% if year %}
-			<li><a href="{% url 'statistics' %}?type={{ chart_type }}&amp;unit={{ unit_slug }}">{{ unit.name|lower }}</a></li>
+			<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;type={{ chart_type }}">{{ chart_type }}</a></li>
 			{% if month %}
-				<li><a href="{% url 'statistics' %}?type={{ chart_type }}&amp;unit={{ unit_slug }}&amp;year={{ year }}">{{ year }}</a></li>
+				<li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;type={{ chart_type }}&amp;year={{ year }}">{{ year }}</a></li>
 				<li class="active">{{ month_name }}</li>
 			{% else %}
 				<li class="active">{{ year }}</li>
 			{% endif %}
 		{% else %}
-			<li class="active">{{ unit|lower }}</li>
+			<li class="active">{{ chart_type }}</li>
 		{% endif %}
 	{% else %}
-		<li class="active">{{ chart_type }}</li>
+		<li class="active">{{ unit|lower }}</li>
 	{% endif %}
 {% else %}
 	<li class="active">statistics</li>
@@ -35,10 +35,10 @@
 <div class="shape fullshape">
 	<div class="title">
 		statistics
-		{% if chart_type %}
-			| {{ chart_type }}
-			{% if unit_slug %}
-				| {{ unit|lower }}
+		{% if unit_slug %}
+			| {{ unit|lower }}
+			{% if chart %}
+				| {{ chart }}
 				{% if year %}
 					| {{ year }}
 					{% if month %}
@@ -52,11 +52,11 @@
 		{% if options %}
 			<div class="row">
 				<div class="col-md-12">
-					<div class="btn-group" style="margin-left: 5px;r">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{ option_name }} <span class="caret"></span></button>
+					<div class="btn-group" style="margin-left: 5px;">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{ option_name }} <span class="caret"></span></button>
 						<ul class="dropdown-menu" role="menu">
 							{% for option in options %}
-								<li><a href="{% url 'statistics' %}?{% if chart_type %}type={{ chart_type }}&amp;{% endif %}{% if unit_slug %}unit={{ unit_slug }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{{ option|lookup:'key' }}={{ option|lookup:'id' }}">{{ option|lookup:'value' }}</a></li>
+								<li><a href="{% url 'statistics' %}?{% if unit_slug %}unit={{ unit_slug }}&amp;{% endif %}{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{{ option|lookup:'key' }}={{ option|lookup:'id' }}">{{ option|lookup:'value' }}</a></li>
 							{% endfor %}
 						</ul>
 					</div>
