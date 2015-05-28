@@ -1,3 +1,4 @@
+from app.models import Ledger
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
@@ -16,7 +17,13 @@ def llogin(request):
 			if user.is_active:
 				login(request, user)
 				messages.add_message(request, messages.SUCCESS, 'you have successfully logged in.')
-				return redirect(gnext)
+
+				try:
+					Ledger.objects.get(user=user)
+				except Ledger.DoesNotExist:
+					Ledger.objects.create(user=user)
+
+				return redirect(gnext) if gnext else redirect('dashboard')
 			else:
 				messages.add_message(request, messages.ERROR, 'your account is disabled.')
 			return redirect(request.META.get('HTTP_REFERER'))
