@@ -25,6 +25,23 @@ class CategoryForm(forms.ModelForm):
 		super(CategoryForm, self).__init__(*args, **kwargs)
 		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
+	def is_valid(self):
+		valid = super(CategoryForm, self).is_valid()
+		if not valid:
+			if 'name' in self.errors:
+				self._errors = ''
+				return True
+		return valid
+
+	def save(self, commit=True):
+		instance = super(CategoryForm, self).save(commit=False)
+		if Category.objects.filter(name=instance.name).exists():
+			return Category.objects.get(name=instance.name)
+		else:
+			instance.save(commit)
+			print(instance.id)
+			return instance
+
 class EntryForm(autocomplete_light.ModelForm):
 	class Meta:
 		model = Entry
@@ -70,6 +87,22 @@ class TagForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(TagForm, self).__init__(*args, **kwargs)
 		self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+
+	def is_valid(self):
+		valid = super(TagForm, self).is_valid()
+		if not valid:
+			if 'name' in self.errors:
+				self._errors = ''
+				return True
+		return valid
+
+	def save(self, commit=True):
+		instance = super(TagForm, self).save(commit=False)
+		if Tag.objects.filter(name=instance.name).exists():
+			return Tag.objects.get(name=instance.name)
+		else:
+			instance.save(commit)
+			return instance
 
 class UnitForm(forms.ModelForm):
 	class Meta:

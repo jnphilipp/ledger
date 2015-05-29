@@ -120,8 +120,7 @@ def add(request):
 	if request.method == 'POST':
 		form = AccountForm(request.POST)
 		if form.is_valid():
-			unit = form.cleaned_data['unit']
-			account = Account.objects.create(name=form.cleaned_data['name'], unit=unit)
+			account = form.save()
 			ledger = get_object_or_404(Ledger, user=request.user)
 			ledger.accounts.add(account)
 			ledger.save()
