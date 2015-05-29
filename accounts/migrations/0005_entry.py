@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Entry',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(primary_key=True, serialize=False, verbose_name='ID', auto_created=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('serial_number', models.IntegerField()),
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('additional', accounts.models.TextFieldSingleLine(blank=True, null=True)),
                 ('account', models.ForeignKey(to='accounts.Account')),
                 ('category', models.ForeignKey(to='accounts.Category')),
-                ('tags', models.ManyToManyField(blank=True, related_name='entries', to='accounts.Tag', null=True)),
+                ('tags', models.ManyToManyField(related_name='entries', blank=True, to='accounts.Tag', null=True)),
             ],
             options={
                 'verbose_name_plural': 'Entries',

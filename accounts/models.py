@@ -2,6 +2,7 @@ from app.models import Ledger
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
+from time import time
 
 class TextFieldSingleLine(models.TextField):
 	pass
@@ -87,11 +88,11 @@ class Account(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
-	name = TextFieldSingleLine(unique=True)
+	name = TextFieldSingleLine()
 	slug = models.SlugField(unique=True)
 	balance = models.FloatField(default=0)
 	unit = models.ForeignKey(Unit)
-	category = models.OneToOneField(Category, null=True)
+	category = models.ForeignKey(Category, null=True)
 	ledgers = models.ManyToManyField(Ledger, blank=True, through=Ledger.accounts.through)
 
 	def get_absolute_url(self):
@@ -100,11 +101,11 @@ class Account(models.Model):
 	def save(self, *args, **kwargs):
 		self.balance = sum(entry.amount for entry in self.entry_set.all())
 		if not self.slug:
-			self.slug = slugify(self.name)
+			self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
 		else:
 			orig = Account.objects.get(pk=self.id)
 			if orig.name != self.name:
-				self.slug = slugify(self.name)
+				self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
 		super(Account, self).save(*args, **kwargs)
 
 	def __str__(self):
