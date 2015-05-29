@@ -15,7 +15,7 @@ class AccountAdmin(admin.ModelAdmin):
 	}
 
 	fieldsets = [
-		(None, {'fields': ['ledgers', 'slug', 'name', 'balance', 'unit']}),
+		(None, {'fields': ['ledgers', 'slug', 'name', 'balance', 'category', 'unit']}),
 	]
 
 	filter_horizontal = ('ledgers',)
