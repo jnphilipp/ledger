@@ -32,7 +32,7 @@ class CategoryAutocomplete(autocomplete_light.AutocompleteModelBase):
 	}
 
 	def choices_for_request(self):
-		self.choices = self.choices.filter(Q(entry__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user))
+		self.choices = self.choices.filter(Q(entry__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user)).distinct()
 		return super(CategoryAutocomplete, self).choices_for_request()
 
 	def choice_html(self, choice):
@@ -51,7 +51,7 @@ class TagAutocomplete(autocomplete_light.AutocompleteModelBase):
 	}
 
 	def choices_for_request(self):
-		self.choices = self.choices.filter(entries__account__ledger__user=self.request.user)
+		self.choices = self.choices.filter(entries__account__ledger__user=self.request.user).distinct()
 		return super(TagAutocomplete, self).choices_for_request()
 
 	def choice_html(self, choice):
@@ -69,7 +69,7 @@ class CategoryFilter(autocomplete_light.AutocompleteModelBase):
 	}
 
 	def choices_for_request(self):
-		self.choices = self.choices.filter(Q(entry__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user))
+		self.choices = self.choices.filter(Q(entry__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user)).distinct()
 		return super(CategoryFilter, self).choices_for_request()
 
 	def choice_html(self, choice):
@@ -88,7 +88,7 @@ class TagFilter(autocomplete_light.AutocompleteModelBase):
 	}
 
 	def choices_for_request(self):
-		self.choices = self.choices.filter(entries__account__ledger__user=self.request.user)
+		self.choices = self.choices.filter(entries__account__ledger__user=self.request.user).distinct()
 		return super(TagFilter, self).choices_for_request()
 
 	def choice_html(self, choice):

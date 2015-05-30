@@ -24,7 +24,7 @@
 					{% block option_menu %}
 						<div style="float: right;">
 							{% if user.is_authenticated %}
-								<b>{{ user }}</b>
+								welcome, <b> {{ user }}</b>.
 								{% if user.is_staff %}
 									| <a href="{% url 'admin:index' %}">admin</a>
 								{% endif %}
