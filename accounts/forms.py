@@ -38,9 +38,7 @@ class CategoryForm(forms.ModelForm):
 		if Category.objects.filter(name=instance.name).exists():
 			return Category.objects.get(name=instance.name)
 		else:
-			instance.save(commit)
-			print(instance.id)
-			return instance
+			return super(CategoryForm, self).save(commit=commit)
 
 class EntryForm(autocomplete_light.ModelForm):
 	class Meta:
@@ -101,8 +99,7 @@ class TagForm(forms.ModelForm):
 		if Tag.objects.filter(name=instance.name).exists():
 			return Tag.objects.get(name=instance.name)
 		else:
-			instance.save(commit)
-			return instance
+			return super(TagForm, self).save(commit=commit)
 
 class UnitForm(forms.ModelForm):
 	class Meta:
