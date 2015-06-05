@@ -1,14 +1,19 @@
 from accounts.models import Account, Category, Entry, Tag, Unit, TextFieldSingleLine
 from django.contrib import admin
+from django.db.models import Count
 from django.forms import TextInput
 
 import autocomplete_light
 
 class AccountAdmin(admin.ModelAdmin):
-	list_display = ('name', 'balance', 'unit', 'updated_at')
+	def get_ledgers(self, obj):
+		return ', '.join([str(ledger) for ledger in obj.ledgers.all()])
+
+	list_display = ('name', 'get_ledgers', 'balance', 'unit', 'updated_at')
 	list_filter = ('unit', 'ledger')
 	readonly_fields = ('slug',)
 	search_fields = ('name', 'unit__name')
+	get_ledgers.short_description = 'Ledgers'
 
 	formfield_overrides = {
 		TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
@@ -21,9 +26,17 @@ class AccountAdmin(admin.ModelAdmin):
 	filter_horizontal = ('ledgers',)
 
 class CategoryAdmin(admin.ModelAdmin):
-	list_display = ('name', 'updated_at')
+	def get_queryset(self, request):
+		return Category.objects.annotate(entry_count=Count('entry'))
+
+	def show_entry_count(self, inst):
+		return inst.entry_count
+
+	list_display = ('name', 'show_entry_count', 'updated_at')
 	readonly_fields = ('slug',)
 	search_fields = ('name',)
+	show_entry_count.admin_order_field = 'entry_count'
+	show_entry_count.short_description = 'Number of Entries'
 
 	formfield_overrides = {
 		TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
@@ -34,8 +47,12 @@ class CategoryAdmin(admin.ModelAdmin):
 	]
 
 class EntryAdmin(admin.ModelAdmin):
-	list_display = ('account', 'serial_number', 'day', 'category', 'additional')
+	def get_ledgers(self, obj):
+		return ', '.join([str(ledger) for ledger in obj.account.ledgers.all()])
+
+	list_display = ('account', 'get_ledgers', 'serial_number', 'day', 'category', 'additional')
 	list_filter = ('account', 'category', 'day', 'tags')
+	get_ledgers.short_description = 'Ledgers'
 
 	formfield_overrides = {
 		TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
@@ -46,9 +63,17 @@ class EntryAdmin(admin.ModelAdmin):
 	]
 
 class TagAdmin(admin.ModelAdmin):
-	list_display = ('name', 'updated_at')
+	def get_queryset(self, request):
+		return Tag.objects.annotate(entry_count=Count('entries'))
+
+	def show_entry_count(self, inst):
+		return inst.entry_count
+
+	list_display = ('name', 'show_entry_count', 'updated_at')
 	readonly_fields = ('slug',)
 	search_fields = ('name',)
+	show_entry_count.admin_order_field = 'entry_count'
+	show_entry_count.short_description = 'Number of Entries'
 
 	formfield_overrides = {
 		TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
