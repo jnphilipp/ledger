@@ -14,7 +14,7 @@ def categories_statistics_chart(unit, ledger, year=None, month=None):
 	if month and year:
 		days = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year) & Q(day__month=month)).dates('day', 'day')
 		dayly = {}
-		for category in Category.objects.filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & ~Q(account__in=ledger.accounts.all()) & Q(entry__day__year=year) & Q(entry__day__month=month)):
+		for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & Q(entry__day__year=year) & Q(entry__day__month=month)).distinct():
 			dayly[category] = {int(day.strftime('%d')):0 for day in days}
 		for entry in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month)):
 			if entry.category in dayly.keys():
@@ -30,7 +30,7 @@ def categories_statistics_chart(unit, ledger, year=None, month=None):
 	elif year:
 		months = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year)).dates('day', 'month')
 		monthly = {}
-		for category in Category.objects.filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & ~Q(account__in=ledger.accounts.all()) & Q(entry__day__year=year)):
+		for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & Q(entry__day__year=year)).distinct():
 			monthly[category] = {month.strftime('%B').lower():0 for month in months}
 		names = OrderedDict(sorted({month.strftime('%B').lower():month.strftime('%m') for month in months}.items(), key=lambda t:t[1]))
 		for entry in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)):
@@ -47,7 +47,7 @@ def categories_statistics_chart(unit, ledger, year=None, month=None):
 	else:
 		years = Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).dates('day', 'year')
 		yearly = {}
-		for category in Category.objects.filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & ~Q(account__in=ledger.accounts.all())):
+		for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit)).distinct():
 			yearly[category] = {year.strftime('%Y'):0 for year in years}
 		for entry in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit)):
 			if entry.category in yearly.keys():
@@ -65,7 +65,7 @@ def tags_statistics_chart(unit, ledger, year=None, month=None):
 	if month and year:
 		days = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year) & Q(day__month=month) & Q(tags__isnull=False)).dates('day', 'day')
 		dayly = {}
-		for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year) & Q(entries__day__month=month)):
+		for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct():
 			dayly[tag] = {int(day.strftime('%d')):0 for day in days}
 		for entry in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month)):
 			for tag in entry.tags.all():
@@ -82,7 +82,7 @@ def tags_statistics_chart(unit, ledger, year=None, month=None):
 	elif year:
 		months = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year) & Q(tags__isnull=False)).dates('day', 'month')
 		monthly = {}
-		for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year)):
+		for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year)).distinct():
 			monthly[tag] = {month.strftime('%B').lower():0 for month in months}
 		names = OrderedDict(sorted({month.strftime('%B').lower():month.strftime('%m') for month in months}.items(), key=lambda t:t[1]))
 		for entry in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)):
@@ -100,7 +100,7 @@ def tags_statistics_chart(unit, ledger, year=None, month=None):
 	else:
 		years = Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).filter(tags__isnull=False).dates('day', 'year')
 		yearly = {}
-		for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit)):
+		for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit)).distinct():
 			yearly[tag] = {year.strftime('%Y'):0 for year in years}
 		for entry in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit)):
 			for tag in entry.tags.all():

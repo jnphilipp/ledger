@@ -28,7 +28,7 @@ def llogin(request):
 				messages.add_message(request, messages.ERROR, 'your account is disabled.')
 			return redirect(request.META.get('HTTP_REFERER'))
 		else:
-			messages.add_message(request, messages.ERROR, 'please enter the correct username and password for an account. Note that both fields may be case-sensitive.')
+			messages.add_message(request, messages.ERROR, 'please enter the correct username and password for an account. note that both fields may be case-sensitive.')
 			return redirect(request.META.get('HTTP_REFERER'))
 	else:
 		form = AuthenticationForm(request)
