@@ -1,0 +1,11 @@
+ledger
+======
+
+Web based ledger system to keep track of your accounts.
+
+## Features
+* multiple Users share multiple accounts
+* detailed statistics
+
+## Install
+See `INSTALL` for install instructions
