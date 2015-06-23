@@ -3,4 +3,4 @@ db.sqlite3
 ledger/settings.ini
 media/*
 static/*
-venv/*
+.venv/*
