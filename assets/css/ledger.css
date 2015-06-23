@@ -1,7 +1,8 @@
 header, footer, nav, article, aside {display: block;}
 body {font-family: monospace;
 	font-size: 10pt;
-	font-weight: normal;}
+	font-weight: normal;
+	padding-top: 70px;}
 
 a:active {position: relative;
 	top: 1px;
@@ -9,11 +10,6 @@ a:active {position: relative;
 
 #content {margin: 1em;
 	padding: 0;}
-
-
-/*### breadcrumbs ###*/
-
-.breadcrumb > li + li:before {content: "»";}
 
 
 

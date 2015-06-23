@@ -5,7 +5,7 @@ class Ledger(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 
-	user = models.ForeignKey(User)
+	user = models.OneToOneField(User)
 	accounts = models.ManyToManyField('accounts.Account', blank=True)
 
 	def __str__(self):

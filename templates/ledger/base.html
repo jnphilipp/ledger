@@ -2,45 +2,87 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
-		{% bootstrap_css %}
-		<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}"/>
-		<link rel="stylesheet" href="{% static 'css/ledger.css' %}"/>
-		{% bootstrap_javascript jquery=1 %}
-		<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
-		<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
-		{% include 'autocomplete_light/static.html' %}
-		<title>{% block title %}ledger{% endblock %}</title>
-		{% block extrahead %}{% endblock %}
-	</head>
-	<body>
-		<div class="container-fluid">
-			<div class="row">
-				<ol class="breadcrumb">
-					{% block breadcrumbs %}{% endblock %}
-					{% block option_menu %}
-						<div style="float: right;">
-							{% if user.is_authenticated %}
-								welcome, <b> {{ user }}</b>.
-								{% if user.is_staff %}
-									| <a href="{% url 'admin:index' %}">admin</a>
-								{% endif %}
-								| <a href="{% url 'password_change' %}">change password</a>
-								| <a clas="btn btn-xs" href="{% url 'logout' %}">logout</a>
-							{% endif %}
-						</div>
-					{% endblock %}
-				</ol>
-			</div>
-			<div class="row"><div class="col-md-6 col-md-offset-3">{% bootstrap_messages %}</div></div>
-			<div class="row">
-				<div class="col-md-12">
-					{% block content %}{% endblock %}
-				</div>
-			</div>
-		</div>
-	</body>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
+        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/ledger.css' %}"/>
+        {% bootstrap_javascript jquery=1 %}
+        <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/dropdown.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/collapse.js' %}"></script>
+        {% include 'autocomplete_light/static.html' %}
+        <title>{% block title %}ledger{% endblock %}</title>
+        {% block extrahead %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#ledger-navbar-collapse" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'dashboard' %}">
+                        <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>ledger
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="ledger-navbar-collapse">
+                    {% if user.is_authenticated %}
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">accounts <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    {% for account in user.ledger.accounts.all %}
+                                        <li><a href="{% url 'account' account.slug %}">{{ account|lower }}</a></li>
+                                    {% endfor %}
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'account_add' %}"><i class="ui-icon ui-icon-black ui-icon-circle-plus" style="float:left;margin-top:2px;"></i> add account</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="{% url 'statistics' %}">statistics</a></li>
+                        </ul>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><b>{{ user }}</b> <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% if user.is_staff %}
+                                        <li><a href="{% url 'admin:index' %}">admin</a></li>
+                                    {% endif %}
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'logout' %}">log out</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <div class="nav navbar-right" style="margin-right:3px;">
+                            <a href="{% url 'login' %}" class="btn btn-default navbar-btn" role="button">log in</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                
+            </div>
+            <div class="row"><div class="col-md-6 col-md-offset-3">{% bootstrap_messages %}</div></div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
