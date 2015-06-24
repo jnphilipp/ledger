@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap3',
     'accounts',
     'app',
 )
@@ -126,11 +125,3 @@ STATICFILES_FINDERS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-BOOTSTRAP3 = {
-    'jquery_url':'/static/js/jquery.js',
-    'base_url':None,
-    'css_url':'/static/css/bootstrap.min.css',
-    'theme_url':None,
-    'javascript_url':'/static/js/bootstrap.min.js',
-}

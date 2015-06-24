@@ -1,4 +1,4 @@
-{% load admin_urls bootstrap3 static %}
+{% load admin_urls ledger static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,13 +6,12 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="shortcut icon" href="{% static 'images/logo.png' %}"/>
-        {% bootstrap_css %}
+        <link rel="stylesheet" media="all" href="{% static 'css/bootstrap.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/ledger.css' %}"/>
-        {% bootstrap_javascript jquery=1 %}
+        <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/dropdown.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/collapse.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
         {% include 'autocomplete_light/static.html' %}
         <title>{% block title %}ledger{% endblock %}</title>
         {% block extrahead %}{% endblock %}
@@ -36,7 +35,7 @@
                     {% if user.is_authenticated %}
                         <ul class="nav navbar-nav">
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">accounts <span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">accounts <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     {% for account in user.ledger.accounts.all %}
                                         <li><a href="{% url 'account' account.slug %}">{{ account|lower }}</a></li>
@@ -45,7 +44,8 @@
                                     <li><a href="{% url 'account_add' %}"><i class="ui-icon ui-icon-black ui-icon-circle-plus" style="float:left;margin-top:2px;"></i> add account</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{% url 'statistics' %}">statistics</a></li>
+                            {% url 'statistics' as statistics_url %}
+                            <li{% if request.path == statistics_url %} class="active"{% endif %}><a href="{% url 'statistics' %}">statistics{% if request.path == statistics_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                         </ul>
                     {% endif %}
 
@@ -72,10 +72,7 @@
         </nav>
 
         <div class="container-fluid">
-            <div class="row">
-                
-            </div>
-            <div class="row"><div class="col-md-6 col-md-offset-3">{% bootstrap_messages %}</div></div>
+            <div class="row"><div class="col-md-8 col-md-offset-2">{% bootstrap_messages %}</div></div>
             <div class="row">
                 <div class="col-md-12">
                     {% block content %}{% endblock %}

@@ -1,5 +1,4 @@
 Django==1.8.2
 django-autocomplete-light==2.2.3
-django-bootstrap3==5.4.0
 python-dateutil==2.4.2
 six==1.9.0
