@@ -7,9 +7,6 @@ from time import time
 class TextFieldSingleLine(models.TextField):
 	pass
 
-class ReverseManyToManyField(models.ManyToManyField):
-	pass
-
 class Unit(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	created_at = models.DateTimeField(auto_now_add=True)
@@ -93,7 +90,7 @@ class Account(models.Model):
 	balance = models.FloatField(default=0)
 	unit = models.ForeignKey(Unit)
 	category = models.ForeignKey(Category, null=True)
-	ledgers = models.ManyToManyField(Ledger, blank=True, through=Ledger.accounts.through)
+	ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through)
 
 	def get_absolute_url(self):
 		return reverse('account', args=[self.slug])
@@ -124,7 +121,7 @@ class Entry(models.Model):
 	amount = models.FloatField(default=0)
 	category = models.ForeignKey(Category)
 	additional = TextFieldSingleLine(blank=True, null=True)
-	tags = models.ManyToManyField(Tag, blank=True, null=True, related_name='entries')
+	tags = models.ManyToManyField(Tag, related_name='entries')
 
 	def save(self, *args, **kwargs):
 		if not self.id:

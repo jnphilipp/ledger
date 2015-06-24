@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='account',
             name='ledgers',
-            field=models.ManyToManyField(to='app.Ledger', blank=True),
-            preserve_default=True,
+            field=models.ManyToManyField(to='app.Ledger'),
         ),
     ]

@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('additional', accounts.models.TextFieldSingleLine(blank=True, null=True)),
                 ('account', models.ForeignKey(to='accounts.Account')),
                 ('category', models.ForeignKey(to='accounts.Category')),
-                ('tags', models.ManyToManyField(related_name='entries', blank=True, to='accounts.Tag', null=True)),
+                ('tags', models.ManyToManyField(related_name='entries', to='accounts.Tag')),
             ],
             options={
                 'verbose_name_plural': 'Entries',
