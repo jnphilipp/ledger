@@ -40,6 +40,9 @@ urlpatterns = patterns('',
 	url(r'^accounts/unit/add_another/$', autocomplete_light.CreateView.as_view(model=Unit, form_class=UnitForm, template_name='ledger/accounts/unit/add_another.html'), name='unit_add_another_create'),
 	url(r'^accounts/statistics/$', 'accounts.views.statistics.statistics', name='statistics'),
 
+	url(r'^api/statistics/charts/categories$', 'accounts.views.api.statistics.charts.categories', name='statistics_chart_categories'),
+	url(r'^api/statistics/charts/tags$', 'accounts.views.api.statistics.charts.tags', name='statistics_chart_tags'),
+
 	url(r'^login/$', 'app.views.llogin', name='login'),
 	url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
 	url(r'^user/password/change$', 'django.contrib.auth.views.password_change', name='password_change'),
