@@ -1,15 +1,8 @@
 {% extends "ledger/base.html" %}
-{% load static accounts_tags chartkick %}
+{% load static accounts %}
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'chartkick.js' %}"></script>
-{% endblock %}
-
-{% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a></li>
-<li><a href="{% url 'categories' %}">categories</a></li>
-<li class="active">{{ category.name|lower }}</li>
 {% endblock %}
 
 {% block content %}

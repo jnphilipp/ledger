@@ -1,4 +1,4 @@
-from accounts.templatetags.accounts_tags import register
+from app.templatetags.ledger import register
 
 @register.filter
 def decrement(value):
@@ -11,6 +11,10 @@ def increment(value):
 @register.filter
 def lookup(d, key):
     return d[key] if key in d else None
+
+@register.filter
+def startswith(value, start):
+    return value.startswith(start)
 
 @register.filter
 def previous(value, arg):

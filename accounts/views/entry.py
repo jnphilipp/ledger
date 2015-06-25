@@ -1,6 +1,6 @@
 from accounts.forms import EntryForm
 from accounts.models import Account, Entry
-from accounts.templatetags.accounts_tags import floatdot
+from accounts.templatetags.accounts import floatdot
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required

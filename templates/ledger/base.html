@@ -44,6 +44,8 @@
                                     <li><a href="{% url 'account_add' %}"><i class="ui-icon ui-icon-black ui-icon-circle-plus" style="float:left;margin-top:2px;"></i> add account</a></li>
                                 </ul>
                             </li>
+                            {% url 'categories' as categories_url %}
+                            <li{% if request.path == categories_url or request.path|startswith:categories_url %} class="active"{% endif %}><a href="{% url 'categories' %}">categories{% if request.path == categories_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'statistics' as statistics_url %}
                             <li{% if request.path == statistics_url %} class="active"{% endif %}><a href="{% url 'statistics' %}">statistics{% if request.path == statistics_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                         </ul>
