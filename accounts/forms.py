@@ -47,14 +47,14 @@ class EntryForm(autocomplete_light.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(EntryForm, self).__init__(*args, **kwargs)
-		self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+		self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'additional'})
 		self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'})
-		self.fields['amount'].widget = forms.NumberInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control'})
+		self.fields['amount'].widget = forms.NumberInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control', 'placeholder':'0.00'})
 
 class StandingEntryForm(autocomplete_light.ModelForm):
 	start_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'}))
 	end_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'}))
-	execution = forms.ChoiceField(choices=((1, 'monthly'), (2, 'quarterly'), (3, 'half-yearly'), (4, 'yearly')))
+	execution = forms.ChoiceField(choices=((1, 'monthly'), (2, 'quarterly'), (3, 'half-yearly'), (4, 'yearly')), widget=forms.Select(attrs={'class':'form-control'}))
 
 	class Meta:
 		model = Entry

@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load accounts_tags static %}
+{% load accounts static %}
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
@@ -12,65 +12,59 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-10"><h1>{{ account.name|lower }}</h1></div>
-	<div class="col-md-2">
-		<h1>
-			<a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
-			<a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
-		</h1>
-	</div>
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>{{ account.name|lower }}
+                <small class="pull-right">
+                    <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
+                    <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+                </small>
+            </h1>
+        </div>
+    </div>
 </div>
-<div class="shape fullshape">
-	<div class="title"><a href="{% url 'account_entries' account.slug %}">entries</a></div>
-	<div class="content">
-		<div class="entries">
-			<div class="row">
-				<div class="col-md-4">
-					<b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
-				</div>
-				<div class="col-md-4 col-md-offset-4 text-right">
-						<a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add entry</a>
-						<a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add standing entry</a>
-				</div>
-			</div>
-			<div class="row" style="margin-top: 10px;">
-				<div class="col-md-12">
-					{% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2><a href="{% url 'account_entries' account.slug %}">entries</a>
+            <small>
+                <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add entry</a>
+                    <a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add standing entry</a>
+                </div>
+            </small>
+        </h2>
+        {% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
+    </div>
 </div>
+
+
 {% if account_categories_chart_data %}
-	<div class="shape fullshape">
-		<div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=categories">{{ account|lower }} statistics | categories</a></div>
-		<div class="content">
-			{% column_chart account_categories_chart_data with height="300px" library=categories_chart_library %}
-		</div>
-	</div>
+    <div class="shape fullshape">
+        <div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=categories">{{ account|lower }} statistics | categories</a></div>
+        <div class="content">
+        </div>
+    </div>
 {% endif %}
 {% if account_tags_chart_data %}
-	<div class="shape fullshape">
-		<div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=tags">{{ account|lower }} statistics | tags</a></div>
-		<div class="content">
-			{% column_chart account_tags_chart_data with height="300px" library=tags_chart_library %}
-		</div>
-	</div>
+    <div class="shape fullshape">
+        <div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=tags">{{ account|lower }} statistics | tags</a></div>
+        <div class="content">
+        </div>
+    </div>
 {% endif %}
 {% if category_data %}
-	<div class="shape fullshape">
-		<div class="title"><a href="{% url 'categories' %}">categories</a></div>
-		<div class="content">
-			{% column_chart category_data with height="300px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
-		</div>
-	</div>
+    <div class="shape fullshape">
+        <div class="title"><a href="{% url 'categories' %}">categories</a></div>
+        <div class="content">
+        </div>
+    </div>
 {% endif %}
 {% if tag_data %}
-	<div class="shape fullshape">
-		<div class="title"><a href="{% url 'tags' %}">tags</a></div>
-		<div class="content">
-			{% column_chart tag_data with height="300px" library={'plotOptions':{'column':{'stacking':'normal', 'dataLabels':{'enabled':True, 'color':"(Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'", 'style':{'textShadow':'0 0 3px white'}}}}, 'xAxis':{'labels':{'rotation':-45}}, 'legend':{'enabled':False}} %}
-		</div>
-	</div>
+    <div class="shape fullshape">
+        <div class="title"><a href="{% url 'tags' %}">tags</a></div>
+        <div class="content">
+        </div>
+    </div>
 {% endif %}
 {% endblock %}

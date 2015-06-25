@@ -13,6 +13,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 	url(r'^$', 'accounts.views.account.dashboard', name='dashboard'),
+	url(r'^accounts/$', 'accounts.views.account.dashboard', name='accounts'),
 	url(r'^accounts/account/add/$', 'accounts.views.account.add', name='account_add'),
 	url(r'^accounts/account/(?P<slug>[\w-]+)/$', 'accounts.views.account.account', name='account'),
 	url(r'^accounts/account/(?P<slug>[\w-]+)/edit/$', 'accounts.views.account.edit', name='account_edit'),

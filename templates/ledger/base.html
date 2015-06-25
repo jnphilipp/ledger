@@ -34,8 +34,9 @@
                 <div class="collapse navbar-collapse" id="ledger-navbar-collapse">
                     {% if user.is_authenticated %}
                         <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">accounts <span class="caret"></span></a>
+                            {% url 'accounts' as accounts_url %}
+                            <li class="dropdown{% if request.path == accounts_url or request.path|startswith:accounts_url %} active{% endif %}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">accounts {% if request.path == accounts_url or request.path|startswith:accounts_url %} <span class="sr-only">(current)</span>{% endif %} <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     {% for account in user.ledger.accounts.all %}
                                         <li><a href="{% url 'account' account.slug %}">{{ account|lower }}</a></li>
@@ -45,9 +46,11 @@
                                 </ul>
                             </li>
                             {% url 'categories' as categories_url %}
-                            <li{% if request.path == categories_url or request.path|startswith:categories_url %} class="active"{% endif %}><a href="{% url 'categories' %}">categories{% if request.path == categories_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
+                            <li {% if request.path == categories_url or request.path|startswith:categories_url %}class="active"{% endif %}><a href="{% url 'categories' %}">categories{% if request.path == categories_url or request.path|startswith:categories_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
+                            {% url 'tags' as tags_url %}
+                            <li {% if request.path == tags_url or request.path|startswith:tags_url %} class="active"{% endif %}><a href="{% url 'tags' %}">tags{% if request.path == tags_url or request.path|startswith:tags_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'statistics' as statistics_url %}
-                            <li{% if request.path == statistics_url %} class="active"{% endif %}><a href="{% url 'statistics' %}">statistics{% if request.path == statistics_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
+                            <li {% if request.path == statistics_url %}class="active"{% endif %}><a href="{% url 'statistics' %}">statistics{% if request.path == statistics_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                         </ul>
                     {% endif %}
 
