@@ -1,48 +1,57 @@
 {% extends "ledger/base.html" %}
-{% load static accounts_tags chartkick %}
+{% load static accounts %}
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'chartkick.js' %}"></script>
-{% endblock %}
-
-{% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a></li>
-<li><a href="{% url 'tags' %}">tags</a></li>
-<li class="active">{{ tag.name|lower }}</li>
+<script src="{% static 'js/charts/accounts/tags/statistics.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-	<div class="col-md-10"><h1>{{ tag.name|lower }}</h1></div>
-	<div class="col-md-2">
-		<h1>
-			<a href="{% url 'tag_edit' tag.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
-			<a href="{% url 'tag_delete' tag.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
-		</h1>
-	</div>
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>{{ tag.name|lower }}
+                <small>
+                    <b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    <div class="pull-right">
+                        <a href="{% url 'tag_edit' tag.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
+                        <a href="{% url 'tag_delete' tag.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+                    </div>
+                </small>
+            </h1>
+        </div>
+    </div>
 </div>
-<div class="shape fullshape">
-	<div class="title">{{ tag.name|lower }}</div>
-	<div class="content">
-		<div class="entries">
-			<div class="row">
-				<div class="col-md-2"><b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
-		</div>
-		{% if monthly_data %}
-			{% column_chart monthly_data with library=ml %}
-		{% endif %}
-		{% if yearly_data %}
-			{% column_chart yearly_data with library=yl %}
-		{% endif %}
-	</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'tag_statistics' tag.slug %}">statistics</a>{% if year %} <small><a href="{% url 'tag' tag.slug %}">{{ year }}</a></small>{% endif %}</h2>
+
+        {% if years %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    select year <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for year in years %}
+                        <li><a href="?year={{ year }}">{{ year }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div id="mchart" style="min-width: 310px; height: 500px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var url = "{% url 'tag_charts_statistics' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
+                statistics(url, 'mchart');
+            });
+        </script>
+    </div>
 </div>
-<div class="shape fullshape" style="margin-top: 15px;">
-	<div class="title"><a href="{% url 'tag_entries' tag.slug %}">entries</a></div>
-	<div class="content">
-		<div class="entries">
-			{% include "ledger/accounts/tag/partials/_table.html" with entries=entries options=False %}
-		</div>
-	</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'tag_entries' tag.slug %}">entries</a></h2>
+        {% include "ledger/accounts/tag/partials/_table.html" with entries=entries options=False %}
+    </div>
 </div>
 {% endblock %}
