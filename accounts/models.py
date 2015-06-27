@@ -121,7 +121,7 @@ class Entry(models.Model):
 	amount = models.FloatField(default=0)
 	category = models.ForeignKey(Category)
 	additional = TextFieldSingleLine(blank=True, null=True)
-	tags = models.ManyToManyField(Tag, related_name='entries')
+	tags = models.ManyToManyField(Tag, blank=True, related_name='entries')
 
 	def save(self, *args, **kwargs):
 		if not self.id:
