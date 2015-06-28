@@ -3,6 +3,7 @@
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/charts/accounts/statistics/statistics.js' %}"></script>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -72,9 +73,11 @@
         <div class="col-md-12">
             <div id="chart" style="min-width: 310px; height: 800px;"></div>
             <script type="text/javascript">
-                var url = "{% if chart == 'categories' %}{% url 'statistics_chart_categories' %}{% endif %}{% if chart == 'tags' %}{% url 'statistics_chart_tags' %}{% endif %}?unit={{ unit_slug }}{% if year %}&year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}";
+                $(document).ready(function() {
+                    var url = "{% if chart == 'categories' %}{% url 'statistics_chart_categories' %}{% endif %}{% if chart == 'tags' %}{% url 'statistics_chart_tags' %}{% endif %}?unit={{ unit_slug }}{% if year %}&year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}";
+                    statistics(url, chart);
+                });
             </script>
-            <script type="text/javascript" src="{% static 'js/charts/statistics.js' %}"></script>
         </div>
     </div>
 {% endif %}

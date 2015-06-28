@@ -18,13 +18,13 @@ def categories(request):
     if month and year:
         days = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year) & Q(day__month=month)).dates('day', 'day')
         data = {}
-        data['xAxis'] = {'categories':['%s.' % d.strftime('%d') for d in days], 'title':'days'}
+        data['xAxis'] = {'categories':['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days], 'title':'days'}
         data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % unit.symbol}, 'labels':{'format':'{value}%s' % unit.symbol}}
         data['tooltip'] = {'valueSuffix':unit.symbol}
 
         series = []
         for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & Q(entry__day__year=year) & Q(entry__day__month=month)).distinct():
-                series.append({'name':category.name.lower(), 'data':[['%s.' % d.strftime('%d'), category.entry_set.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]})
+                series.append({'name':category.name.lower(), 'data':[['%s. %s' % (d.strftime('%d'), d.strftime('%B')), category.entry_set.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]})
         data['series'] = series
     elif year:
         months = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year)).dates('day', 'month')
@@ -64,13 +64,13 @@ def tags(request):
     if month and year:
         days = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(tags__isnull=False) & Q(day__year=year) & Q(day__month=month)).dates('day', 'day')
         data = {}
-        data['xAxis'] = {'categories':['%s.' % d.strftime('%d') for d in days], 'title':'days'}
+        data['xAxis'] = {'categories':['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days], 'title':'days'}
         data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % unit.symbol}, 'labels':{'format':'{value}%s' % unit.symbol}}
         data['tooltip'] = {'valueSuffix':unit.symbol}
 
         series = []
         for tag in Tag.objects.filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct():
-            series.append({'name':tag.name.lower(), 'data':[['%s.' % d.strftime('%d'), tag.entries.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in daysp]})
+            series.append({'name':tag.name.lower(), 'data':[['%s. %s' % (d.strftime('%d'), d.strftime('%B')), tag.entries.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]})
         data['series'] = series
     elif year:
         months = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(tags__isnull=False) & Q(day__year=year)).dates('day', 'month')

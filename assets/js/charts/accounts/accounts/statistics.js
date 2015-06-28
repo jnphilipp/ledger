@@ -58,4 +58,4 @@ function statistics(url, renderTo) {
         options.tooltip.valueSuffix = data.tooltip.valueSuffix;
         var chart = new Highcharts.Chart(options);
     });
-};
+}

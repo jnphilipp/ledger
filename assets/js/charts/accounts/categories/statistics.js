@@ -58,4 +58,4 @@ function statistics(url, renderTo) {
         options.yAxis.stackLabels.format = data.yAxis.stackLabels.format;
         var chart = new Highcharts.Chart(options);
     });
-};
+}

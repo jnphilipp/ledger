@@ -43,4 +43,4 @@ function tags(url, renderTo) {
         options.xAxis.categories = data.xAxis.categories;
         var chart = new Highcharts.Chart(options);
     });
-};
+}

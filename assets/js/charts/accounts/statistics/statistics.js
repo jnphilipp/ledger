@@ -1,7 +1,7 @@
-$(document).ready(function() {
+function statistics(url, renderTo) {
     var options = {
         chart: {
-            renderTo: 'chart',
+            renderTo: renderTo,
             type: 'column',
             zoomType: 'x'
         },
@@ -58,4 +58,4 @@ $(document).ready(function() {
         options.tooltip.valueSuffix = data.tooltip.valueSuffix;
         var chart = new Highcharts.Chart(options);
     });
-});
+}
