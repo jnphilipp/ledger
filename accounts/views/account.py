@@ -1,6 +1,6 @@
 from accounts.charts import account_chart
 from accounts.functions.dates import get_last_date_current_month
-from accounts.forms import AccountForm, FilterForm
+from accounts.forms import AccountForm, AccountFilterForm
 from accounts.models import Account, Category, Entry, Tag, Unit
 from app.models import Ledger
 from collections import OrderedDict
@@ -47,7 +47,7 @@ def entries(request, slug):
 	account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 
 	if request.method == 'POST':
-		form = FilterForm(request.POST)
+		form = AccountFilterForm(request.POST)
 		entries = account.entry_set.all().reverse()
 		if form.is_valid():
 			if form.cleaned_data['categories']:
@@ -55,7 +55,7 @@ def entries(request, slug):
 			if form.cleaned_data['tags']:
 				entries = entries.filter(tags__in=form.cleaned_data['tags'])
 	else:
-		form = FilterForm()
+		form = AccountFilterForm()
 		entries = account.entry_set.filter(day__lt=get_last_date_current_month()).reverse()
 	return render(request, 'ledger/accounts/account/entries.html', locals())
 

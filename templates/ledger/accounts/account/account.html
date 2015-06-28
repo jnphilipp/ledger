@@ -3,11 +3,9 @@
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
-{% endblock %}
-
-{% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a></li>
-<li class="active">{{ account.name|lower }}</li>
+<script src="{% static 'js/charts/accounts/accounts/statistics.js' %}"></script>
+<script src="{% static 'js/charts/accounts/accounts/categories.js' %}"></script>
+<script src="{% static 'js/charts/accounts/accounts/tags.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +23,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <h2><a href="{% url 'account_entries' account.slug %}">entries</a>
+        <h2 class="page-header"><a href="{% url 'account_entries' account.slug %}">entries</a>
             <small>
                 <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
                 <div class="pull-right">
@@ -37,34 +35,56 @@
         {% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
     </div>
 </div>
-
-
-{% if account_categories_chart_data %}
-    <div class="shape fullshape">
-        <div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=categories">{{ account|lower }} statistics | categories</a></div>
-        <div class="content">
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'account_statistics' account.slug %}?chart=categories">statistics</a>
+            <small>categories</small>
+        </h2>
+        <div id="ascchart" style="min-width: 310px; height: 400px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var ascchart_url = "{% url 'account_charts_statistics_categories' account.slug %}";
+                statistics(ascchart_url, 'ascchart');
+            });
+        </script>
     </div>
-{% endif %}
-{% if account_tags_chart_data %}
-    <div class="shape fullshape">
-        <div class="title"><a href="{% url 'account_statistics' account.slug %}?chart=tags">{{ account|lower }} statistics | tags</a></div>
-        <div class="content">
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'account_statistics' account.slug %}?chart=tags">statistics</a>
+            <small>tags</small>
+        </h2>
+        <div id="astchart" style="min-width: 310px; height: 400px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var astchart_url = "{% url 'account_charts_statistics_tags' account.slug %}";
+                statistics(astchart_url, 'astchart');
+            });
+        </script>
     </div>
-{% endif %}
-{% if category_data %}
-    <div class="shape fullshape">
-        <div class="title"><a href="{% url 'categories' %}">categories</a></div>
-        <div class="content">
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'categories' %}">categories</a></h2>
+        <div id="cchart" style="min-width: 310px; height: 400px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var cchart_url = "{% url 'account_chart_categories' account.slug %}";
+                categories(cchart_url, 'cchart');
+            });
+        </script>
     </div>
-{% endif %}
-{% if tag_data %}
-    <div class="shape fullshape">
-        <div class="title"><a href="{% url 'tags' %}">tags</a></div>
-        <div class="content">
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'tags' %}">tags</a></h2>
+        <div id="tchart" style="min-width: 310px; height: 400px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var tchart_url = "{% url 'account_chart_tags' account.slug %}";
+                tags(tchart_url, 'tchart');
+            });
+        </script>
     </div>
-{% endif %}
+</div>
 {% endblock %}
