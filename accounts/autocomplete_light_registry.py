@@ -17,7 +17,6 @@ class Autocomplete(autocomplete_light.AutocompleteModelBase):
 	def choice_html(self, choice):
 		return self.choice_html_format % (self.choice_value(choice), self.choice_label(choice).lower())
 
-autocomplete_light.register(Account, Autocomplete)
 autocomplete_light.register(Unit, Autocomplete, add_another_url_name='unit_add_another_create')
 
 class CategoryAutocomplete(autocomplete_light.AutocompleteModelBase):
@@ -57,6 +56,25 @@ class TagAutocomplete(autocomplete_light.AutocompleteModelBase):
 	def choice_html(self, choice):
 		return self.choice_html_format % (self.choice_value(choice), self.choice_label(choice).lower())
 autocomplete_light.register(Tag, TagAutocomplete, add_another_url_name='tag_add_another_create')
+
+class AccountFilter(autocomplete_light.AutocompleteModelBase):
+	search_fields=['name']
+	attrs={
+		'data-autocomplete-minimum-characters': 1,
+	}
+	widget_attrs={
+		'data-widget-maximum-values': 6,
+		'class': 'modern-style',
+	}
+
+	def choices_for_request(self):
+		self.choices = self.choices.filter(Q(ledgers__user=self.request.user)).distinct()
+		return super(AccountFilter, self).choices_for_request()
+
+	def choice_html(self, choice):
+		return self.choice_html_format % (self.choice_value(choice), self.choice_label(choice).lower())
+autocomplete_light.register(Account, AccountFilter, attrs={'placeholder': 'account'})
+autocomplete_light.register(Account, AccountFilter, name='AccountsFilter', attrs={'placeholder': 'accounts'})
 
 class CategoryFilter(autocomplete_light.AutocompleteModelBase):
 	search_fields=['name']

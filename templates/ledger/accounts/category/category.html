@@ -3,36 +3,55 @@
 
 {% block extrahead %}
 <script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/charts/accounts/categories/statistics.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-	<div class="col-md-10"><h1>{{ category.name|lower }}</h1></div>
-	<div class="col-md-2">
-		<h1>
-			<a href="{% url 'category_edit' category.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
-			<a href="{% url 'category_delete' category.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
-		</h1>
-	</div>
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>{{ category.name|lower }}
+                <small>
+                    <b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    <div class="pull-right">
+                        <a href="{% url 'category_edit' category.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
+                        <a href="{% url 'category_delete' category.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+                    </div>
+                </small>
+            </h1>
+        </div>
+    </div>
 </div>
-<div class="shape fullshape">
-	<div class="title">{{ category.name|lower }}</div>
-	<div class="content">
-		<div class="entries">
-			<div class="row">
-				<div class="col-md-2">
-					<b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'category_statistics' category.slug %}">statistics</a>{% if year %} <small><a href="{% url 'category' category.slug %}">{{ year }}</a></small>{% endif %}</h2>
+
+        {% if years %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    select year <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for year in years %}
+                        <li><a href="?year={{ year }}">{{ year }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div id="mchart" style="min-width: 310px; height: 500px;"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var url = "{% url 'category_charts_statistics' category.slug %}{% if year %}?year={{ year }}{% endif %}";
+                statistics(url, 'mchart');
+            });
+        </script>
+    </div>
 </div>
-<div class="shape fullshape" style="margin-top: 15px;">
-	<div class="title"><a href="{% url 'category_entries' category.slug %}">entries</a></div>
-	<div class="content">
-		<div class="entries">
-			{% include "ledger/accounts/category/partials/_table.html" with entries=entries options=False %}
-		</div>
-	</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="page-header"><a href="{% url 'category_entries' category.slug %}">entries</a></h2>
+        {% include "ledger/accounts/category/partials/_table.html" with entries=entries options=False %}
+    </div>
 </div>
 {% endblock %}
