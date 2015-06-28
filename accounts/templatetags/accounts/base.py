@@ -1,6 +1,8 @@
 from accounts.functions.dates import get_last_date_current_month
+from accounts.models import Account, Category, Tag
 from accounts.templatetags.accounts import register
 from datetime import date
+from django.db.models import Q
 from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
 
@@ -25,3 +27,12 @@ def balance(account, autoescape=None):
 def outstanding(account, autoescape=None):
     outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
     return colorfy(outstanding, account.unit)
+
+@register.filter
+def accounts(obj, user):
+    if isinstance(obj, Category):
+        return Account.objects.filter(Q(entry__in=obj.entry_set.all()) & Q(ledgers__user=user)).distinct()
+    elif isinstance(obj, Tag):
+        return Account.objects.filter(Q(entry__in=obj.entries.all()) & Q(ledgers__user=user)).distinct()
+    else:
+        return []

@@ -37,7 +37,7 @@ def statistics(request, slug):
 
         series = []
 
-        for account in Account.objects.filter(Q(entry__tags=tag) & Q(ledgers=ledger) & Q()).distinct():
+        for account in Account.objects.filter(Q(entry__tags=tag) & Q(ledgers=ledger)).distinct():
             series.append({'name':account.name.lower(), 'data':[[y.strftime('%Y'), tag.entries.filter(Q(account=account) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
 
         for unit in units:

@@ -72,7 +72,7 @@
         <div class="col-md-12">
             <div id="chart" style="min-width: 310px; height: 800px;"></div>
             <script type="text/javascript">
-                url = "{% if chart == 'categories' %}{% url 'statistics_chart_categories' %}{% endif %}{% if chart == 'tags' %}{% url 'statistics_chart_tags' %}{% endif %}?unit={{ unit_slug }}{% if year %}&year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}";
+                var url = "{% if chart == 'categories' %}{% url 'statistics_chart_categories' %}{% endif %}{% if chart == 'tags' %}{% url 'statistics_chart_tags' %}{% endif %}?unit={{ unit_slug }}{% if year %}&year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}";
             </script>
             <script type="text/javascript" src="{% static 'js/charts/statistics.js' %}"></script>
         </div>

@@ -6,7 +6,7 @@ $(document).ready(function() {
             zoomType: 'x'
         },
         title: {
-            text: ''
+            text: null
         },
         xAxis: {
             categories: [],
