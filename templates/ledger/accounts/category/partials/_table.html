@@ -1,41 +1,41 @@
 {% load accounts %}
 
 <table class="table table-striped table-hover table-bordered">
-	<thead>
-		<tr>
-			<th>account</th>
-			<th colspan="2">day</th>
-			<th>amount</th>
-			<th><a href="{% url 'categories' %}">category</a></th>
-			<th>additional</th>
-			<th><a href="{% url 'tags' %}">tags</a></th>
-			{% if options %}
-				<th></th>
-			{% endif %}
-		</tr>
-	</thead>
-	<tbody>
-		{% for entry in entries %}
-			<tr>
-				<td><a href="{% url 'account' entry.account.slug %}">{{ entry.account.name|lower }}</a></td>
-				<td>{{ entry.day|date:'d.m.Y' }}</td>
-				<td>{{ entry.day|date:'D'|lower }}</td>
-				<td style="text-align: right;">{{ entry.amount|colorfy:entry.account.unit }}</td>
-				<td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
-				<td>{{ entry.additional|lower }}</td>
-				<td>
-					{% for tag in entry.tags.all %}
-						<a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
-					{% endfor %}
-				</td>
-				{% if options %}
-					<td>
-						<a href="{% url 'entry_edit' entry.account.slug entry.id %}" title="edit entry"><i class="ui-icon ui-icon-pencil" style="display: inline-block;"></i></a>
-						<a href="{% url 'entry_duplicate' entry.account.slug entry.id %}" title="duplicate entry"><i class="ui-icon ui-icon-copy" style="display: inline-block;"></i></a>
-						<a href="{% url 'entry_delete' entry.account.slug entry.id %}" title="delete entry"><i class="ui-icon ui-icon-trash" style="display: inline-block;"></i></a>
-					</td>
-				{% endif %}
-			</tr>
-		{% endfor %}
-	</tbody>
+    <thead>
+        <tr>
+            <th>account</th>
+            <th colspan="2">day</th>
+            <th>amount</th>
+            <th><a href="{% url 'categories' %}">category</a></th>
+            <th>additional</th>
+            <th><a href="{% url 'tags' %}">tags</a></th>
+            {% if options %}
+                <th></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+            <tr>
+                <td><a href="{% url 'account' entry.account.slug %}">{{ entry.account.name|lower }}</a></td>
+                <td>{{ entry.day|date:'d.m.Y' }}</td>
+                <td>{{ entry.day|date:'D'|lower }}</td>
+                <td style="text-align: right;">{{ entry.amount|colorfy:entry.account.unit }}</td>
+                <td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
+                <td>{{ entry.additional|lower }}</td>
+                <td>
+                    {% for tag in entry.tags.all %}
+                        <a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                {% if options %}
+                    <td>
+                        <a href="{% url 'entry_edit' entry.account.slug entry.id %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url 'entry_duplicate' entry.account.slug entry.id %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
+                        <a href="{% url 'entry_delete' entry.account.slug entry.id %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
