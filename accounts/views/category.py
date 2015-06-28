@@ -1,4 +1,3 @@
-from accounts.charts import category_chart
 from accounts.forms import CategoryForm, CategoryFilterForm
 from accounts.models import Category, Unit
 from app.models import Ledger

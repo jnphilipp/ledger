@@ -1,4 +1,3 @@
-from accounts.charts import tag_chart
 from accounts.forms import TagForm, TagFilterForm
 from accounts.models import Tag, Unit
 from app.models import Ledger

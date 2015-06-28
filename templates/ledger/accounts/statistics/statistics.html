@@ -6,31 +6,6 @@
 <script src="{% static 'js/charts/accounts/statistics/statistics.js' %}"></script>
 {% endblock %}
 
-{% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">dashboard</a></li>
-{% if unit_slug %}
-    <li><a href="{% url 'statistics' %}">statistics</a></li>
-    {% if chart_type %}
-        <li><a href="{% url 'statistics' %}?&amp;unit={{ unit_slug }}">{{ unit.name|lower }}</a></li>
-        {% if year %}
-            <li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;type={{ chart_type }}">{{ chart_type }}</a></li>
-            {% if month %}
-                <li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;type={{ chart_type }}&amp;year={{ year }}">{{ year }}</a></li>
-                <li class="active">{{ month_name }}</li>
-            {% else %}
-                <li class="active">{{ year }}</li>
-            {% endif %}
-        {% else %}
-            <li class="active">{{ chart_type }}</li>
-        {% endif %}
-    {% else %}
-        <li class="active">{{ unit|lower }}</li>
-    {% endif %}
-{% else %}
-    <li class="active">statistics</li>
-{% endif %}
-{% endblock %}
-
 {% block content %}
 <div class="row">
     <div class="col-md-12">

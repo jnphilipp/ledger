@@ -1,94 +1,23 @@
 header, footer, nav, article, aside {display: block;}
 body {font-family: monospace;
-	font-size: 10pt;
-	font-weight: normal;
-	padding-top: 70px;}
+    font-size: 10pt;
+    font-weight: normal;
+    padding-top: 70px;}
 
 a:active {position: relative;
-	top: 1px;
-	right: -1px;}
-
-#content {margin: 1em;
-	padding: 0;}
-
-
-
-/*### dashboard ###*/
-
-#dashboard {width: 100%;
-	box-sizing: border-box;
-	float: left;}
-
-
-
-/*### account shape ###*/
-
-.shape {display: inline-block;
-	width: 430px;
-	margin: 10px 10px 20px 10px;}
-
-.shape .title {display: inline-block;
-	vertical-align: top;
-	text-decoration: none;
-
-	margin: 0;
-	padding: 0;
-	padding-left: 10px;
-	padding-right: 50px;
-
-	border-right: 30px solid transparent;
-	border-bottom: 30px solid #4c4c4c;
-
-	height: 0;
-	line-height: 31px;
-	min-width: 250px;
-
-	font-size: 12pt;
-	font-weight: bold;
-	color: white;}
-
-.shape .title a {color: white;}
-
-.shape .content {display: block;
-	min-height: 100px;
-	border: 1px solid #4c4c4c;
-	padding-top: 15px;}
+    top: 1px;
+    right: -1px;}
 
 
 
 /*### form ###*/
 
-.shapeform {display: block;
-	width: 100%;
-	margin: 0;}
-
-.shapeform .content {height: auto;
-	padding: 30px;}
-
 .required:after {content: " *";
-	color: gray;}
+    color: gray;}
 
 
 
 /*### entries ###*/
-
-.entries header {margin: 0px 0px 5px 0px;
-	height: 25px;}
-
-.entries {margin: 5px;
-	padding: 0px;}
-
-.fullshape {display: block;
-	width: inherit;
-	height: auto;
-	margin: 3px;
-	padding: 0px;}
-
-.fullshape .title {min-width: 25%;}
-
-.fullshape .content {padding-right: 1px;
-	padding-bottom: 1px;
-	height: auto;}
 
 .red {color: red;}
 .green {color: green;}
