@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 
 @csrf_protect
-def llogin(request):
+def signin(request):
     gnext = request.GET.get('next')
     if request.method == 'POST':
         username = request.POST['username']

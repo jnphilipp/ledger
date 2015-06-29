@@ -29,3 +29,7 @@ def next(value, arg):
         return value[int(arg) + 1]
     except:
         return None
+
+@register.filter(name='addcss')
+def addcss(field, css):
+    return field.as_widget(attrs={"class":css})
