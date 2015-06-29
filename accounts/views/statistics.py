@@ -5,7 +5,7 @@ from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def statistics(request):
     unit_slug = request.GET.get('unit')
     chart = request.GET.get('chart')

@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 @csrf_protect
 def add(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)

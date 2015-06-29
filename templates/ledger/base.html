@@ -64,13 +64,13 @@
                                         <li><a href="{% url 'admin:index' %}">admin</a></li>
                                     {% endif %}
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="{% url 'logout' %}">log out</a></li>
+                                    <li><a href="{% url 'signout' %}">sign out</a></li>
                                 </ul>
                             </li>
                         </ul>
                     {% else %}
                         <div class="nav navbar-right" style="margin-right:3px;">
-                            <a href="{% url 'login' %}" class="btn btn-default navbar-btn" role="button">log in</a>
+                            <a href="{% url 'signin' %}" class="btn btn-default navbar-btn" role="button">sign in</a>
                         </div>
                     {% endif %}
                 </div>

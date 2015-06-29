@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def categories(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     categories = Category.objects.filter(entry__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_category.name)'}).order_by('lname')
@@ -27,7 +27,7 @@ def categories(request):
 
     return render(request, 'ledger/accounts/category/categories.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def category(request, slug):
     category = get_object_or_404(Category, slug=slug)
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -40,7 +40,7 @@ def category(request, slug):
         years = [y.strftime('%Y') for y in category.entry_set.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/category/category.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def entries(request, slug):
     category = get_object_or_404(Category, slug=slug)
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -59,7 +59,7 @@ def entries(request, slug):
         entries = category.entry_set.filter(account__ledger=ledger).order_by('day').reverse()
     return render(request, 'ledger/accounts/category/entries.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     category = get_object_or_404(Category, slug=slug)
@@ -69,7 +69,7 @@ def statistics(request, slug):
         years = [y.strftime('%Y') for y in category.entry_set.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/category/statistics.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 @csrf_protect
 def edit(request, slug):
     category = get_object_or_404(Category, slug=slug)
@@ -85,7 +85,7 @@ def edit(request, slug):
         form = CategoryForm(instance=category)
         return render(request, 'ledger/accounts/category/form.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 @csrf_protect
 def delete(request, slug):
     category = get_object_or_404(Category, slug=slug)

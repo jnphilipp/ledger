@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from json import dumps
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def statistics(request, slug):
     year = request.GET.get('year')
     category = get_object_or_404(Category, slug=slug)

@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def tags(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_tag.name)'}).order_by('lname')
@@ -29,7 +29,7 @@ def tags(request):
 
     return render(request, 'ledger/accounts/tag/tags.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def tag(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -42,7 +42,7 @@ def tag(request, slug):
         years = [y.strftime('%Y') for y in tag.entries.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/tag/tag.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def entries(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -63,7 +63,7 @@ def entries(request, slug):
         entries = tag.entries.filter(account__ledger=ledger).order_by('day').reverse()
     return render(request, 'ledger/accounts/tag/entries.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -73,7 +73,7 @@ def statistics(request, slug):
         years = [y.strftime('%Y') for y in tag.entries.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/tag/statistics.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 @csrf_protect
 def edit(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
@@ -89,7 +89,7 @@ def edit(request, slug):
         form = TagForm(instance=tag)
         return render(request, 'ledger/accounts/tag/form.html', locals())
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 @csrf_protect
 def delete(request, slug):
     tag = get_object_or_404(Tag, slug=slug)

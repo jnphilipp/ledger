@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from json import dumps
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def categories(request):
     month = request.GET.get('month')
     year = request.GET.get('year')
@@ -52,7 +52,7 @@ def categories(request):
     mimetype = 'application/json'
     return HttpResponse(dumps(data), mimetype)
 
-@login_required(login_url='/login/')
+@login_required(login_url='/signin/')
 def tags(request):
     month = request.GET.get('month')
     year = request.GET.get('year')
