@@ -84,7 +84,7 @@ class TagAdmin(admin.ModelAdmin):
     ]
 
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('name', 'symbol', 'updated_at')
+    list_display = ('name', 'symbol', 'precision', 'updated_at')
     readonly_fields = ('slug',)
     search_fields = ('name', 'symbol')
 
@@ -93,7 +93,7 @@ class UnitAdmin(admin.ModelAdmin):
     }
 
     fieldsets = [
-        (None, {'fields': ['slug', 'name', 'symbol']}),
+        (None, {'fields': ['slug', 'name', 'symbol', 'precision']}),
     ]
 
 admin.site.register(Account, AccountAdmin)

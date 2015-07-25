@@ -14,6 +14,7 @@ class Unit(models.Model):
     name = TextFieldSingleLine(unique=True)
     slug = models.SlugField(unique=True)
     symbol = TextFieldSingleLine(unique=True)
+    precision = models.PositiveIntegerField(default=2)
 
     def save(self, *args, **kwargs):
         if not self.slug:

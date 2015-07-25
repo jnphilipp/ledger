@@ -104,12 +104,13 @@ class TagForm(forms.ModelForm):
 class UnitForm(forms.ModelForm):
     class Meta:
         model = Unit
-        fields = ('name','symbol')
+        fields = ('name', 'symbol', 'precision')
 
     def __init__(self, *args, **kwargs):
         super(UnitForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['symbol'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+        self.fields['precision'].widget = forms.NumberInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
 class AccountFilterForm(forms.Form):
     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)

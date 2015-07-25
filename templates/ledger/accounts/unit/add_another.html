@@ -15,8 +15,8 @@
 
             {% for field in form %}
                 <div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
-                    <label class="col-sm-2 control-label{% if field.field.required %} required{% endif %}" for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 control-label{% if field.field.required %} required{% endif %}" for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
+                    <div class="col-sm-9">
                         {{ field }}
                         <span class="help-block">{{ field.help_text|lower }}</span>
                         <span class="help-block">{{ field.errors|lower }}</span>
@@ -25,7 +25,7 @@
             {% endfor %}
 
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-3 col-sm-9">
                     <button class="btn btn-primary" type="submit">save</button>
                 </div>
             </div>

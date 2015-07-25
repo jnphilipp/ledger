@@ -7,16 +7,16 @@ from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
 
 @register.filter
-def floatdot(value, decimal_pos=2):
+def floatdot(value, precision=2):
     if not value:
-        return format(0, ",", decimal_pos)
+        return format(0, ",", precision)
     else:
-        return format(round(value, decimal_pos), ",", decimal_pos)
+        return format(round(value, precision), ",", precision)
 floatdot.is_safe = True
 
 @register.filter(needs_autoescape=True)
-def colorfy(amount, currency=None, autoescape=None):
-    return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, 2), currency.symbol if currency else ''))
+def colorfy(amount, unit=None, autoescape=None):
+    return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, unit.precision), unit.symbol if unit else ''))
 
 @register.filter(needs_autoescape=True)
 def balance(account, autoescape=None):
