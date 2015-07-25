@@ -42,7 +42,7 @@
                                         <li><a href="{% url 'account' account.slug %}">{{ account|lower }}</a></li>
                                     {% endfor %}
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="{% url 'account_add' %}"><i class="ui-icon ui-icon-black ui-icon-circle-plus" style="float:left;margin-top:2px;"></i> add account</a></li>
+                                    <li><a href="{% url 'account_add' %}"><span class="glyphicon glyphicon-plus"></span> add account</a></li>
                                 </ul>
                             </li>
                             {% url 'categories' as categories_url %}

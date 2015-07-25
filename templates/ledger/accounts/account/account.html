@@ -14,8 +14,8 @@
         <div class="page-header">
             <h1>{{ account.name|lower }}
                 <small class="pull-right">
-                    <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
-                    <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+                    <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> edit</a>
+                    <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> delete</a>
                 </small>
             </h1>
         </div>
@@ -27,8 +27,8 @@
             <small>
                 <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
                 <div class="pull-right">
-                    <a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add entry</a>
-                    <a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><i class="ui-icon ui-icon-white ui-icon-circle-plus" style="float:left;margin-top:2px;"></i>add standing entry</a>
+                    <a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><span class="glyphicon glyphicon-plus"></span> add entry</a>
+                    <a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><span class="glyphicon glyphicon-plus"></span> add standing entry</a>
                 </div>
             </small>
         </h2>
