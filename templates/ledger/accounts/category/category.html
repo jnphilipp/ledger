@@ -14,8 +14,8 @@
                 <small>
                     <b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
                     <div class="pull-right">
-                        <a href="{% url 'category_edit' category.slug  %}" class="btn btn-primary" role="button"><i class="ui-icon ui-icon-white ui-icon-pencil" style="float:left;margin-top:2px;"></i>edit</a>
-                        <a href="{% url 'category_delete' category.slug  %}" class="btn btn-danger" role="button"><i class="ui-icon ui-icon-white ui-icon-trash" style="float:left;margin-top:2px;"></i>delete</a>
+                        <a href="{% url 'category_edit' category.slug  %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> edit</a>
+                        <a href="{% url 'category_delete' category.slug  %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> delete</a>
                     </div>
                 </small>
             </h1>
