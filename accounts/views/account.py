@@ -38,7 +38,7 @@ def entries(request, slug):
                 entries = entries.filter(tags__in=form.cleaned_data['tags'])
     else:
         form = AccountFilterForm()
-        entries = account.entry_set.filter(day__lt=get_last_date_current_month()).reverse()
+        entries = account.entry_set.filter(day__lte=get_last_date_current_month()).reverse()
     return render(request, 'ledger/accounts/account/entries.html', locals())
 
 @login_required(login_url='/signin/')
