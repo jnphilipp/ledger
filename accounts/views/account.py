@@ -20,7 +20,7 @@ def dashboard(request):
 @login_required(login_url='/signin/')
 def account(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
-    entries = account.entry_set.filter(day__lt=get_last_date_current_month()).reverse()[:5]
+    entries = account.entry_set.filter(day__lte=get_last_date_current_month()).reverse()[:5]
     return render(request, 'ledger/accounts/account/account.html', locals())
 
 @login_required(login_url='/signin/')
