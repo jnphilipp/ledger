@@ -24,7 +24,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <h2 class="page-header"><a href="{% url 'tag_statistics' tag.slug %}">statistics</a>{% if year %} <small><a href="{% url 'tag' tag.slug %}">{{ year }}</a></small>{% endif %}</h2>
+        <h2 class="page-header"><a href="{% url 'tag_statistics' tag.slug %}?chart=accounts">statistics</a> <small>accounts{% if year %} | <a href="{% url 'tag' tag.slug %}">{{ year }}</a>{% endif %}</small></h2>
 
         {% if years %}
             <div class="btn-group">
@@ -42,7 +42,7 @@
         <div id="mchart" style="min-width: 310px; height: 500px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
-                var url = "{% url 'tag_charts_statistics' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
+                var url = "{% url 'tag_charts_statistics_accounts' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
                 statistics(url, 'mchart');
             });
         </script>

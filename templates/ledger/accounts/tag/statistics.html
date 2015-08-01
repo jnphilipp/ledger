@@ -14,14 +14,30 @@
                 <a href="{% url 'tag' tag.slug %}">{{ tag|lower }}</a>
                 <small>
                     statistics
-                    {% if year %}
-                        | <a href="{% url 'tag_statistics' tag.slug %}">{{ year }}</a>
+                    {% if chart %}
+                        | <a href="{% url 'tag_statistics' tag.slug %}">{{ chart }}</a>
+                        {% if year %}
+                            | <a href="{% url 'tag_statistics' tag.slug %}?chart={{ chart }}">{{ year }}</a>
+                        {% endif %}
                     {% endif %}
                 </small>
             </h1>
         </div>
     </div>
 </div>
+{% if not chart %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group" style="margin-left: 5px;">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">select chart <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="{% url 'tag_statistics' tag.slug %}?chart=accounts">accounts</a></li>
+                    <li><a href="{% url 'tag_statistics' tag.slug %}?chart=categories">categories</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% if years %}
     <div class="row">
         <div class="col-md-12">
@@ -29,22 +45,24 @@
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">select year <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     {% for year in years %}
-                        <li><a href="{% url 'tag_statistics' tag.slug %}?year={{ year }}">{{ year }}</a></li>
+                        <li><a href="{% url 'tag_statistics' tag.slug %}?chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
 {% endif %}
-<div class="row">
-    <div class="col-md-12">
-        <div id="chart" style="min-width: 310px; height: 750px;"></div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var url = "{% url 'tag_charts_statistics' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
-                statistics(url, 'chart');
-            });
-        </script>
+{% if chart == 'accounts' or chart == 'categories' %}
+    <div class="row">
+        <div class="col-md-12">
+            <div id="chart" style="min-width: 310px; height: 750px;"></div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    var url = "{% if chart == 'accounts' %}{% url 'tag_charts_statistics_accounts' tag.slug %}{% else %}{% url 'tag_charts_statistics_categories' tag.slug %}{% endif %}{% if year %}?year={{ year }}{% endif %}";
+                    statistics(url, 'chart');
+                });
+            </script>
+        </div>
     </div>
-</div>
+{% endif %}
 {% endblock %}

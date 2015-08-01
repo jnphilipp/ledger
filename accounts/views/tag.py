@@ -67,9 +67,10 @@ def entries(request, slug):
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
+    chart = request.GET.get('chart')
     year = request.GET.get('year')
 
-    if not year:
+    if chart and not year:
         years = [y.strftime('%Y') for y in tag.entries.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/tag/statistics.html', locals())
 
