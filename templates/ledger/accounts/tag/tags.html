@@ -24,28 +24,30 @@
 </div>
 <div class="row" style="margin-top: 10px;">
     <div class="col-md-12">
-        <table class="table table-striped table-hover table-bordered">
-            <thead>
-                <tr>
-                    <th>tag</th>
-                    <th>accounts</th>
-                    <th>number of entries</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for tag in tags %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
                     <tr>
-                        <td><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></td>
-                        <td>
-                            {% for account in tag|accounts:request.user %}
-                                <a href="{% url 'account' account.slug %}">{{ account|lower }}</a>{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td>{{ tag.entries.count }}</td>
+                        <th>tag</th>
+                        <th>accounts</th>
+                        <th>number of entries</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for tag in tags %}
+                        <tr>
+                            <td><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></td>
+                            <td>
+                                {% for account in tag|accounts:request.user %}
+                                    <a href="{% url 'account' account.slug %}">{{ account|lower }}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>{{ tag.entries.count }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

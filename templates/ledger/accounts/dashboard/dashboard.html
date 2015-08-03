@@ -10,48 +10,60 @@
 <div class="row">
     <div class="col-md-12">
         {% if accounts %}
-            <h2 class="page-header">balance</h2>
-            <table class="table table-striped table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th>unit</th>
-                        <th>sum balance</th>
-                        <th>sum outstanding</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for unit in units %}
-                        <tr>
-                            <th>{{ unit|lower }}</th>
-                            <td class="text-right">{{ unit|sumbalance:request.user }}</td>
-                            <td class="text-right">{{ unit|sumoutstanding:request.user }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <h2 class="page-header">accounts</h2>
-            <table class="table table-striped table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th>account</th>
-                        <th>balance</th>
-                        <th>outstanding</th>
-                        <th>number of entries</th>
-                        <th>last entry</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for account in accounts %}
-                        <tr>
-                            <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
-                            <td class="text-right">{{ account|balance }}</td>
-                            <td class="text-right">{{ account|outstanding }}</td>
-                            <td>{{ account.entry_set.count }}</td>
-                            <td>{{ account.entry_set.last.day|date:'l, d. F Y' }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title">balance</h1>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>unit</th>
+                                <th>sum balance</th>
+                                <th>sum outstanding</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for unit in units %}
+                                <tr>
+                                    <th>{{ unit|lower }}</th>
+                                    <td class="text-right">{{ unit|sumbalance:request.user }}</td>
+                                    <td class="text-right">{{ unit|sumoutstanding:request.user }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title">accounts</h1>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-condensed table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>account</th>
+                                <th>balance</th>
+                                <th>outstanding</th>
+                                <th>number of entries</th>
+                                <th>last entry</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for account in accounts %}
+                                <tr>
+                                    <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
+                                    <td class="text-right">{{ account|balance }}</td>
+                                    <td class="text-right">{{ account|outstanding }}</td>
+                                    <td>{{ account.entry_set.count }}</td>
+                                    <td>{{ account.entry_set.last.day|date:'l, d. F Y' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         {% else %}
             <p>No accounts are available.</p>
         {% endif %}
