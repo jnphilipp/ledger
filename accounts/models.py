@@ -130,7 +130,7 @@ class Entry(models.Model):
             orig = Entry.objects.get(id=self.id)
             if orig.day != self.day:
                 move = True
-        if not self.id:
+        if not self.id or move:
             if Entry.objects.filter(account=self.account).filter(day__lte=self.day).exists():
                 next_serial_number = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last().serial_number + 1
             else:

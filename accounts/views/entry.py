@@ -42,10 +42,14 @@ def edit(request, slug, entry_id):
     if request.method == 'POST':
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
+            no = entry.serial_number
             form.instance.account = account
             entry = form.save()
 
-            messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully updated.' % entry.serial_number)
+            if no == entry.serial_number:
+                messages.add_message(request, messages.SUCCESS, 'entry "%s" was successfully updated.' % entry.serial_number)
+            else:
+                messages.add_message(request, messages.SUCCESS, 'entry "%s" was successfully updated and moved to "%s".' % (no, entry.serial_number))
             response = redirect('account_entries', slug=account.slug)
             if page: response['Location'] += '?page=%s' % page
             return response
