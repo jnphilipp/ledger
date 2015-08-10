@@ -1,7 +1,8 @@
 from app.forms import AuthenticationForm
 from app.models import Ledger
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, views
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 
@@ -33,3 +34,11 @@ def signin(request):
     else:
         form = AuthenticationForm(request)
         return render(request, 'registration/login.html', locals())
+
+@csrf_protect
+def password_reset(request):
+    return views.password_reset(request, post_reset_redirect=reverse('signin'))
+
+@csrf_protect
+def password_reset_confirm(request, uidb64=None, token=None):
+    return views.password_reset_confirm(request, uidb64=uidb64, token=token, post_reset_redirect=reverse('signin'))
