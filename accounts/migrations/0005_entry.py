@@ -22,8 +22,8 @@ class Migration(migrations.Migration):
                 ('day', models.DateField()),
                 ('amount', models.FloatField(default=0)),
                 ('additional', accounts.models.TextFieldSingleLine(blank=True, null=True)),
-                ('account', models.ForeignKey(to='accounts.Account')),
-                ('category', models.ForeignKey(to='accounts.Category')),
+                ('account', models.ForeignKey(to='accounts.Account', related_name='entries')),
+                ('category', models.ForeignKey(to='accounts.Category', related_name='entries')),
                 ('tags', models.ManyToManyField(related_name='entries', blank=True, to='accounts.Tag')),
             ],
             options={

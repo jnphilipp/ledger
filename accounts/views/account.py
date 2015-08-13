@@ -20,7 +20,7 @@ def dashboard(request):
 @login_required(login_url='/signin/')
 def account(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
-    entries = account.entry_set.filter(day__lte=get_last_date_current_month()).reverse()[:5]
+    entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:5]
     return render(request, 'ledger/accounts/account/account.html', locals())
 
 @login_required(login_url='/signin/')
@@ -30,7 +30,7 @@ def entries(request, slug):
 
     if request.method == 'POST':
         form = AccountFilterForm(request.POST)
-        entries = account.entry_set.all().reverse()
+        entries = account.entries.all().reverse()
         if form.is_valid():
             if form.cleaned_data['categories']:
                 entries = entries.filter(category__in=form.cleaned_data['categories'])
@@ -38,7 +38,7 @@ def entries(request, slug):
                 entries = entries.filter(tags__in=form.cleaned_data['tags'])
     else:
         form = AccountFilterForm()
-        entries = account.entry_set.filter(day__lte=get_last_date_current_month()).reverse()
+        entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()
     return render(request, 'ledger/accounts/account/entries.html', locals())
 
 @login_required(login_url='/signin/')
@@ -58,14 +58,14 @@ def statistics(request, slug):
         option_name = 'chart'
         options = [{'id':'categories', 'key':'chart', 'value':'categories'}, {'id':'tags', 'key':'chart', 'value':'tags'}]
     elif chart and not year:
-        years = account.entry_set.dates('day', 'year')
+        years = account.entries.dates('day', 'year')
         if chart == 'tags':
             years = years.filter(tags__isnull=False)
 
         option_name = 'year'
         options = [{'id':year.strftime('%Y'), 'key':'year', 'value':year.strftime('%Y')} for year in years]
     elif chart and year and not month:
-        months = account.entry_set.filter(day__year=year).dates('day', 'month')
+        months = account.entries.filter(day__year=year).dates('day', 'month')
         if chart == 'tags':
             months = months.filter(tags__isnull=False)
 
@@ -74,7 +74,7 @@ def statistics(request, slug):
     elif chart and year and month and not category and not tag:
         if chart == 'categories':
             option_name = 'category'
-            options = [{'id':category.slug, 'key':'category', 'value':category.name.lower()} for category in Category.objects.filter(Q(entry__account=account) & Q(entry__day__year=year) & Q(entry__day__month=month)).distinct()]
+            options = [{'id':category.slug, 'key':'category', 'value':category.name.lower()} for category in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
         elif chart == 'tags':
             option_name = 'tag'
             options = [{'id':tag.slug, 'key':'tag', 'value':tag.name.lower()} for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]

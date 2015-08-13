@@ -21,7 +21,7 @@ def accounts(request, slug):
         data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
 
         series = []
-        for account in Account.objects.filter(Q(entry__tags=tag) & Q(ledgers=ledger) & Q(entry__day__year=year)).distinct():
+        for account in Account.objects.filter(Q(entries__tags=tag) & Q(ledgers=ledger) & Q(entries__day__year=year)).distinct():
             series.append({'name':account.name.lower(), 'data':[[m.strftime('%B'), tag.entries.filter(Q(account=account) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
 
         for unit in units:
@@ -37,7 +37,7 @@ def accounts(request, slug):
 
         series = []
 
-        for account in Account.objects.filter(Q(entry__tags=tag) & Q(ledgers=ledger)).distinct():
+        for account in Account.objects.filter(Q(entries__tags=tag) & Q(ledgers=ledger)).distinct():
             series.append({'name':account.name.lower(), 'data':[[y.strftime('%Y'), tag.entries.filter(Q(account=account) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
 
         for unit in units:
@@ -62,7 +62,7 @@ def categories(request, slug):
         data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
 
         series = []
-        for category in Category.objects.filter(Q(entry__tags=tag) & Q(entry__account__ledgers=ledger) & Q(entry__day__year=year)).distinct():
+        for category in Category.objects.filter(Q(entries__tags=tag) & Q(entries__account__ledgers=ledger) & Q(entries__day__year=year)).distinct():
             for unit in units:
                 series.append({'name':category.name.lower(), 'data':[[m.strftime('%B'), tag.entries.filter(Q(category=category) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months], 'tooltip':{'valueSuffix':unit.symbol}, 'type':'column', 'stack':unit.name.lower()})
 
@@ -79,7 +79,7 @@ def categories(request, slug):
 
         series = []
 
-        for category in Category.objects.filter(Q(entry__tags=tag) & Q(entry__account__ledgers=ledger)).distinct():
+        for category in Category.objects.filter(Q(entries__tags=tag) & Q(entries__account__ledgers=ledger)).distinct():
             for unit in units:
                 series.append({'name':category.name.lower(), 'data':[[y.strftime('%Y'), tag.entries.filter(Q(category=category) & Q(account__unit=unit) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years], 'tooltip':{'valueSuffix':unit.symbol}, 'type':'column', 'stack':unit.name.lower()})
 

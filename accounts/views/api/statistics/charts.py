@@ -23,8 +23,8 @@ def categories(request):
         data['tooltip'] = {'valueSuffix':unit.symbol}
 
         series = []
-        for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & Q(entry__day__year=year) & Q(entry__day__month=month)).distinct():
-                series.append({'name':category.name.lower(), 'data':[['%s. %s' % (d.strftime('%d'), d.strftime('%B')), category.entry_set.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]})
+        for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct():
+                series.append({'name':category.name.lower(), 'data':[['%s. %s' % (d.strftime('%d'), d.strftime('%B')), category.entries.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]})
         data['series'] = series
     elif year:
         months = Entry.objects.filter(Q(account__in=ledger.accounts.filter(unit=unit)) & Q(day__year=year)).dates('day', 'month')
@@ -34,8 +34,8 @@ def categories(request):
         data['tooltip'] = {'valueSuffix':unit.symbol}
 
         series = []
-        for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit) & Q(entry__day__year=year)).distinct():
-                series.append({'name':category.name.lower(), 'data':[[m.strftime('%B'), category.entry_set.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months]})
+        for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit) & Q(entries__day__year=year)).distinct():
+                series.append({'name':category.name.lower(), 'data':[[m.strftime('%B'), category.entries.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months]})
         data['series'] = series
     else:
         years = Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).dates('day', 'year')
@@ -45,8 +45,8 @@ def categories(request):
         data['tooltip'] = {'valueSuffix':unit.symbol}
 
         series = []
-        for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entry__account__in=ledger.accounts.all()) & Q(entry__account__unit=unit)).distinct():
-                series.append({'name':category.name.lower(), 'data':[[y.strftime('%Y'), category.entry_set.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years]})
+        for category in Category.objects.exclude(account__in=ledger.accounts.all()).filter(Q(entries__account__in=ledger.accounts.all()) & Q(entries__account__unit=unit)).distinct():
+                series.append({'name':category.name.lower(), 'data':[[y.strftime('%Y'), category.entries.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years]})
         data['series'] = series
 
     mimetype = 'application/json'

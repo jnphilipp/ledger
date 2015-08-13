@@ -11,17 +11,17 @@ from django.views.decorators.csrf import csrf_protect
 @login_required(login_url='/signin/')
 def categories(request):
     ledger = get_object_or_404(Ledger, user=request.user)
-    categories = Category.objects.filter(entry__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_category.name)'}).order_by('lname')
+    categories = Category.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_category.name)'}).order_by('lname')
 
     if request.method == 'POST':
         form = CategoryFilterForm(request.POST)
         if form.is_valid():
             if form.cleaned_data['accounts']:
-                categories = categories.filter(entry__account__in=form.cleaned_data['accounts'])
+                categories = categories.filter(entries__account__in=form.cleaned_data['accounts'])
             if form.cleaned_data['categories']:
                 categories = categories.filter(id__in=form.cleaned_data['categories'])
             if form.cleaned_data['tags']:
-                categories = categories.filter(entry__tags__in=form.cleaned_data['tags'])
+                categories = categories.filter(entries__tags__in=form.cleaned_data['tags'])
     else:
         form = CategoryFilterForm()
 
@@ -33,22 +33,22 @@ def category(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     year = request.GET.get('year')
 
-    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(category.entry_set.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
-    entries = category.entry_set.filter(account__ledger=ledger).order_by('day').reverse()[:5]
+    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entries.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(category.entries.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
+    entries = category.entries.filter(account__ledger=ledger).order_by('day').reverse()[:5]
 
     if not year:
-        years = [y.strftime('%Y') for y in category.entry_set.filter(account__ledger=ledger).dates('day', 'year')]
+        years = [y.strftime('%Y') for y in category.entries.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/category/category.html', locals())
 
 @login_required(login_url='/signin/')
 def entries(request, slug):
     category = get_object_or_404(Category, slug=slug)
     ledger = get_object_or_404(Ledger, user=request.user)
-    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entry_set.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(category.entry_set.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
+    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entries.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(category.entries.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
 
     if request.method == 'POST':
         form = CategoryFilterForm(request.POST)
-        entries = category.entry_set.all().reverse()
+        entries = category.entries.all().reverse()
         if form.is_valid():
             if form.cleaned_data['accounts']:
                 entries = entries.filter(account__in=form.cleaned_data['accounts'])
@@ -56,7 +56,7 @@ def entries(request, slug):
                 entries = entries.filter(tags__in=form.cleaned_data['tags'])
     else:
         form = CategoryFilterForm()
-        entries = category.entry_set.filter(account__ledger=ledger).order_by('day').reverse()
+        entries = category.entries.filter(account__ledger=ledger).order_by('day').reverse()
     return render(request, 'ledger/accounts/category/entries.html', locals())
 
 @login_required(login_url='/signin/')
@@ -66,7 +66,7 @@ def statistics(request, slug):
     year = request.GET.get('year')
 
     if not year:
-        years = [y.strftime('%Y') for y in category.entry_set.filter(account__ledger=ledger).dates('day', 'year')]
+        years = [y.strftime('%Y') for y in category.entries.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'ledger/accounts/category/statistics.html', locals())
 
 @login_required(login_url='/signin/')

@@ -20,20 +20,20 @@ def colorfy(amount, unit=None, autoescape=None):
 
 @register.filter(needs_autoescape=True)
 def balance(account, autoescape=None):
-    balance = sum(entry.amount for entry in account.entry_set.filter(day__lte=date.today()))
+    balance = sum(entry.amount for entry in account.entries.filter(day__lte=date.today()))
     return colorfy(balance, account.unit) if autoescape else balance
 
 @register.filter(needs_autoescape=True)
 def outstanding(account, autoescape=None):
-    outstanding = sum(entry.amount for entry in account.entry_set.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
+    outstanding = sum(entry.amount for entry in account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
     return colorfy(outstanding, account.unit) if autoescape else outstanding
 
 @register.filter
 def accounts(obj, user):
     if isinstance(obj, Category):
-        return Account.objects.filter(Q(entry__in=obj.entry_set.all()) & Q(ledgers__user=user)).distinct()
+        return Account.objects.filter(Q(entries__in=obj.entries.all()) & Q(ledgers__user=user)).distinct()
     elif isinstance(obj, Tag):
-        return Account.objects.filter(Q(entry__in=obj.entries.all()) & Q(ledgers__user=user)).distinct()
+        return Account.objects.filter(Q(entries__in=obj.entries.all()) & Q(ledgers__user=user)).distinct()
     else:
         return []
 

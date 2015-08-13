@@ -116,11 +116,11 @@ class Entry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, related_name='entries')
     serial_number = models.IntegerField()
     day = models.DateField()
     amount = models.FloatField(default=0)
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, related_name='entries')
     additional = TextFieldSingleLine(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name='entries')
 
