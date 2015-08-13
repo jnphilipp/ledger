@@ -49,7 +49,7 @@ class EntryForm(autocomplete_light.ModelForm):
         super(EntryForm, self).__init__(*args, **kwargs)
         self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'additional'})
         self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'})
-        self.fields['amount'].widget = forms.NumberInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control', 'placeholder':'0.00'})
+        self.fields['amount'].widget = forms.TextInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control', 'placeholder':'0.00'})
 
 class StandingEntryForm(autocomplete_light.ModelForm):
     start_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'}))
@@ -64,7 +64,7 @@ class StandingEntryForm(autocomplete_light.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StandingEntryForm, self).__init__(*args, **kwargs)
         self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
-        self.fields['amount'].widget = forms.NumberInput(attrs={'step':'none', 'autocomplete':'off', 'class':'form-control'})
+        self.fields['amount'].widget = forms.TextInput(attrs={'step':'none', 'autocomplete':'off', 'class':'form-control'})
 
     def save(self, commit=True):
         instance = super(StandingEntryForm, self).save(commit=False)
