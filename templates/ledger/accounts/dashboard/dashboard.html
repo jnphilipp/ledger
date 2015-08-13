@@ -56,8 +56,8 @@
                                     <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
                                     <td class="text-right">{{ account|balance }}</td>
                                     <td class="text-right">{{ account|outstanding }}</td>
-                                    <td>{{ account.entry_set.count }}</td>
-                                    <td>{{ account.entry_set.last.day|date:'l, d. F Y' }}</td>
+                                    <td>{{ account.entries.count }}</td>
+                                    <td>{{ account.entries.last.day|date:'l, d. F Y' }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

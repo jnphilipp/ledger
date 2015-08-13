@@ -42,7 +42,7 @@
                                     <a href="{% url 'account' account.slug %}">{{ account|lower }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
-                            <td>{{ category.entry_set.count }}</td>
+                            <td class="text-right">{{ category.entries.count }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

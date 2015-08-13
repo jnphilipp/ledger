@@ -8,6 +8,9 @@ a:active {position: relative;
     top: 1px;
     right: -1px;}
 
+.panel .panel-heading a.panel-title {color: #337ab7;}
+.panel .panel-heading .panel-title a {color: #337ab7;}
+
 
 
 /*### form ###*/

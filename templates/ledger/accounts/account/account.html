@@ -21,26 +21,28 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="page-header"><a href="{% url 'account_entries' account.slug %}">entries</a>
-            <small>
-                <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
-                <div class="pull-right">
-                    <a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><span class="glyphicon glyphicon-plus"></span> add entry</a>
-                    <a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><span class="glyphicon glyphicon-plus"></span> add standing entry</a>
-                </div>
-            </small>
-        </h2>
-        {% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a class="panel-title" href="{% url 'account_entries' account.slug %}">entries</a>
     </div>
+    <div class="panel-body">
+        <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
+        <div class="pull-right">
+            <a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><span class="glyphicon glyphicon-plus"></span> add entry</a>
+            <a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><span class="glyphicon glyphicon-plus"></span> add standing entry</a>
+        </div>
+    </div>
+    {% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="page-header"><a href="{% url 'account_statistics' account.slug %}?chart=categories">statistics</a>
-            <small>categories</small>
-        </h2>
-        <div id="ascchart" style="min-width: 310px; height: 400px;"></div>
+{% if account.entries.exists %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a href="{% url 'account_statistics' account.slug %}?chart=categories">statistics</a>
+                <small>categories</small>
+            </h1>
+        </div>
+        <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 var ascchart_url = "{% url 'account_charts_statistics_categories' account.slug %}";
@@ -48,13 +50,14 @@
             });
         </script>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="page-header"><a href="{% url 'account_statistics' account.slug %}?chart=tags">statistics</a>
-            <small>tags</small>
-        </h2>
-        <div id="astchart" style="min-width: 310px; height: 400px;"></div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a href="{% url 'account_statistics' account.slug %}?chart=tags">statistics</a>
+                <small>tags</small>
+            </h1>
+        </div>
+        <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 var astchart_url = "{% url 'account_charts_statistics_tags' account.slug %}";
@@ -62,11 +65,11 @@
             });
         </script>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="page-header"><a href="{% url 'categories' %}">categories</a></h2>
-        <div id="cchart" style="min-width: 310px; height: 400px;"></div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="panel-title" href="{% url 'categories' %}">categories</a>
+        </div>
+        <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 var cchart_url = "{% url 'account_chart_categories' account.slug %}";
@@ -74,11 +77,11 @@
             });
         </script>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="page-header"><a href="{% url 'tags' %}">tags</a></h2>
-        <div id="tchart" style="min-width: 310px; height: 400px;"></div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="panel-title" href="{% url 'tags' %}">tags</a>
+        </div>
+        <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 var tchart_url = "{% url 'account_chart_tags' account.slug %}";
@@ -86,5 +89,5 @@
             });
         </script>
     </div>
-</div>
+{% endif %}
 {% endblock %}
