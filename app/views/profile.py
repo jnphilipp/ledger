@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
 
-@login_required(login_url='/signin/')
 @csrf_protect
+@login_required(login_url='/profile/signin/')
 def profile(request):
     print('profile')
     if request.method == 'POST':

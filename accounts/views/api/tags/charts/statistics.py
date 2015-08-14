@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from json import dumps
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 def accounts(request, slug):
     year = request.GET.get('year')
     tag = get_object_or_404(Tag, slug=slug)
@@ -47,7 +47,7 @@ def accounts(request, slug):
         data['series'] = series
     return HttpResponse(dumps(data), 'application/json')
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 def categories(request, slug):
     year = request.GET.get('year')
     tag = get_object_or_404(Tag, slug=slug)

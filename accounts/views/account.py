@@ -11,19 +11,19 @@ from django.db.models import Count, Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 def dashboard(request):
     accounts = Account.objects.filter(ledger__user=request.user)
     units = Unit.objects.filter(account__in=accounts).distinct()
     return render(request, 'ledger/accounts/dashboard/dashboard.html', locals())
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 def account(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
     entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:5]
     return render(request, 'ledger/accounts/account/account.html', locals())
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 @csrf_protect
 def entries(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
@@ -41,7 +41,7 @@ def entries(request, slug):
         entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()
     return render(request, 'ledger/accounts/account/entries.html', locals())
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
@@ -85,7 +85,7 @@ def statistics(request, slug):
 
     return render(request, 'ledger/accounts/account/statistics.html', locals())
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 @csrf_protect
 def add(request):
     if request.method == 'POST':
@@ -103,7 +103,7 @@ def add(request):
         form = AccountForm()
         return render(request, 'ledger/accounts/account/form.html', locals())
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 @csrf_protect
 def edit(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
@@ -119,7 +119,7 @@ def edit(request, slug):
         form = AccountForm(instance=account)
         return render(request, 'ledger/accounts/account/form.html', locals())
 
-@login_required(login_url='/signin/')
+@login_required(login_url='/profile/signin/')
 @csrf_protect
 def delete(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
