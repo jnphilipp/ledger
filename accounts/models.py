@@ -97,7 +97,7 @@ class Account(models.Model):
         return reverse('account', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.balance = sum(entry.amount for entry in self.entry_set.all())
+        self.balance = sum(entry.amount for entry in self.entries.all())
         if not self.slug:
             self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
         else:
