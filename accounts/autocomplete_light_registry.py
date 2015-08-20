@@ -31,7 +31,7 @@ class CategoryAutocomplete(autocomplete_light.AutocompleteModelBase):
     }
 
     def choices_for_request(self):
-        self.choices = self.choices.filter(Q(entry__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user)).distinct()
+        self.choices = self.choices.filter(Q(entries__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user)).distinct()
         return super(CategoryAutocomplete, self).choices_for_request()
 
     def choice_html(self, choice):
@@ -87,7 +87,7 @@ class CategoryFilter(autocomplete_light.AutocompleteModelBase):
     }
 
     def choices_for_request(self):
-        self.choices = self.choices.filter(Q(entry__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user)).distinct()
+        self.choices = self.choices.filter(Q(entries__account__ledger__user=self.request.user) | Q(account__ledger__user=self.request.user)).distinct()
         return super(CategoryFilter, self).choices_for_request()
 
     def choice_html(self, choice):
