@@ -32,7 +32,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = config.getboolean('secrets','SESSION_EXPIRE_AT
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config.getboolean('debug','DEBUG')
-TEMPLATE_DEBUG = config.getboolean('debug','TEMPLATE_DEBUG')
 
 ALLOWED_HOSTS = config.get('host','ALLOWED_HOSTS').split()
 ADMINS = tuple(config.items('admins'))
@@ -84,6 +83,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': config.getboolean('debug','TEMPLATE_DEBUG'),
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',

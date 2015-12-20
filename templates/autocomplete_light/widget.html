@@ -1,7 +1,6 @@
 {% load i18n l10n %}
 {% load staticfiles %}
 {% load autocomplete_light_tags %}
-{% load url from future %}
 
 {% block widget_open %}
 <span id="{{ widget.html_id }}-wrapper" {{ widget_attrs }} >
@@ -25,7 +24,7 @@
     {# A link to add a new choice using a popup #}
     {% if autocomplete.add_another_url_name %}
     <a href="{% block add_another_href %}{{ autocomplete.get_add_another_url }}{% endblock %}" class="autocomplete-add-another" id="add_{{ widget.html_id }}" style="display:none;">
-        <img src="{% static 'admin/img/icon_addlink.gif' %}" width="10" height="10" alt="{% trans 'Add another' %}" />
+        <img src="{% static 'admin/img/icon-addlink.svg' %}" width="10" height="10" alt="{% trans 'Add another' %}" />
     </a>
     {% endif %}
 {% endblock %}
@@ -41,10 +40,10 @@
 
 {% block remove_template %}
     {# a hidden element that serves as template for the 'remove from deck' button #}
-    <a style="display:none" class="remove">
+    <span style="display:none" class="remove">
         {# This will be appended to choices on the deck, it's the remove button #}
         ˣ
-    </a>
+    </span>
 {% endblock %}
 
 {% block choice_template %}

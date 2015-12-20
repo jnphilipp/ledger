@@ -1,7 +1,7 @@
 from accounts.models import Account, Category, Tag, Unit
 from django.db.models import Q
 
-import autocomplete_light
+from autocomplete_light import shortcuts as autocomplete_light
 
 class Autocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields=['name']

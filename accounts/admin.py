@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db.models import Count
 from django.forms import TextInput
 
-import autocomplete_light
+from autocomplete_light import shortcuts as autocomplete_light
 
 class AccountAdmin(admin.ModelAdmin):
     def get_ledgers(self, obj):

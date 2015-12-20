@@ -5,7 +5,7 @@ from django import forms
 from django.contrib.admin import site, widgets
 from django.db import models
 
-import autocomplete_light
+from autocomplete_light import shortcuts as autocomplete_light
 
 class AccountForm(autocomplete_light.ModelForm):
     class Meta:
