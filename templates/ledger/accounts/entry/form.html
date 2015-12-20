@@ -5,10 +5,25 @@
 <script>
     $(function() {
         {% if 'standing' in request.path %}
-            $('#id_start_date').datepicker({dateFormat:'yy-mm-dd'});
-            $('#id_end_date').datepicker({dateFormat:'yy-mm-dd'});
+            $('#id_start_date').datepicker({
+                dateFormat:'yy-mm-dd',
+                firstDay: 1,
+                showOtherMonths: true,
+                selectOtherMonths: true
+            });
+            $('#id_end_date').datepicker({
+                dateFormat:'yy-mm-dd',
+                firstDay: 1,
+                showOtherMonths: true,
+                selectOtherMonths: true
+            });
         {% else %}
-            $('#id_day').datepicker({dateFormat:'yy-mm-dd'});
+            $('#id_day').datepicker({
+                dateFormat:'yy-mm-dd',
+                firstDay: 1,
+                showOtherMonths: true,
+                selectOtherMonths: true
+            });
         {% endif %}
     });
 </script>
