@@ -1,12 +1,11 @@
 {% extends "ledger/base.html" %}
-{% load accounts %}
+{% load accounts ledger %}
 
 {% block content %}
 <h1 class="page-header">
     <a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
     <small>entries</small>
 </h1>
-
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
@@ -31,5 +30,8 @@
         </div>
     </div>
     {% include "ledger/accounts/account/partials/_table.html" with entries=entries options=True %}
+    <div class="panel-body">
+        {% pagination paginator entries 'entries' %}
+    </div>
 </div>
 {% endblock %}

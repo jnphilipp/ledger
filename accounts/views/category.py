@@ -48,15 +48,25 @@ def entries(request, slug):
 
     if request.method == 'POST':
         form = CategoryFilterForm(request.POST)
-        entries = category.entries.all().reverse()
+        entry_list = category.entries.all().reverse()
         if form.is_valid():
             if form.cleaned_data['accounts']:
-                entries = entries.filter(account__in=form.cleaned_data['accounts'])
+                entry_list = entry_list.filter(account__in=form.cleaned_data['accounts'])
             if form.cleaned_data['tags']:
-                entries = entries.filter(tags__in=form.cleaned_data['tags'])
+                entry_list = entry_list.filter(tags__in=form.cleaned_data['tags'])
     else:
         form = CategoryFilterForm()
-        entries = category.entries.filter(account__ledger=ledger).order_by('day').reverse()
+        entry_list = category.entries.filter(account__ledger=ledger).order_by('day').reverse()
+
+    paginator = Paginator(entry_list, 200)
+    page = request.GET.get('page')
+    try:
+        entries = paginator.page(page)
+    except PageNotAnInteger:
+        entries = paginator.page(1)
+    except EmptyPage:
+        entries = paginator.page(paginator.num_pages)
+
     return render(request, 'ledger/accounts/category/entries.html', locals())
 
 @login_required(login_url='/profile/signin/')

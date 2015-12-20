@@ -11,6 +11,10 @@ a:active {position: relative;
 .panel .panel-heading a.panel-title {color: #337ab7;}
 .panel .panel-heading .panel-title a {color: #337ab7;}
 
+.pagination-info {line-height: 34px;
+    margin-left: 20px;
+    vertical-align: text-middle;}
+
 
 
 /*### form ###*/
