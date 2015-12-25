@@ -10,7 +10,6 @@ class Autocomplete(autocomplete_light.AutocompleteModelBase):
         'data-autocomplete-minimum-characters': 1,
     }
     widget_attrs={
-        'data-widget-maximum-values': 6,
         'class': 'modern-style',
     }
 
@@ -26,7 +25,6 @@ class CategoryAutocomplete(autocomplete_light.AutocompleteModelBase):
         'data-autocomplete-minimum-characters': 1,
     }
     widget_attrs={
-        'data-widget-maximum-values': 6,
         'class': 'modern-style',
     }
 
@@ -45,7 +43,6 @@ class TagAutocomplete(autocomplete_light.AutocompleteModelBase):
         'data-autocomplete-minimum-characters': 1,
     }
     widget_attrs={
-        'data-widget-maximum-values': 6,
         'class': 'modern-style',
     }
 
@@ -63,7 +60,6 @@ class AccountFilter(autocomplete_light.AutocompleteModelBase):
         'data-autocomplete-minimum-characters': 1,
     }
     widget_attrs={
-        'data-widget-maximum-values': 6,
         'class': 'modern-style',
     }
 
@@ -82,7 +78,6 @@ class CategoryFilter(autocomplete_light.AutocompleteModelBase):
         'data-autocomplete-minimum-characters': 1,
     }
     widget_attrs={
-        'data-widget-maximum-values': 6,
         'class': 'modern-style',
     }
 
@@ -101,7 +96,6 @@ class TagFilter(autocomplete_light.AutocompleteModelBase):
         'data-autocomplete-minimum-characters': 1,
     }
     widget_attrs={
-        'data-widget-maximum-values': 6,
         'class': 'modern-style',
     }
 
