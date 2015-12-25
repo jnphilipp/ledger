@@ -4,7 +4,7 @@ from autocomplete_light import shortcuts as al
 from django.conf.urls import url
 from .models import Category, Tag, Unit
 from .forms import CategoryForm, TagForm, UnitForm
-from .views import account, category, entry, standing_entry, statistics, tag
+from .views import account, budget, category, entry, standing_entry, statistics, tag
 from .views.api.accounts.charts import categories, statistics as acs, tags
 from .views.api.categories import charts
 from .views.api.statistics import charts as sc
@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/delete/$', entry.delete, name='entry_delete'),
     url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/duplicate/$', entry.duplicate, name='entry_duplicate'),
     url(r'^account/(?P<slug>[\w-]+)/statistics/$', account.statistics, name='account_statistics'),
+    url(r'^budget/$', budget.budget, name='budget'),
+    url(r'^budget/edit/$', budget.edit, name='budget_edit'),
     url(r'^category/$', category.categories, name='categories'),
     url(r'^category/add_another/$', al.CreateView.as_view(model=Category, form_class=CategoryForm, template_name='ledger/accounts/category/add_another.html'), name='category_add_another_create'),
     url(r'^category/(?P<slug>[\w-]+)/$', category.category, name='category'),

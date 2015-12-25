@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+from app.models import Budget
+from autocomplete_light import shortcuts as al
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm as AuthUserChangeForm, UserCreationForm as AuthUserCreationForm
@@ -9,6 +13,11 @@ class AuthenticationForm(AuthenticationForm):
         self.fields['username'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'username'})
         self.fields['password'].label = 'password'
         self.fields['password'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'password'})
+
+class BudgetForm(al.ModelForm):
+    class Meta:
+        model = Budget
+        fields = ('income_tags', 'consumption_tags', 'insurance_tags', 'savings_tags')
 
 class UserChangeForm(AuthUserChangeForm):
     def __init__(self, *args, **kwargs):

@@ -1,0 +1,90 @@
+{% extends "ledger/base.html" %}
+{% load accounts ledger static %}
+
+{% block content %}
+<h1 class="page-header">
+    budget
+    <small>
+        <div class="pull-right">
+            <a href="{% url 'budget_edit' %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> edit</a>
+        </div>
+    </small>
+</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <nav>
+            <ul class="pagination">
+                <li>
+                    <div class="btn-group pull-left">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% if unit %}{{ unit.name|lower }}{% else %}select unit{% endif %} <span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% for u in units %}
+                                {% if unit.slug != u.slug %}
+                                    <li><a href="{% url 'budget' %}?unit={{ u }}">{{ u.name|lower }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% for y in years %}
+                    <li{% if year == y %} class="active"{% endif %}><a href="{% url 'budget' %}?unit={{ unit }}&amp;year={{ y }}" style="padding: 7px 12px;">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    {% if unit and year %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th colspan="3">income</th>
+                        <th colspan="3">consumption</th>
+                        <th colspan="3">insurance</th>
+                        <th colspan="3">savings</th>
+                    </tr>
+                    <tr>
+                        <th>name</th>
+                        <th>monthly</th>
+                        <th>yearly</th>
+                        <th>name</th>
+                        <th>monthly</th>
+                        <th>yearly</th>
+                        <th>name</th>
+                        <th>monthly</th>
+                        <th>yearly</th>
+                        <th>name</th>
+                        <th>monthly</th>
+                        <th>yearly</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table %}
+                        <tr>
+                            {% for cell in row %}
+                                {% if forloop.counter0|mod:3 == 0 %}
+                                    <th>{{ cell }}</th>
+                                {% else %}
+                                    <td>{{ cell }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    {% for row in footer %}
+                        <tr>
+                            {% for cell in row %}
+                                {% if forloop.counter0|mod:3 == 0 %}
+                                    <th>{{ cell }}</th>
+                                {% else %}
+                                    <td>{{ cell }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
