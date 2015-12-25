@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from accounts.functions.dates import daterange
 from accounts.models import Account, Category, Entry, Tag, Unit
+from autocomplete_light import shortcuts as autocomplete_light
 from datetime import datetime
 from django import forms
 from django.contrib.admin import site, widgets
 from django.db import models
-
-from autocomplete_light import shortcuts as autocomplete_light
 
 class AccountForm(autocomplete_light.ModelForm):
     class Meta:

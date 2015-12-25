@@ -9,6 +9,10 @@ def increment(value):
     return int(value) + 1
 
 @register.filter
+def mod(x, y):
+    return x % y
+
+@register.filter
 def lookup(d, key):
     return d[key] if key in d else None
 

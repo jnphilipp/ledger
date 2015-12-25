@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from accounts.forms import TagForm, TagFilterForm
 from accounts.models import Tag, Unit
 from app.models import Ledger

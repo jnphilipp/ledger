@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from accounts.forms import StandingEntryForm
 from accounts.models import Account, Entry
 from accounts.templatetags.accounts import floatdot

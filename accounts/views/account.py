@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from accounts.functions.dates import get_last_date_current_month
 from accounts.forms import AccountForm, AccountFilterForm
 from accounts.models import Account, Category, Entry, Tag, Unit

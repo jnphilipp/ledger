@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from accounts.functions.dates import get_last_date_current_month
 from accounts.models import Account, Category, Tag
 from accounts.templatetags.accounts import register
@@ -6,13 +8,9 @@ from django.db.models import Q
 from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
 
-@register.filter
+@register.filter(is_safe=True)
 def floatdot(value, precision=2):
-    if not value:
-        return format(0, ",", precision)
-    else:
-        return format(round(value, precision), ",", precision)
-floatdot.is_safe = True
+    return format(0, ",", precision) if not value else format(round(value, precision), ",", precision)
 
 @register.filter(needs_autoescape=True)
 def colorfy(amount, unit=None, autoescape=None):

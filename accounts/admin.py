@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from accounts.models import Account, Category, Entry, Tag, Unit, TextFieldSingleLine
 from django.contrib import admin
 from django.db.models import Count
 from django.forms import TextInput
-
-from autocomplete_light import shortcuts as autocomplete_light
 
 class AccountAdmin(admin.ModelAdmin):
     def get_ledgers(self, obj):
@@ -27,7 +27,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        return Category.objects.annotate(entry_count=Count('entry'))
+        return Category.objects.annotate(entry_count=Count('entries'))
 
     def show_entry_count(self, inst):
         return inst.entry_count

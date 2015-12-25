@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from accounts.models import Category, Entry, Account, Unit
 from app.models import Ledger
 from collections import OrderedDict

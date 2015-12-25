@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from accounts.forms import CategoryForm, CategoryFilterForm
 from accounts.models import Category, Unit
 from app.models import Ledger
