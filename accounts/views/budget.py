@@ -75,7 +75,7 @@ def budget(request):
         footer[1][10] = footer[0][1] + footer[0][4] + footer[0][7] + footer[0][10]
         footer[1][11] = footer[0][2] + footer[0][5] + footer[0][8] + footer[0][11]
 
-        real = Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))['sum']
+        real = Entry.objects.exclude(category__in=ledger.accounts.values_list('category', flat=True)).filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))['sum']
         footer[2][10] = real/12
         footer[2][11] = real
 

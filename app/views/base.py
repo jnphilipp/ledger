@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from app.forms import AuthenticationForm
 from app.models import Ledger
 from django.contrib import messages

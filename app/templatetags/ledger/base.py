@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from app.templatetags.ledger import register
 
 @register.filter

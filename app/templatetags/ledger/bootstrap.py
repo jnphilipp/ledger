@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from app.templatetags.ledger import register
-from django.template.loader import get_template
 
 @register.inclusion_tag('bootstrap/messages.html', takes_context=True)
 def bootstrap_messages(context):
