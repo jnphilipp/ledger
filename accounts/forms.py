@@ -114,15 +114,21 @@ class UnitForm(forms.ModelForm):
         self.fields['precision'].widget = forms.NumberInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
 class AccountFilterForm(forms.Form):
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
     tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)
 
 class CategoryFilterForm(forms.Form):
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
     accounts = autocomplete_light.ModelMultipleChoiceField('AccountsFilter', required=False)
     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
     tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)
 
 class TagFilterForm(forms.Form):
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
     accounts = autocomplete_light.ModelMultipleChoiceField('AccountsFilter', required=False)
     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
     tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)

@@ -13,9 +13,11 @@
             {% csrf_token %}
 
             {% for field in form %}
-                <div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
-                    {{ field }}
-                </div>
+                {% if field.label != 'Start date' and field.label != 'End date' %}
+                    <div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
+                        {{ field }}
+                    </div>
+                {% endif %}
             {% endfor %}
 
             <button class="btn btn-success" type="submit">filter</button>

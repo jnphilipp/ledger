@@ -43,6 +43,10 @@ def sumbalance(unit, user, autoescape=None):
     return colorfy(sum_balance, unit)
 
 @register.filter(needs_autoescape=True)
+def sumentries(entries, unit, autoescape=None):
+    return colorfy(sum([entry.amount for entry in entries]), unit)
+
+@register.filter(needs_autoescape=True)
 def sumoutstanding(unit, user, autoescape=None):
     sum_outstanding = 0
     for account in Account.objects.filter(Q(unit=unit) & Q(ledgers__user=user)):

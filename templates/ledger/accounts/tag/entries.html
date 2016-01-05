@@ -2,6 +2,24 @@
 {% load accounts ledger %}
 
 {% block content %}
+<script>
+    $(function() {
+        $('#id_start_date').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $('#id_end_date').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+    });
+</script>
+{{ form.media }}
+
 <h1 class="page-header">
     <a href="{% url 'tag' tag.slug %}">{{ tag|lower }}</a>
     <small>entries</small>

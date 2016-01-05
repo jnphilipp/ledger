@@ -48,12 +48,15 @@ def tag(request, slug):
 def entries(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
-    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in tag.entries.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(tag.entries.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
 
     if request.method == 'POST':
         form = TagFilterForm(request.POST)
         entry_list = tag.entries.all().reverse()
         if form.is_valid():
+            if form.cleaned_data['start_date']:
+                entry_list = entry_list.filter(day__gte=form.cleaned_data['start_date'])
+            if form.cleaned_data['end_date']:
+                entry_list = entry_list.filter(day__lte=form.cleaned_data['end_date'])
             if form.cleaned_data['accounts']:
                 entry_list = entry_list.filter(account__in=form.cleaned_data['accounts'])
             if form.cleaned_data['categories']:
@@ -63,6 +66,8 @@ def entries(request, slug):
     else:
         form = TagFilterForm()
         entry_list = tag.entries.filter(account__ledger=ledger).order_by('day').reverse()
+
+    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in entry_list.filter(account__unit=unit)), 2) for unit in set(entry_list.values_list('account__unit', flat=True))}
 
     paginator = Paginator(entry_list, 200)
     page = request.GET.get('page')

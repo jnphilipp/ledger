@@ -31,9 +31,14 @@ def entries(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 
     if request.method == 'POST':
+        f = True
         form = AccountFilterForm(request.POST)
         entry_list = account.entries.all().reverse()
         if form.is_valid():
+            if form.cleaned_data['start_date']:
+                entry_list = entry_list.filter(day__gte=form.cleaned_data['start_date'])
+            if form.cleaned_data['end_date']:
+                entry_list = entry_list.filter(day__lte=form.cleaned_data['end_date'])
             if form.cleaned_data['categories']:
                 entry_list = entry_list.filter(category__in=form.cleaned_data['categories'])
             if form.cleaned_data['tags']:

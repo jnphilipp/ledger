@@ -2,6 +2,24 @@
 {% load accounts ledger %}
 
 {% block content %}
+<script>
+    $(function() {
+        $('#id_start_date').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $('#id_end_date').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+    });
+</script>
+{{ form.media }}
+
 <h1 class="page-header">
     <a href="{% url 'category' category.slug %}">{{ category|lower }}</a>
     <small>entries</small>
@@ -15,7 +33,7 @@
                     {% csrf_token %}
 
                     {% for field in form %}
-                        {% if not field.label == 'Categories' %}
+                        {% if field.label != 'Categories' %}
                             <div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
                                 {{ field }}
                             </div>
