@@ -2,6 +2,7 @@
 
 from accounts.functions.dates import daterange
 from accounts.models import Account, Category, Entry, Tag, Unit
+from accounts.validators import validate_account_name
 from autocomplete_light import shortcuts as autocomplete_light
 from datetime import datetime
 from django import forms
@@ -16,6 +17,7 @@ class AccountForm(autocomplete_light.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+        self.fields['name'].validators = [validate_account_name]
 
 class CategoryForm(forms.ModelForm):
     class Meta:
