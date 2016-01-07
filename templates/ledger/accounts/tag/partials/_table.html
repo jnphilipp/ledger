@@ -20,7 +20,7 @@
                 <td><a href="{% url 'account' entry.account.slug %}">{{ entry.account.name|lower }}</a></td>
                 <td>{{ entry.day|date:'d.m.Y' }}</td>
                 <td>{{ entry.day|date:'D'|lower }}</td>
-                <td style="text-align: right;">{{ entry.amount|colorfy:entry.account.unit }}</td>
+                <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
                 <td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
                 <td>{{ entry.additional|lower }}</td>
                 <td>
@@ -30,9 +30,9 @@
                 </td>
                 {% if options %}
                     <td>
-                        <a href="{% url 'entry_edit' entry.account.slug entry.id %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a href="{% url 'entry_duplicate' entry.account.slug entry.id %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
-                        <a href="{% url 'entry_delete' entry.account.slug entry.id %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
+                        <a href="{% url 'account_entry_edit' entry.account.slug entry.id %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url 'account_entry_duplicate' entry.account.slug entry.id %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
+                        <a href="{% url 'account_entry_delete' entry.account.slug entry.id %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
                     </td>
                 {% endif %}
             </tr>

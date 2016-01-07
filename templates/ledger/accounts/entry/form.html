@@ -31,19 +31,23 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h1 class="page-header"><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
-            <small><a href="{% url 'account_entries' account.slug %}">entries</a></small>
-        </h1>
+        {% if account %}
+            <h1 class="page-header"><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
+                <small><a href="{% url 'account_entries' account.slug %}">entries</a></small>
+            </h1>
+        {% else %}
+            <h1 class="page-header"><a href="{% url 'entries' %}">entries</a></h1>
+        {% endif %}
     </div>
 </div>
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title" href="{% url 'account_entries' account.slug %}">{% if entry.id %}edit entry #{{ entry.serial_number }}{% else %}add{% if 'standing' in request.path %} standing{% endif %} entry{% endif %}</h1>
+                <h1 class="panel-title" href="{% url 'entries' %}">{% if entry.id %}edit entry #{{ entry.serial_number }}{% else %}add{% if 'standing' in request.path %} standing{% endif %} entry{% endif %}</h1>
             </div>
             <div class="panel-body">
-                <form action="{% if 'standing' in request.path %}{% url 'standing_entry_add' account.slug %}{% else %}{% if entry.id %}{% url 'entry_edit' account.slug entry.id %}{% else %}{% url 'entry_add' account.slug %}{% endif %}{% endif %}" method="post" class="form-horizontal">
+                <form action="{% if account %}{% if 'standing' in request.path %}{% url 'account_standing_entry_add' account.slug %}{% elif entry.id %}{% url 'account_entry_edit' account.slug entry.id %}{% else %}{% url 'account_entry_add' account.slug %}{% endif %}{% else %}{% if 'standing' in request.path %}{% url 'standing_entry_add' %}{% elif entry.id %}{% url 'entry_edit' entry.id %}{% else %}{% url 'entry_add' %}{% endif %}{% endif %}" method="post" class="form-horizontal">
                     {% csrf_token %}
 
                     {% for field in form %}

@@ -46,13 +46,14 @@ class CategoryForm(forms.ModelForm):
 class EntryForm(autocomplete_light.ModelForm):
     class Meta:
         model = Entry
-        exclude = ['serial_number', 'account']
+        exclude = ['serial_number']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, exclude_account=True, *args, **kwargs):
         super(EntryForm, self).__init__(*args, **kwargs)
         self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'additional'})
         self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'})
         self.fields['amount'].widget = forms.TextInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control', 'placeholder':'0.00'})
+        if exclude_account: del self.fields['account']
 
 class StandingEntryForm(autocomplete_light.ModelForm):
     start_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'yyyy-mm-dd', 'class':'form-control'}))
@@ -61,13 +62,14 @@ class StandingEntryForm(autocomplete_light.ModelForm):
 
     class Meta:
         model = Entry
-        exclude = ['serial_number', 'day', 'account']
-        fields = ['start_date', 'end_date', 'execution', 'amount', 'category', 'additional', 'tags']
+        exclude = ['serial_number', 'day']
+        fields = ['account', 'start_date', 'end_date', 'execution', 'amount', 'category', 'additional', 'tags']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, exclude_account=True, *args, **kwargs):
         super(StandingEntryForm, self).__init__(*args, **kwargs)
         self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['amount'].widget = forms.TextInput(attrs={'step':'none', 'autocomplete':'off', 'class':'form-control'})
+        if exclude_account: del self.fields['account']
 
     def save(self, commit=True):
         instance = super(StandingEntryForm, self).save(commit=False)
@@ -127,6 +129,14 @@ class CategoryFilterForm(forms.Form):
     accounts = autocomplete_light.ModelMultipleChoiceField('AccountsFilter', required=False)
     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
     tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)
+
+class EntryFilterForm(forms.Form):
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
+    accounts = autocomplete_light.ModelMultipleChoiceField('AccountsFilter', required=False)
+    categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
+    tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)
+    units = autocomplete_light.ModelMultipleChoiceField('UnitAutocomplete', required=False)
 
 class TagFilterForm(forms.Form):
     start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)

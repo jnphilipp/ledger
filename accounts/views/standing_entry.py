@@ -12,22 +12,20 @@ from django.views.decorators.csrf import csrf_protect
 
 @login_required(login_url='/profile/signin/')
 @csrf_protect
-def add(request, slug):
-    account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+def add(request, slug=None):
+    account = get_object_or_404(Account, slug=slug, ledger__user=request.user) if slug else None
     today = date.today()
 
     if request.method == 'POST':
-        form = StandingEntryForm(request.POST)
+        form = StandingEntryForm(data=request.POST, exclude_account=True if account else False)
         if form.is_valid():
-            form.instance.account = account
+            if account: form.instance.account = account
             entries = form.save()
 
-            messages.add_message(request, messages.SUCCESS, 'the standing entry with numbers %s was successfully created.' % ', '.join(str(entry.serial_number) for entry in entries))
-            return redirect('account_entries', slug=account.slug)
+            messages.add_message(request, messages.SUCCESS, 'the standing entryies "%s%s" were successfully created.' % ('' if account else '%s - ' % entries[0].account, ', '.join('#%s' % entry.serial_number for entry in entries)))
+            return redirect('account_entries', slug=account.slug) if account else redirect('entries')
         else:
             return render(request, 'ledger/accounts/entry/form.html', locals())
     else:
-        form = StandingEntryForm()
-        for field in form:
-            print(field.label)
+        form = StandingEntryForm(exclude_account=True if account else False)
         return render(request, 'ledger/accounts/entry/form.html', locals())

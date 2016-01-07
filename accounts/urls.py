@@ -11,21 +11,30 @@ from .views.api.statistics import charts as sc
 from .views.api.tags.charts import statistics as ts
 
 urlpatterns = [
-    url(r'^account/$', account.dashboard, name='accounts'),
+    url(r'^account/$', account.accounts, name='accounts'),
     url(r'^account/add/$', account.add, name='account_add'),
+    url(r'^account/entries/$', entry.entries, name='entries'),
+    url(r'^account/entries/add/$', entry.add, name='entry_add'),
+    url(r'^account/entries/standing/add/$', standing_entry.add, name='standing_entry_add'),
+    url(r'^account/entries/(?P<entry_id>\d+)/change/$', entry.edit, name='entry_edit'),
+    url(r'^account/entries/(?P<entry_id>\d+)/delete/$', entry.delete, name='entry_delete'),
+    url(r'^account/entries/(?P<entry_id>\d+)/duplicate/$', entry.duplicate, name='entry_duplicate'),
+
     url(r'^account/(?P<slug>[\w-]+)/$', account.account, name='account'),
     url(r'^account/(?P<slug>[\w-]+)/edit/$', account.edit, name='account_edit'),
     url(r'^account/(?P<slug>[\w-]+)/delete/$', account.delete, name='account_delete'),
     url(r'^account/(?P<slug>[\w-]+)/entries/$', account.entries, name='account_entries'),
-    url(r'^account/(?P<slug>[\w-]+)/entries/add/$', entry.add, name='entry_add'),
-    url(r'^account/(?P<slug>[\w-]+)/entries/standing/add/$', standing_entry.add, name='standing_entry_add'),
-    url(r'^account/(?P<slug>[\w-]+)/entries/swap/$', entry.swap, name='entry_swap'),
-    url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/change/$', entry.edit, name='entry_edit'),
-    url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/delete/$', entry.delete, name='entry_delete'),
-    url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/duplicate/$', entry.duplicate, name='entry_duplicate'),
+    url(r'^account/(?P<slug>[\w-]+)/entries/add/$', entry.add, name='account_entry_add'),
+    url(r'^account/(?P<slug>[\w-]+)/entries/standing/add/$', standing_entry.add, name='account_standing_entry_add'),
+    url(r'^account/(?P<slug>[\w-]+)/entries/swap/$', entry.swap, name='account_entry_swap'),
+    url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/change/$', entry.edit, name='account_entry_edit'),
+    url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/delete/$', entry.delete, name='account_entry_delete'),
+    url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/duplicate/$', entry.duplicate, name='account_entry_duplicate'),
     url(r'^account/(?P<slug>[\w-]+)/statistics/$', account.statistics, name='account_statistics'),
+
     url(r'^budget/$', budget.budget, name='budget'),
     url(r'^budget/edit/$', budget.edit, name='budget_edit'),
+
     url(r'^category/$', category.categories, name='categories'),
     url(r'^category/add_another/$', al.CreateView.as_view(model=Category, form_class=CategoryForm, template_name='ledger/accounts/category/add_another.html'), name='category_add_another_create'),
     url(r'^category/(?P<slug>[\w-]+)/$', category.category, name='category'),
@@ -33,7 +42,9 @@ urlpatterns = [
     url(r'^category/(?P<slug>[\w-]+)/delete/$', category.delete, name='category_delete'),
     url(r'^category/(?P<slug>[\w-]+)/entries/$', category.entries, name='category_entries'),
     url(r'^category/(?P<slug>[\w-]+)/statistics/$', category.statistics, name='category_statistics'),
+
     url(r'^statistics/$', statistics.statistics, name='statistics'),
+
     url(r'^tag/$', tag.tags, name='tags'),
     url(r'^tag/add_another/$', al.CreateView.as_view(model=Tag, form_class=TagForm, template_name='ledger/accounts/tag/add_another.html'), name='tag_add_another_create'),
     url(r'^tag/(?P<slug>[\w-]+)/$', tag.tag, name='tag'),

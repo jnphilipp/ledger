@@ -37,7 +37,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title">accounts</h1>
+                    <h1 class="panel-title"><a href="{% url 'accounts' %}">accounts</a></h1>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-condensed table-hover table-striped">
@@ -63,6 +63,12 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title"><a href="{% url 'entries' %}">entries</a></h1>
+                </div>
+                {% include "ledger/accounts/entry/partials/_table.html" with entries=entries options=False %}
             </div>
         {% else %}
             <p>No accounts are available.</p>

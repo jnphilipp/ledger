@@ -14,7 +14,7 @@ def floatdot(value, precision=2):
 
 @register.filter(needs_autoescape=True)
 def colorfy(amount, unit=None, autoescape=None):
-    return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, unit.precision), unit.symbol if unit else ''))
+    return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, unit.precision if unit else 2), unit.symbol if unit else '')) if amount else '%s %s' % (floatdot(0, unit.precision if unit else 2), unit.symbol if unit else '')
 
 @register.filter(needs_autoescape=True)
 def balance(account, autoescape=None):
@@ -43,8 +43,16 @@ def sumbalance(unit, user, autoescape=None):
     return colorfy(sum_balance, unit)
 
 @register.filter(needs_autoescape=True)
-def sumentries(entries, unit, autoescape=None):
-    return colorfy(sum([entry.amount for entry in entries]), unit)
+def sumentries(entries, unit=None, autoescape=None):
+    if unit:
+        return colorfy(sum([entry.amount for entry in entries]), unit)
+    else:
+        sums = {}
+        for entry in entries:
+            if not entry.account.unit in sums:
+                sums[entry.account.unit] = 0
+            sums[entry.account.unit] += entry.amount
+        return mark_safe('<ul>%s</ul>' % ''.join('<li>%s</li>' % colorfy(v, k) for k,v in sums.items()))
 
 @register.filter(needs_autoescape=True)
 def sumoutstanding(unit, user, autoescape=None):

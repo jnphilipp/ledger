@@ -18,10 +18,10 @@
         <tbody>
             {% for entry in entries %}
                 <tr>
-                    <td>{{ entry.serial_number }}</td>
+                    <td class="text-right">{{ entry.serial_number }}</td>
                     <td>{{ entry.day|date:'d.m.Y' }}</td>
                     <td>{{ entry.day|date:'D'|lower }}</td>
-                    <td style="text-align: right;">{{ entry.amount|colorfy:account.unit }}</td>
+                    <td class="text-right">{{ entry.amount|colorfy:account.unit }}</td>
                     <td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
                     <td>{{ entry.additional|lower }}</td>
                     <td>
@@ -31,13 +31,13 @@
                     </td>
                     {% if options %}
                         <td>
-                            <a href="{% url 'entry_edit' account.slug entry.id %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="{% url 'entry_duplicate' account.slug entry.id %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
-                            <a href="{% url 'entry_delete' account.slug entry.id %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{% url 'account_entry_edit' account.slug entry.id %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a href="{% url 'account_entry_duplicate' account.slug entry.id %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
+                            <a href="{% url 'account_entry_delete' account.slug entry.id %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
                             {% with entries|previous:forloop.counter0 as previous %}
                             {% with entries|next:forloop.counter0 as next %}
                                 {% if next %}
-                                    <form action="{% url 'entry_swap' account.slug %}" method="post" style="display: inline-block;">
+                                    <form action="{% url 'account_entry_swap' account.slug %}" method="post" style="display: inline-block;">
                                         {% csrf_token %}
                                         <input type="hidden" name="e1" value="{{ entry.id }}">
                                         <input type="hidden" name="e2" value="{{ next.id }}">
@@ -45,7 +45,7 @@
                                     </form>
                                 {% endif %}
                                 {% if previous %}
-                                    <form action="{% url 'entry_swap' account.slug %}" method="post" style="display: inline-block;">
+                                    <form action="{% url 'account_entry_swap' account.slug %}" method="post" style="display: inline-block;">
                                         {% csrf_token %}
                                         <input type="hidden" name="e1" value="{{ previous.id }}">
                                         <input type="hidden" name="e2" value="{{ entry.id }}">

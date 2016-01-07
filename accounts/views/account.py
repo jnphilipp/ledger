@@ -10,14 +10,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Count, Q
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
 @login_required(login_url='/profile/signin/')
-def dashboard(request):
+def accounts(request):
     accounts = Account.objects.filter(ledger__user=request.user)
-    units = Unit.objects.filter(account__in=accounts).distinct()
-    return render(request, 'ledger/accounts/dashboard/dashboard.html', locals())
+    return render(request, 'ledger/accounts/account/accounts.html', locals())
 
 @login_required(login_url='/profile/signin/')
 def account(request, slug):
@@ -30,11 +29,12 @@ def account(request, slug):
 def entries(request, slug):
     account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
 
+    f = False
     if request.method == 'POST':
-        f = True
         form = AccountFilterForm(request.POST)
         entry_list = account.entries.all().reverse()
         if form.is_valid():
+            f = True if form.cleaned_data['start_date'] or form.cleaned_data['end_date'] or form.cleaned_data['categories'] or form.cleaned_data['tags'] else False
             if form.cleaned_data['start_date']:
                 entry_list = entry_list.filter(day__gte=form.cleaned_data['start_date'])
             if form.cleaned_data['end_date']:

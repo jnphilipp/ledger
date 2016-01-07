@@ -1,92 +1,129 @@
 # -*- coding: utf-8 -*-
 
-from accounts.forms import EntryForm
+from accounts.forms import EntryForm, EntryFilterForm
+from accounts.functions.dates import get_last_date_current_month
 from accounts.models import Account, Entry
 from accounts.templatetags.accounts import floatdot
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_protect
 
 @login_required(login_url='/profile/signin/')
+def entries(request):
+    f = False
+    if request.method == 'POST':
+        form = EntryFilterForm(request.POST)
+        entry_list = Entry.objects.filter(account__ledger__user=request.user)
+        if form.is_valid():
+            f = True if form.cleaned_data['start_date'] or form.cleaned_data['end_date'] or form.cleaned_data['accounts'] or form.cleaned_data['categories'] or form.cleaned_data['tags'] or form.cleaned_data['units'] else False
+            if form.cleaned_data['start_date']:
+                entry_list = entry_list.filter(day__gte=form.cleaned_data['start_date'])
+            if form.cleaned_data['end_date']:
+                entry_list = entry_list.filter(day__lte=form.cleaned_data['end_date'])
+            if form.cleaned_data['accounts']:
+                entry_list = entry_list.filter(account__in=form.cleaned_data['accounts'])
+            if form.cleaned_data['categories']:
+                entry_list = entry_list.filter(category__in=form.cleaned_data['categories'])
+            if form.cleaned_data['tags']:
+                entry_list = entry_list.filter(tags__in=form.cleaned_data['tags'])
+            if form.cleaned_data['units']:
+                entry_list = entry_list.filter(account__unit__in=form.cleaned_data['units'])
+        entry_list = entry_list.order_by('-day', '-id')
+    else:
+        form = EntryFilterForm()
+        entry_list = Entry.objects.filter(account__ledger__user=request.user).filter(day__lte=get_last_date_current_month()).order_by('-day', '-id')
+
+    paginator = Paginator(entry_list, 200)
+    page = request.GET.get('page')
+    try:
+        entries = paginator.page(page)
+    except PageNotAnInteger:
+        entries = paginator.page(1)
+    except EmptyPage:
+        entries = paginator.page(paginator.num_pages)
+
+    return render(request, 'ledger/accounts/entry/entries.html', locals())
+
+@login_required(login_url='/profile/signin/')
 @csrf_protect
-def add(request, slug):
-    account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+def add(request, slug=None):
+    account = get_object_or_404(Account, slug=slug, ledger__user=request.user) if slug else None
     page = request.GET.get('page')
     today = date.today()
 
     if request.method == 'POST':
-        form = EntryForm(request.POST)
+        form = EntryForm(data=request.POST, exclude_account=True if account else False)
         if form.is_valid():
-            form.instance.account = account
+            if account: form.instance.account = account
             entry = form.save()
 
-            messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully created.' % entry.serial_number)
-            response = redirect('account_entries', slug=account.slug)
+            messages.add_message(request, messages.SUCCESS, 'the entry "%s" was successfully created.' % ('#%s' % entry.serial_number if account else '%s - #%s' % (entry.account, entry.serial_number)))
+            response = redirect('account_entries', slug=account.slug) if account else redirect('entries')
             if page: response['Location'] += '?page=%s' % page
             return response
         else:
             return render(request, 'ledger/accounts/entry/form.html', locals())
     else:
-        form = EntryForm()
+        form = EntryForm(exclude_account=True if account else False)
         return render(request, 'ledger/accounts/entry/form.html', locals())
 
 @login_required(login_url='/profile/signin/')
 @csrf_protect
-def edit(request, slug, entry_id):
-    account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+def edit(request, entry_id, slug=None):
+    account = get_object_or_404(Account, slug=slug, ledger__user=request.user) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
     page = request.GET.get('page')
     today = date.today()
 
     if request.method == 'POST':
-        form = EntryForm(instance=entry, data=request.POST)
+        form = EntryForm(instance=entry, data=request.POST, exclude_account=True if account else False)
         if form.is_valid():
             no = entry.serial_number
-            form.instance.account = account
+            if account: form.instance.account = account
             entry = form.save()
 
-            if no == entry.serial_number:
-                messages.add_message(request, messages.SUCCESS, 'entry "%s" was successfully updated.' % entry.serial_number)
-            else:
-                messages.add_message(request, messages.SUCCESS, 'entry "%s" was successfully updated and moved to "%s".' % (no, entry.serial_number))
-            response = redirect('account_entries', slug=account.slug)
+
+            msg = 'the entry "%s" was successfully updated%s.' % ('#%s' % no if account else '%s - #%s' % (entry.account, no), '' if no == entry.serial_number else ' and moved to "#%s"' % entry.serial_number)
+            messages.add_message(request, messages.SUCCESS, msg)
+            response = redirect('account_entries', slug=account.slug) if account else redirect('entries')
             if page: response['Location'] += '?page=%s' % page
             return response
         else:
             return render(request, 'ledger/accounts/entry/form.html', locals())
     else:
-        form = EntryForm(instance=entry)
+        form = EntryForm(instance=entry, exclude_account=True if account else False)
         return render(request, 'ledger/accounts/entry/form.html', locals())
 
 @login_required(login_url='/profile/signin/')
 @csrf_protect
-def delete(request, slug, entry_id):
-    account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+def delete(request, entry_id, slug=None):
+    account = get_object_or_404(Account, slug=slug, ledger__user=request.user) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
     if request.method == 'POST':
         entry.delete()
-        messages.add_message(request, messages.SUCCESS, 'the entry number %s was successfully deleted.' % entry.serial_number)
-        for entry in Entry.objects.filter(account=account).filter(serial_number__gt=entry.serial_number):
+        messages.add_message(request, messages.SUCCESS, 'the entry "%s" was successfully deleted.' % ('#%s' % entry.serial_number if account else '%s - #%s' % (entry.account, entry.serial_number)))
+        for entry in Entry.objects.filter(account=entry.account).filter(serial_number__gt=entry.serial_number):
             entry.serial_number -= 1
             entry.save()
-        account.save()
-        return redirect('account_entries', slug=account.slug)
+        entry.account.save()
+        return redirect('account_entries', slug=account.slug) if account else redirect('entries')
     return render(request, 'ledger/accounts/entry/delete.html', locals())
 
 @login_required(login_url='/profile/signin/')
-def duplicate(request, slug, entry_id):
-    account = get_object_or_404(Account, slug=slug, ledger__user=request.user)
+def duplicate(request, entry_id, slug=None):
+    account = get_object_or_404(Account, slug=slug, ledger__user=request.user) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
 
-    new = Entry.objects.create(account=account, day=date.today(), amount=entry.amount, category=entry.category, additional=entry.additional)
+    new = Entry.objects.create(account=account if account else entry.account, day=date.today(), amount=entry.amount, category=entry.category, additional=entry.additional)
     for tag in entry.tags.all():
         new.tags.add(tag.id)
     new.save()
-    messages.add_message(request, messages.SUCCESS, 'the entry number %s has been successfully duplicated as entry number %s.' % (entry.serial_number, new.serial_number))
-    return redirect('account_entries', slug=account.slug)
+    messages.add_message(request, messages.SUCCESS, 'the entry "%s" has been successfully duplicated as entry "#%s".' % ('#%s' % entry.serial_number if account else '%s - #%s' % (entry.account, entry.serial_number), new.serial_number))
+    return redirect('account_entries', slug=account.slug) if account else redirect('entries')
 
 @login_required(login_url='/profile/signin/')
 @csrf_protect

@@ -23,8 +23,8 @@
     <div class="panel-body">
         <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
         <div class="pull-right">
-            <a class="btn btn-primary" href="{% url 'entry_add' account.slug %}" role="button"><span class="glyphicon glyphicon-plus"></span> add entry</a>
-            <a class="btn btn-primary" href="{% url 'standing_entry_add' account.slug %}"><span class="glyphicon glyphicon-plus"></span> add standing entry</a>
+            <a class="btn btn-primary" href="{% url 'account_entry_add' account.slug %}" role="button"><span class="glyphicon glyphicon-plus"></span> add entry</a>
+            <a class="btn btn-primary" href="{% url 'account_standing_entry_add' account.slug %}"><span class="glyphicon glyphicon-plus"></span> add standing entry</a>
         </div>
     </div>
     {% include "ledger/accounts/account/partials/_table.html" with entries=entries options=False %}
