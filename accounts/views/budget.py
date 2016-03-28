@@ -20,6 +20,7 @@ def budget(request):
     if unit_slug:
         unit = get_object_or_404(Unit, slug='euro')
         years = [y.strftime('%Y') for y in Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).dates('day', 'year')]
+        year = years[-1]
     if year:
         footer = []
         footer.append('sum')
