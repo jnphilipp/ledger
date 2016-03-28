@@ -37,38 +37,48 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><a href="{% url 'accounts' %}">accounts</a></h1>
+                    <h1 class="panel-title">
+                        <a href="{% url 'accounts' %}">accounts</a>
+                        <a class="collapse-link collapsed" data-toggle="collapse" data-target="#collapse-accounts" href="#collapse-accounts" aria-expanded="false"></a>
+                    </h1>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-condensed table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>account</th>
-                                <th>balance</th>
-                                <th>outstanding</th>
-                                <th>number of entries</th>
-                                <th>last entry</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for account in accounts %}
+                <div id="collapse-accounts" class="panel-collapse collapse out">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-hover table-striped">
+                            <thead>
                                 <tr>
-                                    <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
-                                    <td class="text-right">{{ account|balance }}</td>
-                                    <td class="text-right">{{ account|outstanding }}</td>
-                                    <td>{{ account.entries.count }}</td>
-                                    <td>{{ account.entries.last.day|date:'l, d. F Y' }}</td>
+                                    <th>account</th>
+                                    <th>balance</th>
+                                    <th>outstanding</th>
+                                    <th>number of entries</th>
+                                    <th>last entry</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for account in accounts %}
+                                    <tr>
+                                        <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
+                                        <td class="text-right">{{ account|balance }}</td>
+                                        <td class="text-right">{{ account|outstanding }}</td>
+                                        <td>{{ account.entries.count }}</td>
+                                        <td>{{ account.entries.last.day|date:'l, d. F Y' }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h1 class="panel-title"><a href="{% url 'entries' %}">entries</a></h1>
+                    <h1 class="panel-title">
+                        <a href="{% url 'entries' %}">entries</a>
+                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
+                    </h1>
                 </div>
-                {% include "ledger/accounts/entry/partials/_table.html" with entries=entries options=False %}
+                <div id="collapse-entries" class="panel-collapse collapse in">
+                    {% include "ledger/accounts/entry/partials/_table.html" with entries=entries options=False %}
+                </div>
             </div>
         {% else %}
             <p>No accounts are available.</p>
