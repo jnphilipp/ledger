@@ -128,7 +128,8 @@ class Entry(models.Model):
         move = False
         if self.id:
             orig = Entry.objects.get(id=self.id)
-            next_serial_number = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last().serial_number + 1
+            entry = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last()
+            next_serial_number = entry.serial_number + 1 if entry else 1
             if orig.day != self.day and (orig.serial_number + 1) != next_serial_number:
                 move = True
         if not self.id or move:
