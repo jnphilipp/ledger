@@ -13,85 +13,114 @@ from django.shortcuts import get_object_or_404, redirect, render
 def budget(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     budget = get_object_or_404(Budget, user=request.user)
-    units = Unit.objects.filter(account__ledger=ledger).distinct()
 
     unit_slug = request.GET.get('unit')
     year = request.GET.get('year')
-    if unit_slug:
-        unit = get_object_or_404(Unit, slug='euro')
-        years = [y.strftime('%Y') for y in Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).dates('day', 'year')]
-        year = years[-1]
+    years = [y.strftime('%Y') for y in Entry.objects.filter(account__in=ledger.accounts.all()).dates('day', 'year')]
+    if not year: year = years[-1] 
     if year:
+        units = set()
+
         footer = []
         footer.append('sum')
-        footer.append(0)
-        footer.append(0)
+        footer.append({})
+        footer.append({})
 
         income = []
         for tag in budget.income_tags.all():
-            e = Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(tags__pk=tag.pk)).aggregate(sum=Sum('amount'))
-            if e['sum']:
-                income.append({'name':tag.name.lower(), 'monthly':colorfy(e['sum']/12, unit), 'yearly':colorfy(e['sum'], unit)})
-                footer[1] += e['sum']/12
-                footer[2] += e['sum']
+            amounts = {}
+            for e in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(day__year=year) & Q(tags__pk=tag.pk)).values('account__unit', 'amount'):
+                amounts[e['account__unit']] = amounts[e['account__unit']] + e['amount'] if e['account__unit'] in amounts else e['amount']
+            for i, (k, v) in enumerate(amounts.items()):
+                unit = Unit.objects.get(pk=k)
+                amounts[unit] = amounts.pop(k)
+                income.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+            for k, v in amounts.items():
+                footer[1][k] = footer[1][k] + (v / 12) if k in footer[1] else (v / 12)
+                footer[2][k] = footer[2][k] + v if k in footer[2] else v
+        units.update(footer[1].keys())
+
 
         footer.append('sum')
-        footer.append(0)
-        footer.append(0)
+        footer.append({})
+        footer.append({})
         consumption = []
         for tag in budget.consumption_tags.all():
-            e = Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(tags__pk=tag.pk)).aggregate(sum=Sum('amount'))
-            if e['sum']:
-                consumption.append({'name':tag.name.lower(), 'monthly':colorfy(e['sum']/12, unit), 'yearly':colorfy(e['sum'], unit)})
-                footer[4] += e['sum']/12
-                footer[5] += e['sum']
+            amounts = {}
+            for e in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(day__year=year) & Q(tags__pk=tag.pk)).values('account__unit', 'amount'):
+                amounts[e['account__unit']] = amounts[e['account__unit']] + e['amount'] if e['account__unit'] in amounts else e['amount']
+            for i, (k, v) in enumerate(amounts.items()):
+                unit = Unit.objects.get(pk=k)
+                amounts[unit] = amounts.pop(k)
+                consumption.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+            for k, v in amounts.items():
+                footer[4][k] = footer[4][k] + (v / 12) if k in footer[4] else (v / 12)
+                footer[5][k] = footer[5][k] + v if k in footer[5] else v
+        units.update(footer[4].keys())
 
 
         footer.append('sum')
-        footer.append(0)
-        footer.append(0)
+        footer.append({})
+        footer.append({})
         insurance = []
         for tag in budget.insurance_tags.all():
-            e = Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(tags__pk=tag.pk)).aggregate(sum=Sum('amount'))
-            if e['sum']:
-                insurance.append({'name':tag.name.lower(), 'monthly':colorfy(e['sum']/12, unit), 'yearly':colorfy(e['sum'], unit)})
-                footer[7] += e['sum']/12
-                footer[8] += e['sum']
+            amounts = {}
+            for e in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(day__year=year) & Q(tags__pk=tag.pk)).values('account__unit', 'amount'):
+                amounts[e['account__unit']] = amounts[e['account__unit']] + e['amount'] if e['account__unit'] in amounts else e['amount']
+            for i, (k, v) in enumerate(amounts.items()):
+                unit = Unit.objects.get(pk=k)
+                amounts[unit] = amounts.pop(k)
+                insurance.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+            for k, v in amounts.items():
+                footer[7][k] = footer[7][k] + (v / 12) if k in footer[7] else (v / 12)
+                footer[8][k] = footer[8][k] + v if k in footer[8] else v
+        units.update(footer[7].keys())
 
 
         footer.append('sum')
-        footer.append(0)
-        footer.append(0)
+        footer.append({})
+        footer.append({})
         savings = []
         for tag in budget.savings_tags.all():
-            e = Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year) & Q(tags__pk=tag.pk)).aggregate(sum=Sum('amount'))
-            if e['sum']:
-                savings.append({'name':tag.name.lower(), 'monthly':colorfy(e['sum']/12, unit), 'yearly':colorfy(e['sum'], unit)})
-                footer[10] += e['sum']/12
-                footer[11] += e['sum']
+            amounts = {}
+            for e in Entry.objects.filter(Q(account__in=ledger.accounts.all()) & Q(day__year=year) & Q(tags__pk=tag.pk)).values('account__unit', 'amount'):
+                amounts[e['account__unit']] = amounts[e['account__unit']] + e['amount'] if e['account__unit'] in amounts else e['amount']
+            for i, (k, v) in enumerate(amounts.items()):
+                unit = Unit.objects.get(pk=k)
+                amounts[unit] = amounts.pop(k)
+                savings.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+            for k, v in amounts.items():
+                footer[10][k] = footer[10][k] + (v / 12) if k in footer[10] else (v / 12)
+                footer[11][k] = footer[11][k] + v if k in footer[11] else v
+        units.update(footer[10].keys())
 
-        footer = [footer]
-        footer.append(['', '', '', '', '', '', '', '', '', 'total', 0, 0])
-        footer.append(['', '', '', '', '', '', '', '', '', 'real', 0, 0])
-        footer[1][10] = footer[0][1] + footer[0][4] + footer[0][7] + footer[0][10]
-        footer[1][11] = footer[0][2] + footer[0][5] + footer[0][8] + footer[0][11]
 
-        real = Entry.objects.exclude(category__in=ledger.accounts.values_list('category', flat=True)).filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))['sum']
-        footer[2][10] = real/12
-        footer[2][11] = real
+        footer = [footer.copy() for unit in units]
+        for i, unit in enumerate(units):
+            if i > 0:
+                footer[i][0] = footer[i][3] = footer[i][6] = footer[i][9] = ''
 
-        footer[0][1] = colorfy(footer[0][1], unit)
-        footer[0][2] = colorfy(footer[0][2], unit)
-        footer[0][4] = colorfy(footer[0][4], unit)
-        footer[0][5] = colorfy(footer[0][5], unit)
-        footer[0][7] = colorfy(footer[0][7], unit)
-        footer[0][8] = colorfy(footer[0][8], unit)
-        footer[0][10] = colorfy(footer[0][10], unit)
-        footer[0][11] = colorfy(footer[0][11], unit)
-        footer[1][10] = colorfy(footer[1][10], unit)
-        footer[1][11] = colorfy(footer[1][11], unit)
-        footer[2][10] = colorfy(footer[2][10], unit)
-        footer[2][11] = colorfy(footer[2][11], unit)
+            footer.append(['', '', '', '', '', '', '', '', '', 'total' if i == 0 else '', 0, 0])
+            footer[-1][10] = (footer[i][1][unit] if unit in footer[i][1] else 0) + (footer[i][4][unit] if unit in footer[i][4] else 0) + (footer[i][7][unit] if unit in footer[i][7] else 0) + (footer[i][10][unit] if unit in footer[i][10] else 0)
+            footer[-1][11] = (footer[i][2][unit] if unit in footer[i][2] else 0) + (footer[i][5][unit] if unit in footer[i][5] else 0) + (footer[i][8][unit] if unit in footer[i][8] else 0) + (footer[i][11][unit] if unit in footer[i][11] else 0)
+
+            footer[i][1] = colorfy(footer[i][1][unit], unit) if unit in footer[i][1] else ''
+            footer[i][2] = colorfy(footer[i][2][unit], unit) if unit in footer[i][2] else ''
+            footer[i][4] = colorfy(footer[i][4][unit], unit) if unit in footer[i][4] else ''
+            footer[i][5] = colorfy(footer[i][5][unit], unit) if unit in footer[i][5] else ''
+            footer[i][7] = colorfy(footer[i][7][unit], unit) if unit in footer[i][7] else ''
+            footer[i][8] = colorfy(footer[i][8][unit], unit) if unit in footer[i][8] else ''
+            footer[i][10] = colorfy(footer[i][10][unit], unit) if unit in footer[i][10] else ''
+            footer[i][11] = colorfy(footer[i][11][unit], unit) if unit in footer[i][11] else ''
+            footer[-1][10] = colorfy(footer[-1][10], unit)
+            footer[-1][11] = colorfy(footer[-1][11], unit)
+
+
+        for i, unit in enumerate(units):
+            real = Entry.objects.exclude(category__in=ledger.accounts.values_list('category', flat=True)).filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))['sum']
+            footer.append(['', '', '', '', '', '', '', '', '', 'real' if i == 0 else '', 0, 0])
+            footer[-1][10] = colorfy(real / 12, unit)
+            footer[-1][11] = colorfy(real, unit)
 
 
         table = []
