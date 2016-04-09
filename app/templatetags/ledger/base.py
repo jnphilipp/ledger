@@ -16,7 +16,10 @@ def mod(x, y):
 
 @register.filter
 def lookup(d, key):
-    return d[key] if key in d else None
+    if type(d) == dict:
+        return d[key] if key in d else None
+    else:
+        return d[key] if key < len(d) else None
 
 @register.filter
 def startswith(value, start):

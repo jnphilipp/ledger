@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 
+
 @login_required(login_url='/profile/signin/')
 def budget(request):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -34,7 +35,7 @@ def budget(request):
             for i, (k, v) in enumerate(amounts.items()):
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
-                income.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+                income.append({'slug':tag.slug if i < 1 else '', 'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
             for k, v in amounts.items():
                 footer[1][k] = footer[1][k] + (v / 12) if k in footer[1] else (v / 12)
                 footer[2][k] = footer[2][k] + v if k in footer[2] else v
@@ -52,7 +53,7 @@ def budget(request):
             for i, (k, v) in enumerate(amounts.items()):
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
-                consumption.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+                consumption.append({'slug':tag.slug if i < 1 else '', 'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
             for k, v in amounts.items():
                 footer[4][k] = footer[4][k] + (v / 12) if k in footer[4] else (v / 12)
                 footer[5][k] = footer[5][k] + v if k in footer[5] else v
@@ -70,7 +71,7 @@ def budget(request):
             for i, (k, v) in enumerate(amounts.items()):
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
-                insurance.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+                insurance.append({'slug':tag.slug if i < 1 else '', 'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
             for k, v in amounts.items():
                 footer[7][k] = footer[7][k] + (v / 12) if k in footer[7] else (v / 12)
                 footer[8][k] = footer[8][k] + v if k in footer[8] else v
@@ -88,7 +89,7 @@ def budget(request):
             for i, (k, v) in enumerate(amounts.items()):
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
-                savings.append({'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
+                savings.append({'slug':tag.slug if i < 1 else '', 'name':tag.name.lower() if i < 1 else '', 'monthly':colorfy(v / 12, unit), 'yearly':colorfy(v, unit)})
             for k, v in amounts.items():
                 footer[10][k] = footer[10][k] + (v / 12) if k in footer[10] else (v / 12)
                 footer[11][k] = footer[11][k] + v if k in footer[11] else v
@@ -127,7 +128,7 @@ def budget(request):
         for i in range(max(len(income), len(consumption), len(insurance), len(savings))):
             row = []
             if i < len(income):
-                row.append(income[i]['name'])
+                row.append([income[i]['slug'], income[i]['name']] if income[i]['name'] else '')
                 row.append(income[i]['monthly'])
                 row.append(income[i]['yearly'])
             else:
@@ -135,7 +136,7 @@ def budget(request):
                 row.append('')
                 row.append('')
             if i < len(consumption):
-                row.append(consumption[i]['name'])
+                row.append([consumption[i]['slug'], consumption[i]['name']] if consumption[i]['name'] else '')
                 row.append(consumption[i]['monthly'])
                 row.append(consumption[i]['yearly'])
             else:
@@ -143,7 +144,7 @@ def budget(request):
                 row.append('')
                 row.append('')
             if i < len(insurance):
-                row.append(insurance[i]['name'])
+                row.append([insurance[i]['slug'], insurance[i]['name']] if insurance[i]['name'] else '')
                 row.append(insurance[i]['monthly'])
                 row.append(insurance[i]['yearly'])
             else:
@@ -151,7 +152,7 @@ def budget(request):
                 row.append('')
                 row.append('')
             if i < len(savings):
-                row.append(savings[i]['name'])
+                row.append([savings[i]['slug'], savings[i]['name']] if savings[i]['name'] else '')
                 row.append(savings[i]['monthly'])
                 row.append(savings[i]['yearly'])
             else:
@@ -160,6 +161,7 @@ def budget(request):
                 row.append('')
             table.append(row)
     return render(request, 'ledger/accounts/budget/budget.html', locals())
+
 
 @login_required(login_url='/profile/signin/')
 def edit(request):

@@ -50,7 +50,7 @@
                         <tr>
                             {% for cell in row %}
                                 {% if forloop.counter0|mod:3 == 0 %}
-                                    <th>{{ cell }}</th>
+                                    <th>{% if cell|length == 2 %}<a href="{% url 'tag' cell|lookup:0 %}">{{ cell|lookup:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
                                 {% else %}
                                     <td class="text-right">{{ cell }}</td>
                                 {% endif %}
