@@ -1,4 +1,4 @@
-Django==1.9.4
+Django==1.9.6
 django-autocomplete-light==2.3.3
-python-dateutil==2.5.2
+python-dateutil==2.5.3
 six==1.10.0
