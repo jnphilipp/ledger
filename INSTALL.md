@@ -7,7 +7,7 @@
   $ source venv/bin/activate
   ```
 * Create file TIMA/settings.ini with the folloing configurations, for details
-  see [https://docs.djangoproject.com/en/1.8/ref/settings/](https://docs.djangoproject.com/en/1.8/ref/settings/)
+  see [https://docs.djangoproject.com/en/1.9/ref/settings/](https://docs.djangoproject.com/en/1.9/ref/settings/)
 
   ```
   [secrets]
