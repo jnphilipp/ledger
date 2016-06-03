@@ -1,0 +1,26 @@
+{% load i18n %}
+
+
+{{ form.media }}
+<form action="{{ form_url }}" method="post" class="form-horizontal">
+    {% csrf_token %}
+    {% for field in form.hidden_fields %}
+        {{ field }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
+        <div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
+            <label class="col-sm-3 control-label{% if field.field.required %} required{% endif %}" for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
+            <div class="col-sm-9">
+                {{ field }}
+                {{ field.help_text|lower }}
+                <span class="help-block">{{ field.errors|lower }}</span>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button id="btn_save" class="btn btn-primary" type="submit">{% trans 'save' %}</button>
+        </div>
+    </div>
+</form>
