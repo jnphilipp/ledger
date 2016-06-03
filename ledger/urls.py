@@ -16,14 +16,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.views import static
+from users.views import dashboard
 
 admin.site.site_header = 'ledger administration'
 
 
 urlpatterns = [
+    url(r'^$', dashboard, name='dashboard'),
+
+    url(r'^accounts/', include('accounts.urls')),
+    url(r'^categories/', include('categories.urls')),
+    url(r'^units/', include('units.urls')),
+    url(r'^users/', include('users.urls')),
+
     url(r'^admin/', admin.site.urls),
 ]
 

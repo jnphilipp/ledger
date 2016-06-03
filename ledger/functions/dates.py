@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from itertools import count
 from math import floor
 
+
 def daterange(start, end, execution=1):
     if execution == 1:
         step = 1
@@ -27,8 +28,10 @@ def daterange(start, end, execution=1):
         dates.append(c)
     return dates
 
+
 def days_in_month(month):
     return 28 + (month + floor(month / 8)) % 2 + 2 % month + 2 * floor(1 / month)
+
 
 def get_last_date_current_month():
     today = date.today()
