@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'units' %}">{% trans 'units' %}</a></li>
+<li class="active">{{ unit.name|lower }}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h1 class="page-header">{{ unit.name|lower }}</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <dl class="dl-horizontal">
+            <dt>{% trans 'symbol' %}</dt>
+            <dd>{{ unit.symbol }}</dd>
+            <dt>{% trans 'precision' %}</dt>
+            <dd>{{ unit.precision }}</dd>
+        </dl>
+    </div>
+</div>
+{% endblock%}
