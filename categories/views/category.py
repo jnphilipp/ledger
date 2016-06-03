@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# from accounts.forms import CategoryForm, CategoryFilterForm
-# from accounts.models import Category, Unit
+from categories.forms import CategoryForm#, CategoryFilterForm
+from categories.models import Category#, Unit
 # from app.models import Ledger
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 # from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 
-@login_required(login_url='/profile/signin/')
+
+@login_required(login_url='/users/signin/')
 def categories(request):
     pass
     # ledger = get_object_or_404(Ledger, user=request.user)
@@ -30,10 +32,9 @@ def categories(request):
 
     # return render(request, 'ledger/accounts/category/categories.html', locals())
 
-@login_required(login_url='/profile/signin/')
+@login_required(login_url='/users/signin/')
 def category(request, slug):
-    pass
-    # category = get_object_or_404(Category, slug=slug)
+    category = get_object_or_404(Category, slug=slug)
     # ledger = get_object_or_404(Ledger, user=request.user)
     # year = request.GET.get('year')
 
@@ -42,9 +43,9 @@ def category(request, slug):
 
     # if not year:
     #     years = [y.strftime('%Y') for y in category.entries.filter(account__ledger=ledger).dates('day', 'year')]
-    # return render(request, 'ledger/accounts/category/category.html', locals())
+    return render(request, 'categories/category/category.html', locals())
 
-# @login_required(login_url='/profile/signin/')
+# @login_required(login_url='/users/signin/')
 # def entries(request, slug):
 #     category = get_object_or_404(Category, slug=slug)
 #     ledger = get_object_or_404(Ledger, user=request.user)
@@ -78,7 +79,7 @@ def category(request, slug):
 
 #     return render(request, 'ledger/accounts/category/entries.html', locals())
 
-# @login_required(login_url='/profile/signin/')
+# @login_required(login_url='/users/signin/')
 # def statistics(request, slug):
 #     ledger = get_object_or_404(Ledger, user=request.user)
 #     category = get_object_or_404(Category, slug=slug)
@@ -88,24 +89,51 @@ def category(request, slug):
 #         years = [y.strftime('%Y') for y in category.entries.filter(account__ledger=ledger).dates('day', 'year')]
 #     return render(request, 'ledger/accounts/category/statistics.html', locals())
 
-@login_required(login_url='/profile/signin/')
+
+@login_required(login_url='/users/signin/')
+@csrf_protect
+def add(request):
+    return _add(request, 'categories/category/add.html')
+
+
+@login_required(login_url='/users/signin/')
+@csrf_protect
+def add_another(request):
+    return _add(request, 'categories/category/add_another.html', False)
+
+
+def _add(request, template, do_redirect=True):
+    if request.method == 'POST':
+        form = CategoryForm(data=request.POST)
+        if form.is_valid():
+            category = form.save()
+            messages.add_message(request, messages.SUCCESS, _('the category %(name)s was successfully created.') % {'name': category.name.lower()})
+            if do_redirect:
+                return redirect('category', slug=category.slug)
+        return render(request, template, locals())
+    else:
+        form = CategoryForm()
+        return render(request, template, locals())
+
+
+@login_required(login_url='/users/signin/')
 @csrf_protect
 def edit(request, slug):
-    pass
-    # category = get_object_or_404(Category, slug=slug)
-    # if request.method == 'POST':
-    #     form = CategoryForm(instance=category, data=request.POST)
-    #     if form.is_valid():
-    #         category = form.save()
-    #         messages.add_message(request, messages.SUCCESS, 'the category %s was successfully updated.' % category.name.lower())
-    #         return redirect('category', slug=category.slug)
-    #     else:
-    #         return render(request, 'ledger/accounts/category/form.html', locals())
-    # else:
-    #     form = CategoryForm(instance=category)
-    #     return render(request, 'ledger/accounts/category/form.html', locals())
+    category = get_object_or_404(Category, slug=slug)
+    if request.method == 'POST':
+        form = CategoryForm(instance=category, data=request.POST)
+        if form.is_valid():
+            category = form.save()
+            messages.add_message(request, messages.SUCCESS, _('the category %(name)s was successfully updated.') % {'name': category.name.lower()})
+            return redirect('category', slug=category.slug)
+        else:
+            return render(request, 'categories/category/edit.html', locals())
+    else:
+        form = CategoryForm(instance=category)
+        return render(request, 'categories/category/edit.html', locals())
 
-@login_required(login_url='/profile/signin/')
+
+@login_required(login_url='/users/signin/')
 @csrf_protect
 def delete(request, slug):
     pass
