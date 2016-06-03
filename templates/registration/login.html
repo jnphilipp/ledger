@@ -1,4 +1,4 @@
-{% extends 'ledger/base.html' %}
+{% extends 'base.html' %}
 {% load i18n %}
 
 {% block content %}
@@ -25,7 +25,7 @@
                 <a href="{% url 'password_reset' %}">{% trans 'forgot your password?' %}</a>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">sign in</button>
+                <button type="submit" class="btn btn-primary">{% trans 'sign in' %}</button>
             </div>
         </form>
         <script type="text/javascript">

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from app.models import Budget
-from autocomplete_light import shortcuts as al
 from django import forms
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm as AuthUserChangeForm, UserCreationForm as AuthUserCreationForm
+from django.contrib.auth import forms as authforms, get_user_model
 
-class AuthenticationForm(AuthenticationForm):
+
+class AuthenticationForm(authforms.AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.fields['username'].label = 'username'
@@ -14,12 +12,8 @@ class AuthenticationForm(AuthenticationForm):
         self.fields['password'].label = 'password'
         self.fields['password'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'password'})
 
-class BudgetForm(al.ModelForm):
-    class Meta:
-        model = Budget
-        fields = ('income_tags', 'consumption_tags', 'insurance_tags', 'savings_tags')
 
-class UserChangeForm(AuthUserChangeForm):
+class UserChangeForm(authforms.UserChangeForm):
     def __init__(self, *args, **kwargs):
         super(UserChangeForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
@@ -27,11 +21,13 @@ class UserChangeForm(AuthUserChangeForm):
         self.fields['first_name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['last_name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
+
     class Meta:
         model = get_user_model()
         fields = ('username', 'password', 'email', 'first_name', 'last_name')
 
-class UserCreationForm(AuthUserCreationForm):
+
+class UserCreationForm(authforms.UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'bootstrap',
     'categories',
     'units',
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
