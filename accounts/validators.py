@@ -3,6 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 
+
 def validate_account_name(value):
     if value in ['add', 'entries']:
         raise ValidationError(
@@ -10,4 +11,3 @@ def validate_account_name(value):
             code='invalid',
             params={'value': value}
         )
-
