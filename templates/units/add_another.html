@@ -6,7 +6,14 @@
 <script type="text/javascript" src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        {% if unit %}parent.$.magnificPopup.close();{% endif %}
+        {% if unit %}
+            parent.$('#id_unit').append($('<option></option>')
+                .attr('value', '{{ unit.id }}')
+                .attr('name', '{{ unit.name }}')
+                .text('{{ unit.name }}'));
+            parent.$('#id_unit').val('{{ unit.id }}').trigger('change');
+            parent.$.magnificPopup.close();
+        {% endif %}
     });
 </script>
 {% endblock %}
@@ -15,15 +22,17 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <h1 class="page-header">{% trans 'add unit' %}</h1>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-4 col-md-offset-4">
-        {% if not unit %}
-            {% url 'unit_add_another' as form_url %}
-            {% include "partials/_form.html" with form_url=form_url %}
-        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans 'add unit' %}</h1>
+            </div>
+            <div class="panel-body">
+                {% if not unit %}
+                    {% url 'unit_add_another' as form_url %}
+                    {% include 'partials/_form.html' with form_url=form_url %}
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock%}
