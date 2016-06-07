@@ -49,7 +49,7 @@
                     </h1>
                 </div>
                 <div id="collapse-accounts" class="panel-collapse collapse out">
-                    {% include 'accounts/account/partials/_table_accounts.html' %}
+                    {% include 'accounts/account/partials/_table.html' %}
                 </div>
             </div>
             <div class="panel panel-default">
@@ -60,7 +60,7 @@
                     </h1>
                 </div>
                 <div id="collapse-entries" class="panel-collapse collapse in">
-                    {% include 'accounts/entry/partials/_table.html' with entries=entries options=False %}
+                    {% include 'accounts/entry/partials/_table.html' with account=None entries=entries options=False %}
                 </div>
             </div>
         {% else %}
