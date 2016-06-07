@@ -10,31 +10,31 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
-        <h1 class="page-header">{% trans 'units' %}</h1>
-    </div>
-</div>
-<div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>{% trans 'name' %}</th>
-                        <th>{% trans 'symbol' %}</th>
-                        <th>{% trans 'precision' %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for unit in units %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans 'units' %}</h1>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
                         <tr>
-                            <th><a href="{% url 'unit' unit.slug %}">{{ unit.name|lower }}</a></th>
-                            <td>{{ unit.symbol }}</td>
-                            <td>{{ unit.precision }}</td>
+                            <th>{% trans 'name' %}</th>
+                            <th>{% trans 'symbol' %}</th>
+                            <th>{% trans 'precision' %}</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for unit in units %}
+                            <tr>
+                                <th><a href="{% url 'unit' unit.slug %}">{{ unit.name|lower }}</a></th>
+                                <td>{{ unit.symbol }}</td>
+                                <td>{{ unit.precision }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

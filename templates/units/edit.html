@@ -13,16 +13,15 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <h1 class="page-header">
-            <a href="{% url 'unit' unit.slug %}">{{ unit.name|lower }}</a>
-            <small>{% trans 'edit' %}</small>
-        </h1>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-4 col-md-offset-4">
-        {% url 'unit_edit' unit.slug as form_url %}
-        {% include "partials/_form.html" with form_url=form_url %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans 'edit' %} {{ unit.name|lower }}</h1>
+            </div>
+            <div class="panel-body">
+                {% url 'unit_edit' unit.slug as form_url %}
+                {% include 'partials/_form.html' with form_url=form_url %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock%}
