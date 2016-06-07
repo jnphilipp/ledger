@@ -21,6 +21,23 @@
             minimumResultsForSearch: Infinity,
             allowClear: true
         });
+        {% if not account %}
+            $('#id_account').select2({
+                placeholder: 'select a accounts',
+                allowClear: true,
+                ajax: {
+                    url: "{% url 'account_autocomplete' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data, params) {
+                        return { results: data.accounts }
+                    }
+                }
+            });
+        {% endif %}
         $('#id_category').select2({
             placeholder: 'select a category',
             allowClear: true,
@@ -61,9 +78,13 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
-<li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+{% if account %}
+    <li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+    <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+    <li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+{% else %}
+    <li><a href="{% url 'entries' %}">{% trans 'entries' %}</a></li>
+{% endif %}
 <li class="active">{% trans 'add standing entry' %}</li>
 {% endblock %}
 
@@ -73,10 +94,14 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title" href="{% url 'entries' %}">{% trans 'add standing entry' %}</h1>
+                <h1 class="panel-title">{% trans 'add standing entry' %}</h1>
             </div>
             <div class="panel-body">
-                {% url 'entry_add' as form_url %}
+                {% if account %}
+                    {% url 'account_standing_entry_add' account.slug as form_url %}
+                {% else %}
+                    {% url 'standing_entry_add' as form_url %}
+                {% endif %}
                 {% include 'partials/_form.html' with form_url=form_url %}
             </div>
         </div>

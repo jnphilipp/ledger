@@ -9,25 +9,21 @@
 
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <h1 class="page-header">
-            {% trans 'accounts' %}
-            <small class="pull-right">
-                <a href="{% url 'account_add' %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span> {% trans 'add' %}</a>
-            </small>
-        </h1>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">{% trans 'accounts' %}</h1>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        {% if accounts %}
-            <div class="panel panel-default">
-                {% include 'accounts/account/partials/_table_accounts.html' %}
-            </div>
-        {% else %}
+    <div class="panel-body">
+        <div class="pull-right">
+            <a href="{% url 'account_add' %}" class="btn btn-primary" role="button">{% trans 'add account' %} <span class="glyphicon glyphicon-plus"></span></a>
+        </div>
+    </div>
+    {% if accounts %}
+        {% include 'accounts/account/partials/_table.html' %}
+    {% else %}
+        <div class="panel-body">
             <p>{% trans 'there are no accounts available.' %}</p>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

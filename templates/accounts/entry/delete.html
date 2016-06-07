@@ -4,10 +4,15 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
-<li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
-<li>{% trans 'entry' %} #{{ entry.serial_number }}</li>
+{% if account %}
+    <li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+    <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+    <li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+    <li><a href="{% url 'account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a></li>
+{% else %}
+    <li><a href="{% url 'entries' %}">{% trans 'entries' %}</a></li>
+    <li><a href="{% url 'entry' entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a></li>
+{% endif %}
 <li class="active">{% trans 'delete' %}</li>
 {% endblock %}
 
@@ -17,14 +22,11 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url 'account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a>
-                    <small>{% trans 'delete' %}</small>
-                </h1>
+                <h1 class="panel-title">{% trans 'delete entry' %} #{{ entry.serial_number }}</h1>
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{{ form_url }}" method="post" class="form">
+                <form action="{% if account %}{% url 'account_entry_delete' account.slug entry.id %}{% else %}{% url 'entry_delete' entry.id %}{% endif %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
                         <h5><b>{% trans 'confirm deletion' %}</b></h5>
@@ -33,7 +35,7 @@
 
                         <ul>
                             <li>
-                                {% trans 'entry' %}: <a href="{% url 'account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a>
+                                {% trans 'entry' %}: <a href="{% if account %}{% url 'account_entry' account.slug entry.id %}{% else %}{% url 'entry' entry.id %}{% endif %}">{% trans 'entry' %} #{{ entry.serial_number }}</a>
                             </li>
                         </ul>
                         <br/>

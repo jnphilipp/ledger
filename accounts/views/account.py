@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from accounts.forms import AccountForm, AccountFilterForm
+from accounts.forms import AccountForm
 from accounts.models import Account
 from categories.models import Category, Tag
 from datetime import date
@@ -52,7 +52,6 @@ def statistics(request, slug):
             years = years.filter(tags__isnull=False)
 
         option_name = 'year'
-        options = [{'id':year.strftime('%Y'), 'key':'year', 'value':year.strftime('%Y')} for year in years]
     elif chart and year and not month:
         months = account.entries.filter(day__year=year).dates('day', 'month')
         if chart == 'tags':
@@ -71,7 +70,6 @@ def statistics(request, slug):
             options = []
     else:
         options = []
-    return render(request, 'accounts/account/statistics.html', locals())
 
 
 @login_required(login_url='/users/signin/')
@@ -91,7 +89,7 @@ def add(request):
             return render(request, 'accounts/account/add.html', locals())
     else:
         form = AccountForm()
-        return render(request, 'accounts/account/add.html', locals())
+    return render(request, 'accounts/account/add.html', locals())
 
 
 @login_required(login_url='/users/signin/')

@@ -18,80 +18,108 @@
 
 
 {% block content %}
-<h1 class="page-header">
-    {{ account.name|lower }}
-    <small class="pull-right">
-        <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> edit</a>
-        <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> delete</a>
-    </small>
-</h1>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <a class="panel-title" href="{% url 'account_entries' account.slug %}">entries</a>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <h1>
+            <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button">{% trans 'edit account' %} <span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button">{% trans 'delete account' %} <span class="glyphicon glyphicon-trash"></span></a>
+        </h1>
     </div>
-    <div class="panel-body">
-        <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
-        <div class="pull-right">
-            <a class="btn btn-primary" href="{% url 'account_entry_add' account.slug %}" role="button"><span class="glyphicon glyphicon-plus"></span> add entry</a>
-            <a class="btn btn-primary" href="{% url 'account_standing_entry_add' account.slug %}"><span class="glyphicon glyphicon-plus"></span> add standing entry</a>
-        </div>
-    </div>
-    {% include 'accounts/entry/partials/_table.html' with entries=entries options=False %}
 </div>
-{% if account.entries.exists %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h1 class="panel-title">
-                <a href="{% url 'account_statistics' account.slug %}?chart=categories">statistics</a>
-                <small>categories</small>
-            </h1>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{{ account.name|lower }}</h1>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>{% trans 'created at' %}</dt>
+                    <dd>{{ account.created_at|date:'r'|lower }}</dd>
+                    <dt>{% trans 'last updated at' %}</dt>
+                    <dd>{{ account.updated_at|date:'r'|lower }}</dd>
+                    <dt>{% trans 'users' %}</dt>
+                    <dd>
+                        {% for l in account.ledgers.all %}
+                            {{ l.user.username }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </dd>
+                    <dt>{% trans 'category' %}</dt>
+                    <dd><a href="{% url 'category' account.category.slug %}">{{ account.category.name|lower }}</a></dd>
+                    <dt>{% trans 'unit' %}</dt>
+                    <dd><a href="{% url 'unit' account.unit.slug %}">{{ account.unit.name|lower }}</a></dd>
+                </dl>
+            </div>
         </div>
-        <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var ascchart_url = "{% url 'account_chart_categories_statistics' account.slug %}";
-                statistics(ascchart_url, 'ascchart');
-            });
-        </script>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h1 class="panel-title">
-                <a href="{% url 'account_statistics' account.slug %}?chart=tags">statistics</a>
-                <small>tags</small>
-            </h1>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a class="panel-title" href="{% url 'account_entries' account.slug %}">entries</a>
+            </div>
+            <div class="panel-body">
+                <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{% url 'account_entry_add' account.slug %}" role="button">{% trans 'add entry' %} <span class="glyphicon glyphicon-plus"></span></a>
+                    <a class="btn btn-primary" href="{% url 'account_standing_entry_add' account.slug %}">{% trans 'add standing entry' %} <span class="glyphicon glyphicon-plus"></span></a>
+                </div>
+            </div>
+            {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=False %}
         </div>
-        <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var astchart_url = "{% url 'account_chart_tags_statistics' account.slug %}";
-                statistics(astchart_url, 'astchart');
-            });
-        </script>
+        {% if account.entries.exists %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title">
+                        <a href="{% url 'account_statistics' account.slug %}?chart=categories">statistics</a>
+                        <small>categories</small>
+                    </h1>
+                </div>
+                <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var ascchart_url = "{% url 'account_chart_categories_statistics' account.slug %}";
+                        statistics(ascchart_url, 'ascchart');
+                    });
+                </script>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title">
+                        <a href="{% url 'account_statistics' account.slug %}?chart=tags">statistics</a>
+                        <small>tags</small>
+                    </h1>
+                </div>
+                <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var astchart_url = "{% url 'account_chart_tags_statistics' account.slug %}";
+                        statistics(astchart_url, 'astchart');
+                    });
+                </script>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title" href="{% url 'categories' %}">categories</a>
+                </div>
+                <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var cchart_url = "{% url 'account_chart_categories' account.slug %}";
+                        categories(cchart_url, 'cchart');
+                    });
+                </script>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title" href="{% url 'tags' %}">tags</a>
+                </div>
+                <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var tchart_url = "{% url 'account_chart_tags' account.slug %}";
+                        tags(tchart_url, 'tchart');
+                    });
+                </script>
+            </div>
+        {% endif %}
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <a class="panel-title" href="{% url 'categories' %}">categories</a>
-        </div>
-        <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var cchart_url = "{% url 'account_chart_categories' account.slug %}";
-                categories(cchart_url, 'cchart');
-            });
-        </script>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <a class="panel-title" href="{% url 'tags' %}">tags</a>
-        </div>
-        <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                var tchart_url = "{% url 'account_chart_tags' account.slug %}";
-                tags(tchart_url, 'tchart');
-            });
-        </script>
-    </div>
-{% endif %}
+</div>
 {% endblock %}

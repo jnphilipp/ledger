@@ -17,21 +17,23 @@
             showOtherMonths: true,
             selectOtherMonths: true
         });
-        $('#id_accounts').select2({
-            placeholder: 'accounts',
-            allowClear: true,
-            ajax: {
-                url: "{% url 'account_autocomplete' %}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data, params) {
-                    return { results: data.accounts }
+        {% if not account %}
+            $('#id_accounts').select2({
+                placeholder: 'accounts',
+                allowClear: true,
+                ajax: {
+                    url: "{% url 'account_autocomplete' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data, params) {
+                        return { results: data.accounts }
+                    }
                 }
-            }
-        });
+            });
+        {% endif %}
         $('#id_categories').select2({
             placeholder: 'categories',
             allowClear: true,
@@ -62,21 +64,23 @@
                 }
             }
         });
-        $('#id_units').select2({
-            placeholder: 'units',
-            allowClear: true,
-            ajax: {
-                url: "{% url 'unit_autocomplete' %}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data, params) {
-                    return { results: data.tags }
+        {% if not account %}
+            $('#id_units').select2({
+                placeholder: 'units',
+                allowClear: true,
+                ajax: {
+                    url: "{% url 'unit_autocomplete' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data, params) {
+                        return { results: data.units }
+                    }
                 }
-            }
-        });
+            });
+        {% endif %}
     });
 </script>
 {% endblock %}
@@ -84,6 +88,10 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+{% if account %}
+    <li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+    <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+{% endif %}
 <li class="active">{% trans 'entries' %}</li>
 {% endblock %}
 
@@ -98,24 +106,24 @@
             <div class="col-md-3">
                 <h5>
                     <b>{% trans 'balance' %}:</b>
-                    {% if f %}
-                        {{ entry_list|sumentries }}
-                    {% else %}
-                        {% balance request.user %}
-                    {% endif %}
+                    {% balance entry_list %}
                 </h5>
             </div>
             <div class="col-md-6 text-center">
-                {% url 'entries' as form_url %}
+                {% if account %}
+                    {% url 'account_entries' account.slug as form_url %}
+                {% else %}
+                    {% url 'entries' as form_url %}
+                {% endif %}
                 {% include 'partials/_form_inline.html' with form_url=form_url %}
             </div>
            <div class="col-md-3 text-right">
-                <a class="btn btn-primary" href="{% url 'entry_add' %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add entry' %}</a>
-                <a class="btn btn-primary" href="{% url 'standing_entry_add' %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add standing entry' %}</a>
+                <a class="btn btn-primary" href="{% if account %}{% url 'account_entry_add' account.slug %}{% else %}{% url 'entry_add' %}{% endif %}">{% trans 'add entry' %} <span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-primary" href="{% if account %}{% url 'account_standing_entry_add' account.slug %}{% else %}{% url 'standing_entry_add' %}{% endif %}">{% trans 'add standing entry' %} <span class="glyphicon glyphicon-plus"></span></a>
             </div>
         </div>
     </div>
-    {% include 'accounts/entry/partials/_table.html' with entries=entries options=True %}
+    {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=True %}
     <div class="panel-body">
         {% pagination paginator entries 'entries' %}
     </div>
