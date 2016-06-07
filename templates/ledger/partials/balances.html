@@ -1,7 +1,0 @@
-{% load ledger %}
-
-<ul>
-    {% for value in values %}
-        <li>{{ value|lookup:'balance' }} (<b>outstanding</b>: {{ value|lookup:'outstanding' }})</li>
-    {% endfor %}
-</ul>

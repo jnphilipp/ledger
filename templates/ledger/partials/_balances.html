@@ -1,0 +1,7 @@
+{% load i18n ledger %}
+
+<ul>
+    {% for value in values %}
+        <li>{{ value|get_item:'balance' }} (<b>{% trans 'outstanding' %}</b>: {{ value|get_item:'outstanding' }})</li>
+    {% endfor %}
+</ul>

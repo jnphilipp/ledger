@@ -1,0 +1,27 @@
+{% load accounts i18n %}
+
+
+<div class="table-responsive">
+    <table class="table table-bordered table-condensed table-hover table-striped">
+        <thead>
+            <tr>
+                <th>{% trans 'account' %}</th>
+                <th>{% trans 'balance' %}</th>
+                <th>{% trans 'outstanding' %}</th>
+                <th>{% trans 'number of entries' %}</th>
+                <th>{% trans 'last entry' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+                <tr>
+                    <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
+                    <td class="text-right">{{ account|balance }}</td>
+                    <td class="text-right">{{ account|outstanding }}</td>
+                    <td class="text-right">{{ account.entries.count }}</td>
+                    <td>{{ account.entries.last.day|date:'l, d. F Y' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

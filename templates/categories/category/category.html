@@ -1,9 +1,64 @@
 {% extends 'base.html' %}
-{% load static accounts %}
+{% load accounts i18n static %}
+
+
+{% block extrahead %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/charts/accounts/categories/statistics.js' %}"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'categories' %}">{% trans 'categories' %}</a></li>
+<li class="active">{{ category.name|lower }}</li>
+{% endblock %}
 
 
 {% block content %}
 <h1 class="page-header">
     {{ category.name|lower }}
+    <small>
+        <b>total:</b> {% for unit, total in totals.items %}{{ total|colorfy:unit }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        <div class="pull-right">
+            <a href="{% url 'category_edit' category.slug  %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> edit</a>
+            <a href="{% url 'category_delete' category.slug  %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> delete</a>
+        </div>
+    </small>
 </h1>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">
+            <a href="{% url 'category_statistics' category.slug %}">statistics</a>
+            {% if year %}<small><a href="{% url 'category' category.slug %}">{{ year }}</a></small>{% endif %}
+        </h1>
+    </div>
+    <div class="panel-body">
+        {% if years %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    select year <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for year in years %}
+                        <li><a href="?year={{ year }}">{{ year }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+    <div class="panel-body" id="mchart" style="min-width: 310px; height: 500px;"></div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var url = "{% url 'category_chart_statistics' category.slug %}{% if year %}?year={{ year }}{% endif %}";
+            statistics(url, 'mchart');
+        });
+    </script>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title"><a href="{% url 'category_entries' category.slug %}">{% trans 'entries' %}</a></h1>
+    </div>
+    {% include 'categories/category/partials/_table.html' with entries=entries options=False %}
+</div>
 {% endblock %}

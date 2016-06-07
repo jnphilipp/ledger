@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $('#id_day').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $('#date_today').click(function() {
+            $('#id_day').val('{{ today|date:'Y-m-d' }}');
+            $('#id_amount').focus();
+            return false;
+        });
+        $('#id_category').select2({
+            placeholder: 'select a category',
+            allowClear: true,
+            ajax: {
+                url: "{% url 'category_autocomplete' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.categories }
+                }
+            }
+        });
+        $('#id_tags').select2({
+            placeholder: 'select a tag',
+            allowClear: true,
+            ajax: {
+                url: "{% url 'tag_autocomplete' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.tags }
+                }
+            }
+        });
+        $('.ajax-popup-link').magnificPopup({
+            type: 'iframe'
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+<li>{% trans 'entry' %} #{{ entry.serial_number }}</li>
+<li class="active">{% trans 'edit' %}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans 'edit entry' %} #{{ entry.serial_number }}</h1>
+            </div>
+            <div class="panel-body">
+                {% url 'account_entry_add' account.slug as form_url %}
+                {% include 'partials/_form.html' with form_url=form_url %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}

@@ -1,0 +1,41 @@
+{% load accounts i18n %}
+
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>{% trans 'account' %}</th>
+            <th colspan="2">{% trans 'day' %}</th>
+            <th>{% trans 'amount' %}</th>
+            <th><a href="{% url 'categories' %}">{% trans 'category' %}</a></th>
+            <th>{% trans 'additional' %}</th>
+            <th><a href="{% url 'tags' %}">{% trans 'tags' %}</a></th>
+            {% if options %}
+                <th></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+            <tr>
+                <td><a href="{% url 'account' entry.account.slug %}">{{ entry.account.name|lower }}</a></td>
+                <td>{{ entry.day|date:'d.m.Y' }}</td>
+                <td>{{ entry.day|date:'D'|lower }}</td>
+                <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
+                <td><a href="{% url 'category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
+                <td>{{ entry.additional|lower }}</td>
+                <td>
+                    {% for tag in entry.tags.all %}
+                        <a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                {% if options %}
+                    <td>
+                        <a href="{% url 'account_entry_edit' entry.account.slug entry.id %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="{% url 'account_entry_duplicate' entry.account.slug entry.id %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
+                        <a href="{% url 'account_entry_delete' entry.account.slug entry.id %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

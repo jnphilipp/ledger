@@ -19,7 +19,7 @@ class Account(models.Model):
 
     slug = models.SlugField(unique=True)
     name = TextFieldSingleLine()
-    unit = models.ForeignKey(Unit)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='accounts')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='accounts', null=True)
     ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through)
 

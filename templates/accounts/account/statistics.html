@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load accounts ledger i18n static %}
+
+
+{% block extrahead %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/charts/accounts/accounts/statistics.js' %}"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li class="active">{% trans 'statistics' %}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+            <a href="{% url 'account' account.slug %}">{{ account|lower }}</a>
+            <small>
+                statistics
+                {% if chart %}
+                    | <a href="{% url 'account_statistics' account.slug %}">{{ chart }}</a>
+                    {% if year %}
+                        | <a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}">{{ year }}</a>
+                        {% if month %}
+                            | <a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}">{{ month_name }}</a>
+                            {% if category %}
+                                | <a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{{ category|lower }}</a>
+                            {% endif %}
+                            {% if tag %}
+                                | <a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{{ tag|lower }}</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </small>
+        </h1>
+    </div>
+</div>
+{% if options %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group" style="margin-left: 5px;">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">select {{ option_name }} <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    {% for option in options %}
+                        <li><a href="{% url 'account_statistics' account.slug %}?{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{% if month %}month={{ month }}&amp;{% endif %}{{ option|get_item:'key' }}={{ option|get_item:'id' }}">{{ option|get_item:'value' }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% if chart %}
+    <div class="row">
+        <div class="col-md-12">
+            <div id="chart" style="min-width: 310px; height: 800px;"></div>
+            <script type="text/javascript">
+                var url = "{% if chart == 'categories' %}{% url 'account_chart_categories_statistics' account.slug %}{% endif %}{% if chart == 'tags' %}{% url 'account_chart_tags_statistics' account.slug %}{% endif %}?{% if year %}year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}{% if category %}&category={{ category.slug }}{% endif %}{% if tag %}&tag={{ tag.slug }}{% endif %}";
+                statistics(url, 'chart');
+            </script>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

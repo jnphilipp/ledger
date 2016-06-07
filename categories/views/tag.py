@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# from accounts.forms import TagForm, TagFilterForm
+from categories.forms import TagForm#, TagFilterForm
 # from accounts.models import Tag, Unit
 # from app.models import Ledger
 # from collections import OrderedDict
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 # from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 # from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 # from json import dumps
 
@@ -93,6 +94,33 @@ def tag(request, slug):
 #         years = [y.strftime('%Y') for y in tag.entries.filter(account__ledger=ledger).dates('day', 'year')]
 #     return render(request, 'ledger/accounts/tag/statistics.html', locals())
 
+
+@login_required(login_url='/users/signin/')
+@csrf_protect
+def add(request):
+    return _add(request, 'categories/tag/add.html')
+
+
+@login_required(login_url='/users/signin/')
+@csrf_protect
+def add_another(request):
+    return _add(request, 'categories/tag/add_another.html', False)
+
+
+def _add(request, template, do_redirect=True):
+    if request.method == 'POST':
+        form = TagForm(data=request.POST)
+        if form.is_valid():
+            tag = form.save()
+            messages.add_message(request, messages.SUCCESS, _('the tag %(name)s was successfully created.') % {'name': tag.name.lower()})
+            if do_redirect:
+                return redirect('tag', slug=tag.slug)
+        return render(request, template, locals())
+    else:
+        form = TagForm()
+        return render(request, template, locals())
+
+
 @login_required(login_url='/profile/signin/')
 @csrf_protect
 def edit(request, slug):
@@ -109,6 +137,7 @@ def edit(request, slug):
     # else:
     #     form = TagForm(instance=tag)
     #     return render(request, 'ledger/accounts/tag/form.html', locals())
+
 
 @login_required(login_url='/profile/signin/')
 @csrf_protect

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static accounts %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'tags' %}">{% trans 'tags' %}</a></li>
+<li class="active">{{ tag.name|lower }}</li>
+{% endblock %}
+
+
+{% block content %}
+<h1 class="page-header">
+    {{ tag.name|lower }}
+</h1>
+{% endblock %}

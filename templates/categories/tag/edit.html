@@ -4,8 +4,8 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories' %}">{% trans 'categories' %}</a></li>
-<li><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></li>
+<li><a href="{% url 'tags' %}">{% trans 'tags' %}</a></li>
+<li><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></li>
 <li class="active">{% trans 'edit' %}</li>
 {% endblock %}
 
@@ -16,13 +16,15 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    <a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a>
+                    <a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>
                     <small>{% trans 'edit' %}</small>
                 </h1>
             </div>
             <div class="panel-body">
-        {% url 'category_edit' category.slug as form_url %}
-        {% include "partials/_form.html" with form_url=form_url %}
+                {% url 'category_edit' category.slug as form_url %}
+                {% include "partials/_form.html" with form_url=form_url %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock%}

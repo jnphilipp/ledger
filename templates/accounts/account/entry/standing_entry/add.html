@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $('#id_start_date').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $('#id_end_date').datepicker({
+            dateFormat:'yy-mm-dd',
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $('#id_execution').select2({
+            minimumResultsForSearch: Infinity,
+            allowClear: true
+        });
+        $('#id_category').select2({
+            placeholder: 'select a category',
+            allowClear: true,
+            ajax: {
+                url: "{% url 'category_autocomplete' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.categories }
+                }
+            }
+        });
+        $('#id_tags').select2({
+            placeholder: 'select a tag',
+            allowClear: true,
+            ajax: {
+                url: "{% url 'tag_autocomplete' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.tags }
+                }
+            }
+        });
+        $('.ajax-popup-link').magnificPopup({
+            type: 'iframe'
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+<li class="active">{% trans 'add standing entry' %}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans 'add standing entry' %}</h1>
+            </div>
+            <div class="panel-body">
+                {% url 'account_entry_add' account.slug as form_url %}
+                {% include 'partials/_form.html' with form_url=form_url %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}

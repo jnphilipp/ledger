@@ -6,12 +6,12 @@
 <script type="text/javascript" src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        {% if category %}
-            parent.$('#id_category').append($('<option></option>')
-                .attr('value', '{{ category.id }}')
-                .attr('name', '{{ category.name }}')
-                .text('{{ category.name }}'));
-            parent.$('#id_category').val('{{ category.id }}').trigger('change');
+        {% if tag %}
+            parent.$('#id_tag').append($('<option></option>')
+                .attr('value', '{{ tag.id }}')
+                .attr('name', '{{ tag.name }}')
+                .text('{{ tag.name }}'));
+            parent.$('#id_tag').val('{{ tag.id }}').trigger('change');
             parent.$.magnificPopup.close();
         {% endif %}
     });
@@ -24,11 +24,11 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'add category' %}</h1>
+                <h1 class="panel-title">{% trans 'add tag' %}</h1>
             </div>
             <div class="panel-body">
-                {% if not category %}
-                    {% url 'category_add_another' as form_url %}
+                {% if not tag %}
+                    {% url 'tag_add_another' as form_url %}
                     {% include 'partials/_form.html' with form_url=form_url %}
                 {% endif %}
             </div>

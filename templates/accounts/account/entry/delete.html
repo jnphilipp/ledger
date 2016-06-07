@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load accounts i18n %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+<li>{% trans 'entry' %} #{{ entry.serial_number }}</li>
+<li class="active">{% trans 'delete' %}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    <a href="{% url 'account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a>
+                    <small>{% trans 'delete' %}</small>
+                </h1>
+            </div>
+            <div class="panel-body">
+                {{ form.media }}
+                <form action="{{ form_url }}" method="post" class="form">
+                    {% csrf_token %}
+                    <div class="alert alert-danger" role="alert">
+                        <h5><b>{% trans 'confirm deletion' %}</b></h5>
+                        <p>{% blocktrans %}are you sure you want to delete this entry? all of the following objects and their related items will be deleted:{% endblocktrans %}</p>
+                        <p></p>
+
+                        <ul>
+                            <li>
+                                {% trans 'entry' %}: <a href="{% url 'account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a>
+                            </li>
+                        </ul>
+                        <br/>
+                        <button class="btn btn-danger" type="submit">{% blocktrans %}yes, i'm sure{% endblocktrans %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}

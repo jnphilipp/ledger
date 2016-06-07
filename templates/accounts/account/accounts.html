@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load accounts i18n %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li class="active">{% trans 'accounts' %}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+            {% trans 'accounts' %}
+            <small class="pull-right">
+                <a href="{% url 'account_add' %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span> {% trans 'add' %}</a>
+            </small>
+        </h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {% if accounts %}
+            <div class="panel panel-default">
+                {% include 'accounts/account/partials/_table_accounts.html' %}
+            </div>
+        {% else %}
+            <p>{% trans 'there are no accounts available.' %}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
