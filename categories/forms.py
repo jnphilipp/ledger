@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from accounts.models import Account
 from categories.models import Category, Tag
 from django import forms
+from units.models import Unit
 
 
 class CategoryForm(forms.ModelForm):
@@ -56,3 +58,12 @@ class TagForm(forms.ModelForm):
             return Tag.objects.get(name=instance.name)
         else:
             return super(TagForm, self).save(commit=commit)
+
+
+class FilterForm(forms.Form):
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
+    accounts = forms.ModelMultipleChoiceField(queryset=Account.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))
+    units = forms.ModelMultipleChoiceField(queryset=Unit.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))

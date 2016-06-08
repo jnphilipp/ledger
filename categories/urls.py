@@ -5,6 +5,7 @@ from .views import category, tag
 from .views.api import category as category_api
 from .views.api import tag as tag_api
 from .views.api.charts import category as category_chart
+from .views.api.charts import tag as tag_chart
 
 
 urlpatterns = [
@@ -23,8 +24,12 @@ urlpatterns = [
     url(r'^tag/(?P<slug>[\w-]+)/$', tag.tag, name='tag'),
     url(r'^tag/(?P<slug>[\w-]+)/edit/$', tag.edit, name='tag_edit'),
     url(r'^tag/(?P<slug>[\w-]+)/delete/$', tag.delete, name='tag_delete'),
+    url(r'^tag/(?P<slug>[\w-]+)/entries/$', tag.entries, name='tag_entries'),
+    url(r'^tag/(?P<slug>[\w-]+)/statistics/$', tag.statistics, name='tag_statistics'),
 
     url(r'^api/category/autocomplete', category_api.autocomplete, name='category_autocomplete'),
     url(r'^api/category/(?P<slug>[\w-]+)/charts/statistics/$', category_chart.statistics, name='category_chart_statistics'),
     url(r'^api/tag/autocomplete', tag_api.autocomplete, name='tag_autocomplete'),
+    url(r'^api/tag/(?P<slug>[\w-]+)/charts/statistics/accounts/$', tag_chart.accounts, name='tag_chart_statistics_accounts'),
+    url(r'^api/tag/(?P<slug>[\w-]+)/chart/statistics/categories/$', tag_chart.categories, name='tag_chart_statistics_categories'),
 ]

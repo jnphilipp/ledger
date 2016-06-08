@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
-{% load static accounts %}
+{% load accounts i18n ledger static %}
+
+
+{% block extrahead %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/charts/accounts/tags/statistics.js' %}"></script>
+{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -10,7 +16,69 @@
 
 
 {% block content %}
-<h1 class="page-header">
-    {{ tag.name|lower }}
-</h1>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <h1>
+            <a href="{% url 'tag_edit' tag.slug  %}" class="btn btn-primary" role="button">{% trans 'edit tag' %} <span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="{% url 'tag_delete' tag.slug  %}" class="btn btn-danger" role="button">{% trans 'delete tag' %} <span class="glyphicon glyphicon-trash"></span></a>
+        </h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{{ tag.name|lower }}</h1>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>{% trans 'created at' %}</dt>
+                    <dd>{{ tag.created_at|date:'r'|lower }}</dd>
+                    <dt>{% trans 'last updated at' %}</dt>
+                    <dd>{{ tag.updated_at|date:'r'|lower }}</dd>
+                    <dt>{% trans 'total' %}</dt>
+                    <dd>{% balance entry_list %}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    <a href="{% url 'tag_statistics' tag.slug %}?chart=categories">{% trans 'statistics' %}</a>
+                    <small>
+                        {% trans 'categories' %}
+                        {% if year %}| <a href="{% url 'tag' tag.slug %}">{{ year }}</a>{% endif %}
+                    </small>
+                </h1>
+            </div>
+            <div class="panel-body">
+                {% if years %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            select year <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for year in years %}
+                                <li><a href="?year={{ year }}">{{ year }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="panel-body" id="mchart" style="min-width: 310px; height: 500px;"></div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    var url = "{% url 'tag_chart_statistics_categories' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
+                    statistics(url, 'mchart');
+                });
+            </script>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><a href="{% url 'tag_entries' tag.slug %}">{% trans 'entries' %}</a></h1>
+            </div>
+            {% include 'accounts/entry/partials/_table.html' with entries=entries options=False %}
+        </div>
+    </div>
+</div>
 {% endblock %}

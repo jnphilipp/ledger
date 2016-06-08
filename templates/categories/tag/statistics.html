@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+
+{% block extrahead %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script src="{% static 'js/charts/accounts/tags/statistics.js' %}"></script>
+{% if chart == 'accounts' or chart == 'categories' %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var url = "{% if chart == 'accounts' %}{% url 'tag_chart_statistics_accounts' tag.slug %}{% else %}{% url 'tag_chart_statistics_categories' tag.slug %}{% endif %}{% if year %}?year={{ year }}{% endif %}";
+            statistics(url, 'chart');
+        });
+    </script>
+{% endif %}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'tags' %}">{% trans 'tags' %}</a></li>
+<li><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></li>
+{% if chart %}
+    <li><a href="{% url 'tag_statistics' tag.slug %}">{% trans 'statistics' %}</a></li>
+    {% if year %}
+        <li><a href="{% url 'tag_statistics' tag.slug %}?chart={{ chart }}">{% trans chart %}</a></li>
+        <li class="active">{{ year }}</li>
+    {% else %}
+        <li class="active">{% trans chart %}</li>
+    {% endif %}
+{% else %}
+    <li class="active">{% trans 'statistics' %}</li>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">
+            statistics
+            {% if chart %}
+                <small>
+                    | {{ chart }}
+                    {% if year %}| {{ year }}{% endif %}
+                </small>
+            {% endif %}
+        </h1>
+    </div>
+    <div class="panel-body">
+        {% if not chart %}
+            <div class="btn-group" style="margin-left: 5px;">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans 'select a chart' %} <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="{% url 'tag_statistics' tag.slug %}?chart=accounts">{% trans 'accounts' %}</a></li>
+                    <li><a href="{% url 'tag_statistics' tag.slug %}?chart=categories">{% trans 'categories' %}</a></li>
+                </ul>
+            </div>
+        {% endif %}
+        {% if years %}
+            <div class="btn-group" style="margin-left: 5px;">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans 'select a year' %} <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    {% for year in years %}
+                        <li><a href="{% url 'tag_statistics' tag.slug %}?chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% if chart == 'accounts' or chart == 'categories' %}
+            <div id="chart" style="min-width: 310px; height: 770px;"></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

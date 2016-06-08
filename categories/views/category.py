@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from categories.forms import CategoryForm#, CategoryFilterForm
+from categories.forms import CategoryForm, FilterForm
 from categories.models import Category
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
-# from django.db.models import Q
+from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
@@ -15,23 +15,26 @@ from users.models import Ledger
 
 @login_required(login_url='/users/signin/')
 def categories(request):
-    pass
-    # ledger = get_object_or_404(Ledger, user=request.user)
-    # categories = Category.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(accounts_category.name)'}).order_by('lname')
-
-    # if request.method == 'POST':
-    #     form = CategoryFilterForm(request.POST)
-    #     if form.is_valid():
-    #         if form.cleaned_data['accounts']:
-    #             categories = categories.filter(entries__account__in=form.cleaned_data['accounts'])
-    #         if form.cleaned_data['categories']:
-    #             categories = categories.filter(id__in=form.cleaned_data['categories'])
-    #         if form.cleaned_data['tags']:
-    #             categories = categories.filter(entries__tags__in=form.cleaned_data['tags'])
-    # else:
-    #     form = CategoryFilterForm()
-
-    # return render(request, 'ledger/accounts/category/categories.html', locals())
+    ledger = get_object_or_404(Ledger, user=request.user)
+    categories = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct().extra(select={'lname':'lower(categories_category.name)'}).order_by('lname')
+    if request.method == 'POST':
+        form = FilterForm(request.POST)
+        del form.fields['start_date']
+        del form.fields['end_date']
+        if form.is_valid():
+            if form.cleaned_data['accounts']:
+                categories = categories.filter(entries__account__in=form.cleaned_data['accounts'])
+            if form.cleaned_data['categories']:
+                categories = categories.filter(id__in=form.cleaned_data['categories'])
+            if form.cleaned_data['tags']:
+                categories = categories.filter(entries__tags__in=form.cleaned_data['tags'])
+            if form.cleaned_data['units']:
+                categories = categories.filter(entries__account__unit__in=form.cleaned_data['units'])
+    else:
+        form = FilterForm()
+        del form.fields['start_date']
+        del form.fields['end_date']
+    return render(request, 'categories/category/categories.html', locals())
 
 
 @login_required(login_url='/users/signin/')
@@ -40,8 +43,8 @@ def category(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     year = request.GET.get('year')
 
-    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in category.entries.filter(account__ledger=ledger).filter(account__unit=unit)), 2) for unit in set(category.entries.filter(account__ledger=ledger).values_list('account__unit', flat=True))}
-    entries = category.entries.filter(account__ledger=ledger).order_by('day').reverse()[:5]
+    entry_list = category.entries.filter(account__ledger=ledger)
+    entries = entry_list.order_by('day').reverse()[:5]
 
     if not year:
         years = [y.strftime('%Y') for y in category.entries.filter(account__ledger=ledger).dates('day', 'year')]
@@ -54,23 +57,25 @@ def entries(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
 
     if request.method == 'POST':
-        pass
-#         form = CategoryFilterForm(request.POST)
-#         entry_list = category.entries.all().reverse()
-#         if form.is_valid():
-#             if form.cleaned_data['start_date']:
-#                 entry_list = entry_list.filter(day__gte=form.cleaned_data['start_date'])
-#             if form.cleaned_data['end_date']:
-#                 entry_list = entry_list.filter(day__lte=form.cleaned_data['end_date'])
-#             if form.cleaned_data['accounts']:
-#                 entry_list = entry_list.filter(account__in=form.cleaned_data['accounts'])
-#             if form.cleaned_data['tags']:
-#                 entry_list = entry_list.filter(tags__in=form.cleaned_data['tags'])
+        form = FilterForm(request.POST)
+        del form.fields['categories']
+        entry_list = category.entries.filter(account__ledger=ledger).order_by('day').reverse()
+        if form.is_valid():
+            if form.cleaned_data['start_date']:
+                entry_list = entry_list.filter(day__gte=form.cleaned_data['start_date'])
+            if form.cleaned_data['end_date']:
+                entry_list = entry_list.filter(day__lte=form.cleaned_data['end_date'])
+            if form.cleaned_data['accounts']:
+                entry_list = entry_list.filter(account__in=form.cleaned_data['accounts'])
+            if form.cleaned_data['tags']:
+                entry_list = entry_list.filter(tags__in=form.cleaned_data['tags'])
+            if form.cleaned_data['tags']:
+                entry_list = entry_list.filter(account__unit__in=form.cleaned_data['units'])
     else:
-        # form = CategoryFilterForm()
+        form = FilterForm()
+        del form.fields['categories']
         entry_list = category.entries.filter(account__ledger=ledger).order_by('day').reverse()
 
-    totals = {Unit.objects.get(pk=unit):round(sum(entry.amount for entry in entry_list.filter(account__unit=unit)), 2) for unit in set(entry_list.values_list('account__unit', flat=True))}
 
     paginator = Paginator(entry_list, 200)
     page = request.GET.get('page')
@@ -110,7 +115,7 @@ def _add(request, template, do_redirect=True):
         form = CategoryForm(data=request.POST)
         if form.is_valid():
             category = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the category %(name)s was successfully created.') % {'name': category.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully created.') % {'name': category.name.lower()})
             if do_redirect:
                 return redirect('category', slug=category.slug)
         return render(request, template, locals())
@@ -127,7 +132,7 @@ def edit(request, slug):
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
             category = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the category %(name)s was successfully updated.') % {'name': category.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
             return redirect('category', slug=category.slug)
         else:
             return render(request, 'categories/category/edit.html', locals())
@@ -142,6 +147,6 @@ def delete(request, slug):
     category = get_object_or_404(Category, slug=slug)
     if request.method == 'POST':
         category.delete()
-        messages.add_message(request, messages.SUCCESS, _('the category %(name)s was successfully deleted.') % {'name': category.name.lower()})
+        messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully deleted.') % {'name': category.name.lower()})
         return redirect('categories')
     return render(request, 'categories/category/delete.html', locals())

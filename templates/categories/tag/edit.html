@@ -15,13 +15,10 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>
-                    <small>{% trans 'edit' %}</small>
-                </h1>
+                <h1 class="panel-title">{% trans 'edit' %} {{ tag.name|lower }}</h1>
             </div>
             <div class="panel-body">
-                {% url 'category_edit' category.slug as form_url %}
+                {% url 'tag_edit' tag.slug as form_url %}
                 {% include "partials/_form.html" with form_url=form_url %}
             </div>
         </div>

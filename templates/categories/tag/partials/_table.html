@@ -4,21 +4,21 @@
     <table class="table table-striped table-hover table-bordered">
         <thead>
             <tr>
-                <th>{% trans 'category' %}</th>
+                <th>{% trans 'tag' %}</th>
                 <th>{% trans 'accounts' %}</th>
                 <th>{% trans 'number of entries' %}</th>
             </tr>
         </thead>
         <tbody>
-            {% for category in categories %}
+            {% for tag in tags %}
                 <tr>
-                    <th><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></th>
+                    <th><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></th>
                     <td>
-                        {% for account in category|accounts:ledger %}
+                        {% for account in tag|accounts:ledger %}
                             <a href="{% url 'account' account.slug %}">{{ account|lower }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
-                    <td class="text-right">{{ category.entries.count }}</td>
+                    <td class="text-right">{{ tag.entries.count }}</td>
                 </tr>
             {% endfor %}
         </tbody>
