@@ -141,22 +141,3 @@ class EntryFilterForm(forms.Form):
     categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))
     units = forms.ModelMultipleChoiceField(queryset=Unit.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class':'form-control js-example-basic-multiple', 'style':'width: 200px;'}))
-
-
-
-
-# class CategoryFilterForm(forms.Form):
-#     start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
-#     end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
-#     accounts = autocomplete_light.ModelMultipleChoiceField('AccountsFilter', required=False)
-#     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
-#     tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)
-
-
-
-# class TagFilterForm(forms.Form):
-#     start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'start date', 'class':'form-control'}), required=False)
-#     end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete':'off', 'placeholder':'end date', 'class':'form-control'}), required=False)
-#     accounts = autocomplete_light.ModelMultipleChoiceField('AccountsFilter', required=False)
-#     categories = autocomplete_light.ModelMultipleChoiceField('CategoriesFilter', required=False)
-#     tags = autocomplete_light.ModelMultipleChoiceField('TagsFilter', required=False)

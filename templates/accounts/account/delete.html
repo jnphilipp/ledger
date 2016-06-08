@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load accounts i18n %}
+{% load i18n %}
 
 
 {% block breadcrumbs %}
@@ -15,14 +15,11 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
-                    <small>{% trans 'delete' %}</small>
-                </h1>
+                <h1 class="panel-title">{% trans 'delete' %} {{ account.name|lower }}</h1>
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{{ form_url }}" method="post" class="form">
+                <form action="{% url 'account_delete' account.slug %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
                         <h5><b>{% trans 'confirm deletion' %}</b></h5>
@@ -35,7 +32,7 @@
                                 {% if account.entries %}
                                     <ul>
                                         {% for entry in account.entries.all %}
-                                            <li>{% trans 'entry' %}: <a href="{% url 'account_entries' account.slug %}">{{ entry.day|date:'D., d. F Y' }} - {{ entry.category.name|lower }}</a></li>
+                                            <li>{% trans 'entry' %}: <a href="{% url 'entry' entry.id %}">#{{ entry.serial_number }}: {{ entry.day|date:'D., d. F Y' }} - {{ entry.category.name|lower }}</a></li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
