@@ -4,8 +4,9 @@ from accounts.models import Account, Entry
 from accounts.validators import validate_account_name
 from categories.models import Category, Tag
 from datetime import datetime
-from django.core.urlresolvers import reverse
 from django import forms
+from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from ledger.functions.dates import daterange
@@ -25,17 +26,19 @@ class AccountForm(forms.ModelForm):
         fields = ('name', 'category', 'unit')
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, ledger, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['name'].validators = [validate_account_name]
 
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
+        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['unit'].empty_label = ''
+        self.fields['unit'].queryset = Unit.objects.filter(accounts__ledger=ledger).distinct()
         self.fields['unit'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['unit'].widget.attrs['style'] = 'width: 95%;'
         self.fields['unit'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('unit_add_another'))
@@ -71,11 +74,13 @@ class EntryForm(forms.ModelForm):
 
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
+        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['tags'].empty_label = ''
         self.fields['tags'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
+        self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger__user=request.user).distinct()
         self.fields['tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 95%;'
 
@@ -83,7 +88,7 @@ class EntryForm(forms.ModelForm):
 class StandingEntryForm(forms.ModelForm):
     start_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'}))
     end_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'}))
-    execution = forms.ChoiceField(choices=((1, 'monthly'), (2, 'quarterly'), (3, 'half-yearly'), (4, 'yearly')), widget=forms.Select(attrs={'class':'form-control js-example-basic-hide-search'}))
+    execution = forms.ChoiceField(choices=((1, _('monthly')), (2, _('quarterly')), (3, _('half-yearly')), (4, _('yearly'))), widget=forms.Select(attrs={'class':'form-control js-example-basic-hide-search'}))
 
 
     class Media:
@@ -113,11 +118,13 @@ class StandingEntryForm(forms.ModelForm):
 
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
+        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['tags'].empty_label = ''
         self.fields['tags'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
+        self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger__user=request.user).distinct()
         self.fields['tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 95%;'
 

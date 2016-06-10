@@ -77,7 +77,7 @@ def statistics(request, slug):
 def add(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     if request.method == 'POST':
-        form = AccountForm(request.POST)
+        form = AccountForm(ledger, data=request.POST)
         if form.is_valid():
             account = form.save()
             ledger = get_object_or_404(Ledger, user=request.user)
@@ -88,7 +88,7 @@ def add(request):
         else:
             return render(request, 'accounts/account/add.html', locals())
     else:
-        form = AccountForm()
+        form = AccountForm(ledger)
     return render(request, 'accounts/account/add.html', locals())
 
 
@@ -98,7 +98,7 @@ def edit(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
     if request.method == 'POST':
-        form = AccountForm(instance=account, data=request.POST)
+        form = AccountForm(ledger, instance=account, data=request.POST)
         if form.is_valid():
             account = form.save()
             messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully updated.') % {'name': account.name.lower()})
@@ -106,7 +106,7 @@ def edit(request, slug):
         else:
             return render(request, 'accounts/account/edit.html', locals())
     else:
-        form = AccountForm(instance=account)
+        form = AccountForm(ledger, instance=account)
         return render(request, 'accounts/account/edit.html', locals())
 
 

@@ -37,9 +37,9 @@ def outstanding(account, autoescape=None):
 @register.filter
 def accounts(obj, ledger):
     if isinstance(obj, Category):
-        return Account.objects.filter(Q(entries__in=obj.entries.all()) | Q(ledger=ledger)).distinct()
+        return Account.objects.filter((Q(entries__in=obj.entries.all()) | Q(category=obj)) & Q(ledger=ledger)).distinct()
     elif isinstance(obj, Tag):
-        return Account.objects.filter(Q(entries__in=obj.entries.all()) | Q(ledger=ledger)).distinct()
+        return Account.objects.filter(Q(entries__in=obj.entries.all()) & Q(ledger=ledger)).distinct()
     else:
         return []
 
