@@ -20,7 +20,7 @@
 
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-            <button id="btn_save" class="btn btn-primary" type="submit">{% trans 'save' %} <span class="glyphicon glyphicon-floppy-save"></span></button>
+            <button id="btn_save" class="btn btn-primary" type="submit">{% if smt_btn %}{{ smt_btn }}{% else %}{% trans 'save' %} <span class="glyphicon glyphicon-floppy-save"></span>{% endif %}</button>
         </div>
     </div>
 </form>

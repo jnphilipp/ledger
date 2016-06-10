@@ -2,6 +2,7 @@
 
 from django import forms
 from django.contrib.auth import forms as authforms, get_user_model
+from django.utils.safestring import mark_safe
 
 
 class AuthenticationForm(authforms.AuthenticationForm):
@@ -13,6 +14,29 @@ class AuthenticationForm(authforms.AuthenticationForm):
         self.fields['password'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'password'})
 
 
+class PasswordChangeForm(authforms.PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['old_password'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control'})
+        self.fields['new_password1'].help_text = mark_safe(self.fields['new_password1'].help_text)
+        self.fields['new_password1'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control'})
+        self.fields['new_password2'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control'})
+
+
+class PasswordResetForm(authforms.PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget = forms.EmailInput(attrs={'autocomplete':'off', 'class':'form-control'})
+
+
+class SetPasswordForm(authforms.SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super(SetPasswordForm, self).__init__(*args, **kwargs)
+        self.fields['new_password1'].help_text = mark_safe(self.fields['new_password1'].help_text)
+        self.fields['new_password1'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control'})
+        self.fields['new_password2'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control'})
+
+
 class UserChangeForm(authforms.UserChangeForm):
     def __init__(self, *args, **kwargs):
         super(UserChangeForm, self).__init__(*args, **kwargs)
@@ -20,6 +44,7 @@ class UserChangeForm(authforms.UserChangeForm):
         self.fields['email'].widget = forms.EmailInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['first_name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['last_name'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
+        self.fields['password'].help_text = mark_safe(self.fields['password'].help_text)
 
 
     class Meta:

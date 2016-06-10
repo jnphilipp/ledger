@@ -2,10 +2,11 @@
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, views
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
-from users.forms import AuthenticationForm, UserCreationForm
+from users.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm, UserCreationForm
 from users.models import Ledger
 
 
@@ -55,10 +56,25 @@ def signup(request):
 
 
 @csrf_protect
-def password_reset_confirm(request, uidb64=None, token=None):
-    return views.password_reset_confirm(request, uidb64=uidb64, token=token, post_reset_redirect=reverse('signin'))
+def signout(request):
+    return views.logout(request)
+
+
+@csrf_protect
+def password_change(request):
+    return views.password_change(request, password_change_form=PasswordChangeForm)
+
+
+@csrf_protect
+def password_change_done(request):
+    return views.password_change_done(request)
 
 
 @csrf_protect
 def password_reset(request):
-    return views.password_reset(request, post_reset_redirect=reverse('signin'))
+    return views.password_reset(request, password_reset_form=PasswordResetForm, post_reset_redirect=reverse('signin'))
+
+
+@csrf_protect
+def password_reset_confirm(request, uidb64=None, token=None):
+    return views.password_reset_confirm(request, uidb64=uidb64, token=token, set_password_form=SetPasswordForm, post_reset_redirect=reverse('signin'))

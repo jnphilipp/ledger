@@ -1,19 +1,25 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+
+{% block breadcrumbs %}
+<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li class="active">{% trans 'signed out' %}</li>
+{% endblock %}
+
+
 {% block content %}
 <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="page-header">
-            <h1>{% trans 'signed out' %}</h1>
-        </div>
-    </div>
-</div>
-<div class="row" style="margin-top: 2em;">
     <div class="col-md-6 col-md-offset-3">
-        <h3 class="italic-title">{% trans 'thanks for spending some quality time with ledger today.' %}</h3>
-        <br/><br/>
-        <div class="f14" style="margin-bottom: 5px;">&nbsp; <a href="{% url 'signin' %}">{% trans 'sign in again' %}</a></div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans 'signed out' %}</h1>
+            </div>
+            <div class="panel-body">
+                <p>{% trans 'thanks for spending some quality time with ledger today.' %}</p>
+                <p><a href="{% url 'signin' %}">{% trans 'sign in again' %}</a></p>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
