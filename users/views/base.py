@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from users.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm, UserCreationForm
-from users.models import Ledger
+from users.models import Budget, Ledger
 
 
 @csrf_protect
@@ -43,6 +43,7 @@ def signup(request):
             new_user = form.save()
 
             Ledger.objects.create(user=new_user)
+            Budget.objects.create(user=new_user)
 
             messages.info(request, messages.SUCCESS, _('thanks for signing up. you are now logged in.'))
             new_user = authenticate(username=request.POST['username'], password=request.POST['password1'])

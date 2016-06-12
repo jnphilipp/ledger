@@ -38,8 +38,9 @@
                     {% if user.is_authenticated %}
                         <ul class="nav navbar-nav">
                             {% url 'accounts' as accounts_url %}
-                            <li class="dropdown{% if request.path == accounts_url or request.path|startswith:accounts_url %} active{% endif %}">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">accounts {% if request.path == accounts_url or request.path|startswith:accounts_url %} <span class="sr-only">(current)</span>{% endif %} <span class="caret"></span></a>
+                            {% url 'entries' as entries_url %}
+                            <li class="dropdown{% if request.path|startswith:entries_url or request.path|startswith:accounts_url %} active{% endif %}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">accounts {% if request.path|startswith:entries_url or request.path|startswith:accounts_url %} <span class="sr-only">(current)</span>{% endif %} <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     {% for account in user.ledger.accounts.all %}
                                         <li><a href="{% url 'account' account.slug %}">{{ account|lower }}</a></li>
@@ -49,11 +50,9 @@
                                 </ul>
                             </li>
                             {% url 'categories' as categories_url %}
-                            <li {% if request.path == categories_url or request.path|startswith:categories_url %}class="active"{% endif %}><a href="{% url 'categories' %}">categories{% if request.path == categories_url or request.path|startswith:categories_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
+                            <li {% if request.path|startswith:categories_url %}class="active"{% endif %}><a href="{% url 'categories' %}">categories{% if request.path|startswith:categories_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'tags' as tags_url %}
-                            <li {% if request.path == tags_url or request.path|startswith:tags_url %} class="active"{% endif %}><a href="{% url 'tags' %}">tags{% if request.path == tags_url or request.path|startswith:tags_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
-                            {% url 'dashboard' as budget_url %}
-                            <li {% if request.path == budget_url %}class="active"{% endif %}><a href="{% url 'dashboard' %}">budget{% if request.path == budget_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
+                            <li {% if request.path|startswith:tags_url %} class="active"{% endif %}><a href="{% url 'tags' %}">tags{% if request.path|startswith:tags_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'budget' as budget_url %}
                             <li {% if request.path|startswith:budget_url %}class="active"{% endif %}><a href="{% url 'budget' %}">budget{% if request.path|startswith:budget_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'dashboard' as statistics_url %}

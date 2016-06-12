@@ -8,64 +8,60 @@
 
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <h1 class="page-header">{% trans 'dashboard' %}</h1>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        {% if accounts %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">{% trans 'balance' %}</h1>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-condensed table-hover table-striped">
-                        <thead>
+{% if accounts %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                {% trans 'balance' %}
+                <a class="collapse-link" data-toggle="collapse" data-target="#collapse-balance" href="#collapse-balance"></a>
+            </h1>
+        </div>
+        <div id="collapse-balance" class="panel-collapse collapse in">
+            <div class="table-responsive">
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'unit' %}</th>
+                            <th>{% trans 'sum balance' %}</th>
+                            <th>{% trans 'sum outstanding' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for unit in units %}
                             <tr>
-                                <th>{% trans 'unit' %}</th>
-                                <th>{% trans 'sum balance' %}</th>
-                                <th>{% trans 'sum outstanding' %}</th>
+                                <th>{{ unit|lower }}</th>
+                                <td class="text-right">{{ unit|sumbalance:request.user }}</td>
+                                <td class="text-right">{{ unit|sumoutstanding:request.user }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for unit in units %}
-                                <tr>
-                                    <th>{{ unit|lower }}</th>
-                                    <td class="text-right">{{ unit|sumbalance:request.user }}</td>
-                                    <td class="text-right">{{ unit|sumoutstanding:request.user }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">
-                        <a href="{% url 'accounts' %}">{% trans 'accounts' %}</a>
-                        <a class="collapse-link collapsed" data-toggle="collapse" data-target="#collapse-accounts" href="#collapse-accounts" aria-expanded="false"></a>
-                    </h1>
-                </div>
-                <div id="collapse-accounts" class="panel-collapse collapse out">
-                    {% include 'accounts/account/partials/_table.html' %}
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">
-                        <a href="{% url 'entries' %}">{% trans 'entries' %}</a>
-                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
-                    </h1>
-                </div>
-                <div id="collapse-entries" class="panel-collapse collapse in">
-                    {% include 'accounts/entry/partials/_table.html' with account=None entries=entries options=False %}
-                </div>
-            </div>
-        {% else %}
-            <p>{% trans 'there are no accounts available.' %}</p>
-        {% endif %}
+        </div>
     </div>
-</div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a href="{% url 'accounts' %}">{% trans 'accounts' %}</a>
+                <a class="collapse-link collapsed" data-toggle="collapse" data-target="#collapse-accounts" href="#collapse-accounts" aria-expanded="false"></a>
+            </h1>
+        </div>
+        <div id="collapse-accounts" class="panel-collapse collapse out">
+            {% include 'accounts/account/partials/_table.html' %}
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">
+                <a href="{% url 'entries' %}">{% trans 'entries' %}</a>
+                <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
+            </h1>
+        </div>
+        <div id="collapse-entries" class="panel-collapse collapse in">
+            {% include 'accounts/entry/partials/_table.html' with account=None entries=entries options=False %}
+        </div>
+    </div>
+{% else %}
+    <p>{% trans 'there are no accounts available.' %}</p>
+{% endif %}
 {% endblock %}
