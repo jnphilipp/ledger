@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from categories.models import Tag
 from django import forms
 from django.contrib.auth import forms as authforms, get_user_model
 from django.utils.safestring import mark_safe
+from users.models import Budget
 
 
 class AuthenticationForm(authforms.AuthenticationForm):
@@ -12,6 +14,31 @@ class AuthenticationForm(authforms.AuthenticationForm):
         self.fields['username'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'username'})
         self.fields['password'].label = 'password'
         self.fields['password'].widget = forms.PasswordInput(attrs={'autocomplete':'off', 'class':'form-control', 'placeholder':'password'})
+
+
+class BudgetForm(forms.ModelForm):
+    class Meta:
+        model = Budget
+        fields = ('income_tags', 'consumption_tags', 'insurance_tags', 'savings_tags')
+
+
+    def __init__(self, *args, **kwargs):
+        super(BudgetForm, self).__init__(*args, **kwargs)
+        self.fields['income_tags'].empty_label = ''
+        self.fields['income_tags'].queryset = Tag.objects.filter(entries__account__ledger__user=self.instance.user).distinct()
+        self.fields['income_tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
+
+        self.fields['consumption_tags'].empty_label = ''
+        self.fields['consumption_tags'].queryset = Tag.objects.filter(entries__account__ledger__user=self.instance.user).distinct()
+        self.fields['consumption_tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
+
+        self.fields['insurance_tags'].empty_label = ''
+        self.fields['insurance_tags'].queryset = Tag.objects.filter(entries__account__ledger__user=self.instance.user).distinct()
+        self.fields['insurance_tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
+
+        self.fields['savings_tags'].empty_label = ''
+        self.fields['savings_tags'].queryset = Tag.objects.filter(entries__account__ledger__user=self.instance.user).distinct()
+        self.fields['savings_tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
 
 
 class PasswordChangeForm(authforms.PasswordChangeForm):

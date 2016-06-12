@@ -54,6 +54,8 @@
                             <li {% if request.path == tags_url or request.path|startswith:tags_url %} class="active"{% endif %}><a href="{% url 'tags' %}">tags{% if request.path == tags_url or request.path|startswith:tags_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'dashboard' as budget_url %}
                             <li {% if request.path == budget_url %}class="active"{% endif %}><a href="{% url 'dashboard' %}">budget{% if request.path == budget_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
+                            {% url 'budget' as budget_url %}
+                            <li {% if request.path|startswith:budget_url %}class="active"{% endif %}><a href="{% url 'budget' %}">budget{% if request.path|startswith:budget_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                             {% url 'dashboard' as statistics_url %}
                             <li {% if request.path == statistics_url %}class="active"{% endif %}><a href="{% url 'dashboard' %}">statistics{% if request.path == statistics_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
                         </ul>

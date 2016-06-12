@@ -2,10 +2,14 @@
 
 from django.conf.urls import url
 from . import views
+from .views import budget
 
 
 urlpatterns = [
     url(r'^profile/$', views.profile, name='profile'),
+
+    url(r'^budget/$', budget.budget, name='budget'),
+    url(r'^budget/edit/$', budget.edit, name='budget_edit'),
 
     url(r'^password/$', views.password_change, name='password_change'),
     url(r'^password/done/$', views.password_change_done, name='password_change_done'),
