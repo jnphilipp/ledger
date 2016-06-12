@@ -6,6 +6,7 @@ Web based ledger system to keep track of your accounts.
 ## Features
 * multiple Users share multiple accounts
 * detailed statistics
+* budget view
 
 ## Install
 See `INSTALL` for install instructions
