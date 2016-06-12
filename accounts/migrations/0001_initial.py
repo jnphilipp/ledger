@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(unique=True)),
                 ('name', accounts.models.TextFieldSingleLine()),
                 ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='accounts', to='categories.Category')),
-                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='units.Unit')),
+                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='accounts', to='units.Unit')),
             ],
             options={
                 'ordering': ('name',),

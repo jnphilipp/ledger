@@ -56,13 +56,10 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
-                    <small>{% trans 'edit' %}</small>
-                </h1>
+                <h1 class="panel-title">{% trans 'edit' %} {{ account.name|lower }}</h1>
             </div>
             <div class="panel-body">
-                {% url 'account_edit' account.slug  as form_url %}
+                {% url 'account_edit' account.slug as form_url %}
                 {% include 'partials/_form.html' with form_url=form_url %}
             </div>
         </div>

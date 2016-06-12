@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from .views import account, entry, standing_entry#, budget, statistics
-# from .views.api.accounts.charts import categories, statistics as acs, tags
-# from .views.api.categories import charts
-# from .views.api.statistics import charts as sc
-# from .views.api.tags.charts import statistics as ts
+from .views import account, entry, standing_entry
 from .views.api import account as account_api
 from .views.api.account.charts import categories, tags
 

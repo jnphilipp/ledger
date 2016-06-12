@@ -33,7 +33,7 @@ class AccountForm(forms.ModelForm):
 
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
-        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
+        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
@@ -74,13 +74,13 @@ class EntryForm(forms.ModelForm):
 
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
-        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
+        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['tags'].empty_label = ''
         self.fields['tags'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
-        self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger__user=request.user).distinct()
+        self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger=ledger).distinct()
         self.fields['tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 95%;'
 
@@ -118,13 +118,13 @@ class StandingEntryForm(forms.ModelForm):
 
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
-        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
+        self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['tags'].empty_label = ''
         self.fields['tags'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
-        self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger__user=request.user).distinct()
+        self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger=ledger).distinct()
         self.fields['tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 95%;'
 
