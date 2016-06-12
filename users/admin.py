@@ -2,7 +2,19 @@
 
 from django.contrib import admin
 from django.db.models import Count
-from users.models import Ledger
+from users.models import Budget, Ledger
+
+
+class BudgetAdmin(admin.ModelAdmin):
+    list_display = ('user', 'updated_at')
+    list_filter = ('user',)
+    search_fields = ('user', 'income_tags__name', 'consumption_tags__name', 'insurance_tags__name', 'savings_tags__name')
+
+    fieldsets = [
+        (None, {'fields': ['user', 'income_tags', 'consumption_tags', 'insurance_tags', 'savings_tags']}),
+    ]
+
+    filter_horizontal = ('income_tags', 'consumption_tags', 'insurance_tags', 'savings_tags')
 
 
 class LedgerAdmin(admin.ModelAdmin):
@@ -27,4 +39,5 @@ class LedgerAdmin(admin.ModelAdmin):
     filter_horizontal = ('accounts',)
 
 
+admin.site.register(Budget, BudgetAdmin)
 admin.site.register(Ledger, LedgerAdmin)
