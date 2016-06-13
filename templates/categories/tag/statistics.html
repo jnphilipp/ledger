@@ -38,10 +38,10 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h1 class="panel-title">
-            statistics
+            {% trans 'statistics' %}
             {% if chart %}
                 <small>
-                    | {{ chart }}
+                    {% trans chart %}
                     {% if year %}| {{ year }}{% endif %}
                 </small>
             {% endif %}
