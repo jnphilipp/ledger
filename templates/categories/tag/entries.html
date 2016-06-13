@@ -19,7 +19,6 @@
         });
         $('#id_accounts').select2({
             placeholder: 'accounts',
-            allowClear: true,
             ajax: {
                 url: "{% url 'account_autocomplete' %}",
                 dataType: 'json',
@@ -34,7 +33,6 @@
         });
         $('#id_categories').select2({
             placeholder: 'categories',
-            allowClear: true,
             ajax: {
                 url: "{% url 'category_autocomplete' %}",
                 dataType: 'json',
@@ -49,7 +47,6 @@
         });
         $('#id_tags').select2({
             placeholder: 'tags',
-            allowClear: true,
             ajax: {
                 url: "{% url 'tag_autocomplete' %}",
                 dataType: 'json',
@@ -64,7 +61,6 @@
         });
         $('#id_units').select2({
             placeholder: 'units',
-            allowClear: true,
             ajax: {
                 url: "{% url 'unit_autocomplete' %}",
                 dataType: 'json',
