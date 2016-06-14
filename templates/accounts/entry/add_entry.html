@@ -50,7 +50,6 @@
         });
         $('#id_tags').select2({
             placeholder: 'select a tag',
-            allowClear: true,
             ajax: {
                 url: "{% url 'tag_autocomplete' %}",
                 dataType: 'json',
