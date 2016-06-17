@@ -44,5 +44,4 @@ def statistics(request):
             options = [{'id':month.strftime('%m'), 'key':'month', 'value':month.strftime('%B').lower()} for month in months]
         elif unit_slug and chart and year and month:
             option_name = None
-            options = []
     return render(request, 'users/statistics.html', locals())
