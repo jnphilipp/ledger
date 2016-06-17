@@ -29,9 +29,9 @@
             </div>
             <div class="panel-body">
                 {% if unit %}
-                    {% url 'unit_add' as form_url %}
-                {% else %}
                     {% url 'unit_edit' unit.slug as form_url %}
+                {% else %}
+                    {% url 'unit_add' as form_url %}
                 {% endif %}
                 {% include 'partials/_form.html' with form_url=form_url %}
             </div>
