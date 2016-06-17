@@ -43,6 +43,7 @@ def statistics(request, slug):
     if year and month:
         month_name = date(year=int(year), month=int(month), day=1).strftime('%B').lower()
 
+    options = []
     if not chart:
         option_name = 'chart'
         options = [{'id':'categories', 'key':'chart', 'value':'categories'}, {'id':'tags', 'key':'chart', 'value':'tags'}]
@@ -67,10 +68,6 @@ def statistics(request, slug):
         elif chart == 'tags':
             option_name = 'tag'
             options = [{'id':tag.slug, 'key':'tag', 'value':tag.name.lower()} for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
-        else:
-            options = []
-    else:
-        options = []
     return render(request, 'accounts/account/statistics.html', locals())
 
 
@@ -87,11 +84,10 @@ def add(request):
             ledger.save()
             messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully created.' % {'name': account.name.lower()}))
             return redirect('account', slug=account.slug)
-        else:
-            return render(request, 'accounts/account/add.html', locals())
+        return render(request, 'accounts/account/form.html', locals())
     else:
         form = AccountForm(ledger)
-    return render(request, 'accounts/account/add.html', locals())
+    return render(request, 'accounts/account/form.html', locals())
 
 
 @login_required(login_url='/users/signin/')
@@ -105,11 +101,10 @@ def edit(request, slug):
             account = form.save()
             messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully updated.') % {'name': account.name.lower()})
             return redirect('account', slug=account.slug)
-        else:
-            return render(request, 'accounts/account/edit.html', locals())
+        return render(request, 'accounts/account/form.html', locals())
     else:
         form = AccountForm(ledger, instance=account)
-        return render(request, 'accounts/account/edit.html', locals())
+    return render(request, 'accounts/account/form.html', locals())
 
 
 @login_required(login_url='/users/signin/')
