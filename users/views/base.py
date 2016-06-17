@@ -29,10 +29,10 @@ def signin(request):
             return redirect(request.META.get('HTTP_REFERER'))
         else:
             messages.add_message(request, messages.ERROR, _('please enter a correct username and password to sign in. Note that both fields may be case-sensitive.'))
-            return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER'))
     else:
         form = AuthenticationForm(request)
-        return render(request, 'registration/login.html', locals())
+    return render(request, 'registration/login.html', locals())
 
 
 @csrf_protect
@@ -49,11 +49,10 @@ def signup(request):
             new_user = authenticate(username=request.POST['username'], password=request.POST['password1'])
             login(request, new_user)
             return redirect('profile')
-        else:
-            return render(request, 'registration/signup.html', locals())
+        return render(request, 'registration/signup.html', locals())
     else:
         form = UserCreationForm()
-        return render(request, 'registration/signup.html', locals())
+    return render(request, 'registration/signup.html', locals())
 
 
 @csrf_protect
