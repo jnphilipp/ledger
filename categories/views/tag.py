@@ -107,10 +107,10 @@ def add(request):
 @login_required(login_url='/users/signin/')
 @csrf_protect
 def add_another(request):
-    return _add(request, 'categories/tag/add_another.html', False)
+    return _add(request, 'categories/tag/add_another.html', False, request.GET.get('taregt_id'))
 
 
-def _add(request, template, do_redirect=True):
+def _add(request, template, do_redirect=True, taregt_id=None):
     if request.method == 'POST':
         form = TagForm(data=request.POST)
         if form.is_valid():

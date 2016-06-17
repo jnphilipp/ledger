@@ -7,11 +7,11 @@
 <script type="text/javascript">
     $(document).ready(function() {
         {% if category %}
-            parent.$('#id_category').append($('<option></option>')
+            parent.$('#{{ target_id }}').append($('<option></option>')
                 .attr('value', '{{ category.id }}')
                 .attr('name', '{{ category.name }}')
                 .text('{{ category.name }}'));
-            parent.$('#id_category').val('{{ category.id }}').trigger('change');
+            parent.$('#{{ target_id }}').val('{{ category.id }}').trigger('change');
             parent.$.magnificPopup.close();
         {% endif %}
     });
@@ -29,7 +29,7 @@
             <div class="panel-body">
                 {% if not category %}
                     {% url 'category_add_another' as form_url %}
-                    {% include 'partials/_form.html' with form_url=form_url %}
+                    {% include 'partials/_form.html' with form_url=form_url|add:'?target_id='|add:target_id %}
                 {% endif %}
             </div>
         </div>

@@ -7,11 +7,11 @@
 <script type="text/javascript">
     $(document).ready(function() {
         {% if unit %}
-            parent.$('#id_unit').append($('<option></option>')
+            parent.$('#{{ target_id }}').append($('<option></option>')
                 .attr('value', '{{ unit.id }}')
                 .attr('name', '{{ unit.name }}')
                 .text('{{ unit.name }}'));
-            parent.$('#id_unit').val('{{ unit.id }}').trigger('change');
+            parent.$('#{{ target_id }}').val('{{ unit.id }}').trigger('change');
             parent.$.magnificPopup.close();
         {% endif %}
     });
@@ -29,7 +29,7 @@
             <div class="panel-body">
                 {% if not unit %}
                     {% url 'unit_add_another' as form_url %}
-                    {% include 'partials/_form.html' with form_url=form_url %}
+                    {% include 'partials/_form.html' with form_url=form_url|add:'?target_id='|add:target_id %}
                 {% endif %}
             </div>
         </div>

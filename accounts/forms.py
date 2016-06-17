@@ -32,7 +32,7 @@ class AccountForm(forms.ModelForm):
         self.fields['name'].validators = [validate_account_name]
 
         self.fields['category'].empty_label = ''
-        self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
+        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
         self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
@@ -41,7 +41,7 @@ class AccountForm(forms.ModelForm):
         self.fields['unit'].queryset = Unit.objects.filter(accounts__ledger=ledger).distinct()
         self.fields['unit'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['unit'].widget.attrs['style'] = 'width: 95%;'
-        self.fields['unit'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('unit_add_another'))
+        self.fields['unit'].help_text = mark_safe('<a href="%s?target_id=id_unit" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('unit_add_another'))
 
 
 class EntryForm(forms.ModelForm):
@@ -73,13 +73,13 @@ class EntryForm(forms.ModelForm):
         self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
         self.fields['category'].empty_label = ''
-        self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
+        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
         self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['tags'].empty_label = ''
-        self.fields['tags'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
+        self.fields['tags'].help_text = mark_safe('<a href="%s?target_id=id_tags" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
         self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger=ledger).distinct()
         self.fields['tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 95%;'
@@ -117,13 +117,13 @@ class StandingEntryForm(forms.ModelForm):
         self.fields['amount'].widget = forms.TextInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control'})
 
         self.fields['category'].empty_label = ''
-        self.fields['category'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
+        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
         self.fields['category'].queryset = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 
         self.fields['tags'].empty_label = ''
-        self.fields['tags'].help_text = mark_safe('<a href="%s" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
+        self.fields['tags'].help_text = mark_safe('<a href="%s?target_id=id_tags" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('tag_add_another'))
         self.fields['tags'].queryset = Tag.objects.filter(entries__account__ledger=ledger).distinct()
         self.fields['tags'].widget.attrs['class'] = 'form-control js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 95%;'
