@@ -24,7 +24,7 @@ def unit(request, slug):
 @login_required(login_url='/users/signin/')
 @csrf_protect
 def add(request):
-    return _add(request, 'units/add.html')
+    return _add(request, 'units/form.html')
 
 
 @login_required(login_url='/users/signin/')
@@ -44,7 +44,7 @@ def _add(request, template, do_redirect=True, taregt_id=None):
         return render(request, template, locals())
     else:
         form = UnitForm()
-        return render(request, template, locals())
+    return render(request, template, locals())
 
 
 @login_required(login_url='/users/signin/')
@@ -57,8 +57,7 @@ def edit(request, slug):
             unit = form.save()
             messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully updated.') % {'name': unit.name.lower()})
             return redirect('unit', slug=unit.slug)
-        else:
-            return render(request, 'units/edit.html', locals())
+        return render(request, 'units/form.html', locals())
     else:
         form = UnitForm(instance=unit)
-        return render(request, 'units/edit.html', locals())
+    return render(request, 'units/form.html', locals())
