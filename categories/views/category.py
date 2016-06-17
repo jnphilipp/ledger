@@ -101,7 +101,7 @@ def statistics(request, slug):
 @login_required(login_url='/users/signin/')
 @csrf_protect
 def add(request):
-    return _add(request, 'categories/category/add.html')
+    return _add(request, 'categories/category/form.html')
 
 
 @login_required(login_url='/users/signin/')
@@ -121,7 +121,7 @@ def _add(request, template, do_redirect=True, taregt_id=None):
         return render(request, template, locals())
     else:
         form = CategoryForm()
-        return render(request, template, locals())
+    return render(request, template, locals())
 
 
 @login_required(login_url='/users/signin/')
@@ -134,11 +134,10 @@ def edit(request, slug):
             category = form.save()
             messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
             return redirect('category', slug=category.slug)
-        else:
-            return render(request, 'categories/category/edit.html', locals())
+        return render(request, 'categories/category/form.html', locals())
     else:
         form = CategoryForm(instance=category)
-        return render(request, 'categories/category/edit.html', locals())
+    return render(request, 'categories/category/form.html', locals())
 
 
 @login_required(login_url='/users/signin/')
