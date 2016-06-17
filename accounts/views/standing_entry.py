@@ -27,8 +27,7 @@ def add(request, slug=None):
 
             messages.add_message(request, messages.SUCCESS, _('the standing entry with the entries %(entries)s was successfully created.') % {'entries': ', '.join('"#%s"' % entry.serial_number for entry in entries) if account else '%s - %s' % (entries[0].account.name.lower(), ', '.join('"#%s"' % entry.serial_number for entry in entries))})
             return redirect('account_entries', slug=account.slug) if account else redirect('entries')
-        else:
-            return render(request, 'accounts/entry/add_standing_entry.html', locals())
+        return render(request, 'accounts/entry/form.html', locals())
     else:
         form = StandingEntryForm(ledger, exclude_account=bool(account))
-    return render(request, 'accounts/entry/add_standing_entry.html', locals())
+    return render(request, 'accounts/entry/form.html', locals())

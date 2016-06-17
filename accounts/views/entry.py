@@ -91,11 +91,10 @@ def add(request, slug=None):
             response = redirect('account_entries', slug=account.slug) if account else redirect('entries')
             if page: response['Location'] += '?page=%s' % page
             return response
-        else:
-            return render(request, 'accounts/entry/add_entry.html', locals())
+        return render(request, 'accounts/entry/form.html', locals())
     else:
         form = EntryForm(ledger, exclude_account=bool(account))
-        return render(request, 'accounts/entry/add_entry.html', locals())
+    return render(request, 'accounts/entry/form.html', locals())
 
 
 @login_required(login_url='/users/signin/')
@@ -123,11 +122,10 @@ def edit(request, entry_id, slug=None):
             response = redirect('account_entries', slug=account.slug) if account else redirect('entries')
             if page: response['Location'] += '?page=%s' % page
             return response
-        else:
-            return render(request, 'accounts/entry/edit.html', locals())
+        return render(request, 'accounts/entry/form.html', locals())
     else:
         form = EntryForm(ledger, instance=entry, exclude_account=bool(account))
-        return render(request, 'accounts/entry/edit.html', locals())
+    return render(request, 'accounts/entry/form.html', locals())
 
 
 @login_required(login_url='/users/signin/')
