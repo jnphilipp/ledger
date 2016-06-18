@@ -34,7 +34,6 @@ class AccountForm(forms.ModelForm):
         self.fields['category'].empty_label = ''
         self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('category_add_another'))
         self.fields['category'].queryset = Category.objects.all()
-        self.fields['category'].validators = [validate_category]
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
 

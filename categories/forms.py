@@ -19,7 +19,7 @@ class CategoryForm(forms.ModelForm):
 
     def is_valid(self):
         valid = super(CategoryForm, self).is_valid()
-        if self.has_error('name', code='unique') and len(self.errors.as_data()) == 1:
+        if self.has_error('name', code='unique') and len(self._errors.as_data()) == 1 and len(self._errors.as_data()['name']) == 1:
             self._errors = ''
             return True
         return valid
@@ -46,7 +46,7 @@ class TagForm(forms.ModelForm):
 
     def is_valid(self):
         valid = super(TagForm, self).is_valid()
-        if self.has_error('name', code='unique') and len(self.errors.as_data()) == 1:
+        if self.has_error('name', code='unique') and len(self._errors.as_data()) == 1 and len(self._errors.as_data()['name']) == 1:
             self._errors = ''
             return True
         return valid

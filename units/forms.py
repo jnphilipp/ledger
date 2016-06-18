@@ -19,7 +19,7 @@ class UnitForm(forms.ModelForm):
 
     def is_valid(self):
         valid = super(UnitForm, self).is_valid()
-        if (self.has_error('name', code='unique') or self.has_error('symbol', code='unique')) and len(self.errors.as_data()) <= 2:
+        if (self.has_error('name', code='unique') or self.has_error('symbol', code='unique')) and len(self._errors.as_data()) == 1 and len(self._errors.as_data()['name']) <= 2:
             self._errors = ''
             return True
         return valid
