@@ -28,7 +28,7 @@ def signin(request):
                 messages.add_message(request, messages.ERROR, _('your account is disabled.'))
             return redirect(request.META.get('HTTP_REFERER'))
         else:
-            messages.add_message(request, messages.ERROR, _('please enter a correct username and password to sign in. Note that both fields may be case-sensitive.'))
+            messages.add_message(request, messages.ERROR, _('please enter a correct username and password to sign in. note that both fields may be case-sensitive.'))
         return redirect(request.META.get('HTTP_REFERER'))
     else:
         form = AuthenticationForm(request)

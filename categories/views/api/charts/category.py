@@ -30,8 +30,10 @@ def statistics(request, slug):
             series.append({'name':account.name.lower(), 'data':[[m.strftime('%B'), category.entries.filter(Q(account=account) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
 
         for unit in units:
-            avg = category.entries.filter(Q(account__ledgers=ledger) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))['sum'] / len(months)
-            series.append({'name':'average %s' % unit.name.lower(), 'type':'spline', 'data':[avg for m in months], 'tooltip':{'valueSuffix':unit.symbol}})
+            amount = category.entries.filter(Q(account__ledgers=ledger) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))
+            if amount['sum']:
+                avg = amount['sum'] / len(months)
+                series.append({'name':'average %s' % unit.name.lower(), 'type':'spline', 'data':[avg for m in months], 'tooltip':{'valueSuffix':unit.symbol}})
         data['series'] = series
     else:
         years = category.entries.filter(account__ledger=ledger).dates('day', 'year')
