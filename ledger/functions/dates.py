@@ -30,6 +30,7 @@ def daterange(start, end, execution=1):
 
 
 def days_in_month(month):
+    """https://cmcenroe.me/2014/12/05/days-in-month-formula.html"""
     return 28 + (month + floor(month / 8)) % 2 + 2 % month + 2 * floor(1 / month)
 
 
