@@ -7,7 +7,7 @@ from ledger.functions.dates import get_last_date_current_month
 from units.models import Unit
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def dashboard(request):
     accounts = Account.objects.filter(ledger__user=request.user)
     units = Unit.objects.filter(accounts__in=accounts).distinct()

@@ -8,7 +8,7 @@ from units.models import Unit
 from users.models import Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def statistics(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     unit_slug = request.GET.get('unit')

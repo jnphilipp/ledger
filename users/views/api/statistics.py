@@ -11,7 +11,7 @@ from units.models import Unit
 from users.models import Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def categories(request):
     month = request.GET.get('month')
     year = request.GET.get('year')
@@ -56,7 +56,7 @@ def categories(request):
     return HttpResponse(dumps(data), 'application/json')
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def tags(request):
     month = request.GET.get('month')
     year = request.GET.get('year')

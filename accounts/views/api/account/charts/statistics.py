@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from json import dumps
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def categories(request, slug):
     account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
     year = request.GET.get('year')
@@ -64,7 +64,7 @@ def categories(request, slug):
     return HttpResponse(dumps(data), 'application/json')
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def tags(request, slug):
     account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
     year = request.GET.get('year')

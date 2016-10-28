@@ -14,7 +14,7 @@ from ledger.functions.dates import get_last_date_current_month
 from users.models import Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def entries(request, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -63,7 +63,7 @@ def entries(request, slug=None):
     return render(request, 'accounts/entry/entries.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def entry(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -72,7 +72,7 @@ def entry(request, entry_id, slug=None):
     return render(request, 'accounts/entry/entry.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def add(request, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -97,7 +97,7 @@ def add(request, slug=None):
     return render(request, 'accounts/entry/form.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def edit(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -128,7 +128,7 @@ def edit(request, entry_id, slug=None):
     return render(request, 'accounts/entry/form.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def delete(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -145,7 +145,7 @@ def delete(request, entry_id, slug=None):
     return render(request, 'accounts/entry/delete.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def duplicate(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
@@ -159,7 +159,7 @@ def duplicate(request, entry_id, slug=None):
     return redirect('account_entries', slug=account.slug) if account else redirect('entries')
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def swap(request, slug, e1, e2):
     ledger = get_object_or_404(Ledger, user=request.user)

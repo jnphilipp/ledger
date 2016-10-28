@@ -7,7 +7,7 @@ from json import dumps
 from units.models import Unit
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def autocomplete(request):
     """Handels GET/POST request to autocomplete units.
 

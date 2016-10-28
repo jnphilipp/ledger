@@ -139,15 +139,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = config.get('i18n', 'LANGUAGE_CODE')
+LANGUAGE_CODE = config.get('i18n', 'LANGUAGE_CODE', fallback='en-us')
 
-TIME_ZONE = config.get('i18n', 'TIME_ZONE')
+TIME_ZONE = config.get('i18n', 'TIME_ZONE', fallback='UTC')
 
-USE_I18N = config.getboolean('i18n', 'USE_I18N')
+USE_I18N = config.getboolean('i18n', 'USE_I18N', fallback=True)
 
-USE_L10N = config.getboolean('i18n', 'USE_L10N')
+USE_L10N = config.getboolean('i18n', 'USE_L10N', fallback=True)
 
-USE_TZ = config.getboolean('i18n', 'USE_TZ')
+USE_TZ = config.getboolean('i18n', 'USE_TZ', fallback=True)
+
+
+# Login
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/users/signin/'
 
 
 # Static files (CSS, JavaScript, Images)

@@ -7,7 +7,7 @@ from django.utils import timezone
 from json import dumps
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def autocomplete(request):
     """Handels GET/POST request to autocomplete tags.
 

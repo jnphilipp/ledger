@@ -15,14 +15,14 @@ from ledger.functions.dates import get_last_date_current_month
 from users.models import Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def accounts(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     accounts = Account.objects.filter(ledger=ledger)
     return render(request, 'accounts/account/accounts.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def account(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
@@ -30,7 +30,7 @@ def account(request, slug):
     return render(request, 'accounts/account/account.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
@@ -39,7 +39,7 @@ def statistics(request, slug):
     month = request.GET.get('month')
     category = get_object_or_404(Category, slug=request.GET.get('category')) if request.GET.get('category') else None
     tag = get_object_or_404(Tag, slug=request.GET.get('tag')) if request.GET.get('tag') else None
-    
+
     if year and month:
         month_name = date(year=int(year), month=int(month), day=1).strftime('%B').lower()
 
@@ -71,7 +71,7 @@ def statistics(request, slug):
     return render(request, 'accounts/account/statistics.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def add(request):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -90,7 +90,7 @@ def add(request):
     return render(request, 'accounts/account/form.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def edit(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -107,7 +107,7 @@ def edit(request, slug):
     return render(request, 'accounts/account/form.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def delete(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)

@@ -13,7 +13,7 @@ from users.forms import BudgetForm
 from users.models import Budget, Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def budget(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     budget = get_object_or_404(Budget, user=request.user)
@@ -168,7 +168,7 @@ def budget(request):
     return render(request, 'users/budget/budget.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def edit(request):
     budget = get_object_or_404(Budget, user=request.user)
     if request.method == 'POST':

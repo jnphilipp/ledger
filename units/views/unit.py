@@ -9,25 +9,25 @@ from units.forms import UnitForm
 from units.models import Unit
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def units(request):
     units = Unit.objects.all()
     return render(request, 'units/units.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def unit(request, slug):
     unit = get_object_or_404(Unit, slug=slug)
     return render(request, 'units/unit.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def add(request):
     return _add(request, 'units/form.html')
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def add_another(request):
     return _add(request, 'units/add_another.html', False, request.GET.get('target_id'))
@@ -47,7 +47,7 @@ def _add(request, template, do_redirect=True, target_id=None):
     return render(request, template, locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def edit(request, slug):
     unit = get_object_or_404(Unit, slug=slug)

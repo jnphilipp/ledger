@@ -11,7 +11,7 @@ from units.models import Unit
 from users.models import Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def statistics(request, slug):
     year = request.GET.get('year')
     category = get_object_or_404(Category, slug=slug)

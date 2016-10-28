@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_protect
 from users.models import Ledger
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def tags(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(categories_tag.name)'}).order_by('lname')
@@ -36,7 +36,7 @@ def tags(request):
     return render(request, 'categories/tag/tags.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def tag(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -50,7 +50,7 @@ def tag(request, slug):
     return render(request, 'categories/tag/tag.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 def entries(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -86,7 +86,7 @@ def entries(request, slug):
         entries = paginator.page(paginator.num_pages)
     return render(request, 'categories/tag/entries.html', locals())
 
-@login_required(login_url='/users/signin/')
+@login_required
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -98,13 +98,13 @@ def statistics(request, slug):
     return render(request, 'categories/tag/statistics.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def add(request):
     return _add(request, 'categories/tag/form.html')
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def add_another(request):
     return _add(request, 'categories/tag/add_another.html', False, request.GET.get('target_id'))
@@ -124,7 +124,7 @@ def _add(request, template, do_redirect=True, target_id=None):
     return render(request, template, locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def edit(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
@@ -140,7 +140,7 @@ def edit(request, slug):
     return render(request, 'categories/tag/form.html', locals())
 
 
-@login_required(login_url='/users/signin/')
+@login_required
 @csrf_protect
 def delete(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
