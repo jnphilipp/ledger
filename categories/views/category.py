@@ -14,7 +14,7 @@ from users.models import Ledger
 
 
 @login_required
-def categories(request):
+def list(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     categories = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct().extra(select={'lname':'lower(categories_category.name)'}).order_by('lname')
     if request.method == 'POST':
@@ -34,11 +34,11 @@ def categories(request):
         form = FilterForm()
         del form.fields['start_date']
         del form.fields['end_date']
-    return render(request, 'categories/category/categories.html', locals())
+    return render(request, 'categories/category/list.html', locals())
 
 
 @login_required
-def category(request, slug):
+def detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     ledger = get_object_or_404(Ledger, user=request.user)
     year = request.GET.get('year')
@@ -48,7 +48,7 @@ def category(request, slug):
 
     if not year:
         years = [y.strftime('%Y') for y in category.entries.filter(account__ledger=ledger).dates('day', 'year')]
-    return render(request, 'categories/category/category.html', locals())
+    return render(request, 'categories/category/detail.html', locals())
 
 
 @login_required
@@ -118,7 +118,6 @@ def _add(request, template, do_redirect=True, target_id=None):
             messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully created.') % {'name': category.name.lower()})
             if do_redirect:
                 return redirect('category', slug=category.slug)
-        return render(request, template, locals())
     else:
         form = CategoryForm()
     return render(request, template, locals())
@@ -134,7 +133,6 @@ def edit(request, slug):
             category = form.save()
             messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
             return redirect('category', slug=category.slug)
-        return render(request, 'categories/category/form.html', locals())
     else:
         form = CategoryForm(instance=category)
     return render(request, 'categories/category/form.html', locals())

@@ -12,7 +12,7 @@ from users.models import Ledger
 
 
 @login_required
-def tags(request):
+def list(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(categories_tag.name)'}).order_by('lname')
 
@@ -33,11 +33,11 @@ def tags(request):
         form = FilterForm()
         del form.fields['start_date']
         del form.fields['end_date']
-    return render(request, 'categories/tag/tags.html', locals())
+    return render(request, 'categories/tag/list.html', locals())
 
 
 @login_required
-def tag(request, slug):
+def detail(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
     year = request.GET.get('year')
@@ -47,7 +47,7 @@ def tag(request, slug):
 
     if not year:
         years = [y.strftime('%Y') for y in tag.entries.filter(account__ledger=ledger).dates('day', 'year')]
-    return render(request, 'categories/tag/tag.html', locals())
+    return render(request, 'categories/tag/detail.html', locals())
 
 
 @login_required
@@ -118,7 +118,6 @@ def _add(request, template, do_redirect=True, target_id=None):
             messages.add_message(request, messages.SUCCESS, _('the tag "%(name)s" was successfully created.') % {'name': tag.name.lower()})
             if do_redirect:
                 return redirect('tag', slug=tag.slug)
-        return render(request, template, locals())
     else:
         form = TagForm()
     return render(request, template, locals())
@@ -134,7 +133,6 @@ def edit(request, slug):
             tag = form.save()
             messages.add_message(request, messages.SUCCESS, _('the tag "%(name)s" was successfully updated.') % {'name': tag.name.lower()})
             return redirect('tag', slug=tag.slug)
-        return render(request, 'categories/tag/form.html', locals())
     else:
         form = TagForm(instance=tag)
     return render(request, 'categories/tag/form.html', locals())

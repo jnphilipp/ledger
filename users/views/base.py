@@ -77,4 +77,4 @@ def password_reset(request):
 
 @csrf_protect
 def password_reset_confirm(request, uidb64=None, token=None):
-    return views.password_reset_confirm(request, uidb64=uidb64, token=token, set_password_form=SetPasswordForm, post_reset_redirect=reverse('signin'))
+    return views.password_reset_confirm(request, uidb64=uidb64, token=token, set_password_form=SetPasswordForm)

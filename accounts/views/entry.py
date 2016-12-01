@@ -16,7 +16,7 @@ from users.models import Ledger
 
 @login_required
 @csrf_protect
-def entries(request, slug=None):
+def list(request, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
 
@@ -60,16 +60,16 @@ def entries(request, slug=None):
         entries = paginator.page(1)
     except EmptyPage:
         entries = paginator.page(paginator.num_pages)
-    return render(request, 'accounts/entry/entries.html', locals())
+    return render(request, 'accounts/entry/list.html', locals())
 
 
 @login_required
 @csrf_protect
-def entry(request, entry_id, slug=None):
+def detail(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
-    return render(request, 'accounts/entry/entry.html', locals())
+    return render(request, 'accounts/entry/detail.html', locals())
 
 
 @login_required

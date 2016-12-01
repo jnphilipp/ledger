@@ -10,27 +10,27 @@ from units.models import Unit
 
 
 @login_required
-def units(request):
+def list(request):
     units = Unit.objects.all()
-    return render(request, 'units/units.html', locals())
+    return render(request, 'units/unit/list.html', locals())
 
 
 @login_required
-def unit(request, slug):
+def detail(request, slug):
     unit = get_object_or_404(Unit, slug=slug)
-    return render(request, 'units/unit.html', locals())
+    return render(request, 'units/unit/detail.html', locals())
 
 
 @login_required
 @csrf_protect
 def add(request):
-    return _add(request, 'units/form.html')
+    return _add(request, 'units/unit/form.html')
 
 
 @login_required
 @csrf_protect
 def add_another(request):
-    return _add(request, 'units/add_another.html', False, request.GET.get('target_id'))
+    return _add(request, 'units/unit/add_another.html', False, request.GET.get('target_id'))
 
 
 def _add(request, template, do_redirect=True, target_id=None):
@@ -41,7 +41,6 @@ def _add(request, template, do_redirect=True, target_id=None):
             messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully created.' % {'name': unit.name.lower()}))
             if do_redirect:
                 return redirect('unit', slug=unit.slug)
-        return render(request, template, locals())
     else:
         form = UnitForm()
     return render(request, template, locals())
@@ -57,7 +56,6 @@ def edit(request, slug):
             unit = form.save()
             messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully updated.') % {'name': unit.name.lower()})
             return redirect('unit', slug=unit.slug)
-        return render(request, 'units/form.html', locals())
     else:
         form = UnitForm(instance=unit)
-    return render(request, 'units/form.html', locals())
+    return render(request, 'units/unit/form.html', locals())

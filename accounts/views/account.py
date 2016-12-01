@@ -16,18 +16,18 @@ from users.models import Ledger
 
 
 @login_required
-def accounts(request):
+def list(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     accounts = Account.objects.filter(ledger=ledger)
-    return render(request, 'accounts/account/accounts.html', locals())
+    return render(request, 'accounts/account/list.html', locals())
 
 
 @login_required
-def account(request, slug):
+def detail(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
     entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:5]
-    return render(request, 'accounts/account/account.html', locals())
+    return render(request, 'accounts/account/detail.html', locals())
 
 
 @login_required

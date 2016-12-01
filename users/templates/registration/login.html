@@ -11,7 +11,7 @@
 {% block content %}
 <div class="row" style="margin-top: 5%;">
     <div class="col-md-2 col-md-offset-5">
-        <h1 class="text-center">ledger</h1>
+        <h1 class="text-center"><small><span class="glyphicon glyphicon-lock"></span></small> ledger</h1>
     </div>
 </div>
 <div class="row" style="margin-top: 20px;">
@@ -32,7 +32,7 @@
                 <a href="{% url 'password_reset' %}">{% trans 'forgot your password?' %}</a>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">{% trans 'sign in' %}</button>
+                <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-log-in"></span> {% trans 'sign in' %}</button>
             </div>
         </form>
         <script type="text/javascript">
