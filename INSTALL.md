@@ -7,7 +7,7 @@
   $ source .venv/bin/activate
   ```
 * Create file ledger/settings.ini with the folloing configurations, for details
-  see [https://docs.djangoproject.com/en/1.9/ref/settings/](https://docs.djangoproject.com/en/1.9/ref/settings/)
+  see [https://docs.djangoproject.com/en/1.10/ref/settings/](https://docs.djangoproject.com/en/1.10/ref/settings/)
 
   ```
   [database]
@@ -33,7 +33,7 @@
 
 
   [secrets]
-  SECRET_KEY: 
+  SECRET_KEY:
   SESSION_COOKIE_SECURE: false
   CSRF_COOKIE_SECURE: false
   SESSION_EXPIRE_AT_BROWSER_CLOSE: false
