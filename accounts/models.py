@@ -28,6 +28,12 @@ class Account(models.Model):
         return reverse('account', args=[self.slug])
 
 
+    def renumber_entries(self):
+        for i, entry in enumerate(self.entries.all()):
+            entry.serial_number = i + 1
+            entry.save()
+
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
@@ -63,12 +69,17 @@ class Entry(models.Model):
 
     def save(self, *args, **kwargs):
         move = False
+        old_account = None
         if self.id:
             orig = Entry.objects.get(id=self.id)
             entry = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last()
             next_serial_number = entry.serial_number + 1 if entry else 1
             if orig.day != self.day and (orig.serial_number + 1) != next_serial_number:
                 move = True
+            if orig.account != self.account:
+                move = True
+                self.serial_number = None
+                old_account = orig.account
         if not self.id or move:
             if Entry.objects.filter(account=self.account).filter(day__lte=self.day).exists():
                 next_serial_number = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last().serial_number + 1
@@ -79,6 +90,9 @@ class Entry(models.Model):
                 entry.save()
             self.serial_number = next_serial_number
         super(Entry, self).save()
+
+        if old_account:
+            old_account.renumber_entries()
 
 
     class Meta:
