@@ -108,6 +108,19 @@ def edit(request, slug):
 
 
 @login_required
+def close(request, slug):
+    ledger = get_object_or_404(Ledger, user=request.user)
+    account = get_object_or_404(Account, slug=slug, ledger=ledger)
+    account.closed = not account.closed
+    account.save()
+    if account.closed:
+        messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully closed.') % {'name': account.name.lower()})
+    else:
+        messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully re-open.') % {'name': account.name.lower()})
+    return redirect('account', slug=account.slug)
+
+
+@login_required
 @csrf_protect
 def delete(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)

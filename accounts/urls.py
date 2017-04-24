@@ -20,6 +20,7 @@ urlpatterns = [
 
     url(r'^account/(?P<slug>[\w-]+)/$', account.detail, name='account'),
     url(r'^account/(?P<slug>[\w-]+)/edit/$', account.edit, name='account_edit'),
+    url(r'^account/(?P<slug>[\w-]+)/close/$', account.close, name='account_close'),
     url(r'^account/(?P<slug>[\w-]+)/delete/$', account.delete, name='account_delete'),
     url(r'^account/(?P<slug>[\w-]+)/entries/$', entry.list, name='account_entries'),
     url(r'^account/(?P<slug>[\w-]+)/entries/add/$', entry.add, name='account_entry_add'),

@@ -13,7 +13,7 @@
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
 <li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-<li class="active">{{ account.name|lower }}</li>
+<li class="active">{{ account.name|lower }}{% if account.closed %} <small>{% trans 'closed' %}</small>{% endif %}</li>
 {% endblock %}
 
 
@@ -22,6 +22,11 @@
     <div class="col-md-12 text-right">
         <h1>
             <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button">{% trans 'edit account' %} <span class="glyphicon glyphicon-pencil"></span></a>
+            {% if account.closed %}
+                <a href="{% url 'account_close' account.slug  %}" class="btn btn-primary" role="button">{% trans 're-open account' %} <span class="glyphicon glyphicon-folder-open"></span></a>
+            {% else %}
+                <a href="{% url 'account_close' account.slug  %}" class="btn btn-primary" role="button">{% trans 'close account' %} <span class="glyphicon glyphicon-folder-close"></span></a>
+            {% endif %}
             <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button">{% trans 'delete account' %} <span class="glyphicon glyphicon-trash"></span></a>
         </h1>
     </div>
@@ -30,9 +35,15 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{{ account.name|lower }}</h1>
+                <h1 class="panel-title">
+                    {{ account.name|lower }}
+                    {% if account.closed %}
+                        <small>{% trans 'closed' %}</small>
+                    {% endif %}
+                </h1>
             </div>
             <div class="panel-body">
+                {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans 'this account is currently closed.' %}</div>{% endif %}
                 <dl class="dl-horizontal">
                     <dt>{% trans 'created at' %}</dt>
                     <dd>{{ account.created_at|date:'r'|lower }}</dd>
@@ -57,10 +68,12 @@
             </div>
             <div class="panel-body">
                 <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
-                <div class="pull-right">
-                    <a class="btn btn-primary" href="{% url 'account_entry_add' account.slug %}" role="button">{% trans 'add entry' %} <span class="glyphicon glyphicon-plus"></span></a>
-                    <a class="btn btn-primary" href="{% url 'account_standing_entry_add' account.slug %}">{% trans 'add standing entry' %} <span class="glyphicon glyphicon-plus"></span></a>
-                </div>
+                {% if not account.closed %}
+                    <div class="pull-right">
+                        <a class="btn btn-primary" href="{% url 'account_entry_add' account.slug %}" role="button">{% trans 'add entry' %} <span class="glyphicon glyphicon-plus"></span></a>
+                        <a class="btn btn-primary" href="{% url 'account_standing_entry_add' account.slug %}">{% trans 'add standing entry' %} <span class="glyphicon glyphicon-plus"></span></a>
+                    </div>
+                {% endif %}
             </div>
             {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=False %}
         </div>

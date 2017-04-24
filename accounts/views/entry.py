@@ -52,6 +52,7 @@ def list(request, slug=None):
         else:
             entry_list = Entry.objects.filter(account__ledger=ledger).filter(day__lte=get_last_date_current_month()).order_by('-day', '-id')
 
+    show_options = not account.closed if account else True
     paginator = Paginator(entry_list, 200)
     page = request.GET.get('page')
     try:

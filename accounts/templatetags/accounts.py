@@ -24,13 +24,19 @@ def colorfy(amount, unit=None, autoescape=None):
 
 @register.filter(needs_autoescape=True)
 def balance(account, autoescape=None):
-    balance = sum(entry.amount for entry in account.entries.filter(day__lte=date.today()))
+    if account.closed:
+        balance = 0
+    else:
+        balance = sum(entry.amount for entry in account.entries.filter(day__lte=date.today()))
     return colorfy(balance, account.unit) if autoescape else balance
 
 
 @register.filter(needs_autoescape=True)
 def outstanding(account, autoescape=None):
-    outstanding = sum(entry.amount for entry in account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
+    if account.closed:
+        outstanding = 0
+    else:
+        outstanding = sum(entry.amount for entry in account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
     return colorfy(outstanding, account.unit) if autoescape else outstanding
 
 

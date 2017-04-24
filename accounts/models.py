@@ -22,17 +22,15 @@ class Account(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='accounts')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='accounts', null=True)
     ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through)
-
+    closed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('account', args=[self.slug])
-
 
     def renumber_entries(self):
         for i, entry in enumerate(self.entries.all()):
             entry.serial_number = i + 1
             entry.save()
-
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -43,13 +41,11 @@ class Account(models.Model):
                 self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
         super(Account, self).save(*args, **kwargs)
 
-
     def __str__(self):
         return self.name.lower()
 
-
     class Meta:
-        ordering = ('name',)
+        ordering = ('closed', 'name')
         verbose_name = ' account'
         verbose_name_plural = ' accounts'
 
@@ -65,7 +61,6 @@ class Entry(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='entries')
     additional = TextFieldSingleLine(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name='entries')
-
 
     def save(self, *args, **kwargs):
         move = False
@@ -93,7 +88,6 @@ class Entry(models.Model):
 
         if old_account:
             old_account.renumber_entries()
-
 
     class Meta:
         ordering = ('account', 'serial_number')

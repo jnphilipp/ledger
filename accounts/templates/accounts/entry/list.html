@@ -86,7 +86,7 @@
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
 {% if account %}
     <li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-    <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+    <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}{% if account.closed %} <small>{% trans 'closed' %}</small>{% endif %}</a></li>
 {% endif %}
 <li class="active">{% trans 'entries' %}</li>
 {% endblock %}
@@ -114,12 +114,14 @@
                 {% include 'partials/_form_inline.html' with form_url=form_url %}
             </div>
            <div class="col-md-3 text-right">
-                <a class="btn btn-primary" href="{% if account %}{% url 'account_entry_add' account.slug %}{% else %}{% url 'entry_add' %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add entry' %}</a>
-                <a class="btn btn-primary" href="{% if account %}{% url 'account_standing_entry_add' account.slug %}{% else %}{% url 'standing_entry_add' %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add standing entry' %}</a>
+                {% if show_options %}
+                    <a class="btn btn-primary" href="{% if account %}{% url 'account_entry_add' account.slug %}{% else %}{% url 'entry_add' %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add entry' %}</a>
+                    <a class="btn btn-primary" href="{% if account %}{% url 'account_standing_entry_add' account.slug %}{% else %}{% url 'standing_entry_add' %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add standing entry' %}</a>
+                {% endif %}
             </div>
         </div>
     </div>
-    {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=True %}
+    {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=show_options %}
     <div class="panel-body">
         {% trans 'entries' as pagination_url %}
         {% pagination paginator entries pagination_url %}

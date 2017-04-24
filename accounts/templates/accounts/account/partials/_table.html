@@ -6,6 +6,7 @@
         <thead>
             <tr>
                 <th>{% trans 'account' %}</th>
+                <th>{% trans 'closed' %}</th>
                 <th>{% trans 'balance' %}</th>
                 <th>{% trans 'outstanding' %}</th>
                 <th>{% trans 'number of entries' %}</th>
@@ -16,6 +17,13 @@
             {% for account in accounts %}
                 <tr>
                     <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
+                    <td class="text-center">
+                        {% if account.closed %}
+                            <span class="glyphicon glyphicon-ok"></span>
+                        {% else %}
+                            <span class="glyphicon glyphicon-remove"></span>
+                        {% endif %}
+                    </td>
                     <td class="text-right">{{ account|balance }}</td>
                     <td class="text-right">{{ account|outstanding }}</td>
                     <td class="text-right">{{ account.entries.count }}</td>
