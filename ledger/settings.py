@@ -154,7 +154,7 @@ USE_TZ = config.getboolean('i18n', 'USE_TZ')
 
 
 # Locale messag files for translation
-# https://docs.djangoproject.com/en/1.8/topics/i18n/translation/
+# https://docs.djangoproject.com/en/1.10/topics/i18n/translation/
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
