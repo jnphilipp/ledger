@@ -69,7 +69,7 @@ class EntryForm(forms.ModelForm):
         self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
         self.fields['amount'].widget = forms.TextInput(attrs={'step':'any', 'autocomplete':'off', 'class':'form-control'})
 
-        self.fields['day'].help_text = mark_safe('<a id="date_today" style="cursor: pointer;">today</a> (%s: yyyy-mm-dd)' % _('date format'))
+        self.fields['day'].help_text = mark_safe('<a id="date_today" style="cursor: pointer;">%s</a> (%s: yyyy-mm-dd)' % (_('today'), _('date format')))
         self.fields['day'].widget = forms.TextInput(attrs={'autocomplete':'off', 'class':'form-control'})
 
         self.fields['category'].empty_label = ''
