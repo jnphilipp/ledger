@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load ledger i18n static %}
 
 
@@ -8,7 +8,7 @@
 {% if unit_slug and chart %}
     <script type="text/javascript">
         $(document).ready(function() {
-            var url = "{% if chart == 'categories' %}{% url 'statistics_chart_categories' %}{% endif %}{% if chart == 'tags' %}{% url 'statistics_chart_tags' %}{% endif %}?unit={{ unit_slug }}{% if year %}&year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}";
+            var url = "{% if chart == 'categories' %}{% url 'users:statistics_chart_categories' %}{% endif %}{% if chart == 'tags' %}{% url 'users:statistics_chart_tags' %}{% endif %}?unit={{ unit_slug }}{% if year %}&year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}";
             statistics(url, chart);
         });
     </script>
@@ -16,16 +16,16 @@
 {% endblock %}
 
 
-{% block breadcrumbs %}
+users:{% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
 {% if unit_slug %}
-    <li><a href="{% url 'statistics' %}">{% trans 'statistics' %}</a></li>
+    <li><a href="{% url 'users:statistics' %}">{% trans 'statistics' %}</a></li>
     {% if chart %}
-        <li><a href="{% url 'statistics' %}?unit={{ unit_slug }}">{{ unit.name|lower }}</a></li>
+        <li><a href="{% url 'users:statistics' %}?unit={{ unit_slug }}">{{ unit.name|lower }}</a></li>
         {% if year %}
-            <li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;chart={{ chart }}">{% trans chart %}</a></li>
+            <li><a href="{% url 'users:statistics' %}?unit={{ unit_slug }}&amp;chart={{ chart }}">{% trans chart %}</a></li>
             {% if month %}
-                <li><a href="{% url 'statistics' %}?unit={{ unit_slug }}&amp;chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
+                <li><a href="{% url 'users:statistics' %}?unit={{ unit_slug }}&amp;chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
                 <li class="active">{% trans month_name %}</li>
             {% else %}
                 <li class="active">{{ year }}</li>
@@ -69,7 +69,7 @@
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans 'select a' %} {{ option_name }} <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     {% for option in options %}
-                        <li><a href="{% url 'statistics' %}?{% if unit_slug %}unit={{ unit_slug }}&amp;{% endif %}{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{{ option|get_item:'key' }}={{ option|get_item:'id' }}">{{ option|get_item:'value' }}</a></li>
+                        <li><a href="{% url 'users:statistics' %}?{% if unit_slug %}unit={{ unit_slug }}&amp;{% endif %}{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{{ option|get_item:'key' }}={{ option|get_item:'id' }}">{{ option|get_item:'value' }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

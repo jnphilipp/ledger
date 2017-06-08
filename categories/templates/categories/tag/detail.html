@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load accounts i18n ledger static %}
 
 
@@ -10,7 +10,7 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'tags' %}">{% trans 'tags' %}</a></li>
+<li><a href="{% url 'categories:tags' %}">{% trans 'tags' %}</a></li>
 <li class="active">{{ tag.name|lower }}</li>
 {% endblock %}
 
@@ -19,8 +19,14 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <h1>
-            <a href="{% url 'tag_edit' tag.slug  %}" class="btn btn-primary" role="button">{% trans 'edit tag' %} <span class="glyphicon glyphicon-pencil"></span></a>
-            <a href="{% url 'tag_delete' tag.slug  %}" class="btn btn-danger" role="button">{% trans 'delete tag' %} <span class="glyphicon glyphicon-trash"></span></a>
+            <a href="{% url 'categories:tag_edit' tag.slug  %}" class="btn btn-primary" role="button">
+                <span class="glyphicon glyphicon-pencil"></span>
+                {% trans 'edit tag' %}
+            </a>
+            <a href="{% url 'categories:tag_delete' tag.slug  %}" class="btn btn-danger" role="button">
+                <span class="glyphicon glyphicon-trash"></span>
+                {% trans 'delete tag' %}
+            </a>
         </h1>
     </div>
 </div>
@@ -44,10 +50,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    <a href="{% url 'tag_statistics' tag.slug %}?chart=categories">{% trans 'statistics' %}</a>
+                    <a href="{% url 'categories:tag_statistics' tag.slug %}?chart=categories">{% trans 'statistics' %}</a>
                     <small>
                         {% trans 'categories' %}
-                        {% if year %}| <a href="{% url 'tag' tag.slug %}">{{ year }}</a>{% endif %}
+                        {% if year %}| <a href="{% url 'categories:tag' tag.slug %}">{{ year }}</a>{% endif %}
                     </small>
                 </h1>
             </div>
@@ -68,14 +74,14 @@
             <div class="panel-body" id="mchart" style="min-width: 310px; height: 500px;"></div>
             <script type="text/javascript">
                 $(document).ready(function() {
-                    var url = "{% url 'tag_chart_statistics_categories' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
+                    var url = "{% url 'categories:tag_chart_statistics_categories' tag.slug %}{% if year %}?year={{ year }}{% endif %}";
                     statistics(url, 'mchart');
                 });
             </script>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title"><a href="{% url 'tag_entries' tag.slug %}">{% trans 'entries' %}</a></h1>
+                <h1 class="panel-title"><a href="{% url 'categories:tag_entries' tag.slug %}">{% trans 'entries' %}</a></h1>
             </div>
             {% include 'accounts/entry/partials/_table.html' with entries=entries options=False %}
         </div>

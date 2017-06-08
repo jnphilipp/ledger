@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n ledger static %}
 
 
@@ -15,12 +15,15 @@
     </div>
     <div class="panel-body">
         <div class="pull-right">
-            <a href="{% url 'budget_edit' %}" class="btn btn-primary" role="button">{% trans 'edit budget' %} <span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="{% url 'users:budget_edit' %}" class="btn btn-primary" role="button">
+                <span class="glyphicon glyphicon-pencil"></span>
+                {% trans 'edit budget' %}
+            </a>
         </div>
         <nav>
             <ul class="pagination">
                 {% for y in years %}
-                    <li{% if year == y %} class="active"{% endif %}><a href="{% url 'budget' %}?year={{ y }}">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
+                    <li{% if year == y %} class="active"{% endif %}><a href="{% url 'users:budget' %}?year={{ y }}">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
                 {% endfor %}
             </ul>
         </nav>
@@ -55,7 +58,7 @@
                         <tr>
                             {% for cell in row %}
                                 {% if forloop.counter0|divisibleby:3 %}
-                                    <th>{% if cell|length == 2 %}<a href="{% url 'tag' cell|get_item:0 %}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
+                                    <th>{% if cell|length == 2 %}<a href="{% url 'categories:tag' cell|get_item:0 %}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
                                 {% else %}
                                     <td class="text-right">{{ cell }}</td>
                                 {% endif %}

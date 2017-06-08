@@ -17,7 +17,6 @@ class Unit(models.Model):
     symbol = TextFieldSingleLine(unique=True)
     precision = models.PositiveIntegerField(default=2)
 
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
@@ -27,10 +26,8 @@ class Unit(models.Model):
                 self.slug = slugify(self.name)
         super(Unit, self).save(*args, **kwargs)
 
-
     def __str__(self):
         return self.name.lower()
-
 
     class Meta:
         ordering = ('name',)

@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from accounts.models import Account
 from categories.models import Category, Tag
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from json import dumps
 from users.models import Ledger
 from units.models import Unit
 
 
-@login_required(login_url='/units/signin/')
+@login_required
 def accounts(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     tag = get_object_or_404(Tag, slug=slug)
@@ -20,10 +21,24 @@ def accounts(request, slug):
 
     if year:
         months = tag.entries.filter(Q(account__ledger=ledger) & Q(day__year=year)).dates('day', 'month')
-        data = {}
-        data['xAxis'] = {'categories':[m.strftime('%B') for m in months], 'title':'months'}
-        data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')}, 'labels':{'format':'{value}%s' % (units[0].symbol if units.count() == 1 else '')}}
-        data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
+
+        data = {
+            'xAxis': {
+                'categories': [m.strftime('%B') for m in months],
+                'title': 'months'
+            },
+            'yAxis': {
+                'stackLabels': {
+                    'format': '{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'labels': {
+                    'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                }
+            },
+            'tooltip': {
+                'valueSuffix': (units[0].symbol if units.count() == 1 else '')
+            }
+        }
 
         series = []
         for account in Account.objects.filter(Q(entries__tags=tag) & Q(ledgers=ledger) & Q(entries__day__year=year)).distinct():
@@ -35,13 +50,26 @@ def accounts(request, slug):
         data['series'] = series
     else:
         years = tag.entries.filter(account__ledger=ledger).dates('day', 'year')
-        data = {}
-        data['xAxis'] = {'categories':[y.strftime('%Y') for y in years], 'title':'years'}
-        data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')}, 'labels':{'format':'{value}%s' % (units[0].symbol if units.count() == 1 else '')}}
-        data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
+
+        data = {
+            'xAxis': {
+                'categories': [y.strftime('%Y') for y in years],
+                'title': 'years'
+            },
+            'yAxis': {
+                'stackLabels': {
+                    'format': '{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'labels': {
+                    'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                }
+            },
+            'tooltip': {
+                'valueSuffix': (units[0].symbol if units.count() == 1 else '')
+            }
+        }
 
         series = []
-
         for account in Account.objects.filter(Q(entries__tags=tag) & Q(ledgers=ledger)).distinct():
             series.append({'name':account.name.lower(), 'data':[[y.strftime('%Y'), tag.entries.filter(Q(account=account) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
 
@@ -50,10 +78,10 @@ def accounts(request, slug):
             series.append({'name':'average %s' % unit.name.lower(), 'type':'spline', 'data':[avg for y in years], 'tooltip':{'valueSuffix':unit.symbol}})
 
         data['series'] = series
-    return HttpResponse(dumps(data), 'application/json')
+    return HttpResponse(json.dumps(data), 'application/json')
 
 
-@login_required(login_url='/units/signin/')
+@login_required
 def categories(request, slug):
     year = request.GET.get('year')
     tag = get_object_or_404(Tag, slug=slug)
@@ -62,10 +90,24 @@ def categories(request, slug):
 
     if year:
         months = tag.entries.filter(Q(account__ledger=ledger) & Q(day__year=year)).dates('day', 'month')
-        data = {}
-        data['xAxis'] = {'categories':[m.strftime('%B') for m in months], 'title':'months'}
-        data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')}, 'labels':{'format':'{value}%s' % (units[0].symbol if units.count() == 1 else '')}}
-        data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
+
+        data = {
+            'xAxis': {
+                'categories': [m.strftime('%B') for m in months],
+                'title': 'months'
+            },
+            'yAxis': {
+                'stackLabels': {
+                    'format': '{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'labels': {
+                    'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                }
+            },
+            'tooltip': {
+                'valueSuffix': (units[0].symbol if units.count() == 1 else '')
+            }
+        }
 
         series = []
         for category in Category.objects.filter(Q(entries__tags=tag) & Q(entries__account__ledgers=ledger) & Q(entries__day__year=year)).distinct():
@@ -78,13 +120,26 @@ def categories(request, slug):
         data['series'] = series
     else:
         years = tag.entries.filter(account__ledger=ledger).dates('day', 'year')
-        data = {}
-        data['xAxis'] = {'categories':[y.strftime('%Y') for y in years], 'title':'years'}
-        data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')}, 'labels':{'format':'{value}%s' % (units[0].symbol if units.count() == 1 else '')}}
-        data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
+
+        data = {
+            'xAxis': {
+                'categories': [y.strftime('%Y') for y in years],
+                'title': 'years'
+            },
+            'yAxis': {
+                'stackLabels': {
+                    'format': '{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'labels': {
+                    'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                }
+            },
+            'tooltip': {
+                'valueSuffix': (units[0].symbol if units.count() == 1 else '')
+            }
+        }
 
         series = []
-
         for category in Category.objects.filter(Q(entries__tags=tag) & Q(entries__account__ledgers=ledger)).distinct():
             for unit in units:
                 series.append({'name':category.name.lower(), 'data':[[y.strftime('%Y'), tag.entries.filter(Q(category=category) & Q(account__unit=unit) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years], 'tooltip':{'valueSuffix':unit.symbol}, 'type':'column', 'stack':unit.name.lower()})
@@ -94,4 +149,4 @@ def categories(request, slug):
             series.append({'name':'average %s' % unit.name.lower(), 'type':'spline', 'data':[avg for y in years], 'tooltip':{'valueSuffix':unit.symbol}})
 
         data['series'] = series
-    return HttpResponse(dumps(data), 'application/json')
+    return HttpResponse(json.dumps(data), 'application/json')

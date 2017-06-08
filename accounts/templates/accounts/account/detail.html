@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load accounts i18n static %}
 
 
@@ -12,7 +12,7 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
 <li class="active">{{ account.name|lower }}{% if account.closed %} <small>{% trans 'closed' %}</small>{% endif %}</li>
 {% endblock %}
 
@@ -21,13 +21,25 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <h1>
-            <a href="{% url 'account_edit' account.slug  %}" class="btn btn-primary" role="button">{% trans 'edit account' %} <span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="{% url 'accounts:account_edit' account.slug  %}" class="btn btn-primary" role="button">
+                <span class="glyphicon glyphicon-pencil"></span>
+                {% trans 'edit account' %}
+            </a>
             {% if account.closed %}
-                <a href="{% url 'account_close' account.slug  %}" class="btn btn-primary" role="button">{% trans 're-open account' %} <span class="glyphicon glyphicon-folder-open"></span></a>
+                <a href="{% url 'accounts:account_close' account.slug  %}" class="btn btn-primary" role="button">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                    {% trans 're-open account' %}
+                </a>
             {% else %}
-                <a href="{% url 'account_close' account.slug  %}" class="btn btn-primary" role="button">{% trans 'close account' %} <span class="glyphicon glyphicon-folder-close"></span></a>
+                <a href="{% url 'accounts:account_close' account.slug  %}" class="btn btn-primary" role="button">
+                    <span class="glyphicon glyphicon-folder-close"></span>
+                    {% trans 'close account' %}
+                </a>
             {% endif %}
-            <a href="{% url 'account_delete' account.slug  %}" class="btn btn-danger" role="button">{% trans 'delete account' %} <span class="glyphicon glyphicon-trash"></span></a>
+            <a href="{% url 'accounts:account_delete' account.slug  %}" class="btn btn-danger" role="button">
+                <span class="glyphicon glyphicon-trash"></span>
+                {% trans 'delete account' %}
+            </a>
         </h1>
     </div>
 </div>
@@ -56,22 +68,28 @@
                         {% endfor %}
                     </dd>
                     <dt>{% trans 'category' %}</dt>
-                    <dd><a href="{% url 'category' account.category.slug %}">{{ account.category.name|lower }}</a></dd>
+                    <dd><a href="{% url 'categories:category' account.category.slug %}">{{ account.category.name|lower }}</a></dd>
                     <dt>{% trans 'unit' %}</dt>
-                    <dd><a href="{% url 'unit' account.unit.slug %}">{{ account.unit.name|lower }}</a></dd>
+                    <dd><a href="{% url 'units:unit' account.unit.slug %}">{{ account.unit.name|lower }}</a></dd>
                 </dl>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a class="panel-title" href="{% url 'account_entries' account.slug %}">entries</a>
+                <a class="panel-title" href="{% url 'accounts:account_entries' account.slug %}">entries</a>
             </div>
             <div class="panel-body">
                 <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
                 {% if not account.closed %}
                     <div class="pull-right">
-                        <a class="btn btn-primary" href="{% url 'account_entry_add' account.slug %}" role="button">{% trans 'add entry' %} <span class="glyphicon glyphicon-plus"></span></a>
-                        <a class="btn btn-primary" href="{% url 'account_standing_entry_add' account.slug %}">{% trans 'add standing entry' %} <span class="glyphicon glyphicon-plus"></span></a>
+                        <a class="btn btn-primary" href="{% url 'accounts:account_entry_add' account.slug %}" role="button">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            {% trans 'add entry' %}
+                        </a>
+                        <a class="btn btn-primary" href="{% url 'accounts:account_standing_entry_add' account.slug %}">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            {% trans 'add standing entry' %}
+                        </a>
                     </div>
                 {% endif %}
             </div>
@@ -81,14 +99,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1 class="panel-title">
-                        <a href="{% url 'account_statistics' account.slug %}?chart=categories">statistics</a>
+                        <a href="{% url 'accounts:account_statistics' account.slug %}?chart=categories">statistics</a>
                         <small>categories</small>
                     </h1>
                 </div>
                 <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var ascchart_url = "{% url 'account_chart_categories_statistics' account.slug %}";
+                        var ascchart_url = "{% url 'accounts:account_chart_categories_statistics' account.slug %}";
                         statistics(ascchart_url, 'ascchart');
                     });
                 </script>
@@ -96,38 +114,38 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1 class="panel-title">
-                        <a href="{% url 'account_statistics' account.slug %}?chart=tags">statistics</a>
+                        <a href="{% url 'accounts:account_statistics' account.slug %}?chart=tags">statistics</a>
                         <small>tags</small>
                     </h1>
                 </div>
                 <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var astchart_url = "{% url 'account_chart_tags_statistics' account.slug %}";
+                        var astchart_url = "{% url 'accounts:account_chart_tags_statistics' account.slug %}";
                         statistics(astchart_url, 'astchart');
                     });
                 </script>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="panel-title" href="{% url 'categories' %}">categories</a>
+                    <a class="panel-title" href="{% url 'categories:categories' %}">categories</a>
                 </div>
                 <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var cchart_url = "{% url 'account_chart_categories' account.slug %}";
+                        var cchart_url = "{% url 'accounts:account_chart_categories' account.slug %}";
                         categories(cchart_url, 'cchart');
                     });
                 </script>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="panel-title" href="{% url 'tags' %}">tags</a>
+                    <a class="panel-title" href="{% url 'categories:tags' %}">tags</a>
                 </div>
                 <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var tchart_url = "{% url 'account_chart_tags' account.slug %}";
+                        var tchart_url = "{% url 'accounts:account_chart_tags' account.slug %}";
                         tags(tchart_url, 'tchart');
                     });
                 </script>

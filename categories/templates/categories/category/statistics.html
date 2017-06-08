@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n static %}
 
 
@@ -7,7 +7,7 @@
 <script src="{% static 'js/charts/accounts/categories/statistics.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        var url = "{% url 'category_chart_statistics' category.slug %}{% if year %}?year={{ year }}{% endif %}";
+        var url = "{% url 'categories:category_chart_statistics' category.slug %}{% if year %}?year={{ year }}{% endif %}";
         statistics(url, 'chart');
     });
 </script>
@@ -16,10 +16,10 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories' %}">{% trans 'categories' %}</a></li>
-<li><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></li>
+<li><a href="{% url 'categories:categories' %}">{% trans 'categories' %}</a></li>
+<li><a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a></li>
 {% if year %}
-    <li><a href="{% url 'category_statistics' category.slug %}">{% trans 'statistics' %}</a></li>
+    <li><a href="{% url 'categories:category_statistics' category.slug %}">{% trans 'statistics' %}</a></li>
     <li class="active">{{ year }}</li>
 {% else %}
     <li class="active">{% trans 'statistics' %}</li>
@@ -41,7 +41,7 @@
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans 'select a year' %} <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     {% for year in years %}
-                        <li><a href="{% url 'category_statistics' category.slug %}?year={{ year }}">{{ year }}</a></li>
+                        <li><a href="{% url 'categories:category_statistics' category.slug %}?year={{ year }}">{{ year }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

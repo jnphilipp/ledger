@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></li>
 <li class="active">{% trans 'delete' %}</li>
 {% endblock %}
 
@@ -19,7 +19,7 @@
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{% url 'account_delete' account.slug %}" method="post" class="form">
+                <form action="{% url 'accounts:account_delete' account.slug %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
                         <h5><b>{% trans 'confirm deletion' %}</b></h5>
@@ -28,11 +28,11 @@
 
                         <ul>
                             <li>
-                                {% trans 'account' %}: <a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
+                                {% trans 'account' %}: <a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a>
                                 {% if account.entries %}
                                     <ul>
                                         {% for entry in account.entries.all %}
-                                            <li>{% trans 'entry' %}: <a href="{% url 'entry' entry.id %}">#{{ entry.serial_number }}: {{ entry.day|date:'D., d. F Y' }} - {{ entry.category.name|lower }}</a></li>
+                                            <li>{% trans 'entry' %}: <a href="{% url 'accounts:entry' entry.id %}">#{{ entry.serial_number }}: {{ entry.day|date:'D., d. F Y' }} - {{ entry.category.name|lower }}</a></li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}

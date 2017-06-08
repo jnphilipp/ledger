@@ -9,7 +9,7 @@ from users.forms import UserChangeForm
 
 
 @csrf_protect
-@login_required(login_url='/profile/signin/')
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserChangeForm(instance=request.user, data=request.POST)

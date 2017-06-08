@@ -18,6 +18,11 @@ def autocomplete(request):
     accounts = Account.objects.filter(ledger__user=request.user).distinct()
     if 'q' in params:
         accounts = accounts.filter(name__icontains=params.pop('q')[0])
-    data = {'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
-            'accounts': [{'id':account.id, 'text':account.name.lower()} for account in accounts]}
+    data = {
+        'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
+        'accounts': [{
+            'id': account.id,
+            'text': account.name.lower()
+        } for account in accounts]
+    }
     return HttpResponse(dumps(data), 'application/json')

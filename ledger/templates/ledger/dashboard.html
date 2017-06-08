@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load accounts i18n %}
 
 
@@ -42,7 +42,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                <a href="{% url 'accounts' %}">{% trans 'accounts' %}</a>
+                <a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a>
                 <a class="collapse-link collapsed" data-toggle="collapse" data-target="#collapse-accounts" href="#collapse-accounts" aria-expanded="false"></a>
             </h1>
         </div>
@@ -53,7 +53,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                <a href="{% url 'entries' %}">{% trans 'entries' %}</a>
+                <a href="{% url 'accounts:entries' %}">{% trans 'entries' %}</a>
                 <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
             </h1>
         </div>

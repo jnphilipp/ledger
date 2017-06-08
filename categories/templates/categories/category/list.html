@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
@@ -8,7 +8,7 @@
         $('#id_accounts').select2({
             placeholder: 'accounts',
             ajax: {
-                url: "{% url 'account_autocomplete' %}",
+                url: "{% url 'accounts:account_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -22,7 +22,7 @@
         $('#id_categories').select2({
             placeholder: 'categories',
             ajax: {
-                url: "{% url 'category_autocomplete' %}",
+                url: "{% url 'categories:category_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -36,7 +36,7 @@
         $('#id_tags').select2({
             placeholder: 'tags',
             ajax: {
-                url: "{% url 'tag_autocomplete' %}",
+                url: "{% url 'categories:tag_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -50,7 +50,7 @@
         $('#id_units').select2({
             placeholder: 'units',
             ajax: {
-                url: "{% url 'unit_autocomplete' %}",
+                url: "{% url 'units:unit_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -79,7 +79,7 @@
     </div>
     <div class="panel-body text-center">
         {% url 'categories' as form_url %}
-        {% include 'partials/_form_inline.html' with form_url=form_url %}
+        {% include 'ledger/partials/_form_inline.html' with form_url=form_url %}
     </div>
     {% include 'categories/category/partials/_table.html' with categories=categories %}
 </div>

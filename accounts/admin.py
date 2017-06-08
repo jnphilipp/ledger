@@ -10,14 +10,11 @@ class AccountAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return Account.objects.annotate(entry_count=Count('entries'))
 
-
     def show_entry_count(self, inst):
         return inst.entry_count
 
-
     def get_ledgers(self, obj):
         return ', '.join([str(ledger) for ledger in obj.ledgers.all()])
-
 
     list_display = ('name', 'get_ledgers', 'show_entry_count', 'unit', 'updated_at')
     list_filter = ('unit', 'ledger')
@@ -28,7 +25,7 @@ class AccountAdmin(admin.ModelAdmin):
     get_ledgers.short_description = 'Ledgers'
 
     formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
+        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
     }
 
     fieldsets = [
@@ -43,7 +40,7 @@ class EntryAdmin(admin.ModelAdmin):
     list_filter = ('account', 'category', 'day', 'tags')
 
     formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
+        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
     }
 
     fieldsets = [

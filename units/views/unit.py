@@ -40,7 +40,7 @@ def _add(request, template, do_redirect=True, target_id=None):
             unit = form.save()
             messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully created.' % {'name': unit.name.lower()}))
             if do_redirect:
-                return redirect('unit', slug=unit.slug)
+                return redirect('units:unit', slug=unit.slug)
     else:
         form = UnitForm()
     return render(request, template, locals())
@@ -55,7 +55,7 @@ def edit(request, slug):
         if form.is_valid():
             unit = form.save()
             messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully updated.') % {'name': unit.name.lower()})
-            return redirect('unit', slug=unit.slug)
+            return redirect('units:unit', slug=unit.slug)
     else:
         form = UnitForm(instance=unit)
     return render(request, 'units/unit/form.html', locals())

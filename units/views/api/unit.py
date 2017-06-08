@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import timezone
-from json import dumps
 from units.models import Unit
 
 
@@ -18,6 +19,11 @@ def autocomplete(request):
     units = Unit.objects.filter(accounts__ledger__user=request.user).distinct()
     if 'q' in params:
         units = units.filter(name__icontains=params.pop('q')[0])
-    data = {'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
-            'units': [{'id':unit.id, 'text':unit.name.lower()} for unit in units]}
-    return HttpResponse(dumps(data), 'application/json')
+    data = {
+        'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
+        'units': [{
+            'id': unit.id,
+            'text': unit.name.lower()
+        } for unit in units]
+    }
+    return HttpResponse(json.dumps(data), 'application/json')

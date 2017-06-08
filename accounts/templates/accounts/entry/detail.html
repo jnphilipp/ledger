@@ -1,15 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load accounts i18n %}
 
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
 {% if account %}
-    <li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-    <li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
-    <li><a href="{% url 'account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+    <li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
+    <li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></li>
+    <li><a href="{% url 'accounts:account_entries' account.slug %}">{% trans 'entries' %}</a></li>
 {% else %}
-    <li><a href="{% url 'entries' %}">{% trans 'entries' %}</a></li>
+    <li><a href="{% url 'accounts:entries' %}">{% trans 'entries' %}</a></li>
 {% endif %}
 <li class="active">{% trans 'entry' %} #{{ entry.serial_number }}</li>
 {% endblock %}
@@ -19,8 +19,8 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <h1>
-            <a href="{% if account %}{% url 'account_entry_edit' account.slug entry.id  %}{% else %}{% url 'entry_edit' entry.id  %}{% endif %}" class="btn btn-primary" role="button">{% trans 'edit entry' %} <span class="glyphicon glyphicon-pencil"></span></a>
-            <a href="{% if account %}{% url 'account_entry_delete' account.slug entry.id  %}{% else %}{% url 'entry_delete' entry.id  %}{% endif %}" class="btn btn-danger" role="button">{% trans 'delete entry' %} <span class="glyphicon glyphicon-trash"></span></a>
+            <a href="{% if account %}{% url 'accounts:account_entry_edit' account.slug entry.id  %}{% else %}{% url 'entry_edit' entry.id  %}{% endif %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> {% trans 'edit entry' %}</a>
+            <a href="{% if account %}{% url 'accounts:account_entry_delete' account.slug entry.id  %}{% else %}{% url 'entry_delete' entry.id  %}{% endif %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> {% trans 'delete entry' %}</a>
         </h1>
     </div>
 </div>
@@ -37,7 +37,7 @@
                     <dt>{% trans 'last updated at' %}</dt>
                     <dd>{{ entry.updated_at|date:'r'|lower }}</dd>
                     <dt>{% trans 'account' %}</dt>
-                    <dd><a href="{% url 'account' entry.account.slug %}">{{ entry.account.name|lower }}</a></dd>
+                    <dd><a href="{% url 'accounts:account' entry.account.slug %}">{{ entry.account.name|lower }}</a></dd>
                     <dt>{% trans 'serial number' %}</dt>
                     <dd>{{ entry.serial_number }}</dd>
                     <dt>{% trans 'day' %}</dt>
@@ -45,13 +45,13 @@
                     <dt>{% trans 'amount' %}</dt>
                     <dd>{{ entry.amount|colorfy:entry.account.unit }}</dd>
                     <dt>{% trans 'category' %}</dt>
-                    <dd><a href="{% url 'category' entry.category.slug %}">{{ entry.category.name|lower }}</a></dd>
+                    <dd><a href="{% url 'categories:category' entry.category.slug %}">{{ entry.category.name|lower }}</a></dd>
                     <dt>{% trans 'additional' %}</dt>
                     <dd>{{ entry.additional|lower }}</dd>
                     <dt>{% trans 'tags' %}</dt>
                     <dd>
                         {% for tag in entry.tags.all %}
-                            <a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
+                            <a href="{% url 'categories:tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </dd>
                 </dl>

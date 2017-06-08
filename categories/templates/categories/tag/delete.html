@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'tags' %}">{% trans 'tags' %}</a></li>
-<li><a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a></li>
+<li><a href="{% url 'categories:tags' %}">{% trans 'tags' %}</a></li>
+<li><a href="{% url 'categories:tag' tag.slug %}">{{ tag.name|lower }}</a></li>
 <li class="active">{% trans 'delete' %}</li>
 {% endblock %}
 
@@ -19,7 +19,7 @@
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{% url 'tag_delete' tag.slug %}" method="post" class="form">
+                <form action="{% url 'categories:tag_delete' tag.slug %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
                         <h5><b>{% trans 'confirm deletion' %}</b></h5>
@@ -28,7 +28,7 @@
 
                         <ul>
                             <li>
-                                {% trans 'tag' %}: <a href="{% url 'tag' tag.slug %}">{{ tag.name|lower }}</a>
+                                {% trans 'tag' %}: <a href="{% url 'categories:tag' tag.slug %}">{{ tag.name|lower }}</a>
                             </li>
                         </ul>
                         <br/>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
@@ -27,7 +27,7 @@
                     <tbody>
                         {% for unit in units %}
                             <tr>
-                                <th><a href="{% url 'unit' unit.slug %}">{{ unit.name|lower }}</a></th>
+                                <th><a href="{% url 'units:unit' unit.slug %}">{{ unit.name|lower }}</a></th>
                                 <td>{{ unit.symbol }}</td>
                                 <td>{{ unit.precision }}</td>
                             </tr>

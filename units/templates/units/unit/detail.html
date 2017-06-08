@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'units' %}">{% trans 'units' %}</a></li>
+<li><a href="{% url 'units:units' %}">{% trans 'units' %}</a></li>
 <li class="active">{{ unit.name|lower }}</li>
 {% endblock %}
 

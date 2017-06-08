@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load accounts ledger i18n static %}
 
 
@@ -7,7 +7,7 @@
 <script src="{% static 'js/charts/accounts/accounts/statistics.js' %}"></script>
 {% if chart %}
     <script type="text/javascript">
-        var url = "{% if chart == 'categories' %}{% url 'account_chart_categories_statistics' account.slug %}{% endif %}{% if chart == 'tags' %}{% url 'account_chart_tags_statistics' account.slug %}{% endif %}?{% if year %}year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}{% if category %}&category={{ category.slug }}{% endif %}{% if tag %}&tag={{ tag.slug }}{% endif %}";
+        var url = "{% if chart == 'categories' %}{% url 'accounts:account_chart_categories_statistics' account.slug %}{% endif %}{% if chart == 'tags' %}{% url 'accounts:account_chart_tags_statistics' account.slug %}{% endif %}?{% if year %}year={{ year }}{% endif %}{% if month %}&month={{ month }}{% endif %}{% if category %}&category={{ category.slug }}{% endif %}{% if tag %}&tag={{ tag.slug }}{% endif %}";
         statistics(url, 'chart');
     </script>
 {% endif %}
@@ -16,20 +16,20 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts' %}">{% trans 'accounts' %}</a></li>
-<li><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></li>
+<li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></li>
 {% if chart %}
-    <li><a href="{% url 'account_statistics' account.slug %}">{% trans 'statistics' %}</a></li>
+    <li><a href="{% url 'accounts:account_statistics' account.slug %}">{% trans 'statistics' %}</a></li>
     {% if year %}
-        <li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}">{% trans chart %}</a></li>
+        <li><a href="{% url 'accounts:account_statistics' account.slug %}?chart={{ chart }}">{% trans chart %}</a></li>
         {% if month %}
-            <li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
+            <li><a href="{% url 'accounts:account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}">{{ year }}</a></li>
             {% if category and not tag %}
-                <li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{% trans month_name %}</a></li>
+                <li><a href="{% url 'accounts:account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{% trans month_name %}</a></li>
                 <li class="active">{{ category.name|lower }}</a></li>
             {% endif %}
             {% if not category and tag %}
-                <li><a href="{% url 'account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{% trans month_name %}</a></li>
+                <li><a href="{% url 'accounts:account_statistics' account.slug %}?chart={{ chart }}&amp;year={{ year }}&amp;month={{ month }}">{% trans month_name %}</a></li>
                 <li class="active">{{ tag.name|lower }}</a></li>
             {% endif %}
             {% if not category and not tag %}
@@ -77,7 +77,7 @@
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% blocktrans with option_name=option_name %}select a {{ option_name }}{% endblocktrans %} <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     {% for option in options %}
-                        <li><a href="{% url 'account_statistics' account.slug %}?{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{% if month %}month={{ month }}&amp;{% endif %}{{ option|get_item:'key' }}={{ option|get_item:'id' }}">{{ option|get_item:'value' }}</a></li>
+                        <li><a href="{% url 'accounts:account_statistics' account.slug %}?{% if chart %}chart={{ chart }}&amp;{% endif %}{% if year %}year={{ year }}&amp;{% endif %}{% if month %}month={{ month }}&amp;{% endif %}{{ option|get_item:'key' }}={{ option|get_item:'id' }}">{{ option|get_item:'value' }}</a></li>
                     {% endfor %}
                 </ul>
             </div>

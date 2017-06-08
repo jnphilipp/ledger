@@ -175,8 +175,8 @@ def edit(request):
         form = BudgetForm(instance=budget, data=request.POST)
         if form.is_valid():
             budget = form.save()
-            messages.add_message(request, messages.SUCCESS, 'your budget was successfully updated.')
-            return redirect('budget')
+            messages.add_message(request, messages.SUCCESS, _('your budget was successfully updated.'))
+            return redirect('users:budget')
         return render(request, 'users/budget/edit.html', locals())
     else:
         form = BudgetForm(instance=budget)

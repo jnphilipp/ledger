@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load bootstrap i18n ledger %}
 
 
@@ -20,7 +20,7 @@
         $('#id_accounts').select2({
             placeholder: 'accounts',
             ajax: {
-                url: "{% url 'account_autocomplete' %}",
+                url: "{% url 'accounts:account_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -34,7 +34,7 @@
         $('#id_tags').select2({
             placeholder: 'tags',
             ajax: {
-                url: "{% url 'tag_autocomplete' %}",
+                url: "{% url 'categories:tag_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -48,7 +48,7 @@
         $('#id_units').select2({
             placeholder: 'units',
             ajax: {
-                url: "{% url 'unit_autocomplete' %}",
+                url: "{% url 'units:unit_autocomplete' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -66,8 +66,8 @@
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories' %}">{% trans 'categories' %}</a></li>
-<li><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></li>
+<li><a href="{% url 'categories:categories' %}">{% trans 'categories' %}</a></li>
+<li><a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a></li>
 <li class="active">{% trans 'entries' %}</li>
 {% endblock %}
 
@@ -86,8 +86,8 @@
                 </h5>
             </div>
             <div class="col-md-6 text-center">
-                {% url 'category_entries' category.slug as form_url %}
-                {% include 'partials/_form_inline.html' with form_url=form_url %}
+                {% url 'categories:category_entries' category.slug as form_url %}
+                {% include 'ledger/partials/_form_inline.html' with form_url=form_url %}
             </div>
         </div>
     </div>

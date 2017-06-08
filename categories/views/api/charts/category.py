@@ -20,10 +20,23 @@ def statistics(request, slug):
 
     if year:
         months = category.entries.filter(Q(account__ledger=ledger) & Q(day__year=year)).dates('day', 'month')
-        data = {}
-        data['xAxis'] = {'categories':[m.strftime('%B') for m in months], 'title':'months'}
-        data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')}, 'labels':{'format':'{value}%s' % (units[0].symbol if units.count() == 1 else '')}}
-        data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
+        data = {
+            'xAxis': {
+                'categories': [m.strftime('%B') for m in months],
+                'title': 'months'
+            },
+            'yAxis': {
+                'stackLabels': {
+                    'format': '{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'labels': {
+                    'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                }
+            },
+            'tooltip': {
+                'valueSuffix': (units[0].symbol if units.count() == 1 else '')
+            }
+        }
 
         series = []
         for account in Account.objects.filter(Q(entries__category=category) & Q(ledgers=ledger) & Q(entries__day__year=year)).distinct():
@@ -37,10 +50,23 @@ def statistics(request, slug):
         data['series'] = series
     else:
         years = category.entries.filter(account__ledger=ledger).dates('day', 'year')
-        data = {}
-        data['xAxis'] = {'categories':[y.strftime('%Y') for y in years], 'title':'years'}
-        data['yAxis'] = {'stackLabels':{'format':'{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')}, 'labels':{'format':'{value}%s' % (units[0].symbol if units.count() == 1 else '')}}
-        data['tooltip'] = {'valueSuffix':(units[0].symbol if units.count() == 1 else '')}
+        data = {
+            'xAxis': {
+                'categories': [y.strftime('%Y') for y in years],
+                'title': 'years'
+            },
+            'yAxis': {
+                'stackLabels': {
+                    'format': '{total:,.2f}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'labels': {
+                    'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                }
+            },
+            'tooltip': {
+                'valueSuffix': (units[0].symbol if units.count() == 1 else '')
+            }
+        }
 
         series = []
         for account in Account.objects.filter(Q(entries__category=category) & Q(ledgers=ledger)).distinct():

@@ -46,28 +46,28 @@ def statistics(request, slug):
     options = []
     if not chart:
         option_name = 'chart'
-        options = [{'id':'categories', 'key':'chart', 'value':'categories'}, {'id':'tags', 'key':'chart', 'value':'tags'}]
+        options = [{'id': 'categories', 'key': 'chart', 'value': 'categories'}, {'id': 'tags', 'key': 'chart', 'value': 'tags'}]
     elif chart and not year:
         years = account.entries.dates('day', 'year')
         if chart == 'tags':
             years = years.filter(tags__isnull=False)
 
         option_name = 'year'
-        options = [{'id':year.strftime('%Y'), 'key':'year', 'value':year.strftime('%Y')} for year in years]
+        options = [{'id':year.strftime('%Y'), 'key': 'year', 'value':year.strftime('%Y')} for year in years]
     elif chart and year and not month:
         months = account.entries.filter(day__year=year).dates('day', 'month')
         if chart == 'tags':
             months = months.filter(tags__isnull=False)
 
         option_name = 'month'
-        options = [{'id':month.strftime('%m'), 'key':'month', 'value':month.strftime('%B').lower()} for month in months]
+        options = [{'id':month.strftime('%m'), 'key': 'month', 'value':month.strftime('%B').lower()} for month in months]
     elif chart and year and month and not category and not tag:
         if chart == 'categories':
             option_name = 'category'
-            options = [{'id':category.slug, 'key':'category', 'value':category.name.lower()} for category in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
+            options = [{'id':category.slug, 'key': 'category', 'value':category.name.lower()} for category in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
         elif chart == 'tags':
             option_name = 'tag'
-            options = [{'id':tag.slug, 'key':'tag', 'value':tag.name.lower()} for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
+            options = [{'id':tag.slug, 'key': 'tag', 'value':tag.name.lower()} for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
     return render(request, 'accounts/account/statistics.html', locals())
 
 
@@ -83,7 +83,7 @@ def add(request):
             ledger.accounts.add(account)
             ledger.save()
             messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully created.' % {'name': account.name.lower()}))
-            return redirect('account', slug=account.slug)
+            return redirect('accounts:account', slug=account.slug)
         return render(request, 'accounts/account/form.html', locals())
     else:
         form = AccountForm(ledger)
@@ -100,7 +100,7 @@ def edit(request, slug):
         if form.is_valid():
             account = form.save()
             messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully updated.') % {'name': account.name.lower()})
-            return redirect('account', slug=account.slug)
+            return redirect('accounts:account', slug=account.slug)
         return render(request, 'accounts/account/form.html', locals())
     else:
         form = AccountForm(ledger, instance=account)
@@ -117,7 +117,7 @@ def close(request, slug):
         messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully closed.') % {'name': account.name.lower()})
     else:
         messages.add_message(request, messages.SUCCESS, _('the account %(name)s was successfully re-open.') % {'name': account.name.lower()})
-    return redirect('account', slug=account.slug)
+    return redirect('accounts:account', slug=account.slug)
 
 
 @login_required

@@ -16,10 +16,8 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
     name = TextFieldSingleLine(unique=True)
 
-
     def get_absolute_url(self):
-        return reverse('category', args=[self.slug])
-
+        return reverse('categories:category', args=[self.slug])
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -30,10 +28,8 @@ class Category(models.Model):
                 self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
 
-
     def __str__(self):
         return self.name.lower()
-
 
     class Meta:
         ordering = ('name',)
@@ -48,10 +44,8 @@ class Tag(models.Model):
     slug = models.SlugField(unique=True)
     name = TextFieldSingleLine(unique=True)
 
-
     def get_absolute_url(self):
-        return reverse('tag', args=[self.slug])
-
+        return reverse('categories:tag', args=[self.slug])
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -62,10 +56,8 @@ class Tag(models.Model):
                 self.slug = slugify(self.name)
         super(Tag, self).save(*args, **kwargs)
 
-
     def __str__(self):
         return self.name.lower()
-
 
     class Meta:
         ordering = ('name',)

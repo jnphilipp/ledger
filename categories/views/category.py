@@ -76,7 +76,6 @@ def entries(request, slug):
         del form.fields['categories']
         entry_list = category.entries.filter(account__ledger=ledger).order_by('day').reverse()
 
-
     paginator = Paginator(entry_list, 200)
     page = request.GET.get('page')
     try:
@@ -117,7 +116,7 @@ def _add(request, template, do_redirect=True, target_id=None):
             category = form.save()
             messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully created.') % {'name': category.name.lower()})
             if do_redirect:
-                return redirect('category', slug=category.slug)
+                return redirect('categories:category', slug=category.slug)
     else:
         form = CategoryForm()
     return render(request, template, locals())
@@ -132,7 +131,7 @@ def edit(request, slug):
         if form.is_valid():
             category = form.save()
             messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
-            return redirect('category', slug=category.slug)
+            return redirect('categories:category', slug=category.slug)
     else:
         form = CategoryForm(instance=category)
     return render(request, 'categories/category/form.html', locals())
@@ -145,5 +144,5 @@ def delete(request, slug):
     if request.method == 'POST':
         category.delete()
         messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully deleted.') % {'name': category.name.lower()})
-        return redirect('categories')
+        return redirect('categories:categories')
     return render(request, 'categories/category/delete.html', locals())

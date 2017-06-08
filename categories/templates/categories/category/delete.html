@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories' %}">{% trans 'categories' %}</a></li>
-<li><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></li>
+<li><a href="{% url 'categories:categories' %}">{% trans 'categories' %}</a></li>
+<li><a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a></li>
 <li class="active">{% trans 'delete' %}</li>
 {% endblock %}
 
@@ -19,7 +19,7 @@
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{% url 'category_delete' category.slug %}" method="post" class="form">
+                <form action="{% url 'categories:category_delete' category.slug %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
                         <h5><b>{% trans 'confirm deletion' %}</b></h5>
@@ -28,15 +28,15 @@
 
                         <ul>
                             <li>
-                                {% trans 'category' %}: <a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a>
+                                {% trans 'category' %}: <a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a>
                                 {% if category.accounts %}
                                     <ul>
                                         {% for account in category.accounts.all %}
                                             <li>
-                                                {% trans 'account' %}: <a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a>
+                                                {% trans 'account' %}: <a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a>
                                                 <ul>
                                                     {% for entry in account.entries.all %}
-                                                        <li>entry: <a href="{% url 'entry' entry.id %}">{{ entry.account.name|lower }} - #{{ entry.serial_number }} ({{ entry.day|date:'D., d. F Y' }})</a></li>
+                                                        <li>entry: <a href="{% url 'accounts:entry' entry.id %}">{{ entry.account.name|lower }} - #{{ entry.serial_number }} ({{ entry.day|date:'D., d. F Y' }})</a></li>
                                                     {% endfor %}
                                                 </ul>
                                             </li>
@@ -46,7 +46,7 @@
                                 {% if category.entries %}
                                     <ul>
                                         {% for entry in category.entries.all %}
-                                            <li>entry: <a href="{% url 'entry' entry.id %}">{{ entry.account.name|lower }} - #{{ entry.serial_number }} ({{ entry.day|date:'D., d. F Y' }})</a></li>
+                                            <li>entry: <a href="{% url 'accounts:entry' entry.id %}">{{ entry.account.name|lower }} - #{{ entry.serial_number }} ({{ entry.day|date:'D., d. F Y' }})</a></li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}

@@ -86,6 +86,7 @@ def entries(request, slug):
         entries = paginator.page(paginator.num_pages)
     return render(request, 'categories/tag/entries.html', locals())
 
+
 @login_required
 def statistics(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
@@ -117,7 +118,7 @@ def _add(request, template, do_redirect=True, target_id=None):
             tag = form.save()
             messages.add_message(request, messages.SUCCESS, _('the tag "%(name)s" was successfully created.') % {'name': tag.name.lower()})
             if do_redirect:
-                return redirect('tag', slug=tag.slug)
+                return redirect('categories:tag', slug=tag.slug)
     else:
         form = TagForm()
     return render(request, template, locals())
@@ -132,7 +133,7 @@ def edit(request, slug):
         if form.is_valid():
             tag = form.save()
             messages.add_message(request, messages.SUCCESS, _('the tag "%(name)s" was successfully updated.') % {'name': tag.name.lower()})
-            return redirect('tag', slug=tag.slug)
+            return redirect('categories:tag', slug=tag.slug)
     else:
         form = TagForm(instance=tag)
     return render(request, 'categories/tag/form.html', locals())
@@ -145,5 +146,5 @@ def delete(request, slug):
     if request.method == 'POST':
         tag.delete()
         messages.add_message(request, messages.SUCCESS, 'the tag "%(name)s" was successfully deleted.' % {'name': tag.name.lower()})
-        return redirect('tags')
+        return redirect('categories:tags')
     return render(request, 'categories/tag/delete.html', locals())

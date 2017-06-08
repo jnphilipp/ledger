@@ -1,4 +1,4 @@
-{% extends 'popup.html' %}
+{% extends 'ledger/popup.html' %}
 {% load i18n static %}
 
 
@@ -28,8 +28,8 @@
             </div>
             <div class="panel-body">
                 {% if not category %}
-                    {% url 'category_add_another' as form_url %}
-                    {% include 'partials/_form.html' with form_url=form_url|add:'?target_id='|add:target_id %}
+                    {% url 'categories:category_add_another' as form_url %}
+                    {% include 'ledger/partials/_form.html' with form_url=form_url|add:'?target_id='|add:target_id %}
                 {% endif %}
             </div>
         </div>

@@ -18,6 +18,11 @@ def autocomplete(request):
     tags = Tag.objects.filter(entries__account__ledger__user=request.user).distinct()
     if 'q' in params:
         tags = tags.filter(name__icontains=params.pop('q')[0])
-    data = {'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
-            'tags': [{'id':tag.id, 'text':tag.name.lower()} for tag in tags]}
+    data = {
+        'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
+        'tags': [{
+            'id':tag.id,
+            'text':tag.name.lower()
+        } for tag in tags]
+    }
     return HttpResponse(dumps(data), 'application/json')

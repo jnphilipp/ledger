@@ -1,9 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'ledger/base.html' %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
 <li class="active"><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url 'users:profile' %}">{% trans 'profile' %}</a></li>
 <li class="active">{% trans 'sign up' %}</li>
 {% endblock %}
 
@@ -17,7 +18,7 @@
             </div>
         <div class="panel-body">
             {% trans 'sign up' as smt_btn %}
-            {% include 'partials/_form.html' with smt_btn=smt_btn %}
+            {% include 'ledger/partials/_form.html' with smt_btn=smt_btn %}
         </div>
     </div>
 </div>

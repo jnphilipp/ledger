@@ -16,7 +16,7 @@
         <tbody>
             {% for account in accounts %}
                 <tr>
-                    <th><a href="{% url 'account' account.slug %}">{{ account.name|lower }}</a></th>
+                    <th><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></th>
                     <td class="text-center">
                         {% if account.closed %}
                             <span class="glyphicon glyphicon-ok"></span>

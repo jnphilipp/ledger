@@ -14,7 +14,7 @@ register = Library()
 
 @register.filter(is_safe=True)
 def floatdot(value, precision=2):
-    return format(0, ",", precision) if not value else format(round(value, precision), ",", precision)
+    return format(0, ",", precision) if not value else format(round(value, precision), ',', precision)
 
 
 @register.filter(needs_autoescape=True)
@@ -68,7 +68,7 @@ def sumentries(entries, unit=None, autoescape=None):
             if not entry.account.unit in sums:
                 sums[entry.account.unit] = 0
             sums[entry.account.unit] += entry.amount
-        return mark_safe('<ul>%s</ul>' % ''.join('<li>%s</li>' % colorfy(v, k) for k,v in sums.items()))
+        return mark_safe('<ul>%s</ul>' % ''.join('<li>%s</li>' % colorfy(v, k) for k, v in sums.items()))
 
 
 @register.filter(needs_autoescape=True)

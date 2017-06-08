@@ -19,6 +19,11 @@ def autocomplete(request):
     categories = Category.objects.filter(Q(entries__account__ledger__user=request.user) | Q(accounts__ledger__user=request.user)).distinct()
     if 'q' in params:
         categories = categories.filter(name__icontains=params.pop('q')[0])
-    data = {'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
-            'categories': [{'id':category.id, 'text':category.name.lower()} for category in categories]}
+    data = {
+        'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
+        'categories': [{
+            'id':category.id,
+            'text':category.name.lower()
+        } for category in categories]
+    }
     return HttpResponse(dumps(data), 'application/json')

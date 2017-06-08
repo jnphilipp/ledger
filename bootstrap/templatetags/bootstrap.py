@@ -3,9 +3,11 @@
 from django.template import Library
 register = Library()
 
+
 @register.inclusion_tag('bootstrap/messages.html', takes_context=True)
 def messages(context):
     return {'messages': context['messages']}
+
 
 @register.inclusion_tag('bootstrap/pagination.html', takes_context=True)
 def pagination(context, paginator, page, title=None, *args, **kwargs):

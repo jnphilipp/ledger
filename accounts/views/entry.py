@@ -88,8 +88,8 @@ def add(request, slug=None):
                 form.instance.account = account
             entry = form.save()
 
-            messages.add_message(request, messages.SUCCESS, _('the entry "%(entry)s" was successfully created.') % {'entry':'#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name.lower(), entry.serial_number)})
-            response = redirect('account_entries', slug=account.slug) if account else redirect('entries')
+            messages.add_message(request, messages.SUCCESS, _('the entry "%(entry)s" was successfully created.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name.lower(), entry.serial_number)})
+            response = redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
             if page: response['Location'] += '?page=%s' % page
             return response
         return render(request, 'accounts/entry/form.html', locals())
@@ -111,7 +111,8 @@ def edit(request, entry_id, slug=None):
         form = EntryForm(ledger, instance=entry, data=request.POST, exclude_account=bool(account))
         if form.is_valid():
             no = entry.serial_number
-            if account: form.instance.account = account
+            if account:
+                form.instance.account = account
             entry = form.save()
 
 
@@ -120,8 +121,9 @@ def edit(request, entry_id, slug=None):
             else:
                 msg = 'the entry "%(entry)s" was successfully updated and moved to "%(no)s".' % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name.lower(), no), 'no': '#%s' % entry.serial_number if account else '%s - #%s'% (entry.account.name.lower(), entry.serial_number)}
             messages.add_message(request, messages.SUCCESS, msg)
-            response = redirect('account_entries', slug=account.slug) if account else redirect('entries')
-            if page: response['Location'] += '?page=%s' % page
+            response = redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
+            if page:
+                response['Location'] += '?page=%s' % page
             return response
         return render(request, 'accounts/entry/form.html', locals())
     else:
@@ -142,7 +144,7 @@ def delete(request, entry_id, slug=None):
             entry.serial_number -= 1
             entry.save()
         entry.account.save()
-        return redirect('account_entries', slug=account.slug) if account else redirect('entries')
+        return redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
     return render(request, 'accounts/entry/delete.html', locals())
 
 
@@ -157,7 +159,7 @@ def duplicate(request, entry_id, slug=None):
         new.tags.add(tag.id)
     new.save()
     messages.add_message(request, messages.SUCCESS, _('the entry "%(old_entry)s" has been successfully duplicated as entry "%(new_entry)s".') % {'old_entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name.lower(), entry.serial_number), 'new_entry': '#%s' % new.serial_number if account else '%s - #%s' % (new.account.name.lower(), new.serial_number)})
-    return redirect('account_entries', slug=account.slug) if account else redirect('entries')
+    return redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
 
 
 @login_required
@@ -180,6 +182,6 @@ def swap(request, slug, e1, e2):
     e2.save()
 
     messages.add_message(request, messages.SUCCESS, _('the entries "#%(e1)s" and "#%(e2)s" were successfully swaped.') % {'e1': e2.serial_number, 'e2': e1.serial_number})
-    response = redirect('account_entries', slug=account.slug)
+    response = redirect('accounts:account_entries', slug=account.slug)
     if page: response['Location'] += '?page=%s' % page
     return response

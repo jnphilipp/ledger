@@ -11,10 +11,8 @@ class Ledger(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     accounts = models.ManyToManyField('accounts.Account', blank=True)
 
-
     def __str__(self):
         return '%s_ledger' % self.user
-
 
     class Meta:
         ordering = ('user',)
@@ -32,10 +30,8 @@ class Budget(models.Model):
     insurance_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='insurance_tags')
     savings_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='savings_tags')
 
-
     def __str__(self):
         return 'budget-%s' % self.user
-
 
     class Meta:
         ordering = ('user',)

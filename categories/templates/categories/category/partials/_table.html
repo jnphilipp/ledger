@@ -12,10 +12,10 @@
         <tbody>
             {% for category in categories %}
                 <tr>
-                    <th><a href="{% url 'category' category.slug %}">{{ category.name|lower }}</a></th>
+                    <th><a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a></th>
                     <td>
                         {% for account in category|accounts:ledger %}
-                            <a href="{% url 'account' account.slug %}">{{ account|lower }}</a>{% if not forloop.last %}, {% endif %}
+                            <a href="{% url 'accounts:account' account.slug %}">{{ account|lower }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
                     <td class="text-right">{{ category.entries.count }}</td>
