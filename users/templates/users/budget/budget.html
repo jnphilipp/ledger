@@ -1,6 +1,13 @@
 {% extends 'ledger/base.html' %}
 {% load i18n ledger static %}
 
+{% block extrahead %}
+<script type="text/javascript" src="{% static 'js/btn-toggle.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/data.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/drilldown.js' %}"></script>
+{% endblock %}
+
 
 {% block breadcrumbs %}
 <li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
@@ -14,22 +21,97 @@
         <h1 class="panel-title">{% trans 'budget' %}</h1>
     </div>
     <div class="panel-body">
-        <div class="pull-right">
-            <a href="{% url 'users:budget_edit' %}" class="btn btn-primary" role="button">
-                <span class="glyphicon glyphicon-pencil"></span>
-                {% trans 'edit budget' %}
-            </a>
+        <div class="row">
+            <div class="col-md-10">
+                <nav>
+                    <ul class="pagination">
+                        {% for y in years %}
+                            <li {% if year == y %} class="active"{% endif %}><a href="{% url 'users:budget' %}?year={{ y }}">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
         </div>
-        <nav>
-            <ul class="pagination">
-                {% for y in years %}
-                    <li{% if year == y %} class="active"{% endif %}><a href="{% url 'users:budget' %}?year={{ y }}">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
-                {% endfor %}
-            </ul>
-        </nav>
+        <div class="row">
+            <div class="col-md-2 col-md-offset-5">
+                <div class="btn-group btn-toggle">
+                    <a class="btn btn-primary active" data-target="#toggleView">{% trans 'Chart' %}</a>
+                    <a class="btn btn-default" data-target="#toggleView">{% trans 'Table' %}</a>
+                </div>
+                <script type="text/javascript">
+                    $("a[data-target='#toggleView']").click(function(e) {
+                        e.preventDefault();
+                        $("#table").toggle();
+                        $("#chart_container").toggle();
+                    });
+                </script>
+            </div>
+        </div>
     </div>
     {% if year %}
-        <div class="table-responsive">
+        <div id="chart_container" class="panel-body">
+            {% if units|length > 1 %}
+                <div class="row">
+                    <div class="col-md-2 col-md-offset-5">
+                        <div class="btn-group btn-toggle">
+                            {% for unit in units %}
+                                <a class="btn {% if forloop.counter == 1 %}btn-primary active{% else %}btn-default{% endif %}" data-target="#toggleChart">{{ unit.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <script type="text/javascript">
+                            $("a[data-target='#toggleChart']").click(function(e) {
+                                e.preventDefault();
+                                {% for unit in units %}
+                                    $("#container_{{ unit.id }}").toggle();
+                                    if ( $("#container_{{ unit.id }}").is(":visible") )
+                                        pie("container_{{ unit.id }}", {{ series|get_item:unit.id|safe }}, {{ drilldown|get_item:unit.id|safe }});
+                                {% endfor %}
+                            });
+
+                            function pie(id, series, drilldown) {
+                                console.log(id);
+                                Highcharts.chart(id, {
+                                    chart: {
+                                        type: "pie"
+                                    },
+                                    title: {
+                                        text: null
+                                    },
+                                    series: series,
+                                    drilldown: drilldown
+                                });
+                            }
+
+                            {% for unit in units %}
+                                {% if forloop.counter == 1 %}
+                                    $(function() {
+                                        pie("container_{{ unit.id }}", {{ series|get_item:unit.id|safe }}, {{ drilldown|get_item:unit.id|safe }});
+                                    });
+                                {% endif %}
+                            {% endfor %}
+                        </script>
+                    </div>
+                </div>
+                {% for unit in units %}
+                    <div id="container_{{ unit.id }}" style="min-width: 310px; height: 500px; margin: 0 auto; {% if forloop.counter > 1 %}display: none;{% endif %}"></div>
+                {% endfor %}
+            {% else %}
+                <div id="container" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+                <script type="text/javascript">
+                    Highcharts.chart("container", {
+                        chart: {
+                            type: "pie"
+                        },
+                        title: {
+                            text: null
+                        },
+                        series: {{ series|safe }},
+                        drilldown: {{ drilldown|safe }}
+                    });
+                </script>
+            {% endif %}
+        </div>
+        <div id="table" class="table-responsive" style="display: none;">
             <table class="table table-striped table-hover table-bordered table-condensed">
                 <thead>
                     <tr>
