@@ -1,9 +1,9 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load accounts i18n %}
 
 
 {% block breadcrumbs %}
-<li class="active">{% trans 'dashboard' %}</li>
+<li class="active">{% trans "dashboard" %}</li>
 {% endblock %}
 
 
@@ -12,7 +12,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                {% trans 'balance' %}
+                {% trans "balance" %}
                 <a class="collapse-link" data-toggle="collapse" data-target="#collapse-balance" href="#collapse-balance"></a>
             </h1>
         </div>
@@ -21,9 +21,9 @@
                 <table class="table table-bordered table-condensed table-hover table-striped">
                     <thead>
                         <tr>
-                            <th>{% trans 'unit' %}</th>
-                            <th>{% trans 'sum balance' %}</th>
-                            <th>{% trans 'sum outstanding' %}</th>
+                            <th>{% trans "unit" %}</th>
+                            <th>{% trans "sum balance" %}</th>
+                            <th>{% trans "sum outstanding" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,26 +42,26 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                <a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a>
+                <a href="{% url "accounts:accounts" %}">{% trans "accounts" %}</a>
                 <a class="collapse-link collapsed" data-toggle="collapse" data-target="#collapse-accounts" href="#collapse-accounts" aria-expanded="false"></a>
             </h1>
         </div>
         <div id="collapse-accounts" class="panel-collapse collapse out">
-            {% include 'accounts/account/partials/_table.html' %}
+            {% include "accounts/account/partials/_table.html" %}
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                <a href="{% url 'accounts:entries' %}">{% trans 'entries' %}</a>
+                <a href="{% url "accounts:entries" %}">{% trans "entries" %}</a>
                 <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
             </h1>
         </div>
         <div id="collapse-entries" class="panel-collapse collapse in">
-            {% include 'accounts/entry/partials/_table.html' with account=None entries=entries options=False %}
+            {% include "accounts/entry/partials/_table.html" with account=None entries=entries options=False %}
         </div>
     </div>
 {% else %}
-    <p>{% trans 'there are no accounts available.' %}</p>
+    <p>{% trans "there are no accounts available." %}</p>
 {% endif %}
 {% endblock %}

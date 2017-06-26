@@ -17,10 +17,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import RedirectView
 from ledger import views
 
-admin.site.site_header = 'ledger administration'
+admin.site.site_header = _('ledger administration')
 
 
 urlpatterns = [
