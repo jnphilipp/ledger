@@ -11,7 +11,7 @@ class UnitAdmin(admin.ModelAdmin):
     search_fields = ('name', 'symbol')
 
     formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
+        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
     }
 
     fieldsets = [

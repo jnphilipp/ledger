@@ -1,15 +1,15 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'units:units' %}">{% trans 'units' %}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "units:units" %}">{% trans "Units" %}</a></li>
 {% if unit %}
-    <li><a href="{% url 'units:unit' unit.slug %}">{{ unit.name|lower }}</a></li>
-    <li class="active">{% trans 'edit' %}</li>
+    <li><a href="{% url "units:unit" unit.slug %}">{{ unit.name }}</a></li>
+    <li class="active">{% trans "Edit" %}</li>
 {% else %}
-    <li class="active">{% trans 'add unit' %}</li>
+    <li class="active">{% trans "Add unit" %}</li>
 {% endif %}
 {% endblock %}
 
@@ -21,19 +21,19 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     {% if unit %}
-                        {% trans 'edit' %} {{ unit.name|lower }}
+                        {% blocktrans with name=unit.name %}Edit {{ name }}{% endblocktrans %}
                     {% else %}
-                        {% trans 'add unit' %}
+                        {% trans "Add unit" %}
                     {% endif %}
                 </h1>
             </div>
             <div class="panel-body">
                 {% if unit %}
-                    {% url 'units:unit_edit' unit.slug as form_url %}
+                    {% url "units:unit_edit" unit.slug as form_url %}
                 {% else %}
-                    {% url 'units:unit_add' as form_url %}
+                    {% url "units:unit_add" as form_url %}
                 {% endif %}
-                {% include 'ledger/partials/_form.html' with form_url=form_url %}
+                {% include "ledger/partials/_form.html" with form_url=form_url %}
             </div>
         </div>
     </div>

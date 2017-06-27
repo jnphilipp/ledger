@@ -3,7 +3,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from units.forms import UnitForm
 from units.models import Unit
@@ -38,7 +38,7 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = UnitForm(request.POST)
         if form.is_valid():
             unit = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully created.' % {'name': unit.name.lower()}))
+            messages.add_message(request, messages.SUCCESS, _('The unit %(name)s was successfully created.' % {'name': unit.name.lower()}))
             if do_redirect:
                 return redirect('units:unit', slug=unit.slug)
     else:
@@ -54,7 +54,7 @@ def edit(request, slug):
         form = UnitForm(instance=unit, data=request.POST)
         if form.is_valid():
             unit = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the unit %(name)s was successfully updated.') % {'name': unit.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The unit %(name)s was successfully updated.') % {'name': unit.name.lower()})
             return redirect('units:unit', slug=unit.slug)
     else:
         form = UnitForm(instance=unit)

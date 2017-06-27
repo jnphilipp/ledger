@@ -23,7 +23,7 @@ def autocomplete(request):
         'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
         'units': [{
             'id': unit.id,
-            'text': unit.name.lower()
+            'text': unit.name
         } for unit in units]
     }
     return HttpResponse(json.dumps(data), 'application/json')
