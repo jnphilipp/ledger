@@ -1,10 +1,10 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
-<li class="active"><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li class="active">{% trans 'profile' %}</li>
+<li class="active"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="active">{% trans "Profile" %}</li>
 {% endblock %}
 
 
@@ -13,11 +13,11 @@
     <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'profile' %}</h1>
+                <h1 class="panel-title">{% trans "Profile" %}</h1>
             </div>
             <div class="panel-body">
-                {% url 'users:profile' as form_url %}
-                {% include 'ledger/partials/_form.html' with form_url=form_url %}
+                {% url "users:profile" as form_url %}
+                {% include "ledger/partials/_form.html" with form_url=form_url %}
             </div>
         </div>
     </div>

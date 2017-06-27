@@ -1,24 +1,24 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n ledger static %}
 
 {% block extrahead %}
-<script type="text/javascript" src="{% static 'js/btn-toggle.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/highcharts.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/highcharts/modules/data.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/highcharts/modules/drilldown.js' %}"></script>
+<script type="text/javascript" src="{% static "js/btn-toggle.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts/modules/data.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts/modules/drilldown.js" %}"></script>
 {% endblock %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li class="active">{% trans 'budget' %}</li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="active">{% trans "Budget" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h1 class="panel-title">{% trans 'budget' %}</h1>
+        <h1 class="panel-title">{% trans "Budget" %}</h1>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -26,17 +26,20 @@
                 <nav>
                     <ul class="pagination">
                         {% for y in years %}
-                            <li {% if year == y %} class="active"{% endif %}><a href="{% url 'users:budget' %}?year={{ y }}">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
+                            <li {% if year == y %} class="active"{% endif %}><a href="{% url "users:budget" %}?year={{ y }}">{{ y }}{% if year == y %}<span class="sr-only">(current)</span>{% endif %}</a></li>
                         {% endfor %}
                     </ul>
                 </nav>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url "users:budget_edit" %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> {% trans "Edit budget" %}</a>
             </div>
         </div>
         <div class="row">
             <div class="col-md-2 col-md-offset-5">
                 <div class="btn-group btn-toggle">
-                    <a class="btn btn-primary active" data-target="#toggleView">{% trans 'Chart' %}</a>
-                    <a class="btn btn-default" data-target="#toggleView">{% trans 'Table' %}</a>
+                    <a class="btn btn-primary active" data-target="#toggleView">{% trans "Chart" %}</a>
+                    <a class="btn btn-default" data-target="#toggleView">{% trans "Table" %}</a>
                 </div>
                 <script type="text/javascript">
                     $("a[data-target='#toggleView']").click(function(e) {
@@ -115,24 +118,24 @@
             <table class="table table-striped table-hover table-bordered table-condensed">
                 <thead>
                     <tr>
-                        <th colspan="3">{% trans 'income' %}</th>
-                        <th colspan="3">{% trans 'consumption' %}</th>
-                        <th colspan="3">{% trans 'insurance' %}</th>
-                        <th colspan="3">{% trans 'savings' %}</th>
+                        <th colspan="3">{% trans "Income" %}</th>
+                        <th colspan="3">{% trans "Consumption" %}</th>
+                        <th colspan="3">{% trans "Insurance" %}</th>
+                        <th colspan="3">{% trans "Savings" %}</th>
                     </tr>
                     <tr>
-                        <th>{% trans 'name' %}</th>
-                        <th>{% trans 'monthly' %}</th>
-                        <th>{% trans 'yearly' %}</th>
-                        <th>{% trans 'name' %}</th>
-                        <th>{% trans 'monthly' %}</th>
-                        <th>{% trans 'yearly' %}</th>
-                        <th>{% trans 'name' %}</th>
-                        <th>{% trans 'monthly' %}</th>
-                        <th>{% trans 'yearly' %}</th>
-                        <th>{% trans 'name' %}</th>
-                        <th>{% trans 'monthly' %}</th>
-                        <th>{% trans 'yearly' %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Monthly" %}</th>
+                        <th>{% trans "Yearly" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Monthly" %}</th>
+                        <th>{% trans "Yearly" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Monthly" %}</th>
+                        <th>{% trans "Yearly" %}</th>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Monthly" %}</th>
+                        <th>{% trans "Yearly" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,7 +143,7 @@
                         <tr>
                             {% for cell in row %}
                                 {% if forloop.counter0|divisibleby:3 %}
-                                    <th>{% if cell|length == 2 %}<a href="{% url 'categories:tag' cell|get_item:0 %}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
+                                    <th>{% if cell|length == 2 %}<a href="{% url "categories:tag" cell|get_item:0 %}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
                                 {% else %}
                                     <td class="text-right">{{ cell }}</td>
                                 {% endif %}

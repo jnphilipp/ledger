@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, views
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from users.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm, UserCreationForm
 from users.models import Budget, Ledger
@@ -20,13 +20,13 @@ def signin(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    messages.add_message(request, messages.SUCCESS, _('you have successfully signed in.'))
+                    messages.add_message(request, messages.SUCCESS, _('You have successfully signed in.'))
 
                     return redirect(gnext) if gnext else redirect('dashboard')
                 else:
-                    messages.add_message(request, messages.ERROR, _('your account is disabled.'))
+                    messages.add_message(request, messages.ERROR, _('Your account is disabled.'))
                 return redirect(request.META.get('HTTP_REFERER'))
-        messages.add_message(request, messages.ERROR, _('please enter a correct username and password to sign in. note that both fields may be case-sensitive.'))
+        messages.add_message(request, messages.ERROR, _('Please enter a correct username and password to sign in. Note that both fields may be case-sensitive.'))
     else:
         form = AuthenticationForm(request)
     return render(request, 'registration/signin.html', locals())
@@ -42,7 +42,7 @@ def signup(request):
             Ledger.objects.create(user=new_user)
             Budget.objects.create(user=new_user)
 
-            messages.info(request, messages.SUCCESS, _('thanks for signing up. you are now logged in.'))
+            messages.info(request, messages.SUCCESS, _('Thanks for signing up. You are now logged in.'))
             new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, new_user)
             return redirect('users:profile')

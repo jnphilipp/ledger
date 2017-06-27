@@ -1,11 +1,11 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
-<li class="active"><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'users:profile' %}">{% trans 'profile' %}</a></li>
-<li class="active">{% trans 'sign up' %}</li>
+<li class="active"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
+<li class="active">{% trans "Sign up" %}</li>
 {% endblock %}
 
 
@@ -14,11 +14,11 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'register for ledger' %}</h1>
+                <h1 class="panel-title">{% trans "Register for ledger" %}</h1>
             </div>
         <div class="panel-body">
-            {% trans 'sign up' as smt_btn %}
-            {% include 'ledger/partials/_form.html' with smt_btn=smt_btn %}
+            {% trans "Sign up" as smt_btn %}
+            {% include "ledger/partials/_form.html" with smt_btn=smt_btn %}
         </div>
     </div>
 </div>

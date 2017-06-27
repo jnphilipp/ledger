@@ -1,15 +1,15 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block extrahead %}
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#id_income_tags').select2({
-            placeholder: 'select a tag',
+        $("#id_income_tags").select2({
+            placeholder: "{% trans "Select a tag" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -19,11 +19,11 @@
                 }
             }
         });
-        $('#id_consumption_tags').select2({
-            placeholder: 'select a tag',
+        $("#id_consumption_tags").select2({
+            placeholder: "{% trans "Select a tag" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -33,11 +33,11 @@
                 }
             }
         });
-        $('#id_insurance_tags').select2({
-            placeholder: 'select a tag',
+        $("#id_insurance_tags").select2({
+            placeholder: "{% trans "Select a tag" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -47,11 +47,11 @@
                 }
             }
         });
-        $('#id_savings_tags').select2({
-            placeholder: 'select a tag',
+        $("#id_savings_tags").select2({
+            placeholder: "{% trans "Select a tag" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -67,9 +67,9 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'users:budget' %}">{% trans 'budget' %}</a></li>
-<li class="active">{% trans 'edit' %}</li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "users:budget" %}">{% trans "Budget" %}</a></li>
+<li class="active">{% trans "Edit" %}</li>
 {% endblock %}
 
 
@@ -78,11 +78,11 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'edit budget' %}</h1>
+                <h1 class="panel-title">{% trans "Edit budget" %}</h1>
             </div>
             <div class="panel-body">
-                {% url 'users:budget_edit' as form_url %}
-                {% include 'ledger/partials/_form.html' with form_url=form_url %}
+                {% url "users:budget_edit" as form_url %}
+                {% include "ledger/partials/_form.html" with form_url=form_url %}
             </div>
         </div>
     </div>

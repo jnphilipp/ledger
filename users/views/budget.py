@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from units.models import Unit
 from users.forms import BudgetForm
 from users.models import Budget, Ledger
@@ -32,7 +32,7 @@ def budget(request):
         drilldown = {}
 
         footer = []
-        footer.append(_('sum'))
+        footer.append(_('Sum'))
         footer.append({})
         footer.append({})
 
@@ -46,7 +46,7 @@ def budget(request):
                 amounts[unit] = amounts.pop(k)
                 income.append({
                     'slug': tag.slug if i < 1 else '',
-                    'name': tag.name.lower() if i < 1 else '',
+                    'name': tag.name if i < 1 else '',
                     'monthly': colorfy(v / 12, unit),
                     'yearly': colorfy(v, unit)
                 })
@@ -54,7 +54,7 @@ def budget(request):
                     drilldown[unit] = {}
                 if 'income' not in drilldown[unit]:
                     drilldown[unit]['income'] = {
-                        'name': _('income'),
+                        'name': str(_('Income')),
                         'id': 'income',
                         'dataLabels': {
                             'enabled': True,
@@ -67,13 +67,13 @@ def budget(request):
                         'data': []
                     }
                 drilldown[unit]['income']['data'].append({
-                    'name': tag.name.lower(),
+                    'name': tag.name,
                     'y': abs(v),
-                    'drilldown': tag.name.lower()
+                    'drilldown': tag.name
                 })
-            drilldown[unit][tag.name.lower()] = {
-                'name': tag.name.lower(),
-                'id': tag.name.lower(),
+            drilldown[unit][tag.name] = {
+                'name': tag.name,
+                'id': tag.name,
                 'dataLabels': {
                     'enabled': True,
                     'format': '{point.name}: {point.y:.%df} %s' % (unit.precision, unit.symbol)
@@ -86,23 +86,23 @@ def budget(request):
             }
             categories = {}
             for entry in Entry.objects.filter(account__in=ledger.accounts.all()).filter(day__year=year).filter(account__unit=unit).filter(tags=tag):
-                if entry.category.name.lower() in categories:
-                    categories[entry.category.name.lower()]['y'] += entry.amount
+                if entry.category.name in categories:
+                    categories[entry.category.name]['y'] += entry.amount
                 else:
-                    categories[entry.category.name.lower()] = {
-                        'name': entry.category.name.lower(),
+                    categories[entry.category.name] = {
+                        'name': entry.category.name,
                         'y': entry.amount
                     }
             for k, v in categories.items():
                 categories[k]['y'] = abs(v['y'])
-            drilldown[unit][tag.name.lower()]['data'] = [v for k, v in categories.items()]
+            drilldown[unit][tag.name]['data'] = [v for k, v in categories.items()]
             for k, v in amounts.items():
                 footer[1][k] = footer[1][k] + (v / 12) if k in footer[1] else (v / 12)
                 footer[2][k] = footer[2][k] + v if k in footer[2] else v
         units.update(footer[1].keys())
         for unit in units:
             series[unit] = {
-                'name': _('budget %(unit)s' % {'unit': unit.name.lower()}) if len(units) > 1 else _('budget'),
+                'name': str(_('Budget %(unit)s' % {'unit': unit.name}) if len(units) > 1 else _('Budget')),
                 'colorByPoint': True,
                 'dataLabels': {
                     'enabled': True,
@@ -113,13 +113,13 @@ def budget(request):
                     'pointFormat': '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.%df} %s</b><br/>' % (unit.precision, unit.symbol)
                 },
                 'data': [{
-                    'name': _('income'),
+                    'name': str(_('Income')),
                     'y': abs(footer[2][unit]),
                     'drilldown': 'income'
                 }]
             }
 
-        footer.append(_('sum'))
+        footer.append(_('Sum'))
         footer.append({})
         footer.append({})
         consumption = []
@@ -132,7 +132,7 @@ def budget(request):
                 amounts[unit] = amounts.pop(k)
                 consumption.append({
                     'slug': tag.slug if i < 1 else '',
-                    'name': tag.name.lower() if i < 1 else '',
+                    'name': tag.name if i < 1 else '',
                     'monthly': colorfy(v / 12, unit),
                     'yearly': colorfy(v, unit)
                 })
@@ -140,7 +140,7 @@ def budget(request):
                     drilldown[unit] = {}
                 if 'consumption' not in drilldown[unit]:
                     drilldown[unit]['consumption'] = {
-                        'name': _('consumption'),
+                        'name': str(_('Consumption')),
                         'id': 'consumption',
                         'dataLabels': {
                             'enabled': True,
@@ -153,13 +153,13 @@ def budget(request):
                         'data': []
                     }
                 drilldown[unit]['consumption']['data'].append({
-                    'name': tag.name.lower(),
+                    'name': tag.name,
                     'y': abs(v),
-                    'drilldown': tag.name.lower()
+                    'drilldown': tag.name
                 })
-            drilldown[unit][tag.name.lower()] = {
-                'name': tag.name.lower(),
-                'id': tag.name.lower(),
+            drilldown[unit][tag.name] = {
+                'name': tag.name,
+                'id': tag.name,
                 'dataLabels': {
                     'enabled': True,
                     'format': '{point.name}: {point.y:.%df} %s' % (unit.precision, unit.symbol)
@@ -172,16 +172,16 @@ def budget(request):
             }
             categories = {}
             for entry in Entry.objects.filter(account__in=ledger.accounts.all()).filter(day__year=year).filter(account__unit=unit).filter(tags=tag):
-                if entry.category.name.lower() in categories:
-                    categories[entry.category.name.lower()]['y'] += entry.amount
+                if entry.category.name in categories:
+                    categories[entry.category.name]['y'] += entry.amount
                 else:
-                    categories[entry.category.name.lower()] = {
-                        'name': entry.category.name.lower(),
+                    categories[entry.category.name] = {
+                        'name': entry.category.name,
                         'y': entry.amount
                     }
             for k, v in categories.items():
                 categories[k]['y'] = abs(v['y'])
-            drilldown[unit][tag.name.lower()]['data'] = [v for k, v in categories.items()]
+            drilldown[unit][tag.name]['data'] = [v for k, v in categories.items()]
             for k, v in amounts.items():
                 footer[4][k] = footer[4][k] + (v / 12) if k in footer[4] else (v / 12)
                 footer[5][k] = footer[5][k] + v if k in footer[5] else v
@@ -189,13 +189,13 @@ def budget(request):
         for unit in units:
             if unit in series and unit in footer[5]:
                 series[unit]['data'].append({
-                    'name': _('consumption'),
+                    'name': str(_('Consumption')),
                     'y': abs(footer[5][unit]),
                     'drilldown': 'consumption'
                 })
             elif unit in footer[5]:
                 series[unit] = {
-                    'name': _('budget %(unit)s' % {'unit': unit.name.lower()}),
+                    'name': str(_('Budget %(unit)s' % {'unit': unit.name})),
                     'colorByPoint': True,
                     'dataLabels': {
                         'enabled': True,
@@ -206,13 +206,13 @@ def budget(request):
                         'pointFormat': '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.%df} %s</b><br/>' % (unit.precision, unit.symbol)
                     },
                     'data': [{
-                        'name': _('consumption'),
+                        'name': str(_('Consumption')),
                         'y': abs(footer[5][unit]),
                         'drilldown': 'consumption'
                     }]
                 }
 
-        footer.append(_('sum'))
+        footer.append(_('Sum'))
         footer.append({})
         footer.append({})
         insurance = []
@@ -225,7 +225,7 @@ def budget(request):
                 amounts[unit] = amounts.pop(k)
                 insurance.append({
                     'slug': tag.slug if i < 1 else '',
-                    'name': tag.name.lower() if i < 1 else '',
+                    'name': tag.name if i < 1 else '',
                     'monthly': colorfy(v / 12, unit),
                     'yearly': colorfy(v, unit)
                 })
@@ -233,7 +233,7 @@ def budget(request):
                     drilldown[unit] = {}
                 if 'insurance' not in drilldown[unit]:
                     drilldown[unit]['insurance'] = {
-                        'name': _('insurance'),
+                        'name': str(_('Insurance')),
                         'id': 'insurance',
                         'dataLabels': {
                             'enabled': True,
@@ -246,13 +246,13 @@ def budget(request):
                         'data': []
                     }
                 drilldown[unit]['insurance']['data'].append({
-                    'name': tag.name.lower(),
+                    'name': tag.name,
                     'y': abs(v),
-                    'drilldown': tag.name.lower()
+                    'drilldown': tag.name
                 })
-            drilldown[unit][tag.name.lower()] = {
-                'name': tag.name.lower(),
-                'id': tag.name.lower(),
+            drilldown[unit][tag.name] = {
+                'name': tag.name,
+                'id': tag.name,
                 'dataLabels': {
                     'enabled': True,
                     'format': '{point.name}: {point.y:.%df} %s' % (unit.precision, unit.symbol)
@@ -265,16 +265,16 @@ def budget(request):
             }
             categories = {}
             for entry in Entry.objects.filter(account__in=ledger.accounts.all()).filter(day__year=year).filter(account__unit=unit).filter(tags=tag):
-                if entry.category.name.lower() in categories:
-                    categories[entry.category.name.lower()]['y'] += entry.amount
+                if entry.category.name in categories:
+                    categories[entry.category.name]['y'] += entry.amount
                 else:
-                    categories[entry.category.name.lower()] = {
-                        'name': entry.category.name.lower(),
+                    categories[entry.category.name] = {
+                        'name': entry.category.name,
                         'y': entry.amount
                     }
             for k, v in categories.items():
                 categories[k]['y'] = abs(v['y'])
-            drilldown[unit][tag.name.lower()]['data'] = [v for k, v in categories.items()]
+            drilldown[unit][tag.name]['data'] = [v for k, v in categories.items()]
             for k, v in amounts.items():
                 footer[7][k] = footer[7][k] + (v / 12) if k in footer[7] else (v / 12)
                 footer[8][k] = footer[8][k] + v if k in footer[8] else v
@@ -282,13 +282,13 @@ def budget(request):
         for unit in units:
             if unit in series and unit in footer[8]:
                 series[unit]['data'].append({
-                    'name': _('insurance'),
+                    'name': str(_('Insurance')),
                     'y': abs(footer[8][unit]),
                     'drilldown': 'insurance'
                 })
             elif unit in footer[8]:
                 series[unit] = {
-                    'name': _('budget %(unit)s' % {'unit': unit.name.lower()}),
+                    'name': str(_('Budget %(unit)s' % {'unit': unit.name})),
                     'colorByPoint': True,
                     'dataLabels': {
                         'enabled': True,
@@ -299,13 +299,13 @@ def budget(request):
                         'pointFormat': '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.%df} %s</b><br/>' % (unit.precision, unit.symbol)
                     },
                     'data': [{
-                        'name': _('insurance'),
+                        'name': str(_('Insurance')),
                         'y': abs(footer[8][unit]),
                         'drilldown': 'insurance'
                     }]
                 }
 
-        footer.append(_('sum'))
+        footer.append(_('Sum'))
         footer.append({})
         footer.append({})
         savings = []
@@ -318,7 +318,7 @@ def budget(request):
                 amounts[unit] = amounts.pop(k)
                 savings.append({
                     'slug': tag.slug if i < 1 else '',
-                    'name': tag.name.lower() if i < 1 else '',
+                    'name': tag.name if i < 1 else '',
                     'monthly': colorfy(v / 12, unit),
                     'yearly': colorfy(v, unit)
                 })
@@ -326,7 +326,7 @@ def budget(request):
                     drilldown[unit] = {}
                 if 'savings' not in drilldown[unit]:
                     drilldown[unit]['savings'] = {
-                        'name': _('savings'),
+                        'name': str(_('Savings')),
                         'id': 'savings',
                         'dataLabels': {
                             'enabled': True,
@@ -339,13 +339,13 @@ def budget(request):
                         'data': []
                     }
                 drilldown[unit]['savings']['data'].append({
-                    'name': tag.name.lower(),
+                    'name': tag.name,
                     'y': abs(v),
-                    'drilldown': tag.name.lower()
+                    'drilldown': tag.name
                 })
-            drilldown[unit][tag.name.lower()] = {
-                'name': tag.name.lower(),
-                'id': tag.name.lower(),
+            drilldown[unit][tag.name] = {
+                'name': tag.name,
+                'id': tag.name,
                 'dataLabels': {
                     'enabled': True,
                     'format': '{point.name}: {point.y:.%df} %s' % (unit.precision, unit.symbol)
@@ -358,16 +358,16 @@ def budget(request):
             }
             categories = {}
             for entry in Entry.objects.filter(account__in=ledger.accounts.all()).filter(day__year=year).filter(account__unit=unit).filter(tags=tag):
-                if entry.category.name.lower() in categories:
-                    categories[entry.category.name.lower()]['y'] += entry.amount
+                if entry.category.name in categories:
+                    categories[entry.category.name]['y'] += entry.amount
                 else:
-                    categories[entry.category.name.lower()] = {
-                        'name': entry.category.name.lower(),
+                    categories[entry.category.name] = {
+                        'name': entry.category.name,
                         'y': entry.amount
                     }
             for k, v in categories.items():
                 categories[k]['y'] = abs(v['y'])
-            drilldown[unit][tag.name.lower()]['data'] = [v for k, v in categories.items()]
+            drilldown[unit][tag.name]['data'] = [v for k, v in categories.items()]
             for k, v in amounts.items():
                 footer[10][k] = footer[10][k] + (v / 12) if k in footer[10] else (v / 12)
                 footer[11][k] = footer[11][k] + v if k in footer[11] else v
@@ -375,13 +375,13 @@ def budget(request):
         for unit in units:
             if unit in series and unit in footer[11]:
                 series[unit]['data'].append({
-                    'name': _('savings'),
+                    'name': str(_('Savings')),
                     'y': abs(footer[11][unit]),
                     'drilldown': 'savings'
                 })
             elif unit in footer[11]:
                 series[unit] = {
-                    'name': _('budget %(unit)s' % {'unit': unit.name.lower()}),
+                    'name': str(_('Budget %(unit)s' % {'unit': unit.name})),
                     'colorByPoint': True,
                     'dataLabels': {
                         'enabled': True,
@@ -392,7 +392,7 @@ def budget(request):
                         'pointFormat': '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.%df} %s</b><br/>' % (unit.precision, unit.symbol)
                     },
                     'data': [{
-                        'name': _('savings'),
+                        'name': str(_('Savings')),
                         'y': abs(footer[11][unit]),
                         'drilldown': 'savings'
                     }]
@@ -403,7 +403,7 @@ def budget(request):
             if i > 0:
                 footer[i][0] = footer[i][3] = footer[i][6] = footer[i][9] = ''
 
-            footer.append(['', '', '', '', '', '', '', '', '', _('total') if i == 0 else '', 0, 0])
+            footer.append(['', '', '', '', '', '', '', '', '', _('Total') if i == 0 else '', 0, 0])
             footer[-1][10] = (footer[i][1][unit] if unit in footer[i][1] else 0) + (footer[i][4][unit] if unit in footer[i][4] else 0) + (footer[i][7][unit] if unit in footer[i][7] else 0) + (footer[i][10][unit] if unit in footer[i][10] else 0)
             footer[-1][11] = (footer[i][2][unit] if unit in footer[i][2] else 0) + (footer[i][5][unit] if unit in footer[i][5] else 0) + (footer[i][8][unit] if unit in footer[i][8] else 0) + (footer[i][11][unit] if unit in footer[i][11] else 0)
 
@@ -420,7 +420,7 @@ def budget(request):
 
         for i, unit in enumerate(units):
             real = Entry.objects.exclude(category__in=ledger.accounts.values_list('category', flat=True)).filter(Q(account__in=ledger.accounts.all()) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))['sum']
-            footer.append(['', '', '', '', '', '', '', '', '', _('real') if i == 0 else '', 0, 0])
+            footer.append(['', '', '', '', '', '', '', '', '', _('Real') if i == 0 else '', 0, 0])
             footer[-1][10] = colorfy(real / 12, unit)
             footer[-1][11] = colorfy(real, unit)
 
@@ -461,6 +461,7 @@ def budget(request):
                 row.append('')
             table.append(row)
         if len(series) == 1:
+            print(series)
             series = json.dumps([v for k, v in series.items()])
             drilldown = json.dumps({'series': [s for k, v in drilldown.items() for k2, s in drilldown[k].items()]})
         else:
@@ -477,7 +478,7 @@ def edit(request):
         form = BudgetForm(instance=budget, data=request.POST)
         if form.is_valid():
             budget = form.save()
-            messages.add_message(request, messages.SUCCESS, _('your budget was successfully updated.'))
+            messages.add_message(request, messages.SUCCESS, _('Your budget was successfully updated.'))
             return redirect('users:budget')
         return render(request, 'users/budget/edit.html', locals())
     else:

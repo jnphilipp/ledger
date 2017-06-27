@@ -3,7 +3,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from users.forms import UserChangeForm
 
@@ -15,7 +15,7 @@ def profile(request):
         form = UserChangeForm(instance=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, _('your profile has been successfully updated.'))
+            messages.success(request, _('Your profile has been successfully updated.'))
     else:
         form = UserChangeForm(instance=request.user)
     return render(request, 'users/profile.html', locals())

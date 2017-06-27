@@ -11,14 +11,8 @@ function statistics(url, renderTo) {
         xAxis: {
             categories: [],
             crosshair: true,
-            title: {
-                text: ''
-            }
         },
         yAxis: {
-            title: {
-                text: 'loss and profit'
-            },
             labels: {
                 format: ''
             },
@@ -52,9 +46,10 @@ function statistics(url, renderTo) {
     $.getJSON(url, function(data) {
         options.series = data.series;
         options.xAxis.categories = data.xAxis.categories;
-        options.xAxis.title.text = data.xAxis.title;
+        options.xAxis.title = data.xAxis.title;
         options.yAxis.labels.format = data.yAxis.labels.format;
         options.yAxis.stackLabels.format = data.yAxis.stackLabels.format;
+        options.yAxis.title = data.yAxis.title;
         options.tooltip.valueSuffix = data.tooltip.valueSuffix;
         var chart = new Highcharts.Chart(options);
     });
