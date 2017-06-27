@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from categories.models import Category
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
-from json import dumps
 
 
 @login_required
@@ -20,10 +21,10 @@ def autocomplete(request):
     if 'q' in params:
         categories = categories.filter(name__icontains=params.pop('q')[0])
     data = {
-        'response_date':timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
+        'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
         'categories': [{
-            'id':category.id,
-            'text':category.name.lower()
+            'id': category.id,
+            'text': category.name
         } for category in categories]
     }
-    return HttpResponse(dumps(data), 'application/json')
+    return HttpResponse(json.dumps(data), 'application/json')

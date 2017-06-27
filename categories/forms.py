@@ -4,6 +4,7 @@ from accounts.models import Account
 from categories.models import Category, Tag
 from django import forms
 from units.models import Unit
+from django.utils.translation import ugettext_lazy as _
 
 
 class CategoryForm(forms.ModelForm):
@@ -55,8 +56,8 @@ class TagForm(forms.ModelForm):
 
 
 class FilterForm(forms.Form):
-    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'start date', 'class': 'form-control'}), required=False)
-    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'end date', 'class': 'form-control'}), required=False)
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': _('Start date'), 'class': 'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': _('End date'), 'class': 'form-control'}), required=False)
     accounts = forms.ModelMultipleChoiceField(queryset=Account.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
     categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))

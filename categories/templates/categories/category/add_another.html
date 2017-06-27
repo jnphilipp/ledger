@@ -1,17 +1,17 @@
-{% extends 'ledger/popup.html' %}
+{% extends "ledger/popup.html" %}
 {% load i18n static %}
 
 
 {% block extrahead %}
-<script type="text/javascript" src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<script type="text/javascript" src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         {% if category %}
-            parent.$('#{{ target_id }}').append($('<option></option>')
-                .attr('value', '{{ category.id }}')
-                .attr('name', '{{ category.name }}')
-                .text('{{ category.name }}'));
-            parent.$('#{{ target_id }}').val('{{ category.id }}').trigger('change');
+            parent.$("#{{ target_id }}").append($("<option></option>")
+                .attr("value", "{{ category.id }}")
+                .attr("name", "{{ category.name }}")
+                .text("{{ category.name }}"));
+            parent.$("#{{ target_id }}").val("{{ category.id }}").trigger("change");
             parent.$.magnificPopup.close();
         {% endif %}
     });
@@ -24,12 +24,12 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'add category' %}</h1>
+                <h1 class="panel-title">{% trans "Add category" %}</h1>
             </div>
             <div class="panel-body">
                 {% if not category %}
-                    {% url 'categories:category_add_another' as form_url %}
-                    {% include 'ledger/partials/_form.html' with form_url=form_url|add:'?target_id='|add:target_id %}
+                    {% url "categories:category_add_another" as form_url %}
+                    {% include "ledger/partials/_form.html" with form_url=form_url|add:"?target_id="|add:target_id %}
                 {% endif %}
             </div>
         </div>

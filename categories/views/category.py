@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from units.models import Unit
 from users.models import Ledger
@@ -16,7 +16,7 @@ from users.models import Ledger
 @login_required
 def list(request):
     ledger = get_object_or_404(Ledger, user=request.user)
-    categories = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct().extra(select={'lname':'lower(categories_category.name)'}).order_by('lname')
+    categories = Category.objects.filter(Q(entries__account__ledger=ledger) | Q(accounts__ledger=ledger)).distinct().extra(select={'lname': 'lower(categories_category.name)'}).order_by('lname')
     if request.method == 'POST':
         form = FilterForm(request.POST)
         del form.fields['start_date']
@@ -114,7 +114,7 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = CategoryForm(data=request.POST)
         if form.is_valid():
             category = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully created.') % {'name': category.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully created.') % {'name': category.name.lower()})
             if do_redirect:
                 return redirect('categories:category', slug=category.slug)
     else:
@@ -130,7 +130,7 @@ def edit(request, slug):
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
             category = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
             return redirect('categories:category', slug=category.slug)
     else:
         form = CategoryForm(instance=category)
@@ -143,6 +143,6 @@ def delete(request, slug):
     category = get_object_or_404(Category, slug=slug)
     if request.method == 'POST':
         category.delete()
-        messages.add_message(request, messages.SUCCESS, _('the category "%(name)s" was successfully deleted.') % {'name': category.name.lower()})
+        messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully deleted.') % {'name': category.name.lower()})
         return redirect('categories:categories')
     return render(request, 'categories/category/delete.html', locals())

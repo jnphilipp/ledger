@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from users.models import Ledger
 
@@ -14,7 +14,7 @@ from users.models import Ledger
 @login_required
 def list(request):
     ledger = get_object_or_404(Ledger, user=request.user)
-    tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname':'lower(categories_tag.name)'}).order_by('lname')
+    tags = Tag.objects.filter(entries__account__ledger=ledger).distinct().extra(select={'lname': 'lower(categories_tag.name)'}).order_by('lname')
 
     if request.method == 'POST':
         form = FilterForm(request.POST)
@@ -94,6 +94,11 @@ def statistics(request, slug):
     chart = request.GET.get('chart')
     year = request.GET.get('year')
 
+    if chart == 'accounts':
+        chart_name = _('Accounts')
+    elif chart == 'categories':
+        chart_name = _('Categories')
+
     if chart and not year:
         years = [y.strftime('%Y') for y in tag.entries.filter(account__ledger=ledger).dates('day', 'year')]
     return render(request, 'categories/tag/statistics.html', locals())
@@ -116,7 +121,7 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = TagForm(data=request.POST)
         if form.is_valid():
             tag = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the tag "%(name)s" was successfully created.') % {'name': tag.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully created.') % {'name': tag.name.lower()})
             if do_redirect:
                 return redirect('categories:tag', slug=tag.slug)
     else:
@@ -132,7 +137,7 @@ def edit(request, slug):
         form = TagForm(instance=tag, data=request.POST)
         if form.is_valid():
             tag = form.save()
-            messages.add_message(request, messages.SUCCESS, _('the tag "%(name)s" was successfully updated.') % {'name': tag.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully updated.') % {'name': tag.name.lower()})
             return redirect('categories:tag', slug=tag.slug)
     else:
         form = TagForm(instance=tag)
@@ -145,6 +150,6 @@ def delete(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
     if request.method == 'POST':
         tag.delete()
-        messages.add_message(request, messages.SUCCESS, 'the tag "%(name)s" was successfully deleted.' % {'name': tag.name.lower()})
+        messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully deleted.') % {'name': tag.name.lower()})
         return redirect('categories:tags')
     return render(request, 'categories/tag/delete.html', locals())

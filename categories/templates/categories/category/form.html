@@ -1,15 +1,15 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories:categories' %}">{% trans 'categories' %}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "categories:categories" %}">{% trans "Categories" %}</a></li>
 {% if category %}
-    <li><a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a></li>
-    <li class="active">{% trans 'edit' %}</li>
+    <li><a href="{% url "categories:category" category.slug %}">{{ category.name }}</a></li>
+    <li class="active">{% trans "Edit" %}</li>
 {% else %}
-    <li class="active">{% trans 'add category' %}</li>
+    <li class="active">{% trans "Add category" %}</li>
 {% endif %}
 {% endblock %}
 
@@ -21,19 +21,19 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     {% if category %}
-                        {% trans 'edit' %} {{ category.name|lower }}
+                        {% trans "Edit category" %}
                     {% else %}
-                        {% trans 'add category' %}
+                        {% trans "Add category" %}
                     {% endif %}
                 </h1>
             </div>
             <div class="panel-body">
                 {% if category %}
-                    {% url 'categories:category_edit' category.slug as form_url %}
+                    {% url "categories:category_edit" category.slug as form_url %}
                 {% else %}
-                    {% url 'categories:category_add' as form_url %}
+                    {% url "categories:category_add" as form_url %}
                 {% endif %}
-                {% include 'ledger/partials/_form.html' with form_url=form_url %}
+                {% include "ledger/partials/_form.html" with form_url=form_url %}
             </div>
         </div>
     </div>

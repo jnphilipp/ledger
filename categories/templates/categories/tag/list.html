@@ -1,15 +1,15 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block extrahead %}
 <script type="text/javascript">
     $(function() {
-        $('#id_accounts').select2({
-            placeholder: 'accounts',
+        $("#id_accounts").select2({
+            placeholder: "{% trans "Accounts" %}",
             ajax: {
-                url: "{% url 'accounts:account_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "accounts:account_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -19,11 +19,11 @@
                 }
             }
         });
-        $('#id_categories').select2({
-            placeholder: 'categories',
+        $("#id_categories").select2({
+            placeholder: "{% trans "Categories" %}",
             ajax: {
-                url: "{% url 'categories:category_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:category_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -33,11 +33,11 @@
                 }
             }
         });
-        $('#id_tags').select2({
-            placeholder: 'tags',
+        $("#id_tags").select2({
+            placeholder: "{% trans "Tags" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -47,11 +47,11 @@
                 }
             }
         });
-        $('#id_units').select2({
-            placeholder: 'units',
+        $("#id_units").select2({
+            placeholder: "{% trans "Units" %}",
             ajax: {
-                url: "{% url 'units:unit_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "units:unit_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -67,20 +67,20 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li class="active">{% trans 'tags' %}</li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="active">{% trans "Tags" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h1 class="panel-title">{% trans 'tags' %}</h1>
+        <h1 class="panel-title">{% trans "Tags" %}</h1>
     </div>
     <div class="panel-body text-center">
-        {% url 'categories:tags' as form_url %}
-        {% include 'ledger/partials/_form_inline.html' with form_url=form_url %}
+        {% url "categories:tags" as form_url %}
+        {% include "ledger/partials/_form_inline.html" with form_url=form_url %}
     </div>
-    {% include 'categories/tag/partials/_table.html' with tags=tags %}
+    {% include "categories/tag/partials/_table.html" with tags=tags %}
 </div>
 {% endblock %}

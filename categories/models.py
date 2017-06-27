@@ -3,6 +3,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_lazy as _
 
 
 class TextFieldSingleLine(models.TextField):
@@ -14,7 +15,7 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     slug = models.SlugField(unique=True)
-    name = TextFieldSingleLine(unique=True)
+    name = TextFieldSingleLine(_('Name'), unique=True)
 
     def get_absolute_url(self):
         return reverse('categories:category', args=[self.slug])
@@ -29,12 +30,12 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name.lower()
+        return self.name
 
     class Meta:
         ordering = ('name',)
-        verbose_name = ' category'
-        verbose_name_plural = ' categories'
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
 
 
 class Tag(models.Model):
@@ -42,7 +43,7 @@ class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     slug = models.SlugField(unique=True)
-    name = TextFieldSingleLine(unique=True)
+    name = TextFieldSingleLine(_('Name'), unique=True)
 
     def get_absolute_url(self):
         return reverse('categories:tag', args=[self.slug])
@@ -57,9 +58,9 @@ class Tag(models.Model):
         super(Tag, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name.lower()
+        return self.name
 
     class Meta:
         ordering = ('name',)
-        verbose_name = ' tag'
-        verbose_name_plural = ' tags'
+        verbose_name = _('Tag')
+        verbose_name_plural = _('Tags')

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from accounts.models import Account
 from categories.models import Category
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from json import dumps
+from django.utils.translation import ugettext_lazy as _
 from units.models import Unit
 from users.models import Ledger
 
@@ -23,7 +25,9 @@ def statistics(request, slug):
         data = {
             'xAxis': {
                 'categories': [m.strftime('%B') for m in months],
-                'title': 'months'
+                'title': {
+                    'text': str(_('Months'))
+                }
             },
             'yAxis': {
                 'stackLabels': {
@@ -31,6 +35,9 @@ def statistics(request, slug):
                 },
                 'labels': {
                     'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'title': {
+                    'text': str(_('Loss and Profit'))
                 }
             },
             'tooltip': {
@@ -40,20 +47,37 @@ def statistics(request, slug):
 
         series = []
         for account in Account.objects.filter(Q(entries__category=category) & Q(ledgers=ledger) & Q(entries__day__year=year)).distinct():
-            series.append({'name':account.name.lower(), 'data':[[m.strftime('%B'), category.entries.filter(Q(account=account) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
+            series.append({
+                'name': account.name,
+                'data': [[m.strftime('%B'), category.entries.filter(Q(account=account) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months],
+                'tooltip': {
+                    'valueSuffix': account.unit.symbol
+                },
+                'type': 'column',
+                'stack': account.unit.name
+            })
 
         for unit in units:
             amount = category.entries.filter(Q(account__ledgers=ledger) & Q(account__unit=unit) & Q(day__year=year)).aggregate(sum=Sum('amount'))
             if amount['sum']:
                 avg = amount['sum'] / len(months)
-                series.append({'name':'average %s' % unit.name.lower(), 'type':'spline', 'data':[avg for m in months], 'tooltip':{'valueSuffix':unit.symbol}})
+                series.append({
+                    'name': _('Average %(unit)s') % {'unit': unit.name},
+                    'type': 'spline',
+                    'data': [avg for m in months],
+                    'tooltip': {
+                        'valueSuffix': unit.symbol
+                    }
+                })
         data['series'] = series
     else:
         years = category.entries.filter(account__ledger=ledger).dates('day', 'year')
         data = {
             'xAxis': {
                 'categories': [y.strftime('%Y') for y in years],
-                'title': 'years'
+                'title': {
+                    'text': str(_('Years'))
+                }
             },
             'yAxis': {
                 'stackLabels': {
@@ -61,6 +85,9 @@ def statistics(request, slug):
                 },
                 'labels': {
                     'format': '{value}%s' % (units[0].symbol if units.count() == 1 else '')
+                },
+                'title': {
+                    'text': str(_('Loss and Profit'))
                 }
             },
             'tooltip': {
@@ -70,10 +97,25 @@ def statistics(request, slug):
 
         series = []
         for account in Account.objects.filter(Q(entries__category=category) & Q(ledgers=ledger)).distinct():
-            series.append({'name':account.name.lower(), 'data':[[y.strftime('%Y'), category.entries.filter(Q(account=account) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years], 'tooltip':{'valueSuffix':account.unit.symbol}, 'type':'column', 'stack':account.unit.name.lower()})
+            series.append({
+                'name': account.name,
+                'data': [[y.strftime('%Y'), category.entries.filter(Q(account=account) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years],
+                'tooltip': {
+                    'valueSuffix': account.unit.symbol
+                },
+                'type': 'column',
+                'stack': account.unit.name
+            })
 
         for unit in units:
             avg = category.entries.filter(Q(account__ledgers=ledger) & Q(account__unit=unit)).aggregate(sum=Sum('amount'))['sum'] / len(years)
-            series.append({'name':'average %s' % unit.name.lower(), 'type':'spline', 'data':[avg for y in years], 'tooltip':{'valueSuffix':unit.symbol}})
+            series.append({
+                'name': _('Average %(unit)s') % {'unit': unit.name},
+                'type': 'spline',
+                'data': [avg for y in years],
+                'tooltip': {
+                    'valueSuffix': unit.symbol
+                }
+            })
         data['series'] = series
-    return HttpResponse(dumps(data), 'application/json')
+    return HttpResponse(json.dumps(data), 'application/json')

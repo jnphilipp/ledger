@@ -11,7 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
     formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
+        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
     }
 
     fieldsets = [
@@ -25,7 +25,7 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
     formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete':'off'})},
+        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
     }
 
     fieldsets = [

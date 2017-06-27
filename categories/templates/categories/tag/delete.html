@@ -1,12 +1,12 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories:tags' %}">{% trans 'tags' %}</a></li>
-<li><a href="{% url 'categories:tag' tag.slug %}">{{ tag.name|lower }}</a></li>
-<li class="active">{% trans 'delete' %}</li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></li>
+<li><a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a></li>
+<li class="active">{% trans "Delete" %}</li>
 {% endblock %}
 
 
@@ -15,24 +15,24 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'delete' %} {{ tag.name|lower }}</h1>
+                <h1 class="panel-title">{% trans "Delete tag" %}</h1>
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{% url 'categories:tag_delete' tag.slug %}" method="post" class="form">
+                <form action="{% url "categories:tag_delete" tag.slug %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
-                        <h5><b>{% trans 'confirm deletion' %}</b></h5>
-                        <p>{% blocktrans %}are you sure you want to delete this tag? all of the following objects and their related items will be deleted:{% endblocktrans %}</p>
+                        <h5><b>{% trans "Confirm deletion" %}</b></h5>
+                        <p>{% blocktrans %}Are you sure you want to delete this tag? All of the following objects and their related items will be deleted:{% endblocktrans %}</p>
                         <p></p>
 
                         <ul>
                             <li>
-                                {% trans 'tag' %}: <a href="{% url 'categories:tag' tag.slug %}">{{ tag.name|lower }}</a>
+                                {% trans "Tag" %}: <a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a>
                             </li>
                         </ul>
                         <br/>
-                        <button class="btn btn-danger" type="submit">{% blocktrans %}yes, i'm sure{% endblocktrans %}</button>
+                        <button class="btn btn-danger" type="submit">{% blocktrans %}Yes, I'm sure{% endblocktrans %}</button>
                     </div>
                 </form>
             </div>

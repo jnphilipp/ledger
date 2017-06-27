@@ -9,15 +9,9 @@ function statistics(url, renderTo) {
         },
         xAxis: {
             categories: [],
-            crosshair: true,
-            title: {
-                text: ''
-            }
+            crosshair: true
         },
         yAxis: {
-            title: {
-                text: 'loss and profit'
-            },
             labels: {
                 format: ''
             },
@@ -53,9 +47,10 @@ function statistics(url, renderTo) {
         options.series = data.series;
         options.tooltip.valueSuffix = data.tooltip.valueSuffix;
         options.xAxis.categories = data.xAxis.categories;
-        options.xAxis.title.text = data.xAxis.title;
+        options.xAxis.title = data.xAxis.title;
         options.yAxis.labels.format = data.yAxis.labels.format;
         options.yAxis.stackLabels.format = data.yAxis.stackLabels.format;
+        options.yAxis.title = data.yAxis.title;
         var chart = new Highcharts.Chart(options);
     });
 }

@@ -1,28 +1,28 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n static %}
 
 
 {% block extrahead %}
-<script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'js/charts/accounts/categories/statistics.js' %}"></script>
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/categories/tags.js" %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        var url = "{% url 'categories:category_chart_statistics' category.slug %}{% if year %}?year={{ year }}{% endif %}";
-        statistics(url, 'chart');
+        var url = "{% url "categories:category_chart_statistics" category.slug %}{% if year %}?year={{ year }}{% endif %}";
+        statistics(url, "chart");
     });
 </script>
 {% endblock %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'categories:categories' %}">{% trans 'categories' %}</a></li>
-<li><a href="{% url 'categories:category' category.slug %}">{{ category.name|lower }}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "categories:categories" %}">{% trans "Categories" %}</a></li>
+<li><a href="{% url "categories:category" category.slug %}">{{ category.name }}</a></li>
 {% if year %}
-    <li><a href="{% url 'categories:category_statistics' category.slug %}">{% trans 'statistics' %}</a></li>
+    <li><a href="{% url "categories:category_statistics" category.slug %}">{% trans "Statistics" %}</a></li>
     <li class="active">{{ year }}</li>
 {% else %}
-    <li class="active">{% trans 'statistics' %}</li>
+    <li class="active">{% trans "Statistics" %}</li>
 {% endif %}
 {% endblock %}
 
@@ -31,17 +31,17 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h1 class="panel-title">
-            {% trans 'statistics' %}
+            {% trans "Statistics" %}
             {% if year %}<small>{{ year }}</small>{% endif %}
         </h1>
     </div>
     <div class="panel-body">
         {% if years %}
             <div class="btn-group" style="margin-left: 5px;">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans 'select a year' %} <span class="caret"></span></button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans "Select a year" %} <span class="caret"></span></button>
                 <ul class="dropdown-menu" role="menu">
                     {% for year in years %}
-                        <li><a href="{% url 'categories:category_statistics' category.slug %}?year={{ year }}">{{ year }}</a></li>
+                        <li><a href="{% url "categories:category_statistics" category.slug %}?year={{ year }}">{{ year }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
