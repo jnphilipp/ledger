@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from accounts.models import Account
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import timezone
-from json import dumps
 
 
 @login_required
@@ -25,4 +26,4 @@ def autocomplete(request):
             'text': account.name.lower()
         } for account in accounts]
     }
-    return HttpResponse(dumps(data), 'application/json')
+    return HttpResponse(json.dumps(data), 'application/json')

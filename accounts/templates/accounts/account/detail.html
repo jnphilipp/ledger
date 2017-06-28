@@ -1,19 +1,19 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load accounts i18n static %}
 
 
 {% block extrahead %}
-<script src="{% static 'js/highcharts.js' %}"></script>
-<script src="{% static 'js/accounts/statistics.js' %}"></script>
-<script src="{% static 'js/accounts/categories.js' %}"></script>
-<script src="{% static 'js/accounts/tags.js' %}"></script>
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/accounts/statistics.js" %}"></script>
+<script src="{% static "js/accounts/categories.js" %}"></script>
+<script src="{% static "js/accounts/tags.js" %}"></script>
 {% endblock %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
-<li class="active">{{ account.name|lower }}{% if account.closed %} <small>{% trans 'closed' %}</small>{% endif %}</li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+<li class="active">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</li>
 {% endblock %}
 
 
@@ -21,24 +21,24 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <h1>
-            <a href="{% url 'accounts:account_edit' account.slug  %}" class="btn btn-primary" role="button">
+            <a href="{% url "accounts:account_edit" account.slug  %}" class="btn btn-primary" role="button">
                 <span class="glyphicon glyphicon-pencil"></span>
-                {% trans 'edit account' %}
+                {% trans "Edit account" %}
             </a>
             {% if account.closed %}
-                <a href="{% url 'accounts:account_close' account.slug  %}" class="btn btn-primary" role="button">
+                <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-primary" role="button">
                     <span class="glyphicon glyphicon-folder-open"></span>
-                    {% trans 're-open account' %}
+                    {% trans "Re-open account" %}
                 </a>
             {% else %}
-                <a href="{% url 'accounts:account_close' account.slug  %}" class="btn btn-primary" role="button">
+                <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-primary" role="button">
                     <span class="glyphicon glyphicon-folder-close"></span>
-                    {% trans 'close account' %}
+                    {% trans "Close account" %}
                 </a>
             {% endif %}
-            <a href="{% url 'accounts:account_delete' account.slug  %}" class="btn btn-danger" role="button">
+            <a href="{% url "accounts:account_delete" account.slug  %}" class="btn btn-danger" role="button">
                 <span class="glyphicon glyphicon-trash"></span>
-                {% trans 'delete account' %}
+                {% trans "Delete account" %}
             </a>
         </h1>
     </div>
@@ -48,105 +48,105 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    {{ account.name|lower }}
+                    {{ account.name }}
                     {% if account.closed %}
-                        <small>{% trans 'closed' %}</small>
+                        <small>{% trans "Closed" %}</small>
                     {% endif %}
                 </h1>
             </div>
             <div class="panel-body">
-                {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans 'this account is currently closed.' %}</div>{% endif %}
+                {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
                 <dl class="dl-horizontal">
-                    <dt>{% trans 'created at' %}</dt>
-                    <dd>{{ account.created_at|date:'r'|lower }}</dd>
-                    <dt>{% trans 'last updated at' %}</dt>
-                    <dd>{{ account.updated_at|date:'r'|lower }}</dd>
-                    <dt>{% trans 'users' %}</dt>
+                    <dt>{% trans "Created at" %}</dt>
+                    <dd>{{ account.created_at|date:"r" }}</dd>
+                    <dt>{% trans "Last updated at" %}</dt>
+                    <dd>{{ account.updated_at|date:"r" }}</dd>
+                    <dt>{% trans "Users" %}</dt>
                     <dd>
                         {% for l in account.ledgers.all %}
                             {{ l.user.username }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </dd>
-                    <dt>{% trans 'category' %}</dt>
-                    <dd><a href="{% url 'categories:category' account.category.slug %}">{{ account.category.name|lower }}</a></dd>
-                    <dt>{% trans 'unit' %}</dt>
-                    <dd><a href="{% url 'units:unit' account.unit.slug %}">{{ account.unit.name|lower }}</a></dd>
+                    <dt>{% trans "Category" %}</dt>
+                    <dd><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
+                    <dt>{% trans "Unit" %}</dt>
+                    <dd><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
                 </dl>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a class="panel-title" href="{% url 'accounts:account_entries' account.slug %}">entries</a>
+                <a class="panel-title" href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a>
             </div>
             <div class="panel-body">
-                <b>balance:</b> {{ account|balance }} (<b>outstanding:</b> {{ account|outstanding }})
+                <b>{% trans "Balance" %}:</b> {{ account|balance }} (<b>{% trans "Outstanding"%}:</b> {{ account|outstanding }})
                 {% if not account.closed %}
                     <div class="pull-right">
-                        <a class="btn btn-primary" href="{% url 'accounts:account_entry_add' account.slug %}" role="button">
+                        <a class="btn btn-primary" href="{% url "accounts:account_entry_add" account.slug %}" role="button">
                             <span class="glyphicon glyphicon-plus"></span>
-                            {% trans 'add entry' %}
+                            {% trans "Add entry" %}
                         </a>
-                        <a class="btn btn-primary" href="{% url 'accounts:account_standing_entry_add' account.slug %}">
+                        <a class="btn btn-primary" href="{% url "accounts:account_standing_entry_add" account.slug %}">
                             <span class="glyphicon glyphicon-plus"></span>
-                            {% trans 'add standing entry' %}
+                            {% trans "Add standing entry" %}
                         </a>
                     </div>
                 {% endif %}
             </div>
-            {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=False %}
+            {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=False %}
         </div>
         {% if account.entries.exists %}
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1 class="panel-title">
-                        <a href="{% url 'accounts:account_statistics' account.slug %}?chart=categories">statistics</a>
-                        <small>categories</small>
+                        <a href="{% url "accounts:account_statistics" account.slug %}?chart=categories">{% trans "Statistics" %}</a>
+                        <small>{% trans "Categories" %}</small>
                     </h1>
                 </div>
                 <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var ascchart_url = "{% url 'accounts:account_chart_categories_statistics' account.slug %}";
-                        statistics(ascchart_url, 'ascchart');
+                        var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
+                        statistics(ascchart_url, "ascchart");
                     });
                 </script>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1 class="panel-title">
-                        <a href="{% url 'accounts:account_statistics' account.slug %}?chart=tags">statistics</a>
-                        <small>tags</small>
+                        <a href="{% url "accounts:account_statistics" account.slug %}?chart=tags">{% trans "Statistics" %}</a>
+                        <small>{% trans "Tags" %}</small>
                     </h1>
                 </div>
                 <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var astchart_url = "{% url 'accounts:account_chart_tags_statistics' account.slug %}";
-                        statistics(astchart_url, 'astchart');
+                        var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
+                        statistics(astchart_url, "astchart");
                     });
                 </script>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="panel-title" href="{% url 'categories:categories' %}">categories</a>
+                    <a class="panel-title" href="{% url "categories:categories" %}">{% trans "Categories" %}</a>
                 </div>
                 <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var cchart_url = "{% url 'accounts:account_chart_categories' account.slug %}";
-                        categories(cchart_url, 'cchart');
+                        var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
+                        categories(cchart_url, "cchart");
                     });
                 </script>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="panel-title" href="{% url 'categories:tags' %}">tags</a>
+                    <a class="panel-title" href="{% url "categories:tags" %}">{% trans "Tags" %}</a>
                 </div>
                 <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var tchart_url = "{% url 'accounts:account_chart_tags' account.slug %}";
-                        tags(tchart_url, 'tchart');
+                        var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";
+                        tags(tchart_url, "tchart");
                     });
                 </script>
             </div>

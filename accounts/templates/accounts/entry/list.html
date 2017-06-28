@@ -1,28 +1,28 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load accounts bootstrap i18n ledger %}
 
 
 {% block extrahead %}
 <script type="text/javascript">
     $(function() {
-        $('#id_start_date').datepicker({
-            dateFormat:'yy-mm-dd',
+        $("#id_start_date").datepicker({
+            dateFormat: "yy-mm-dd",
             firstDay: 1,
             showOtherMonths: true,
             selectOtherMonths: true
         });
-        $('#id_end_date').datepicker({
-            dateFormat:'yy-mm-dd',
+        $("#id_end_date").datepicker({
+            dateFormat: "yy-mm-dd",
             firstDay: 1,
             showOtherMonths: true,
             selectOtherMonths: true
         });
         {% if not account %}
-            $('#id_accounts').select2({
-                placeholder: '{% trans 'accounts' %}',
+            $("#id_accounts").select2({
+                placeholder: "{% trans "Accounts" %}",
                 ajax: {
-                    url: "{% url 'accounts:account_autocomplete' %}",
-                    dataType: 'json',
+                    url: "{% url "accounts:account_autocomplete" %}",
+                    dataType: "json",
                     delay: 250,
                     data: function (params) {
                         return { q: params.term };
@@ -33,11 +33,11 @@
                 }
             });
         {% endif %}
-        $('#id_categories').select2({
-            placeholder: '{% trans 'categories' %}',
+        $("#id_categories").select2({
+            placeholder: "{% trans "Categories" %}",
             ajax: {
-                url: "{% url 'categories:category_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:category_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -47,11 +47,11 @@
                 }
             }
         });
-        $('#id_tags').select2({
-            placeholder: '{% trans 'tags' %}',
+        $("#id_tags").select2({
+            placeholder: "{% trans "Tags" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -62,11 +62,11 @@
             }
         });
         {% if not account %}
-            $('#id_units').select2({
-                placeholder: '{% trans 'units' %}',
+            $("#id_units").select2({
+                placeholder: "{% trans "Units" %}",
                 ajax: {
-                    url: "{% url 'units:unit_autocomplete' %}",
-                    dataType: 'json',
+                    url: "{% url "units:unit_autocomplete" %}",
+                    dataType: "json",
                     delay: 250,
                     data: function (params) {
                         return { q: params.term };
@@ -83,48 +83,48 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
-    <li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}{% if account.closed %} <small>{% trans 'closed' %}</small>{% endif %}</a></li>
+    <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
 {% endif %}
-<li class="active">{% trans 'entries' %}</li>
+<li class="active">{% trans "Entries" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h1 class="panel-title">{% trans 'entries' %}</h1>
+        <h1 class="panel-title">{% trans "Entries" %}</h1>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-md-3">
                 <h5>
-                    <b>{% trans 'balance' %}:</b>
+                    <b>{% trans "Balance" %}:</b>
                     {% balance entry_list %}
                 </h5>
             </div>
             <div class="col-md-6 text-center">
                 {% if account %}
-                    {% url 'accounts:account_entries' account.slug as form_url %}
+                    {% url "accounts:account_entries" account.slug as form_url %}
                 {% else %}
-                    {% url 'accounts:entries' as form_url %}
+                    {% url "accounts:entries" as form_url %}
                 {% endif %}
-                {% include 'ledger/partials/_form_inline.html' with form_url=form_url %}
+                {% include "ledger/partials/_form_inline.html" with form_url=form_url %}
             </div>
            <div class="col-md-3 text-right">
                 {% if show_options %}
-                    <a class="btn btn-primary" href="{% if account %}{% url 'accounts:account_entry_add' account.slug %}{% else %}{% url 'accounts:entry_add' %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add entry' %}</a>
-                    <a class="btn btn-primary" href="{% if account %}{% url 'accounts:account_standing_entry_add' account.slug %}{% else %}{% url 'accounts:standing_entry_add' %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans 'add standing entry' %}</a>
+                    <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_entry_add" account.slug %}{% else %}{% url "accounts:entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add entry" %}</a>
+                    <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_standing_entry_add" account.slug %}{% else %}{% url "accounts:standing_entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add standing entry" %}</a>
                 {% endif %}
             </div>
         </div>
     </div>
-    {% include 'accounts/entry/partials/_table.html' with account=account entries=entries options=show_options %}
+    {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=show_options %}
     <div class="panel-body">
-        {% trans 'entries' as pagination_url %}
-        {% pagination paginator entries pagination_url %}
+        {% trans "Entries" as pagination_title %}
+        {% pagination paginator entries pagination_title %}
     </div>
 </div>
 {% endblock %}

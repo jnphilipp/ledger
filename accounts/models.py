@@ -4,6 +4,7 @@ from categories.models import Category, Tag
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_lazy as _
 from time import time
 from units.models import Unit
 from users.models import Ledger
@@ -18,11 +19,11 @@ class Account(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     slug = models.SlugField(unique=True)
-    name = TextFieldSingleLine()
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='accounts')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='accounts', null=True)
-    ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through)
-    closed = models.BooleanField(default=False)
+    name = TextFieldSingleLine(_('Name'))
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='accounts', verbose_name=_('Unit'))
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='accounts', null=True, verbose_name=_('Category'))
+    ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through, verbose_name=_('Ledgers'))
+    closed = models.BooleanField(_('Closed'), default=False)
 
     def get_absolute_url(self):
         return reverse('account', args=[self.slug])
@@ -46,21 +47,21 @@ class Account(models.Model):
 
     class Meta:
         ordering = ('closed', 'name')
-        verbose_name = ' account'
-        verbose_name_plural = ' accounts'
+        verbose_name = _('Account')
+        verbose_name_plural = _('Accounts')
 
 
 class Entry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='entries')
-    serial_number = models.IntegerField()
-    day = models.DateField()
-    amount = models.FloatField(default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='entries')
-    additional = TextFieldSingleLine(blank=True, null=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='entries')
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='entries', verbose_name=_('Account'))
+    serial_number = models.IntegerField(_('Serial number'))
+    day = models.DateField(_('Day'))
+    amount = models.FloatField(_('Amount'), default=0)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='entries', verbose_name=_('Category'))
+    additional = TextFieldSingleLine(_('Additional'), blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name='entries', verbose_name=_('Tags'))
 
     def save(self, *args, **kwargs):
         move = False
@@ -92,5 +93,5 @@ class Entry(models.Model):
     class Meta:
         ordering = ('account', 'serial_number')
         unique_together = ('account', 'serial_number')
-        verbose_name = ' entry'
-        verbose_name_plural = ' entries'
+        verbose_name = _('Entry')
+        verbose_name_plural = _('Entries')

@@ -14,30 +14,30 @@ register = Library()
 
 @register.filter(is_safe=True)
 def floatdot(value, precision=2):
-    return format(0, ",", precision) if not value else format(round(value, precision), ',', precision)
+    return format(0, ',', precision) if not value else format(round(value, precision), ',', precision)
 
 
-@register.filter(needs_autoescape=True)
-def colorfy(amount, unit=None, autoescape=None):
+@register.filter
+def colorfy(amount, unit=None):
     return mark_safe('<span class="%s">%s %s</span>' % ('green' if amount >= 0 else 'red', floatdot(amount, unit.precision if unit else 2), unit.symbol if unit else '')) if amount else '%s %s' % (floatdot(0, unit.precision if unit else 2), unit.symbol if unit else '')
 
 
-@register.filter(needs_autoescape=True)
-def balance(account, autoescape=None):
+@register.filter
+def balance(account):
     if account.closed:
         balance = 0
     else:
         balance = sum(entry.amount for entry in account.entries.filter(day__lte=date.today()))
-    return colorfy(balance, account.unit) if autoescape else balance
+    return colorfy(balance, account.unit)
 
 
-@register.filter(needs_autoescape=True)
-def outstanding(account, autoescape=None):
+@register.filter
+def outstanding(account):
     if account.closed:
         outstanding = 0
     else:
         outstanding = sum(entry.amount for entry in account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
-    return colorfy(outstanding, account.unit) if autoescape else outstanding
+    return colorfy(outstanding, account.unit)
 
 
 @register.filter
@@ -50,16 +50,16 @@ def accounts(obj, ledger):
         return []
 
 
-@register.filter(needs_autoescape=True)
-def sumbalance(unit, user, autoescape=None):
+@register.filter
+def sumbalance(unit, user):
     sum_balance = 0
     for account in Account.objects.filter(Q(unit=unit) & Q(ledgers__user=user)):
         sum_balance += balance(account)
     return colorfy(sum_balance, unit)
 
 
-@register.filter(needs_autoescape=True)
-def sumentries(entries, unit=None, autoescape=None):
+@register.filter
+def sumentries(entries, unit=None):
     if unit:
         return colorfy(sum([entry.amount for entry in entries]), unit)
     else:
@@ -71,8 +71,8 @@ def sumentries(entries, unit=None, autoescape=None):
         return mark_safe('<ul>%s</ul>' % ''.join('<li>%s</li>' % colorfy(v, k) for k, v in sums.items()))
 
 
-@register.filter(needs_autoescape=True)
-def sumoutstanding(unit, user, autoescape=None):
+@register.filter
+def sumoutstanding(unit, user):
     sum_outstanding = 0
     for account in Account.objects.filter(Q(unit=unit) & Q(ledgers__user=user)):
         sum_outstanding += outstanding(account)

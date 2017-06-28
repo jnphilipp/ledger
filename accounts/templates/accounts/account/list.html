@@ -1,28 +1,28 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load accounts i18n %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li class="active">{% trans 'accounts' %}</li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="active">{% trans "Accounts" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h1 class="panel-title">{% trans 'accounts' %}</h1>
+        <h1 class="panel-title">{% trans "Accounts" %}</h1>
     </div>
     <div class="panel-body">
         <div class="pull-right">
-            <a href="{% url 'accounts:account_add' %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span> {% trans 'add account' %}</a>
+            <a href="{% url "accounts:account_add" %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span> {% trans "Add account" %}</a>
         </div>
     </div>
     {% if accounts %}
-        {% include 'accounts/account/partials/_table.html' %}
+        {% include "accounts/account/partials/_table.html" %}
     {% else %}
         <div class="panel-body">
-            <p>{% trans 'there are no accounts available.' %}</p>
+            <p>{% trans "There are no accounts available." %}</p>
         </div>
     {% endif %}
 </div>

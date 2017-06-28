@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 
 
 @login_required
@@ -16,11 +17,19 @@ def tags(request, slug):
 
     data = {
         'xAxis': {
-            'categories': [tag.name.lower() for tag in Tag.objects.filter(id__in=account.entries.values_list('tags', flat=True)).distinct()]
+            'categories': [tag.name for tag in Tag.objects.filter(id__in=account.entries.values_list('tags', flat=True)).distinct()],
+            'title': {
+                'text': str(_('Tags'))
+            }
+        },
+        'yAxis': {
+            'title': {
+                'text': str(_('Number of times used'))
+            }
         },
         'series': [{
             'name': 'entries',
-            'data': [[tag.name.lower(), tag.count] for tag in Tag.objects.filter(id__in=account.entries.values_list('tags', flat=True)).extra(select={'count':'SELECT COUNT(*) FROM accounts_entry JOIN accounts_entry_tags ON accounts_entry.id=accounts_entry_tags.entry_id WHERE accounts_entry_tags.tag_id=categories_tag.id AND accounts_entry.account_id=%s'}, select_params=(account.id,)).distinct()]
+            'data': [[tag.name, tag.count] for tag in Tag.objects.filter(id__in=account.entries.values_list('tags', flat=True)).extra(select={'count':'SELECT COUNT(*) FROM accounts_entry JOIN accounts_entry_tags ON accounts_entry.id=accounts_entry_tags.entry_id WHERE accounts_entry_tags.tag_id=categories_tag.id AND accounts_entry.account_id=%s'}, select_params=(account.id,)).distinct()]
         }]
     }
     return HttpResponse(json.dumps(data), 'application/json')
@@ -40,7 +49,9 @@ def statistics(request, slug):
         data = {
             'xAxis': {
                 'categories': ['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days],
-                'title': 'days'
+                'title': {
+                    'text': str(_('Days'))
+                }
             },
             'yAxis': {
                 'stackLabels': {
@@ -48,13 +59,16 @@ def statistics(request, slug):
                 },
                 'labels': {
                     'format': '{value}%s' % account.unit.symbol
+                },
+                'title': {
+                    'text': str(_('Loss and Profit'))
                 }
             },
             'tooltip': {
                 'valueSuffix':account.unit.symbol
             },
             'series': [{
-                'name': tag.name.lower(),
+                'name': tag.name,
                 'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(tags=tag) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
             } for tag in Tag.objects.filter(slug=t).distinct()]
         }
@@ -64,7 +78,9 @@ def statistics(request, slug):
         data = {
             'xAxis': {
                 'categories': ['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days],
-                'title': 'days'
+                'title': {
+                    'text': str(_('Days'))
+                }
             },
             'yAxis': {
                 'stackLabels': {
@@ -72,13 +88,16 @@ def statistics(request, slug):
                 },
                 'labels': {
                     'format': '{value}%s' % account.unit.symbol
+                },
+                'title': {
+                    'text': str(_('Loss and Profit'))
                 }
             },
             'tooltip': {
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': tag.name.lower(),
+                'name': tag.name,
                 'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(tags=tag) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
             } for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
         }
@@ -88,7 +107,9 @@ def statistics(request, slug):
         data = {
             'xAxis': {
                 'categories': [m.strftime('%B') for m in months],
-                'title': 'months'
+                'title': {
+                    'text': str(_('Months'))
+                }
             },
             'yAxis': {
                 'stackLabels': {
@@ -96,13 +117,16 @@ def statistics(request, slug):
                 },
                 'labels': {
                     'format': '{value}%s' % account.unit.symbol
+                },
+                'title': {
+                    'text': str(_('Loss and Profit'))
                 }
             },
             'tooltip': {
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': tag.name.lower(),
+                'name': tag.name,
                 'data': [[m.strftime('%B'), account.entries.filter(Q(tags=tag) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months]
             } for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year)).distinct()]
         }
@@ -112,7 +136,9 @@ def statistics(request, slug):
         data = {
             'xAxis': {
                 'categories': [y.strftime('%Y') for y in years],
-                'title': 'years'
+                'title': {
+                    'text': str(_('Years'))
+                }
             },
             'yAxis': {
                 'stackLabels': {
@@ -120,13 +146,16 @@ def statistics(request, slug):
                 },
                 'labels': {
                     'format': '{value}%s' % account.unit.symbol
+                },
+                'title': {
+                    'text': str(_('Loss and Profit'))
                 }
             },
             'tooltip': {
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': tag.name.lower(),
+                'name': tag.name,
                 'data': [[y.strftime('%Y'), account.entries.filter(Q(tags=tag) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years]
             } for tag in Tag.objects.filter(entries__account=account).distinct()]
         }

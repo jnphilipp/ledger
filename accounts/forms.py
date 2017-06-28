@@ -8,7 +8,7 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from ledger.functions.dates import daterange
 from units.models import Unit
 
@@ -62,7 +62,7 @@ class EntryForm(forms.ModelForm):
         self.fields['additional'].widget = forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any', 'autocomplete': 'off', 'class': 'form-control'})
 
-        self.fields['day'].help_text = mark_safe('<a id="date_today" style="cursor: pointer;">%s</a> (%s: yyyy-mm-dd)' % (_('today'), _('date format')))
+        self.fields['day'].help_text = mark_safe('<a id="date_today" style="cursor: pointer;">%s</a> (%s: yyyy-mm-dd)' % (_('Today'), _('Date format')))
         self.fields['day'].widget = forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
 
         self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('categories:category_add_another'))
@@ -79,7 +79,7 @@ class EntryForm(forms.ModelForm):
 class StandingEntryForm(forms.ModelForm):
     start_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'}))
     end_date = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'}))
-    execution = forms.ChoiceField(choices=((1, _('monthly')), (2, _('quarterly')), (3, _('half-yearly')), (4, _('yearly'))), widget=forms.Select(attrs={'class': 'form-control js-example-basic-hide-search'}))
+    execution = forms.ChoiceField(choices=((1, _('Monthly')), (2, _('Quarterly')), (3, _('Half-yearly')), (4, _('Yearly'))), widget=forms.Select(attrs={'class': 'form-control js-example-basic-hide-search'}))
 
     class Media:
         css = {
@@ -127,8 +127,8 @@ class StandingEntryForm(forms.ModelForm):
 
 
 class EntryFilterForm(forms.Form):
-    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'start date', 'class': 'form-control'}), required=False)
-    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': 'end date', 'class': 'form-control'}), required=False)
+    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': _('Start date'), 'class': 'form-control'}), required=False)
+    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': _('End date'), 'class': 'form-control'}), required=False)
     accounts = forms.ModelMultipleChoiceField(queryset=Account.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
     categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))

@@ -1,19 +1,19 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load accounts i18n %}
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
-    <li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></li>
-    <li><a href="{% url 'accounts:account_entries' account.slug %}">{% trans 'entries' %}</a></li>
-    <li><a href="{% url 'accounts:account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a></li>
+    <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+    <li><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
+    <li><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
 {% else %}
-    <li><a href="{% url 'accounts:entries' %}">{% trans 'entries' %}</a></li>
-    <li><a href="{% url 'accounts:entry' entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a></li>
+    <li><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
+    <li><a href="{% url "accounts:entry" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
 {% endif %}
-<li class="active">{% trans 'delete' %}</li>
+<li class="active">{% trans "Delete" %}</li>
 {% endblock %}
 
 
@@ -22,24 +22,24 @@
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans 'delete entry' %} #{{ entry.serial_number }}</h1>
+                <h1 class="panel-title">{% trans "Delete entry" %}</h1>
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{% if account %}{% url 'accounts:account_entry_delete' account.slug entry.id %}{% else %}{% url 'accounts:entry_delete' entry.id %}{% endif %}" method="post" class="form">
+                <form action="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id %}{% else %}{% url "accounts:entry_delete" entry.id %}{% endif %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
-                        <h5><b>{% trans 'confirm deletion' %}</b></h5>
-                        <p>{% blocktrans %}are you sure you want to delete this entry? all of the following objects and their related items will be deleted:{% endblocktrans %}</p>
+                        <h5><b>{% trans "Confirm deletion" %}</b></h5>
+                        <p>{% blocktrans %}Are you sure you want to delete this entry? All of the following objects and their related items will be deleted:{% endblocktrans %}</p>
                         <p></p>
 
                         <ul>
                             <li>
-                                {% trans 'entry' %}: <a href="{% if account %}{% url 'accounts:account_entry' account.slug entry.id %}{% else %}{% url 'accounts:entry' entry.id %}{% endif %}">{% trans 'entry' %} #{{ entry.serial_number }}</a>
+                                {% trans "Entry" %}: <a href="{% if account %}{% url "accounts:account_entry" account.slug entry.id %}{% else %}{% url "accounts:entry" entry.id %}{% endif %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a>
                             </li>
                         </ul>
                         <br/>
-                        <button class="btn btn-danger" type="submit">{% blocktrans %}yes, i'm sure{% endblocktrans %}</button>
+                        <button class="btn btn-danger" type="submit">{% blocktrans %}Yes, I'm sure{% endblocktrans %}</button>
                     </div>
                 </form>
             </div>

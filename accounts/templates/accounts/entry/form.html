@@ -1,52 +1,52 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load i18n %}
 
 
 {% block extrahead %}
 {% if account %}
-    {% url 'accounts:account_standing_entry_add' account.slug as standing_entry_url %}
+    {% url "accounts:account_standing_entry_add" account.slug as standing_entry_url %}
 {% else %}
-    {% url 'accounts:standing_entry_add' as standing_entry_url %}
+    {% url "accounts:standing_entry_add" as standing_entry_url %}
 {% endif %}
 <script type="text/javascript">
     $(function() {
         {% if request.path == standing_entry_url %}
-            $('#id_start_date').datepicker({
-                dateFormat:'yy-mm-dd',
+            $("#id_start_date").datepicker({
+                dateFormat: "yy-mm-dd",
                 firstDay: 1,
                 showOtherMonths: true,
                 selectOtherMonths: true
             });
-            $('#id_end_date').datepicker({
-                dateFormat:'yy-mm-dd',
+            $("#id_end_date").datepicker({
+                dateFormat: "yy-mm-dd",
                 firstDay: 1,
                 showOtherMonths: true,
                 selectOtherMonths: true
             });
-            $('#id_execution').select2({
+            $("#id_execution").select2({
                 minimumResultsForSearch: Infinity,
                 allowClear: true
             });
         {% else %}
-            $('#id_day').datepicker({
-                dateFormat:'yy-mm-dd',
+            $("#id_day").datepicker({
+                dateFormat:"yy-mm-dd",
                 firstDay: 1,
                 showOtherMonths: true,
                 selectOtherMonths: true
             });
-            $('#date_today').click(function() {
-                $('#id_day').val('{{ today|date:'Y-m-d' }}');
-                $('#id_amount').focus();
+            $("#date_today").click(function() {
+                $("#id_day").val("{{ today|date:"Y-m-d" }}");
+                $("#id_amount").focus();
                 return false;
             });
         {% endif %}
         {% if not account %}
-            $('#id_account').select2({
-                placeholder: 'select a accounts',
+            $("#id_account").select2({
+                placeholder: "{% trans "Select a accounts" %}",
                 allowClear: true,
                 ajax: {
-                    url: "{% url 'accounts:account_autocomplete' %}",
-                    dataType: 'json',
+                    url: "{% url "accounts:account_autocomplete" %}",
+                    dataType: "json",
                     delay: 250,
                     data: function (params) {
                         return { q: params.term };
@@ -57,12 +57,12 @@
                 }
             });
         {% endif %}
-        $('#id_category').select2({
-            placeholder: 'select a category',
+        $("#id_category").select2({
+            placeholder: "{% trans "Select a category" %}",
             allowClear: true,
             ajax: {
-                url: "{% url 'categories:category_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:category_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -72,11 +72,11 @@
                 }
             }
         });
-        $('#id_tags').select2({
-            placeholder: 'select a tag',
+        $("#id_tags").select2({
+            placeholder: "{% trans "Select a tag" %}",
             ajax: {
-                url: "{% url 'categories:tag_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:tag_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -86,8 +86,8 @@
                 }
             }
         });
-        $('.ajax-popup-link').magnificPopup({
-            type: 'iframe'
+        $(".ajax-popup-link").magnificPopup({
+            type: "iframe"
         });
     });
 </script>
@@ -96,31 +96,31 @@
 
 {% block breadcrumbs %}
 {% if account %}
-    {% url 'accounts:account_standing_entry_add' account.slug as standing_entry_url %}
+    {% url "accounts:account_standing_entry_add" account.slug as standing_entry_url %}
 {% else %}
-    {% url 'accounts:standing_entry_add' as standing_entry_url %}
+    {% url "accounts:standing_entry_add" as standing_entry_url %}
 {% endif %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
-    <li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></li>
-    <li><a href="{% url 'accounts:account_entries' account.slug %}">{% trans 'entries' %}</a></li>
+    <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+    <li><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
     {% if entry %}
-        <li><a href="{% url 'accounts:account_entry' account.slug entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a></li>
-        <li class="active">{% trans 'edit' %}</li>
+        <li><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+        <li class="active">{% trans "Edit" %}</li>
     {% endif %}
 {% else %}
-    <li><a href="{% url 'accounts:entries' %}">{% trans 'entries' %}</a></li>
+    <li><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
     {% if entry %}
-        <li><a href="{% url 'accounts:entry' entry.id %}">{% trans 'entry' %} #{{ entry.serial_number }}</a></li>
-        <li class="active">{% trans 'edit' %}</li>
+        <li><a href="{% url "accounts:entry" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+        <li class="active">{% trans "Edit" %}</li>
     {% endif %}
 {% endif %}
 {% if not entry %}
     {% if request.path == standing_entry_url %}
-        <li class="active">{% trans 'add standing entry' %}</li>
+        <li class="active">{% trans "Add standing entry" %}</li>
     {% else %}
-        <li class="active">{% trans 'add entry' %}</li>
+        <li class="active">{% trans "Add entry" %}</li>
     {% endif %}
 {% endif %}
 {% endblock %}
@@ -128,9 +128,9 @@
 
 {% block content %}
 {% if account %}
-    {% url 'accounts:account_standing_entry_add' account.slug as standing_entry_url %}
+    {% url "accounts:account_standing_entry_add" account.slug as standing_entry_url %}
 {% else %}
-    {% url 'accounts:standing_entry_add' as standing_entry_url %}
+    {% url "accounts:standing_entry_add" as standing_entry_url %}
 {% endif %}
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
@@ -138,12 +138,12 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     {% if entry %}
-                        {% trans 'edit entry' %} #{{ entry.serial_number }}
+                        {% trans "Edit entry" %}
                     {% else %}
                         {% if request.path == standing_entry_url %}
-                            {% trans 'add standing entry' %}
+                            {% trans "Add standing entry" %}
                         {% else %}
-                            {% trans 'add entry' %}
+                            {% trans "Add entry" %}
                         {% endif %}
                     {% endif %}
                 </h1>
@@ -151,26 +151,26 @@
             <div class="panel-body">
                 {% if request.path == standing_entry_url %}
                     {% if account %}
-                        {% url 'accounts:account_standing_entry_add' account.slug as form_url %}
+                        {% url "accounts:account_standing_entry_add" account.slug as form_url %}
                     {% else %}
-                        {% url 'accounts:standing_entry_add' as form_url %}
+                        {% url "accounts:standing_entry_add" as form_url %}
                     {% endif %}
                 {% else %}
                     {% if account %}
                         {% if entry %}
-                            {% url 'accounts:account_entry_edit' account.slug entry.id as form_url %}
+                            {% url "accounts:account_entry_edit" account.slug entry.id as form_url %}
                         {% else %}
-                            {% url 'accounts:account_entry_add' account.slug as form_url %}
+                            {% url "accounts:account_entry_add" account.slug as form_url %}
                         {% endif %}
                     {% else %}
                         {% if entry %}
-                            {% url 'accounts:entry_edit' entry.id as form_url %}
+                            {% url "accounts:entry_edit" entry.id as form_url %}
                         {% else %}
-                            {% url 'accounts:entry_add' as form_url %}
+                            {% url "accounts:entry_add" as form_url %}
                         {% endif %}
                     {% endif %}
                 {% endif %}
-                {% include 'ledger/partials/_form.html' with form_url=form_url %}
+                {% include "ledger/partials/_form.html" with form_url=form_url %}
             </div>
         </div>
     </div>

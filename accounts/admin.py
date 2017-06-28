@@ -4,6 +4,7 @@ from accounts.models import Account, Entry, TextFieldSingleLine
 from django.contrib import admin
 from django.db.models import Count
 from django.forms import TextInput
+from django.utils.translation import ugettext_lazy as _
 
 
 class AccountAdmin(admin.ModelAdmin):
@@ -21,8 +22,8 @@ class AccountAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
     search_fields = ('name', 'unit__name')
     show_entry_count.admin_order_field = 'entry_count'
-    show_entry_count.short_description = 'Number of Entries'
-    get_ledgers.short_description = 'Ledgers'
+    show_entry_count.short_description = _('Number of Entries')
+    get_ledgers.short_description = _('Ledgers')
 
     formfield_overrides = {
         TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},

@@ -4,13 +4,13 @@
     <table class="table table-striped table-hover table-bordered table-condensed">
         <thead>
             <tr>
-                {% if not account %}<th><a href="{% url 'accounts:accounts' %}">{% trans 'account' %}</a></th>{% endif %}
-                <th>{% trans 'ser. no.' %}</th>
-                <th colspan="2">{% trans 'day' %}</th>
-                <th>{% trans 'amount' %}</th>
-                <th><a href="{% url 'categories:categories' %}">{% trans 'category' %}</a></th>
-                <th>{% trans 'additional' %}</th>
-                <th><a href="{% url 'categories:tags' %}">{% trans 'tags' %}</a></th>
+                {% if not account %}<th><a href="{% url "accounts:accounts" %}">{% trans "Account" %}</a></th>{% endif %}
+                <th>{% trans "Ser. No." %}</th>
+                <th colspan="2">{% trans "Day" %}</th>
+                <th>{% trans "Amount" %}</th>
+                <th><a href="{% url "categories:categories" %}">{% trans "Category" %}</a></th>
+                <th>{% trans "Additional" %}</th>
+                <th><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></th>
                 {% if options %}
                     <th></th>
                 {% endif %}
@@ -20,34 +20,34 @@
             {% for entry in entries %}
                 <tr>
                     {% if not account %}
-                        <th><a href="{% url 'accounts:account' entry.account.slug %}">{{ entry.account|lower }}</th>
-                        <td class="text-right"><a href="{% url 'accounts:entry' entry.id %}">{{ entry.serial_number }}</a></td>
+                        <th><a href="{% url "accounts:account" entry.account.slug %}">{{ entry.account }}</th>
+                        <td class="text-right"><a href="{% url "accounts:entry" entry.id %}">{{ entry.serial_number }}</a></td>
                     {% else %}
-                        <th class="text-right"><a href="{% url 'accounts:account_entry' account.slug entry.id %}">{{ entry.serial_number }}</a></th>
+                        <th class="text-right"><a href="{% url "accounts:account_entry" account.slug entry.id %}">{{ entry.serial_number }}</a></th>
                     {% endif %}
-                    <td>{{ entry.day|date:'d.m.Y' }}</td>
-                    <td>{{ entry.day|date:'D'|lower }}</td>
+                    <td>{{ entry.day|date:"d.m.Y" }}</td>
+                    <td>{{ entry.day|date:"D" }}</td>
                     <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
-                    <td><a href="{% url 'categories:category' entry.category.slug %}">{{ entry.category|lower }}</a></td>
-                    <td>{{ entry.additional|lower }}</td>
+                    <td><a href="{% url "categories:category" entry.category.slug %}">{{ entry.category }}</a></td>
+                    <td>{{ entry.additional }}</td>
                     <td>
                         {% for tag in entry.tags.all %}
-                            <a href="{% url 'categories:tag' tag.slug %}">{{ tag.name|lower }}</a>{% if not forloop.last %}, {% endif %}
+                            <a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
                     {% if options %}
                         <td>
-                            <a href="{% if account %}{% url 'accounts:account_entry_edit' account.slug entry.id %}{% else %}{% url 'accounts:entry_edit' entry.id %}{% endif %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="{% if account %}{% url 'accounts:account_entry_duplicate' account.slug entry.id %}{% else %}{% url 'accounts:entry_duplicate' entry.id %}{% endif %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
-                            <a href="{% if account %}{% url 'accounts:account_entry_delete' account.slug entry.id %}{% else %}{% url 'accounts:entry_delete' entry.id %}{% endif %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.id %}{% else %}{% url "accounts:entry_edit" entry.id %}{% endif %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.id %}{% else %}{% url "accounts:entry_duplicate" entry.id %}{% endif %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id %}{% else %}{% url "accounts:entry_delete" entry.id %}{% endif %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
                             {% if account %}
                                 {% with entries|previous:forloop.counter0 as previous %}
                                 {% with entries|next:forloop.counter0 as next %}
                                     {% if next %}
-                                        <a href="{% url 'accounts:account_entry_swap' account.slug entry.id next.id %}" title="move down"><span class="glyphicon glyphicon-arrow-down"></span></a>
+                                        <a href="{% url "accounts:account_entry_swap" account.slug entry.id next.id %}" title="move down"><span class="glyphicon glyphicon-arrow-down"></span></a>
                                     {% endif %}
                                     {% if previous %}
-                                        <a href="{% url 'accounts:account_entry_swap' account.slug previous.id entry.id %}" title="move up"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                                        <a href="{% url "accounts:account_entry_swap" account.slug previous.id entry.id %}" title="move up"><span class="glyphicon glyphicon-arrow-up"></span></a>
                                     {% endif %}
                                 {% endwith %}
                                 {% endwith %}

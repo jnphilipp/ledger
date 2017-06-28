@@ -1,0 +1,468 @@
+# German translation.
+# Copyright (C) 2017 Nathanael Philipp
+# This file is distributed under the same license as the gedenkseite package.
+# Nathanael Philipp <mail@jnphilipp.org>, 2017.
+#
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: accounts\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-28 08:41+0200\n"
+"PO-Revision-Date: 2017-06-28 08:41+0200\n"
+"Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:25
+msgid "Number of Entries"
+msgstr "Anzahl an Einträgen"
+
+#: admin.py:26 models.py:25
+msgid "Ledgers"
+msgstr "Kassenbücher"
+
+#: apps.py:9 models.py:50 models.py:58
+#: templates/accounts/account/delete.html:31
+#: templates/accounts/account/partials/_table.html:8
+#: templates/accounts/entry/detail.html:39
+#: templates/accounts/entry/partials/_table.html:7
+msgid "Account"
+msgstr "Konto"
+
+#: apps.py:10 models.py:51 templates/accounts/account/delete.html:7
+#: templates/accounts/account/detail.html:15
+#: templates/accounts/account/form.html:48
+#: templates/accounts/account/list.html:7
+#: templates/accounts/account/list.html:14
+#: templates/accounts/account/statistics.html:19
+#: templates/accounts/entry/delete.html:8
+#: templates/accounts/entry/detail.html:8
+#: templates/accounts/entry/form.html:105 templates/accounts/entry/list.html:22
+#: templates/accounts/entry/list.html:88
+msgid "Accounts"
+msgstr "Konten"
+
+#: forms.py:65
+msgid "Today"
+msgstr "Heute"
+
+#: forms.py:65
+msgid "Date format"
+msgstr "Datumsformat"
+
+#: forms.py:82
+msgid "Monthly"
+msgstr "Monatlich"
+
+#: forms.py:82
+msgid "Quarterly"
+msgstr "Vierteljährlich"
+
+#: forms.py:82
+msgid "Half-yearly"
+msgstr "Halbjährlich"
+
+#: forms.py:82
+msgid "Yearly"
+msgstr "Jährlich"
+
+#: forms.py:130
+msgid "Start date"
+msgstr "Startdatum"
+
+#: forms.py:131
+msgid "End date"
+msgstr "Enddatum"
+
+#: models.py:22
+msgid "Name"
+msgstr "Name"
+
+#: models.py:23 templates/accounts/account/detail.html:72
+msgid "Unit"
+msgstr "Einheit"
+
+#: models.py:24 models.py:62 templates/accounts/account/detail.html:70
+#: templates/accounts/entry/detail.html:47
+#: templates/accounts/entry/partials/_table.html:11
+msgid "Category"
+msgstr "Kategorie"
+
+#: models.py:26 templates/accounts/account/detail.html:16
+#: templates/accounts/account/detail.html:53
+#: templates/accounts/account/partials/_table.html:9
+#: templates/accounts/entry/list.html:89
+msgid "Closed"
+msgstr "Geschlossen"
+
+#: models.py:59 templates/accounts/entry/detail.html:41
+msgid "Serial number"
+msgstr "Laufende Nummer"
+
+#: models.py:60 templates/accounts/entry/detail.html:43
+#: templates/accounts/entry/partials/_table.html:9
+msgid "Day"
+msgstr "Tag"
+
+#: models.py:61 templates/accounts/entry/detail.html:45
+#: templates/accounts/entry/partials/_table.html:10
+msgid "Amount"
+msgstr "Betrag"
+
+#: models.py:63 templates/accounts/entry/detail.html:49
+#: templates/accounts/entry/partials/_table.html:12
+msgid "Additional"
+msgstr "Zusätzlich"
+
+#: models.py:64 templates/accounts/account/detail.html:118
+#: templates/accounts/account/detail.html:143
+#: templates/accounts/entry/detail.html:51
+#: templates/accounts/entry/list.html:51
+#: templates/accounts/entry/partials/_table.html:13 views/account.py:57
+#: views/account.py:62 views/account.py:77 views/account.py:98
+#: views/account.py:106 views/api/account/charts/tags.py:22
+msgid "Tags"
+msgstr "Tags"
+
+#: models.py:96 templates/accounts/account/delete.html:35
+#: templates/accounts/entry/delete.html:38
+msgid "Entry"
+msgstr "Eintrag"
+
+#: models.py:97 templates/accounts/account/detail.html:79
+#: templates/accounts/entry/delete.html:10
+#: templates/accounts/entry/delete.html:13
+#: templates/accounts/entry/detail.html:10
+#: templates/accounts/entry/detail.html:12
+#: templates/accounts/entry/form.html:107
+#: templates/accounts/entry/form.html:113 templates/accounts/entry/list.html:91
+#: templates/accounts/entry/list.html:98 templates/accounts/entry/list.html:126
+msgid "Entries"
+msgstr "Einträge"
+
+#: templates/accounts/account/delete.html:6
+#: templates/accounts/account/detail.html:14
+#: templates/accounts/account/form.html:47
+#: templates/accounts/account/list.html:6
+#: templates/accounts/account/statistics.html:18
+#: templates/accounts/entry/delete.html:6
+#: templates/accounts/entry/detail.html:6
+#: templates/accounts/entry/form.html:103 templates/accounts/entry/list.html:86
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: templates/accounts/account/delete.html:9
+#: templates/accounts/entry/delete.html:16
+msgid "Delete"
+msgstr "Löschen"
+
+#: templates/accounts/account/delete.html:18
+#: templates/accounts/account/detail.html:41
+msgid "Delete account"
+msgstr "Konto löschen"
+
+#: templates/accounts/account/delete.html:25
+#: templates/accounts/entry/delete.html:32
+msgid "Confirm deletion"
+msgstr "Löschen bestätigen"
+
+#: templates/accounts/account/delete.html:26
+msgid ""
+"Are you sure you want to delete this account? All of the following objects "
+"and their related items will be deleted:"
+msgstr ""
+"Sind Sie sicher das Sie dieses Konto löschen wollen? Alle folgenden Objekte "
+"und ihre verwandten Elemente werden gelöscht:"
+
+#: templates/accounts/account/delete.html:42
+#: templates/accounts/entry/delete.html:42
+msgid "Yes, I'm sure"
+msgstr "Ja, Ich bin sicher"
+
+#: templates/accounts/account/detail.html:26
+#: templates/accounts/account/form.html:65
+msgid "Edit account"
+msgstr "Konto bearbeiten"
+
+#: templates/accounts/account/detail.html:31
+msgid "Re-open account"
+msgstr "Konto wieder öffnen"
+
+#: templates/accounts/account/detail.html:36
+msgid "Close account"
+msgstr "Konto schließen"
+
+#: templates/accounts/account/detail.html:58
+msgid "This account is currently closed."
+msgstr "Dieses Konto ist momentan geschlossen."
+
+#: templates/accounts/account/detail.html:60
+#: templates/accounts/entry/detail.html:35
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: templates/accounts/account/detail.html:62
+#: templates/accounts/entry/detail.html:37
+msgid "Last updated at"
+msgstr "Zuletzt aktualisiert am"
+
+#: templates/accounts/account/detail.html:64
+msgid "Users"
+msgstr "Benutzer"
+
+#: templates/accounts/account/detail.html:82
+#: templates/accounts/account/partials/_table.html:10
+#: templates/accounts/entry/list.html:104
+msgid "Balance"
+msgstr "Bilanz"
+
+#: templates/accounts/account/detail.html:82
+#: templates/accounts/account/partials/_table.html:11
+msgid "Outstanding"
+msgstr "Ausstehend"
+
+#: templates/accounts/account/detail.html:87
+#: templates/accounts/entry/form.html:123
+#: templates/accounts/entry/form.html:146
+#: templates/accounts/entry/list.html:118
+msgid "Add entry"
+msgstr "Eintrag hinzufügen"
+
+#: templates/accounts/account/detail.html:91
+#: templates/accounts/entry/form.html:121
+#: templates/accounts/entry/form.html:144
+#: templates/accounts/entry/list.html:119
+msgid "Add standing entry"
+msgstr "Dauerauftrag hinzufügen"
+
+#: templates/accounts/account/detail.html:102
+#: templates/accounts/account/detail.html:117
+#: templates/accounts/account/statistics.html:22
+#: templates/accounts/account/statistics.html:45
+#: templates/accounts/account/statistics.html:54
+msgid "Statistics"
+msgstr "Staistik"
+
+#: templates/accounts/account/detail.html:103
+#: templates/accounts/account/detail.html:131
+#: templates/accounts/entry/list.html:37 views/account.py:52
+#: views/account.py:65 views/account.py:80 views/account.py:90
+#: views/account.py:106 views/api/account/charts/categories.py:22
+msgid "Categories"
+msgstr "Kategorien"
+
+#: templates/accounts/account/form.html:9 templates/accounts/entry/form.html:61
+#: views/account.py:91
+msgid "Select a category"
+msgstr "Wählen Sie eine Kategorie"
+
+#: templates/accounts/account/form.html:24
+msgid "Select a unit"
+msgstr "Wählen Sie eine Einheit"
+
+#: templates/accounts/account/form.html:51
+#: templates/accounts/entry/form.html:110
+#: templates/accounts/entry/form.html:116
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: templates/accounts/account/form.html:53
+#: templates/accounts/account/form.html:67
+#: templates/accounts/account/list.html:18
+msgid "Add account"
+msgstr "Konto hinzufügen"
+
+#: templates/accounts/account/list.html:25
+msgid "There are no accounts available."
+msgstr "Es sind keine Konten verfügbar."
+
+#: templates/accounts/account/partials/_table.html:12
+msgid "Number of entries"
+msgstr "Anzahl an Einträgen"
+
+#: templates/accounts/account/partials/_table.html:13
+msgid "Last entry"
+msgstr "Letzter Eintrag"
+
+#: templates/accounts/entry/delete.html:11
+#: templates/accounts/entry/delete.html:14
+#: templates/accounts/entry/delete.html:38
+#: templates/accounts/entry/detail.html:14
+#: templates/accounts/entry/detail.html:31
+#: templates/accounts/entry/form.html:109
+#: templates/accounts/entry/form.html:115
+#, python-format
+msgid "Entry #%(id)s"
+msgstr "Eintrag #%(id)s"
+
+#: templates/accounts/entry/delete.html:25
+#: templates/accounts/entry/detail.html:23
+msgid "Delete entry"
+msgstr "Eintrag löschen"
+
+#: templates/accounts/entry/delete.html:33
+msgid ""
+"Are you sure you want to delete this entry? All of the following objects and "
+"their related items will be deleted:"
+msgstr ""
+"Sind Sie sicher das Sie diesen Eintrag löschen wollen? Alle folgenden "
+"Objekte und ihre verwandten Elemente werden gelöscht:"
+
+#: templates/accounts/entry/detail.html:22
+#: templates/accounts/entry/form.html:141
+msgid "Edit entry"
+msgstr "Eintrag bearbeiten"
+
+#: templates/accounts/entry/form.html:45
+msgid "Select a accounts"
+msgstr "Wählen Sie ein Konto"
+
+#: templates/accounts/entry/form.html:76 views/account.py:99
+msgid "Select a tag"
+msgstr "Wählen Sie einen Tag"
+
+#: templates/accounts/entry/list.html:66
+msgid "Units"
+msgstr "Einheiten"
+
+#: templates/accounts/entry/partials/_table.html:8
+msgid "Ser. No."
+msgstr "Lfd. Nr."
+
+#: validators.py:9
+#, python-format
+msgid "\"%(value)s\" is not a valid account name."
+msgstr "\"%(value)s\" ist keine gültiger Kontoname."
+
+#: views/account.py:48
+msgid "Select a chart"
+msgstr "Wählen Sie ein Chart"
+
+#: views/account.py:67
+msgid "Select a year"
+msgstr "Wählen Sie ein Jahr"
+
+#: views/account.py:82
+msgid "Select a month"
+msgstr "Wählen Sie einen Monat"
+
+#: views/account.py:121
+#, python-format
+msgid "The account %(name)s was successfully created."
+msgstr "Das Konto %(name)s wurde erfolgreich erstellt."
+
+#: views/account.py:138
+#, python-format
+msgid "The account %(name)s was successfully updated."
+msgstr "Das Konto %(name)s wurde erfolgreich aktualisiert."
+
+#: views/account.py:153
+#, python-format
+msgid "The account %(name)s was successfully closed."
+msgstr "Das Konto %(name)s wurde erfolgreich geschlossen."
+
+#: views/account.py:155
+#, python-format
+msgid "The account %(name)s was successfully re-open."
+msgstr "Das Konto %(name)s wurde erfolgreich wieder geöffnet."
+
+#: views/account.py:166
+#, python-format
+msgid "The account %(name)s was successfully deleted."
+msgstr "Das Konto %(name)s wurde erfolgreich gelöscht."
+
+#: views/api/account/charts/categories.py:27
+#: views/api/account/charts/tags.py:27
+msgid "Number of times used"
+msgstr "Anzahl an Vorkommen"
+
+#: views/api/account/charts/categories.py:52
+#: views/api/account/charts/categories.py:81
+#: views/api/account/charts/statistics.py:28
+#: views/api/account/charts/statistics.py:56
+#: views/api/account/charts/statistics.py:151
+#: views/api/account/charts/statistics.py:179
+#: views/api/account/charts/tags.py:53 views/api/account/charts/tags.py:82
+msgid "Days"
+msgstr "Tage"
+
+#: views/api/account/charts/categories.py:63
+#: views/api/account/charts/categories.py:92
+#: views/api/account/charts/categories.py:121
+#: views/api/account/charts/categories.py:150
+#: views/api/account/charts/statistics.py:39
+#: views/api/account/charts/statistics.py:67
+#: views/api/account/charts/statistics.py:95
+#: views/api/account/charts/statistics.py:123
+#: views/api/account/charts/statistics.py:162
+#: views/api/account/charts/statistics.py:190
+#: views/api/account/charts/statistics.py:218
+#: views/api/account/charts/statistics.py:246
+#: views/api/account/charts/tags.py:64 views/api/account/charts/tags.py:93
+#: views/api/account/charts/tags.py:122 views/api/account/charts/tags.py:151
+msgid "Loss and Profit"
+msgstr "Verlust und Gewinn"
+
+#: views/api/account/charts/categories.py:110
+#: views/api/account/charts/statistics.py:84
+#: views/api/account/charts/statistics.py:207
+#: views/api/account/charts/tags.py:111
+msgid "Months"
+msgstr "Monate"
+
+#: views/api/account/charts/categories.py:139
+#: views/api/account/charts/statistics.py:112
+#: views/api/account/charts/statistics.py:235
+#: views/api/account/charts/tags.py:140
+msgid "Years"
+msgstr "Jahre"
+
+#: views/entry.py:91
+#, python-format
+msgid "The entry \"%(entry)s\" was successfully created."
+msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich erstellt."
+
+#: views/entry.py:120
+#, python-format
+msgid "The entry \"%(entry)s\" was successfully updated."
+msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert."
+
+#: views/entry.py:122
+#, python-format
+msgid ""
+"The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s\"."
+msgstr ""
+"Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und nach \"%(no)s\" "
+"verschoben."
+
+#: views/entry.py:142
+#, python-format
+msgid "The entry \"%(entry)s\" was successfully deleted."
+msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich gelöscht."
+
+#: views/entry.py:161
+#, python-format
+msgid ""
+"The entry \"%(old_entry)s\" has been successfully duplicated as entry "
+"\"%(new_entry)s\"."
+msgstr ""
+"Der Eintrag \"%(old_entry)s\" wurde erfolgreich als Eintrag \"%(new_entry)s\" "
+"dupliziert."
+
+#: views/entry.py:184
+#, python-format
+msgid "The entries \"#%(e1)s\" and \"#%(e2)s\" were successfully swaped."
+msgstr "Die Einträge \"#%(e1)s\" und \"#%(e2)s\" wurden erfolgreich getauscht."
+
+#: views/standing_entry.py:28
+#, python-format
+msgid ""
+"The standing entry with the entries %(entries)s was successfully created."
+msgstr ""
+"Der Dauerauftrag mit den Einträgen %(entries)s wurde erfolgreich erstellt."

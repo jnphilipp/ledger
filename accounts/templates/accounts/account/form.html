@@ -1,16 +1,16 @@
-{% extends 'ledger/base.html' %}
+{% extends "ledger/base.html" %}
 {% load accounts i18n %}
 
 
 {% block extrahead %}
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#id_category').select2({
-            placeholder: '{% trans 'select a category' %}',
+        $("#id_category").select2({
+            placeholder: "{% trans "Select a category" %}",
             allowClear: true,
             ajax: {
-                url: "{% url 'categories:category_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "categories:category_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -20,12 +20,12 @@
                 }
             }
         });
-        $('#id_unit').select2({
-            placeholder: '{% trans 'select a unit' %}',
+        $("#id_unit").select2({
+            placeholder: "{% trans "Select a unit" %}",
             allowClear: true,
             ajax: {
-                url: "{% url 'units:unit_autocomplete' %}",
-                dataType: 'json',
+                url: "{% url "units:unit_autocomplete" %}",
+                dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
@@ -35,8 +35,8 @@
                 }
             }
         });
-        $('.ajax-popup-link').magnificPopup({
-            type: 'iframe'
+        $(".ajax-popup-link").magnificPopup({
+            type: "iframe"
         });
     });
 </script>
@@ -44,13 +44,13 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url 'dashboard' %}">{% trans 'dashboard' %}</a></li>
-<li><a href="{% url 'accounts:accounts' %}">{% trans 'accounts' %}</a></li>
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
 {% if account %}
-    <li><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></li>
-    <li class="active">{% trans 'edit' %}</li>
+    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+    <li class="active">{% trans "Edit" %}</li>
 {% else %}
-    <li class="active">{% trans 'add account' %}</li>
+    <li class="active">{% trans "Add account" %}</li>
 {% endif %}
 {% endblock %}
 
@@ -62,19 +62,19 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     {% if account %}
-                        {% trans 'edit' %} {{ account.name|lower }}
+                        {% trans "Edit account" %}
                     {% else %}
-                        {% trans 'add account' %}
+                        {% trans "Add account" %}
                     {% endif %}
                 </h1>
             </div>
             <div class="panel-body">
                 {% if account %}
-                    {% url 'accounts:account_edit' account.slug as form_url %}
+                    {% url "accounts:account_edit" account.slug as form_url %}
                 {% else %}
-                    {% url 'accounts:account_add' as form_url %}
+                    {% url "accounts:account_add" as form_url %}
                 {% endif %}
-                {% include 'ledger/partials/_form.html' with form_url=form_url %}
+                {% include "ledger/partials/_form.html" with form_url=form_url %}
             </div>
         </div>
     </div>

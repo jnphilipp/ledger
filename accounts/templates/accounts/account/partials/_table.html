@@ -5,18 +5,18 @@
     <table class="table table-bordered table-condensed table-hover table-striped">
         <thead>
             <tr>
-                <th>{% trans 'account' %}</th>
-                <th>{% trans 'closed' %}</th>
-                <th>{% trans 'balance' %}</th>
-                <th>{% trans 'outstanding' %}</th>
-                <th>{% trans 'number of entries' %}</th>
-                <th>{% trans 'last entry' %}</th>
+                <th>{% trans "Account" %}</th>
+                <th>{% trans "Closed" %}</th>
+                <th>{% trans "Balance" %}</th>
+                <th>{% trans "Outstanding" %}</th>
+                <th>{% trans "Number of entries" %}</th>
+                <th>{% trans "Last entry" %}</th>
             </tr>
         </thead>
         <tbody>
             {% for account in accounts %}
                 <tr>
-                    <th><a href="{% url 'accounts:account' account.slug %}">{{ account.name|lower }}</a></th>
+                    <th><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></th>
                     <td class="text-center">
                         {% if account.closed %}
                             <span class="glyphicon glyphicon-ok"></span>
@@ -27,7 +27,7 @@
                     <td class="text-right">{{ account|balance }}</td>
                     <td class="text-right">{{ account|outstanding }}</td>
                     <td class="text-right">{{ account.entries.count }}</td>
-                    <td>{{ account.entries.last.day|date:'l, d. F Y' }}</td>
+                    <td>{{ account.entries.last.day|date:"l, d. F Y" }}</td>
                 </tr>
             {% endfor %}
         </tbody>

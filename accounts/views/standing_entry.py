@@ -6,7 +6,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from users.models import Ledger
 
@@ -25,7 +25,7 @@ def add(request, slug=None):
                 form.instance.account = account
             entries = form.save()
 
-            messages.add_message(request, messages.SUCCESS, _('the standing entry with the entries %(entries)s was successfully created.') % {'entries': ', '.join('"#%s"' % entry.serial_number for entry in entries) if account else '%s - %s' % (entries[0].account.name.lower(), ', '.join('"#%s"' % entry.serial_number for entry in entries))})
+            messages.add_message(request, messages.SUCCESS, _('The standing entry with the entries %(entries)s was successfully created.') % {'entries': ', '.join('"#%s"' % entry.serial_number for entry in entries) if account else '%s - %s' % (entries[0].account.name.lower(), ', '.join('"#%s"' % entry.serial_number for entry in entries))})
             return redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
         return render(request, 'accounts/entry/form.html', locals())
     else:

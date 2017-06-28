@@ -13,15 +13,9 @@ function categories(url, renderTo) {
         },
         xAxis: {
             categories: [],
-            crosshair: true,
-            title: {
-                text: 'categories'
-            }
+            crosshair: true
         },
         yAxis: {
-            title: {
-                text: 'number of times used'
-            },
             stackLabels: {
                 enabled: true,
                 style: {
@@ -41,6 +35,8 @@ function categories(url, renderTo) {
     $.getJSON(url, function(data) {
         options.series = data.series;
         options.xAxis.categories = data.xAxis.categories;
+        options.xAxis.title = data.xAxis.title;
+        options.yAxis.title = data.yAxis.title;
         var chart = new Highcharts.Chart(options);
     });
 }
