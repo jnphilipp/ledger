@@ -114,7 +114,7 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = CategoryForm(data=request.POST)
         if form.is_valid():
             category = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully created.') % {'name': category.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully created.') % {'name': category.name})
             if do_redirect:
                 return redirect('categories:category', slug=category.slug)
     else:
@@ -130,7 +130,7 @@ def edit(request, slug):
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
             category = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully updated.') % {'name': category.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully updated.') % {'name': category.name})
             return redirect('categories:category', slug=category.slug)
     else:
         form = CategoryForm(instance=category)
@@ -143,6 +143,6 @@ def delete(request, slug):
     category = get_object_or_404(Category, slug=slug)
     if request.method == 'POST':
         category.delete()
-        messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully deleted.') % {'name': category.name.lower()})
+        messages.add_message(request, messages.SUCCESS, _('The category "%(name)s" was successfully deleted.') % {'name': category.name})
         return redirect('categories:categories')
     return render(request, 'categories/category/delete.html', locals())

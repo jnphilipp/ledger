@@ -88,7 +88,7 @@ def add(request, slug=None):
                 form.instance.account = account
             entry = form.save()
 
-            messages.add_message(request, messages.SUCCESS, _('The entry "%(entry)s" was successfully created.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name.lower(), entry.serial_number)})
+            messages.add_message(request, messages.SUCCESS, _('The entry "%(entry)s" was successfully created.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name, entry.serial_number)})
             response = redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
             if page: response['Location'] += '?page=%s' % page
             return response
@@ -117,9 +117,9 @@ def edit(request, entry_id, slug=None):
 
 
             if no == entry.serial_number:
-                msg = _('The entry "%(entry)s" was successfully updated.') % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name.lower(), no)}
+                msg = _('The entry "%(entry)s" was successfully updated.') % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name, no)}
             else:
-                msg = _('The entry "%(entry)s" was successfully updated and moved to "%(no)s".') % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name.lower(), no), 'no': '#%s' % entry.serial_number if account else '%s - #%s'% (entry.account.name.lower(), entry.serial_number)}
+                msg = _('The entry "%(entry)s" was successfully updated and moved to "%(no)s".') % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name, no), 'no': '#%s' % entry.serial_number if account else '%s - #%s'% (entry.account.name, entry.serial_number)}
             messages.add_message(request, messages.SUCCESS, msg)
             response = redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
             if page:
@@ -139,7 +139,7 @@ def delete(request, entry_id, slug=None):
     entry = get_object_or_404(Entry, id=entry_id)
     if request.method == 'POST':
         entry.delete()
-        messages.add_message(request, messages.SUCCESS, _('The entry "%(entry)s" was successfully deleted.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name.lower(), entry.serial_number)})
+        messages.add_message(request, messages.SUCCESS, _('The entry "%(entry)s" was successfully deleted.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name, entry.serial_number)})
         for entry in Entry.objects.filter(account=entry.account).filter(serial_number__gt=entry.serial_number):
             entry.serial_number -= 1
             entry.save()
@@ -158,7 +158,7 @@ def duplicate(request, entry_id, slug=None):
     for tag in entry.tags.all():
         new.tags.add(tag.id)
     new.save()
-    messages.add_message(request, messages.SUCCESS, _('The entry "%(old_entry)s" has been successfully duplicated as entry "%(new_entry)s".') % {'old_entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name.lower(), entry.serial_number), 'new_entry': '#%s' % new.serial_number if account else '%s - #%s' % (new.account.name.lower(), new.serial_number)})
+    messages.add_message(request, messages.SUCCESS, _('The entry "%(old_entry)s" has been successfully duplicated as entry "%(new_entry)s".') % {'old_entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name, entry.serial_number), 'new_entry': '#%s' % new.serial_number if account else '%s - #%s' % (new.account.name, new.serial_number)})
     return redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
 
 

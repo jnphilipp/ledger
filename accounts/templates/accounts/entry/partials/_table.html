@@ -20,7 +20,7 @@
             {% for entry in entries %}
                 <tr>
                     {% if not account %}
-                        <th><a href="{% url "accounts:account" entry.account.slug %}">{{ entry.account }}</th>
+                        <th><a href="{% url "accounts:account" entry.account.slug %}">{{ entry.account.name }}</th>
                         <td class="text-right"><a href="{% url "accounts:entry" entry.id %}">{{ entry.serial_number }}</a></td>
                     {% else %}
                         <th class="text-right"><a href="{% url "accounts:account_entry" account.slug entry.id %}">{{ entry.serial_number }}</a></th>

@@ -9,18 +9,18 @@
     {% endfor %}
     {% for field in form.visible_fields %}
         <div class="form-group{% if form.errors %} {{ field.errors|yesno:'has-error,has-success' }}{% endif %}">
-            <label class="col-sm-3 control-label{% if field.field.required %} required{% endif %}" for="{{ field.auto_id }}">{{ field.label|lower }}:</label>
+            <label class="col-sm-3 control-label{% if field.field.required %} required{% endif %}" for="{{ field.auto_id }}">{{ field.label }}:</label>
             <div class="col-sm-9">
                 {{ field }}
-                {{ field.help_text|lower }}
-                <span class="help-block">{{ field.errors|lower }}</span>
+                {{ field.help_text }}
+                <span class="help-block">{{ field.errors }}</span>
             </div>
         </div>
     {% endfor %}
 
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-            <button id="btn_save" class="btn btn-primary" type="submit">{% if smt_btn %}{{ smt_btn }}{% else %}<span class="glyphicon glyphicon-save"></span> {% trans 'save' %}{% endif %}</button>
+            <button id="btn_save" class="btn btn-primary" type="submit">{% if smt_btn %}{{ smt_btn }}{% else %}<span class="glyphicon glyphicon-save"></span> {% trans 'Save' %}{% endif %}</button>
         </div>
     </div>
 </form>

@@ -25,7 +25,7 @@ def add(request, slug=None):
                 form.instance.account = account
             entries = form.save()
 
-            messages.add_message(request, messages.SUCCESS, _('The standing entry with the entries %(entries)s was successfully created.') % {'entries': ', '.join('"#%s"' % entry.serial_number for entry in entries) if account else '%s - %s' % (entries[0].account.name.lower(), ', '.join('"#%s"' % entry.serial_number for entry in entries))})
+            messages.add_message(request, messages.SUCCESS, _('The standing entry with the entries %(entries)s was successfully created.') % {'entries': ', '.join('"#%s"' % entry.serial_number for entry in entries) if account else '%s - %s' % (entries[0].account.name, ', '.join('"#%s"' % entry.serial_number for entry in entries))})
             return redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
         return render(request, 'accounts/entry/form.html', locals())
     else:

@@ -2,12 +2,12 @@
 
 {% if values|length == 1 %}
     {% with value=values|get_item:0 %}
-        {{ value|get_item:'balance' }} (<b>{% trans 'outstanding' %}</b>: {{ value|get_item:'outstanding' }})
+        {{ value|get_item:'balance' }} (<b>{% trans 'Outstanding' %}</b>: {{ value|get_item:'outstanding' }})
     {% endwith %}
 {% else %}
     <ul>
         {% for value in values %}
-            <li>{{ value|get_item:'balance' }} (<b>{% trans 'outstanding' %}</b>: {{ value|get_item:'outstanding' }})</li>
+            <li>{{ value|get_item:'balance' }} (<b>{% trans 'Outstanding' %}</b>: {{ value|get_item:'outstanding' }})</li>
         {% endfor %}
     </ul>
 {% endif %}

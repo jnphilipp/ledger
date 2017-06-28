@@ -3,7 +3,7 @@
 from accounts.models import Account
 from categories.models import Category, Tag
 from datetime import date
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.template import Library
 from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
@@ -27,7 +27,7 @@ def balance(account):
     if account.closed:
         balance = 0
     else:
-        balance = sum(entry.amount for entry in account.entries.filter(day__lte=date.today()))
+        balance = account.entries.filter(day__lte=date.today()).aggregate(Sum('amount'))['amount__sum']
     return colorfy(balance, account.unit)
 
 
@@ -36,7 +36,7 @@ def outstanding(account):
     if account.closed:
         outstanding = 0
     else:
-        outstanding = sum(entry.amount for entry in account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()))
+        outstanding = account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()).aggregate(Sum('amount'))['amount__sum']
     return colorfy(outstanding, account.unit)
 
 
@@ -54,7 +54,7 @@ def accounts(obj, ledger):
 def sumbalance(unit, user):
     sum_balance = 0
     for account in Account.objects.filter(Q(unit=unit) & Q(ledgers__user=user)):
-        sum_balance += balance(account)
+        sum_balance += account.entries.filter(day__lte=date.today()).aggregate(Sum('amount'))['amount__sum']
     return colorfy(sum_balance, unit)
 
 
@@ -75,5 +75,6 @@ def sumentries(entries, unit=None):
 def sumoutstanding(unit, user):
     sum_outstanding = 0
     for account in Account.objects.filter(Q(unit=unit) & Q(ledgers__user=user)):
-        sum_outstanding += outstanding(account)
+        outstanding = account.entries.filter(day__gt=date.today()).filter(day__lte=get_last_date_current_month()).aggregate(Sum('amount'))['amount__sum']
+        sum_outstanding += outstanding if outstanding else 0
     return colorfy(sum_outstanding, unit)

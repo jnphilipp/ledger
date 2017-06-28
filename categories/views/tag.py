@@ -121,7 +121,7 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = TagForm(data=request.POST)
         if form.is_valid():
             tag = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully created.') % {'name': tag.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully created.') % {'name': tag.name})
             if do_redirect:
                 return redirect('categories:tag', slug=tag.slug)
     else:
@@ -137,7 +137,7 @@ def edit(request, slug):
         form = TagForm(instance=tag, data=request.POST)
         if form.is_valid():
             tag = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully updated.') % {'name': tag.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully updated.') % {'name': tag.name})
             return redirect('categories:tag', slug=tag.slug)
     else:
         form = TagForm(instance=tag)
@@ -150,6 +150,6 @@ def delete(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
     if request.method == 'POST':
         tag.delete()
-        messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully deleted.') % {'name': tag.name.lower()})
+        messages.add_message(request, messages.SUCCESS, _('The tag "%(name)s" was successfully deleted.') % {'name': tag.name})
         return redirect('categories:tags')
     return render(request, 'categories/tag/delete.html', locals())

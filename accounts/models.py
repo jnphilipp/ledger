@@ -43,7 +43,7 @@ class Account(models.Model):
         super(Account, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name.lower()
+        return self.name
 
     class Meta:
         ordering = ('closed', 'name')

@@ -38,7 +38,7 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = UnitForm(request.POST)
         if form.is_valid():
             unit = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The unit %(name)s was successfully created.' % {'name': unit.name.lower()}))
+            messages.add_message(request, messages.SUCCESS, _('The unit %(name)s was successfully created.' % {'name': unit.name}))
             if do_redirect:
                 return redirect('units:unit', slug=unit.slug)
     else:
@@ -54,7 +54,7 @@ def edit(request, slug):
         form = UnitForm(instance=unit, data=request.POST)
         if form.is_valid():
             unit = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The unit %(name)s was successfully updated.') % {'name': unit.name.lower()})
+            messages.add_message(request, messages.SUCCESS, _('The unit %(name)s was successfully updated.') % {'name': unit.name})
             return redirect('units:unit', slug=unit.slug)
     else:
         form = UnitForm(instance=unit)

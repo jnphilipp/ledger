@@ -13,7 +13,7 @@ class Ledger(models.Model):
     accounts = models.ManyToManyField('accounts.Account', blank=True, verbose_name=_('Accounts'))
 
     def __str__(self):
-        return '%s_ledger' % self.user
+        return 'Ledger-%s' % self.user
 
     class Meta:
         ordering = ('user',)
@@ -32,7 +32,7 @@ class Budget(models.Model):
     savings_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='savings_tags', verbose_name=_('Savings tags'))
 
     def __str__(self):
-        return 'budget-%s' % self.user
+        return 'Budget-%s' % self.user
 
     class Meta:
         ordering = ('user',)

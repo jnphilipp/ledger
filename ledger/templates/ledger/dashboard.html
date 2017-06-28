@@ -3,7 +3,7 @@
 
 
 {% block breadcrumbs %}
-<li class="active">{% trans "dashboard" %}</li>
+<li class="active">{% trans "Dashboard" %}</li>
 {% endblock %}
 
 
@@ -12,7 +12,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                {% trans "balance" %}
+                {% trans "Balance" %}
                 <a class="collapse-link" data-toggle="collapse" data-target="#collapse-balance" href="#collapse-balance"></a>
             </h1>
         </div>
@@ -21,15 +21,15 @@
                 <table class="table table-bordered table-condensed table-hover table-striped">
                     <thead>
                         <tr>
-                            <th>{% trans "unit" %}</th>
-                            <th>{% trans "sum balance" %}</th>
-                            <th>{% trans "sum outstanding" %}</th>
+                            <th>{% trans "Unit" %}</th>
+                            <th>{% trans "Total balance" %}</th>
+                            <th>{% trans "Total outstanding" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for unit in units %}
                             <tr>
-                                <th>{{ unit|lower }}</th>
+                                <th>{{ unit.name }}</th>
                                 <td class="text-right">{{ unit|sumbalance:request.user }}</td>
                                 <td class="text-right">{{ unit|sumoutstanding:request.user }}</td>
                             </tr>
@@ -42,7 +42,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                <a href="{% url "accounts:accounts" %}">{% trans "accounts" %}</a>
+                <a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a>
                 <a class="collapse-link collapsed" data-toggle="collapse" data-target="#collapse-accounts" href="#collapse-accounts" aria-expanded="false"></a>
             </h1>
         </div>
@@ -53,7 +53,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class="panel-title">
-                <a href="{% url "accounts:entries" %}">{% trans "entries" %}</a>
+                <a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a>
                 <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
             </h1>
         </div>
@@ -62,6 +62,6 @@
         </div>
     </div>
 {% else %}
-    <p>{% trans "there are no accounts available." %}</p>
+    <p>{% trans "There are no accounts available." %}</p>
 {% endif %}
 {% endblock %}
