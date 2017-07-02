@@ -54,7 +54,8 @@ def accounts(obj, ledger):
 def sumbalance(unit, user):
     sum_balance = 0
     for account in Account.objects.filter(Q(unit=unit) & Q(ledgers__user=user)):
-        sum_balance += account.entries.filter(day__lte=date.today()).aggregate(Sum('amount'))['amount__sum']
+        balance = account.entries.filter(day__lte=date.today()).aggregate(Sum('amount'))['amount__sum']
+        sum_balance += balance if balance else 0
     return colorfy(sum_balance, unit)
 
 
