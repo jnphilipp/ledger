@@ -247,7 +247,7 @@ msgstr "Dauerauftrag hinzufügen"
 #: templates/accounts/account/statistics.html:45
 #: templates/accounts/account/statistics.html:54
 msgid "Statistics"
-msgstr "Staistik"
+msgstr "Statistik"
 
 #: templates/accounts/account/detail.html:103
 #: templates/accounts/account/detail.html:131

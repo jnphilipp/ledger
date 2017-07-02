@@ -48,7 +48,7 @@ msgstr "Einkommentags"
 
 #: models.py:30
 msgid "Consumption tags"
-msgstr "Konsomtags"
+msgstr "Konsumtags"
 
 #: models.py:31
 msgid "Insurance tags"
@@ -238,7 +238,7 @@ msgstr "Einkommen"
 #: templates/users/budget/budget.html:122 views/budget.py:143
 #: views/budget.py:192 views/budget.py:209
 msgid "Consumption"
-msgstr "Konsom"
+msgstr "Konsum"
 
 #: templates/users/budget/budget.html:123 views/budget.py:236
 #: views/budget.py:285 views/budget.py:302
