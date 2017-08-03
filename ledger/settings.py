@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'accounts',
     'categories',
     'django-bootstrap3',
+    'files',
     'ledger',
     'units',
     'users',
