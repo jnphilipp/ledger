@@ -15,9 +15,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from django.views import static
 from django.views.generic.base import RedirectView
 from ledger import views
 
@@ -29,9 +31,13 @@ urlpatterns = [
 
     url(r'^accounts/', include('accounts.urls', 'accounts')),
     url(r'^categories/', include('categories.urls', 'categories')),
+    url(r'^files/', include('files.urls', 'files')),
     url(r'^units/', include('units.urls', 'units')),
     url(r'^users/', include('users.urls', 'users')),
 
     url(r'^admin/', admin.site.urls),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/logo.png')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [url(r'^media/(?P<path>.*)$', static.serve, {'document_root': settings.MEDIA_ROOT})]

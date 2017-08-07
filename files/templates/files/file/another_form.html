@@ -1,0 +1,36 @@
+{% extends "ledger/popup.html" %}
+{% load i18n static %}
+
+
+{% block extrahead %}
+<script type="text/javascript" src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        {% if form.is_valid %}
+            {% if do_reload %}parent.location.reload();{% endif %}
+            parent.$.magnificPopup.close();
+        {% endif %}
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% if file %}{% trans "Edit" %}{% else %}{% trans "Add file" %}{% endif %}</h1>
+            </div>
+            <div class="panel-body">
+                {% if file %}
+                    {% url "files:edit_another" as form_url %}
+                {% else %}
+                    {% url "files:add_another" as form_url %}
+                {% endif %}
+                {% include "ledger/partials/_form.html" with form_url=form_url|add:'?a='|add:a enctype="multipart/form-data" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
