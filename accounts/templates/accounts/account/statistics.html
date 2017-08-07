@@ -17,7 +17,7 @@
 {% block breadcrumbs %}
 <li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-<li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+<li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
 {% if chart %}
     <li><a href="{% url "accounts:account_statistics" account.slug %}">{% trans "Statistics" %}</a></li>
     {% if year %}

@@ -8,10 +8,10 @@
     <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
     <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
     <li><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
-    <li><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+    <li><a href="{% url "accounts:account_entry" account.slug entry.pk %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
 {% else %}
     <li><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
-    <li><a href="{% url "accounts:entry" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+    <li><a href="{% url "accounts:entry" entry.pk %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
 {% endif %}
 <li class="active">{% trans "Delete" %}</li>
 {% endblock %}
@@ -26,7 +26,7 @@
             </div>
             <div class="panel-body">
                 {{ form.media }}
-                <form action="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id %}{% else %}{% url "accounts:entry_delete" entry.id %}{% endif %}" method="post" class="form">
+                <form action="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.pk %}{% else %}{% url "accounts:entry_delete" entry.pk %}{% endif %}" method="post" class="form">
                     {% csrf_token %}
                     <div class="alert alert-danger" role="alert">
                         <h5><b>{% trans "Confirm deletion" %}</b></h5>
@@ -35,7 +35,14 @@
 
                         <ul>
                             <li>
-                                {% trans "Entry" %}: <a href="{% if account %}{% url "accounts:account_entry" account.slug entry.id %}{% else %}{% url "accounts:entry" entry.id %}{% endif %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a>
+                                {% trans "Entry" %}: <a href="{% if account %}{% url "accounts:account_entry" account.slug entry.pk %}{% else %}{% url "accounts:entry" entry.pk %}{% endif %}">{% blocktrans with no=entry.serial_number %}Entry #{{ no }}{% endblocktrans %}</a>
+                                {% if entry.files %}
+                                    <ul>
+                                        {% for file in entry.files.all %}
+                                            <li>{% trans "File" %}: <a href="{% url "files:file" file.slug %}">{{ file.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
                             </li>
                         </ul>
                         <br/>

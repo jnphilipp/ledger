@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/change/$', entry.edit, name='account_entry_edit'),
     url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/delete/$', entry.delete, name='account_entry_delete'),
     url(r'^account/(?P<slug>[\w-]+)/entries/(?P<entry_id>\d+)/duplicate/$', entry.duplicate, name='account_entry_duplicate'),
+    url(r'^account/(?P<slug>[\w-]+)/statements/$', account.statements, name='account_statements'),
     url(r'^account/(?P<slug>[\w-]+)/statistics/$', account.statistics, name='account_statistics'),
 
     url(r'^api/account/autocomplete', account_api.autocomplete, name='account_autocomplete'),

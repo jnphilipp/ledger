@@ -2,6 +2,7 @@
 
 from categories.models import Category, Tag
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -24,9 +25,15 @@ class Account(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='accounts', null=True, verbose_name=_('Category'))
     ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through, verbose_name=_('Ledgers'))
     closed = models.BooleanField(_('Closed'), default=False)
+    statements = GenericRelation('files.File', related_query_name='accounts', verbose_name=_('Statements'))
+
+    def delete(self, *args, **kwargs):
+        for file in self.statements:
+            file.delete()
+        super(Account, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('account', args=[self.slug])
+        return reverse('accounts:account', args=[self.slug])
 
     def renumber_entries(self):
         for i, entry in enumerate(self.entries.all()):
@@ -62,6 +69,15 @@ class Entry(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='entries', verbose_name=_('Category'))
     additional = TextFieldSingleLine(_('Additional'), blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name='entries', verbose_name=_('Tags'))
+    files = GenericRelation('files.File', related_query_name='entries', verbose_name=_('Files'))
+
+    def delete(self, *args, **kwargs):
+        for file in self.files:
+            file.delete()
+        super(Entry, self).delete(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('accounts:account_entry', args=[self.account.slug, self.pk])
 
     def save(self, *args, **kwargs):
         move = False

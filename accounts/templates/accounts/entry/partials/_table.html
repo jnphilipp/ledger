@@ -11,6 +11,7 @@
                 <th><a href="{% url "categories:categories" %}">{% trans "Category" %}</a></th>
                 <th>{% trans "Additional" %}</th>
                 <th><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></th>
+                <th>{% trans "Files" %}</th>
                 {% if options %}
                     <th></th>
                 {% endif %}
@@ -21,9 +22,9 @@
                 <tr>
                     {% if not account %}
                         <th><a href="{% url "accounts:account" entry.account.slug %}">{{ entry.account.name }}</th>
-                        <td class="text-right"><a href="{% url "accounts:entry" entry.id %}">{{ entry.serial_number }}</a></td>
+                        <td class="text-right"><a href="{% url "accounts:entry" entry.pk %}">{{ entry.serial_number }}</a></td>
                     {% else %}
-                        <th class="text-right"><a href="{% url "accounts:account_entry" account.slug entry.id %}">{{ entry.serial_number }}</a></th>
+                        <th class="text-right"><a href="{% url "accounts:account_entry" account.slug entry.pk %}">{{ entry.serial_number }}</a></th>
                     {% endif %}
                     <td>{{ entry.day|date:"d.m.Y" }}</td>
                     <td>{{ entry.day|date:"D" }}</td>
@@ -35,19 +36,21 @@
                             <a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
+                    <td>{{ entry.files.count }}</td>
                     {% if options %}
                         <td>
-                            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.id %}{% else %}{% url "accounts:entry_edit" entry.id %}{% endif %}" title="edit entry"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.id %}{% else %}{% url "accounts:entry_duplicate" entry.id %}{% endif %}" title="duplicate entry"><span class="glyphicon glyphicon-duplicate"></span></a>
-                            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id %}{% else %}{% url "accounts:entry_delete" entry.id %}{% endif %}" title="delete entry"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.pk %}{% else %}{% url "accounts:entry_edit" entry.pk %}{% endif %}" title="{% trans "Edit entry" %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a class="ajax-popup-link" href="{% url "files:add_another" content_type.pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" title="{% trans "Upload file" %}"><span class="glyphicon glyphicon-upload"></span></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.pk %}{% else %}{% url "accounts:entry_duplicate" entry.pk %}{% endif %}" title="{% trans "Duplicate entry" %}"><span class="glyphicon glyphicon-duplicate"></span></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.pk %}{% else %}{% url "accounts:entry_delete" entry.pk %}{% endif %}" title="{% trans "Delete entry" %}"><span class="glyphicon glyphicon-trash"></span></a>
                             {% if account %}
                                 {% with entries|previous:forloop.counter0 as previous %}
                                 {% with entries|next:forloop.counter0 as next %}
                                     {% if next %}
-                                        <a href="{% url "accounts:account_entry_swap" account.slug entry.id next.id %}" title="move down"><span class="glyphicon glyphicon-arrow-down"></span></a>
+                                        <a href="{% url "accounts:account_entry_swap" account.slug entry.pk next.pk %}" title="{% trans "Move down" %}"><span class="glyphicon glyphicon-arrow-down"></span></a>
                                     {% endif %}
                                     {% if previous %}
-                                        <a href="{% url "accounts:account_entry_swap" account.slug previous.id entry.id %}" title="move up"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                                        <a href="{% url "accounts:account_entry_swap" account.slug previous.pk entry.pk %}" title="{% trans "Move up" %}"><span class="glyphicon glyphicon-arrow-up"></span></a>
                                     {% endif %}
                                 {% endwith %}
                                 {% endwith %}

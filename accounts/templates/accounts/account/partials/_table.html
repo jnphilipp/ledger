@@ -9,6 +9,7 @@
                 <th>{% trans "Closed" %}</th>
                 <th>{% trans "Balance" %}</th>
                 <th>{% trans "Outstanding" %}</th>
+                <th>{% trans "Number of statements" %}</th>
                 <th>{% trans "Number of entries" %}</th>
                 <th>{% trans "Last entry" %}</th>
             </tr>
@@ -26,6 +27,7 @@
                     </td>
                     <td class="text-right">{{ account|balance }}</td>
                     <td class="text-right">{{ account|outstanding }}</td>
+                    <td class="text-right">{{ account.statements.count }}</td>
                     <td class="text-right">{{ account.entries.count }}</td>
                     <td>{{ account.entries.last.day|date:"l, d. F Y" }}</td>
                 </tr>

@@ -5,6 +5,7 @@ from accounts.models import Account, Entry
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
@@ -61,15 +62,21 @@ def list(request, slug=None):
         entries = paginator.page(1)
     except EmptyPage:
         entries = paginator.page(paginator.num_pages)
+    content_type = ContentType.objects.get_for_model(Entry)
     return render(request, 'accounts/entry/list.html', locals())
 
 
 @login_required
 @csrf_protect
 def detail(request, entry_id, slug=None):
+    o = request.GET.get('o') if not request.GET.get('o') == None else 'name'
+    order = o if o else 'name'
+
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
+    files = entry.files.all().order_by(order)
+    content_type = ContentType.objects.get_for_model(Entry)
     return render(request, 'accounts/entry/detail.html', locals())
 
 

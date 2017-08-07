@@ -6,6 +6,7 @@ from categories.models import Category, Tag
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -24,10 +25,27 @@ def list(request):
 
 @login_required
 def detail(request, slug):
+    o = request.GET.get('o') if not request.GET.get('o') == None else 'name'
+    order = o if o else 'name'
+
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
+    content_type = ContentType.objects.get_for_model(Account)
     entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:5]
+    statements = account.statements.all().reverse()[:5]
     return render(request, 'accounts/account/detail.html', locals())
+
+
+@login_required
+def statements(request, slug):
+    o = request.GET.get('o') if not request.GET.get('o') == None else 'name'
+    order = o if o else 'name'
+
+    ledger = get_object_or_404(Ledger, user=request.user)
+    account = get_object_or_404(Account, slug=slug, ledger=ledger)
+    statements = account.statements.all().order_by(order)
+    content_type = ContentType.objects.get_for_model(Account)
+    return render(request, 'accounts/account/statements.html', locals())
 
 
 @login_required

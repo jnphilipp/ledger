@@ -52,48 +52,75 @@
                     {% if account.closed %}
                         <small>{% trans "Closed" %}</small>
                     {% endif %}
+                    <a class="collapse-link" data-toggle="collapse" data-target="#collapse-details" href="#collapse-details"></a>
                 </h1>
             </div>
-            <div class="panel-body">
-                {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
-                <dl class="dl-horizontal">
-                    <dt>{% trans "Created at" %}</dt>
-                    <dd>{{ account.created_at|date:"r" }}</dd>
-                    <dt>{% trans "Last updated at" %}</dt>
-                    <dd>{{ account.updated_at|date:"r" }}</dd>
-                    <dt>{% trans "Users" %}</dt>
-                    <dd>
-                        {% for l in account.ledgers.all %}
-                            {{ l.user.username }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </dd>
-                    <dt>{% trans "Category" %}</dt>
-                    <dd><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
-                    <dt>{% trans "Unit" %}</dt>
-                    <dd><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
-                </dl>
+            <div id="collapse-details" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
+                    <dl class="dl-horizontal">
+                        <dt>{% trans "Created at" %}</dt>
+                        <dd>{{ account.created_at|date:"r" }}</dd>
+                        <dt>{% trans "Last updated at" %}</dt>
+                        <dd>{{ account.updated_at|date:"r" }}</dd>
+                        <dt>{% trans "Users" %}</dt>
+                        <dd>
+                            {% for l in account.ledgers.all %}
+                                {{ l.user.username }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
+                        <dt>{% trans "Category" %}</dt>
+                        <dd><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
+                        <dt>{% trans "Unit" %}</dt>
+                        <dd><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
+                    </dl>
+                </div>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <a class="panel-title" href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a>
+                <h1 class="panel-title">
+                    <a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a>
+                    <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
+                </h1>
             </div>
-            <div class="panel-body">
-                <b>{% trans "Balance" %}:</b> {{ account|balance }} (<b>{% trans "Outstanding"%}:</b> {{ account|outstanding }})
-                {% if not account.closed %}
+            <div id="collapse-entries" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <b>{% trans "Balance" %}:</b> {{ account|balance }} (<b>{% trans "Outstanding"%}:</b> {{ account|outstanding }})
+                    {% if not account.closed %}
+                        <div class="pull-right">
+                            <a class="btn btn-primary" href="{% url "accounts:account_entry_add" account.slug %}" role="button">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                {% trans "Add entry" %}
+                            </a>
+                            <a class="btn btn-primary" href="{% url "accounts:account_standing_entry_add" account.slug %}">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                {% trans "Add standing entry" %}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=False %}
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    <a href="{% url "accounts:account_statements" account.slug %}">{% trans "Statements" %}</a>
+                    <a class="collapse-link" data-toggle="collapse" data-target="#collapse-statements" href="#collapse-statements"></a>
+                </h1>
+            </div>
+            <div id="collapse-statements" class="panel-collapse collapse in">
+                <div class="panel-body">
                     <div class="pull-right">
-                        <a class="btn btn-primary" href="{% url "accounts:account_entry_add" account.slug %}" role="button">
-                            <span class="glyphicon glyphicon-plus"></span>
-                            {% trans "Add entry" %}
-                        </a>
-                        <a class="btn btn-primary" href="{% url "accounts:account_standing_entry_add" account.slug %}">
-                            <span class="glyphicon glyphicon-plus"></span>
-                            {% trans "Add standing entry" %}
+                        <a class="btn btn-primary" href="{% url "files:add" content_type.pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
+                            <span class="glyphicon glyphicon-upload"></span>
+                            {% trans "Upload file" %}
                         </a>
                     </div>
-                {% endif %}
+                </div>
+                {% include "files/file/partials/_table.html" with files=statements options=False %}
             </div>
-            {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=False %}
         </div>
         {% if account.entries.exists %}
             <div class="panel panel-default">
@@ -101,54 +128,70 @@
                     <h1 class="panel-title">
                         <a href="{% url "accounts:account_statistics" account.slug %}?chart=categories">{% trans "Statistics" %}</a>
                         <small>{% trans "Categories" %}</small>
+                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-categories-statistics" href="#collapse-categories-statistics"></a>
                     </h1>
                 </div>
-                <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
-                        statistics(ascchart_url, "ascchart");
-                    });
-                </script>
+                <div id="collapse-categories-statistics" class="panel-collapse collapse in">
+                    <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
+                            statistics(ascchart_url, "ascchart");
+                        });
+                    </script>
+                </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h1 class="panel-title">
                         <a href="{% url "accounts:account_statistics" account.slug %}?chart=tags">{% trans "Statistics" %}</a>
                         <small>{% trans "Tags" %}</small>
+                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-tags-statistics" href="#collapse-tags-statistics"></a>
                     </h1>
                 </div>
-                <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
-                        statistics(astchart_url, "astchart");
-                    });
-                </script>
+                <div id="collapse-tags-statistics" class="panel-collapse collapse in">
+                    <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
+                            statistics(astchart_url, "astchart");
+                        });
+                    </script>
+                </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="panel-title" href="{% url "categories:categories" %}">{% trans "Categories" %}</a>
+                    <h1 class="panel-title">
+                        <a href="{% url "categories:categories" %}">{% trans "Categories" %}</a>
+                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-categories" href="#collapse-categories"></a>
+                    </h1>
                 </div>
-                <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
-                        categories(cchart_url, "cchart");
-                    });
-                </script>
+                <div id="collapse-categories" class="panel-collapse collapse in">
+                    <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
+                            categories(cchart_url, "cchart");
+                        });
+                    </script>
+                </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="panel-title" href="{% url "categories:tags" %}">{% trans "Tags" %}</a>
+                    <h1 class="panel-title">
+                        <a href="{% url "categories:tags" %}">{% trans "Tags" %}</a>
+                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-tags" href="#collapse-tags"></a>
+                    </h1>
                 </div>
-                <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";
-                        tags(tchart_url, "tchart");
-                    });
-                </script>
+                <div id="collapse-tags" class="panel-collapse collapse in">
+                    <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";
+                            tags(tchart_url, "tchart");
+                        });
+                    </script>
+                </div>
             </div>
         {% endif %}
     </div>

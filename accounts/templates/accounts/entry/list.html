@@ -1,8 +1,10 @@
 {% extends "ledger/base.html" %}
-{% load accounts bootstrap i18n ledger %}
+{% load accounts bootstrap i18n ledger static %}
 
 
 {% block extrahead %}
+<link rel="stylesheet" media="all" href="{% static "css/magnific-popup.css" %}"/>
+<script type="text/javascript" src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
 <script type="text/javascript">
     $(function() {
         $("#id_start_date").datepicker({
@@ -77,6 +79,9 @@
                 }
             });
         {% endif %}
+        $(".ajax-popup-link").magnificPopup({
+            type: "iframe"
+        });
     });
 </script>
 {% endblock %}

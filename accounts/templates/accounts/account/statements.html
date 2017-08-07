@@ -1,0 +1,32 @@
+{% extends "ledger/base.html" %}
+{% load i18n %}
+
+
+{% block breadcrumbs %}
+<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+<li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
+<li class="active">{% trans "Statements" %}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title">
+            {% trans "Statements" %}
+        </h1>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+           <div class="col-md-2 col-md-offset-10 text-right">
+               <a class="btn btn-primary" href="{% url "files:add" content_type.pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
+                    <span class="glyphicon glyphicon-upload"></span>
+                    {% trans "Upload file" %}
+                </a>
+           </div>
+        </div>
+    </div>
+    {% include "files/file/partials/_table.html" with files=statements options=True %}
+</div>
+{% endblock %}

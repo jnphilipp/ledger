@@ -19,8 +19,8 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <h1>
-            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.id  %}{% else %}{% url "entry_edit" entry.id  %}{% endif %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> {% trans "Edit entry" %}</a>
-            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id  %}{% else %}{% url "entry_delete" entry.id  %}{% endif %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> {% trans "Delete entry" %}</a>
+            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.id  %}{% else %}{% url "accounts:entry_edit" entry.id  %}{% endif %}" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span> {% trans "Edit entry" %}</a>
+            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id  %}{% else %}{% url "accounts:entry_delete" entry.id  %}{% endif %}" class="btn btn-danger" role="button"><span class="glyphicon glyphicon-trash"></span> {% trans "Delete entry" %}</a>
         </h1>
     </div>
 </div>
@@ -56,6 +56,28 @@
                     </dd>
                 </dl>
             </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">
+                    {% trans "Files" %}
+                </h1>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                   <div class="col-md-2 col-md-offset-10 text-right">
+                       <a class="btn btn-primary" href="{% url "files:add" content_type.pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
+                            <span class="glyphicon glyphicon-upload"></span>
+                            {% trans "Upload file" %}
+                        </a>
+                   </div>
+                </div>
+            </div>
+            {% include "files/file/partials/_table.html" with files=files options=True %}
         </div>
     </div>
 </div>
