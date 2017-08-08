@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from accounts.models import Entry
 from categories.forms import TagForm, FilterForm
 from categories.models import Tag
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
@@ -84,6 +86,7 @@ def entries(request, slug):
         entries = paginator.page(1)
     except EmptyPage:
         entries = paginator.page(paginator.num_pages)
+    content_type = ContentType.objects.get_for_model(Entry)
     return render(request, 'categories/tag/entries.html', locals())
 
 

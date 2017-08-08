@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from accounts.models import Entry
 from categories.forms import CategoryForm, FilterForm
 from categories.models import Category
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
@@ -84,6 +86,7 @@ def entries(request, slug):
         entries = paginator.page(1)
     except EmptyPage:
         entries = paginator.page(paginator.num_pages)
+    content_type = ContentType.objects.get_for_model(Entry)
     return render(request, 'categories/category/entries.html', locals())
 
 
