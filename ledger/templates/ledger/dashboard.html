@@ -58,6 +58,18 @@
             </h1>
         </div>
         <div id="collapse-entries" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{% url "accounts:entry_add" %}" role="button">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        {% trans "Add entry" %}
+                    </a>
+                    <a class="btn btn-primary" href="{% url "accounts:standing_entry_add" %}">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        {% trans "Add standing entry" %}
+                    </a>
+                </div>
+            </div>
             {% include "accounts/entry/partials/_table.html" with account=None entries=entries options=False %}
         </div>
     </div>
