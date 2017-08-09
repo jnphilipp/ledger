@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-27 16:42+0200\n"
-"PO-Revision-Date: 2017-06-27 16:42+0200\n"
+"POT-Creation-Date: 2017-08-09 12:03+0200\n"
+"PO-Revision-Date: 2017-08-09 12:03+0200\n"
 "Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -60,7 +60,7 @@ msgstr "Sparentags"
 
 #: models.py:39 templates/users/budget/budget.html:14
 #: templates/users/budget/budget.html:21 templates/users/budget/edit.html:71
-#: views/budget.py:105
+#: views/budget.py:101 views/budget.py:102
 msgid "Budget"
 msgstr "Budget"
 
@@ -230,46 +230,50 @@ msgstr "Chart"
 msgid "Table"
 msgstr "Tabelle"
 
-#: templates/users/budget/budget.html:121 views/budget.py:57
-#: views/budget.py:116
-msgid "Income"
-msgstr "Einkommen"
-
-#: templates/users/budget/budget.html:122 views/budget.py:143
-#: views/budget.py:192 views/budget.py:209
-msgid "Consumption"
-msgstr "Konsum"
-
-#: templates/users/budget/budget.html:123 views/budget.py:236
-#: views/budget.py:285 views/budget.py:302
-msgid "Insurance"
-msgstr "Versicherung"
-
-#: templates/users/budget/budget.html:124 views/budget.py:329
-#: views/budget.py:378 views/budget.py:395
-msgid "Savings"
-msgstr "Sparen"
-
-#: templates/users/budget/budget.html:127
-#: templates/users/budget/budget.html:130
-#: templates/users/budget/budget.html:133
-#: templates/users/budget/budget.html:136
-msgid "Name"
-msgstr "Name"
-
-#: templates/users/budget/budget.html:128
-#: templates/users/budget/budget.html:131
-#: templates/users/budget/budget.html:134
-#: templates/users/budget/budget.html:137
+#: templates/users/budget/budget.html:71 templates/users/budget/budget.html:93
+#: templates/users/budget/budget.html:121
+#: templates/users/budget/budget.html:150
+#: templates/users/budget/budget.html:153
+#: templates/users/budget/budget.html:156
+#: templates/users/budget/budget.html:159
 msgid "Monthly"
 msgstr "Monatlich"
 
-#: templates/users/budget/budget.html:129
-#: templates/users/budget/budget.html:132
-#: templates/users/budget/budget.html:135
-#: templates/users/budget/budget.html:138
+#: templates/users/budget/budget.html:72 templates/users/budget/budget.html:94
+#: templates/users/budget/budget.html:131
+#: templates/users/budget/budget.html:151
+#: templates/users/budget/budget.html:154
+#: templates/users/budget/budget.html:157
+#: templates/users/budget/budget.html:160
 msgid "Yearly"
 msgstr "Jährlich"
+
+#: templates/users/budget/budget.html:143 views/budget.py:62 views/budget.py:63
+#: views/budget.py:104 views/budget.py:109
+msgid "Income"
+msgstr "Einkommen"
+
+#: templates/users/budget/budget.html:144 views/budget.py:138
+#: views/budget.py:139 views/budget.py:182 views/budget.py:187
+msgid "Consumption"
+msgstr "Konsum"
+
+#: templates/users/budget/budget.html:145 views/budget.py:216
+#: views/budget.py:217 views/budget.py:260 views/budget.py:265
+msgid "Insurance"
+msgstr "Versicherung"
+
+#: templates/users/budget/budget.html:146 views/budget.py:294
+#: views/budget.py:295 views/budget.py:338 views/budget.py:343
+msgid "Savings"
+msgstr "Sparen"
+
+#: templates/users/budget/budget.html:149
+#: templates/users/budget/budget.html:152
+#: templates/users/budget/budget.html:155
+#: templates/users/budget/budget.html:158
+msgid "Name"
+msgstr "Name"
 
 #: templates/users/budget/edit.html:9 templates/users/budget/edit.html:23
 #: templates/users/budget/edit.html:37 templates/users/budget/edit.html:51
@@ -285,21 +289,21 @@ msgstr "Bearbeiten"
 msgid "Statistics"
 msgstr "Statistik"
 
-#: views/api/statistics.py:30 views/api/statistics.py:117
+#: views/api/statistics.py:30 views/api/statistics.py:123
 msgid "Days"
 msgstr "Tage"
 
-#: views/api/statistics.py:37 views/api/statistics.py:62
-#: views/api/statistics.py:87 views/api/statistics.py:124
-#: views/api/statistics.py:149 views/api/statistics.py:174
+#: views/api/statistics.py:41 views/api/statistics.py:69
+#: views/api/statistics.py:93 views/api/statistics.py:130
+#: views/api/statistics.py:155 views/api/statistics.py:180
 msgid "Loss and Profit"
 msgstr "Verlust und Gewinn"
 
-#: views/api/statistics.py:55 views/api/statistics.py:142
+#: views/api/statistics.py:58 views/api/statistics.py:148
 msgid "Months"
 msgstr "Monate"
 
-#: views/api/statistics.py:80 views/api/statistics.py:167
+#: views/api/statistics.py:86 views/api/statistics.py:173
 msgid "Years"
 msgstr "Jahre"
 
@@ -323,26 +327,33 @@ msgstr ""
 msgid "Thanks for signing up. You are now logged in."
 msgstr "Danke fürs registrieren. Die sind nun angemeldet."
 
-#: views/budget.py:35 views/budget.py:122 views/budget.py:215
-#: views/budget.py:308
+#: views/budget.py:37 views/budget.py:114 views/budget.py:192
+#: views/budget.py:270
 msgid "Sum"
 msgstr "Summe"
 
-#: views/budget.py:105 views/budget.py:198 views/budget.py:291
-#: views/budget.py:384
+#: views/budget.py:101 views/budget.py:102 views/budget.py:178
+#: views/budget.py:179 views/budget.py:256 views/budget.py:257
+#: views/budget.py:334 views/budget.py:335
 #, python-format
 msgid "Budget %(unit)s"
 msgstr "Budget %(unit)s"
 
-#: views/budget.py:406
+#: views/budget.py:352 views/budget.py:357 views/budget.py:362
+#: views/budget.py:363 views/budget.py:364 views/budget.py:365
+#: views/budget.py:366
+msgid "Rest"
+msgstr "Rest"
+
+#: views/budget.py:415
 msgid "Total"
 msgstr "Gesamt"
 
-#: views/budget.py:423
+#: views/budget.py:432
 msgid "Real"
 msgstr "Real"
 
-#: views/budget.py:481
+#: views/budget.py:492
 msgid "Your budget was successfully updated."
 msgstr "Ihr Budget wurde erfolgreich aktualisiert."
 

@@ -65,20 +65,22 @@
                             $("a[data-target='#toggleChart']").click(function(e) {
                                 e.preventDefault();
                                 {% for unit in units %}
-                                    $("#container_{{ unit.id }}").toggle();
-                                    if ( $("#container_{{ unit.id }}").is(":visible") )
-                                        pie("container_{{ unit.id }}", {{ series|get_item:unit.id|safe }}, {{ drilldown|get_item:unit.id|safe }});
+                                    $("#container_monthly_{{ unit.id }}").toggle();
+                                    $("#container_yearly_{{ unit.id }}").toggle();
+                                    if ( $("#container_monthly_{{ unit.id }}").is(":visible") ) {
+                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% trans "Monthly" %}");
+                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% trans "Yearly" %}");
+                                    }
                                 {% endfor %}
                             });
 
-                            function pie(id, series, drilldown) {
-                                console.log(id);
+                            function pie(id, series, drilldown, title) {
                                 Highcharts.chart(id, {
                                     chart: {
                                         type: "pie"
                                     },
                                     title: {
-                                        text: null
+                                        text: title
                                     },
                                     series: series,
                                     drilldown: drilldown
@@ -86,30 +88,50 @@
                             }
 
                             {% for unit in units %}
-                                {% if forloop.counter == 1 %}
-                                    $(function() {
-                                        pie("container_{{ unit.id }}", {{ series|get_item:unit.id|safe }}, {{ drilldown|get_item:unit.id|safe }});
-                                    });
-                                {% endif %}
+                                $(function() {
+                                    {% if forloop.counter == 1 %}
+                                            pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% trans "Monthly" %}");
+                                            pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% trans "Yearly" %}");
+                                    {% else %}
+                                        $("#container_monthly_{{ unit.id }}").toggle();
+                                        $("#container_yearly_{{ unit.id }}").toggle();
+                                    {% endif %}
+                                });
                             {% endfor %}
                         </script>
                     </div>
                 </div>
-                {% for unit in units %}
-                    <div id="container_{{ unit.id }}" style="min-width: 310px; height: 500px; margin: 0 auto; {% if forloop.counter > 1 %}display: none;{% endif %}"></div>
-                {% endfor %}
+                <div style="text-align: center;">
+                    {% for unit in units %}
+                        <div id="container_monthly_{{ unit.id }}" style="display: inline-block; height: 600px;"></div>
+                        <div id="container_yearly_{{ unit.id }}" style="display: inline-block; height: 600px;"></div>
+                    {% endfor %}
+                </div>
             {% else %}
-                <div id="container" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+                <div style="text-align: center;">
+                    <div id="container_monthly" style="display: inline-block; height: 600px;"></div>
+                    <div id="container_yearly" style="display: inline-block; height: 600px;"></div>
+                </div>
                 <script type="text/javascript">
-                    Highcharts.chart("container", {
+                    Highcharts.chart("container_monthly", {
                         chart: {
                             type: "pie"
                         },
                         title: {
-                            text: null
+                            text: "{% trans "Monthly" %}"
                         },
-                        series: {{ series|safe }},
-                        drilldown: {{ drilldown|safe }}
+                        series: {{ series_monthly|safe }},
+                        drilldown: {{ drilldown_monthly|safe }}
+                    });
+                    Highcharts.chart("container_yearly", {
+                        chart: {
+                            type: "pie"
+                        },
+                        title: {
+                            text: "{% trans "Yearly" %}"
+                        },
+                        series: {{ series_yearly|safe }},
+                        drilldown: {{ drilldown_yearly|safe }}
                     });
                 </script>
             {% endif %}
