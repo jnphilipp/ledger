@@ -25,8 +25,8 @@ def list(request):
 
 @login_required
 def detail(request, slug):
-    o = request.GET.get('o') if not request.GET.get('o') == None else 'name'
-    order = o if o else 'name'
+    o = request.GET.get('o') if not request.GET.get('o') == None else 'updated_at'
+    order = o if o else 'updated_at'
 
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
@@ -38,8 +38,8 @@ def detail(request, slug):
 
 @login_required
 def statements(request, slug):
-    o = request.GET.get('o') if not request.GET.get('o') == None else 'name'
-    order = o if o else 'name'
+    o = request.GET.get('o') if not request.GET.get('o') == None else 'updated_at'
+    order = o if o else 'updated_at'
 
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
