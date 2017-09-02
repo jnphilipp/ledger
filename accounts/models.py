@@ -72,7 +72,7 @@ class Entry(models.Model):
     files = GenericRelation('files.File', related_query_name='entries', verbose_name=_('Files'))
 
     def delete(self, *args, **kwargs):
-        for file in self.files:
+        for file in self.files.all():
             file.delete()
         super(Entry, self).delete(*args, **kwargs)
 
