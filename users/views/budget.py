@@ -47,6 +47,8 @@ def budget(request):
                     entry_ids.add(e['pk'])
             unit = None
             for i, (k, v) in enumerate(amounts.items()):
+                if type(k) == Unit:
+                    continue
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
                 income.append({
@@ -123,6 +125,8 @@ def budget(request):
                     entry_ids.add(e['pk'])
             unit = None
             for i, (k, v) in enumerate(amounts.items()):
+                if type(k) == Unit:
+                    continue
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
                 consumption.append({
@@ -201,6 +205,8 @@ def budget(request):
                     entry_ids.add(e['pk'])
             unit = None
             for i, (k, v) in enumerate(amounts.items()):
+                if type(k) == Unit:
+                    continue
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
                 insurance.append({
@@ -279,6 +285,8 @@ def budget(request):
                     entry_ids.add(e['pk'])
             unit = None
             for i, (k, v) in enumerate(amounts.items()):
+                if type(k) == Unit:
+                    continue
                 unit = Unit.objects.get(pk=k)
                 amounts[unit] = amounts.pop(k)
                 savings.append({
