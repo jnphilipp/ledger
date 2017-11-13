@@ -1,5 +1,5 @@
 {% extends "ledger/popup.html" %}
-{% load i18n static %}
+{% load bootstrap i18n static %}
 
 
 {% block extrahead %}
@@ -28,7 +28,7 @@
                 {% else %}
                     {% url "files:add_another" as form_url %}
                 {% endif %}
-                {% include "ledger/partials/_form.html" with form_url=form_url|add:'?a='|add:a enctype="multipart/form-data" %}
+                {% bootstrap_form form=form url=form_url|add:'?a='|add:a enctype="multipart/form-data" %}
             </div>
         </div>
     </div>

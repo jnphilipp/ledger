@@ -106,7 +106,8 @@
             </div>
             <div class="col-md-6 text-center">
                 {% url "categories:tag_entries" tag.slug as form_url %}
-                {% include "ledger/partials/_form_inline.html" with form_url=form_url %}
+                {% trans "Filter" as filter_trans %}
+                {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" button_title=filter_trans %}
             </div>
         </div>
     </div>

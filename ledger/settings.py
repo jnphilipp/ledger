@@ -62,7 +62,7 @@ EMAIL_SUBJECT_PREFIX = '[ledger] '
 INSTALLED_APPS = [
     'accounts',
     'categories',
-    'django-bootstrap3',
+    'django_bootstrap3',
     'files',
     'ledger',
     'units',

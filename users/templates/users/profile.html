@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load i18n %}
+{% load bootstrap i18n %}
 
 
 {% block breadcrumbs %}
@@ -17,7 +17,7 @@
             </div>
             <div class="panel-body">
                 {% url "users:profile" as form_url %}
-                {% include "ledger/partials/_form.html" with form_url=form_url %}
+                {% bootstrap_form form=form url=form_url %}
             </div>
         </div>
     </div>

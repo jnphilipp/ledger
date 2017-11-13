@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load i18n %}
+{% load bootstrap i18n %}
 
 
 {% block breadcrumbs %}
@@ -18,7 +18,7 @@
             </div>
         <div class="panel-body">
             {% trans "Sign up" as smt_btn %}
-            {% include "ledger/partials/_form.html" with smt_btn=smt_btn %}
+            {% bootstrap_form form=form button_title=smt_btn %}
         </div>
     </div>
 </div>

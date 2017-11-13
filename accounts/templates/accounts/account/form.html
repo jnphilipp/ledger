@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load accounts i18n %}
+{% load accounts bootstrap i18n %}
 
 
 {% block extrahead %}
@@ -74,7 +74,7 @@
                 {% else %}
                     {% url "accounts:account_add" as form_url %}
                 {% endif %}
-                {% include "ledger/partials/_form.html" with form_url=form_url %}
+                {% bootstrap_form form=form url=form_url %}
             </div>
         </div>
     </div>

@@ -3,15 +3,27 @@
 from categories.models import Tag
 from django import forms
 from django.contrib.auth import forms as authforms, get_user_model
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 from users.models import Budget
 
 
 class AuthenticationForm(authforms.AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget = forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
-        self.fields['password'].widget = forms.PasswordInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
+        self.fields['username'].widget = forms.TextInput(
+            attrs={'autocomplete': 'off', 'class': 'form-control'}
+        )
+        self.fields['password'].help_text = mark_safe(
+            '<a href="%s">%s</a>' % (
+                reverse('users:password_reset'),
+                _('Forgot your password?')
+            )
+        )
+        self.fields['password'].widget = forms.PasswordInput(
+            attrs={'autocomplete': 'off', 'class': 'form-control'}
+        )
 
 
 class BudgetForm(forms.ModelForm):

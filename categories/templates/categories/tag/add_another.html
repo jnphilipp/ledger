@@ -1,5 +1,5 @@
 {% extends "ledger/popup.html" %}
-{% load i18n static %}
+{% load bootstrap i18n static %}
 
 
 {% block extrahead %}
@@ -29,7 +29,7 @@
             <div class="panel-body">
                 {% if not tag %}
                     {% url "categories:tag_add_another" as form_url %}
-                    {% include "ledger/partials/_form.html" with form_url=form_url|add:"?target_id="|add:target_id %}
+                    {% bootstrap_form form=form url=form_url|add:"?target_id="|add:target_id %}
                 {% endif %}
             </div>
         </div>

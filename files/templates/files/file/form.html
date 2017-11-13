@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load i18n %}
+{% load bootstrap i18n %}
 
 
 {% block breadcrumbs %}
@@ -33,7 +33,7 @@
                 {% else %}
                     {% url "files:file_add" content_type object_id as form_url %}
                 {% endif %}
-                {% include "ledger/partials/_form.html" with form_url=form_url enctype="multipart/form-data" %}
+                {% bootstrap_form form=form url=form_url enctype="multipart/form-data" %}
             </div>
         </div>
     </div>
