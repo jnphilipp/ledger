@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'File',
                 'verbose_name_plural': 'Files',
-                'ordering': ('file',),
+                'ordering': ('name',),
             },
         ),
     ]
