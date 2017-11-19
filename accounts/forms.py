@@ -26,10 +26,13 @@ class AccountForm(forms.ModelForm):
 
     def __init__(self, ledger, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget = forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
+        self.fields['name'].widget = forms.TextInput(attrs={
+            'autocomplete': 'off',
+            'class': 'form-control'
+        })
         self.fields['name'].validators = [validate_account_name]
 
-        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('categories:category_add_another'))
+        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 95%;'
@@ -37,7 +40,7 @@ class AccountForm(forms.ModelForm):
         self.fields['unit'].queryset = Unit.objects.all()
         self.fields['unit'].widget.attrs['class'] = 'form-control js-example-basic-single'
         self.fields['unit'].widget.attrs['style'] = 'width: 95%;'
-        self.fields['unit'].help_text = mark_safe('<a href="%s?target_id=id_unit" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span></a>' % reverse('units:unit_add_another'))
+        self.fields['unit'].help_text = mark_safe('<a href="%s?target_id=id_unit" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('units:unit_add_another'), _('Add new unit')))
 
 
 class EntryForm(forms.ModelForm):

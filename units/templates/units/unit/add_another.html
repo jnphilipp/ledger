@@ -28,8 +28,9 @@
             </div>
             <div class="panel-body">
                 {% if not unit %}
+                    {% trans "Save" as save_trans %}
                     {% url "units:unit_add_another" as form_url %}
-                    {% bootstrap_form form=form url=form_url|add:"?target_id="|add:target_id %}
+                    {% bootstrap_form form=form url=form_url|add:"?target_id="|add:target_id glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
                 {% endif %}
             </div>
         </div>

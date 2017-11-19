@@ -81,8 +81,9 @@
                 <h1 class="panel-title">{% trans "Edit budget" %}</h1>
             </div>
             <div class="panel-body">
+                {% trans "Save" as save_trans %}
                 {% url "users:budget_edit" as form_url %}
-                {% bootstrap_form form=form url=form_url %}
+                {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
             </div>
         </div>
     </div>

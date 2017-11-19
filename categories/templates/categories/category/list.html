@@ -78,9 +78,9 @@
         <h1 class="panel-title">{% trans "Categories" %}</h1>
     </div>
     <div class="panel-body text-center">
-        {% url "categories" as form_url %}
         {% trans "Filter" as filter_trans %}
-        {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" button_title=filter_trans %}
+        {% url "categories" as form_url %}
+        {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" btn_title=filter_trans %}
     </div>
     {% include "categories/category/partials/_table.html" with categories=categories %}
 </div>

@@ -28,7 +28,8 @@
                 {% else %}
                     {% url "files:add_another" as form_url %}
                 {% endif %}
-                {% bootstrap_form form=form url=form_url|add:'?a='|add:a enctype="multipart/form-data" %}
+                {% trans "Save" as save_trans %}
+                {% bootstrap_form form=form url=form_url|add:'?a='|add:a enctype="multipart/form-data" glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
             </div>
         </div>
     </div>

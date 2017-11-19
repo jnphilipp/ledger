@@ -74,7 +74,8 @@
                 {% else %}
                     {% url "accounts:account_add" as form_url %}
                 {% endif %}
-                {% bootstrap_form form=form url=form_url %}
+                {% trans "Save" as save_trans %}
+                {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
             </div>
         </div>
     </div>

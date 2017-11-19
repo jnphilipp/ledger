@@ -7,6 +7,7 @@ from .views.api import statistics
 
 
 urlpatterns = [
+    url(r'^$', views.profile, name='users'),
     url(r'^profile/$', views.profile, name='profile'),
 
     url(r'^budget/$', budget.budget, name='budget'),

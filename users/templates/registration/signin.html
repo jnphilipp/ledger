@@ -19,8 +19,8 @@
 </div>
 <div class="row" style="margin-top: 20px;">
     <div class="col-md-2 col-md-offset-5">
-        {% trans "Sign in" as smt_btn %}
-        {% bootstrap_form form=form type="vertical" button_title=smt_btn glyphicon="glyphicon glyphicon-log-in" %}
+        {% trans "Sign in" as sign_in_trans %}
+        {% bootstrap_form form=form type="vertical" url="?next="|add:gnext btn_title=sign_in_trans glyphicon="glyphicon glyphicon-log-in" %}
         <script type="text/javascript">
             $("#id_username").focus();
         </script>

@@ -117,7 +117,7 @@
                     {% url "accounts:entries" as form_url %}
                 {% endif %}
                 {% trans "Filter" as filter_trans %}
-                {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" button_title=filter_trans %}
+                {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" btn_title=filter_trans %}
             </div>
            <div class="col-md-3 text-right">
                 {% if show_options %}

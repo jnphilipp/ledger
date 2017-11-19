@@ -12,15 +12,8 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">{% trans "Signed out" %}</h1>
-            </div>
-            <div class="panel-body">
-                <p>{% trans "Thanks for spending some quality time with ledger today." %}</p>
-                <p><a href="{% url "users:signin" %}"><span class="glyphicon glyphicon-log-in"></span> {% trans "Sign in again" %}</a></p>
-            </div>
-        </div>
+        <h3 class="italic-title">{% trans "Thanks for spending some quality time with ledger today." %}</h3>
+        <p><a href="{% url "users:signin" %}"><span class="glyphicon glyphicon-log-in"></span> {% trans "Sign in again" %}</a></p>
     </div>
 </div>
 {% endblock %}
