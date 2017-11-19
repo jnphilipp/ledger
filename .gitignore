@@ -1,6 +1,6 @@
 *.pyc
 db.sqlite3
-ledger/settings.ini
+ledger/local.py
 media/*
 static/*
 .venv/*

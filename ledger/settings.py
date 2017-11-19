@@ -12,48 +12,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
+import importlib
 import os
-
-from configparser import RawConfigParser
+import sys
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-config = RawConfigParser()
-config.optionxform = str
-config.read(os.path.join(BASE_DIR, 'ledger', 'settings.ini'))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config.get('secrets', 'SECRET_KEY')
-SESSION_COOKIE_SECURE = config.getboolean('secrets', 'SESSION_COOKIE_SECURE')
-CSRF_COOKIE_SECURE = config.getboolean('secrets', 'CSRF_COOKIE_SECURE')
-SESSION_EXPIRE_AT_BROWSER_CLOSE = config.getboolean('secrets', 'SESSION_EXPIRE_AT_BROWSER_CLOSE')
+SECRET_KEY = ''.join(['%02x' % h for h in os.urandom(4096)])
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config.getboolean('debug', 'DEBUG')
+DEBUG = True
 
 
-ALLOWED_HOSTS = config.get('host', 'ALLOWED_HOSTS').split()
-ADMINS = tuple(config.items('admins'))
+ALLOWED_HOSTS = []
 
 
 # Email settings
 
-EMAIL_USE_TLS = config.getboolean('host_email', 'EMAIL_USE_TLS')
-EMAIL_USE_SSL = config.getboolean('host_email', 'EMAIL_USE_SSL')
-DEFAULT_FROM_EMAIL = config.get('host_email', 'DEFAULT_FROM_EMAIL')
-SERVER_EMAIL = config.get('host_email', 'SERVER_EMAIL')
-EMAIL_HOST = config.get('host_email', 'EMAIL_HOST')
-EMAIL_PORT = config.getint('host_email', 'EMAIL_PORT')
-EMAIL_HOST_USER = config.get('host_email', 'EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config.get('host_email', 'EMAIL_HOST_PASSWORD')
 EMAIL_SUBJECT_PREFIX = '[ledger] '
 
 
@@ -96,6 +79,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -112,12 +96,8 @@ WSGI_APPLICATION = 'ledger.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': config.get('database', 'DATABASE_ENGINE'),
-        'NAME': config.get('database', 'DATABASE_NAME'),
-        'USER': config.get('database', 'DATABASE_USER'),
-        'PASSWORD': config.get('database', 'DATABASE_PASSWORD'),
-        'HOST': config.get('database', 'DATABASE_HOST'),
-        'PORT': config.get('database', 'DATABASE_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -127,16 +107,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.' +
+                'UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.' +
+                'MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.' +
+                'CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.' +
+                'NumericPasswordValidator',
     },
 ]
 
@@ -144,15 +128,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = config.get('i18n', 'LANGUAGE_CODE', fallback='en')
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = config.get('i18n', 'TIME_ZONE', fallback='UTC')
+TIME_ZONE = 'UTC'
 
-USE_I18N = config.getboolean('i18n', 'USE_I18N', fallback=True)
+USE_I18N = True
 
-USE_L10N = config.getboolean('i18n', 'USE_L10N', fallback=True)
+USE_L10N = True
 
-USE_TZ = config.getboolean('i18n', 'USE_TZ', fallback=True)
+USE_TZ = True
 
 
 # Login
@@ -176,3 +160,18 @@ STATICFILES_FINDERS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Load local settings
+
+path = os.path.join(BASE_DIR, 'ledger', 'local.py')
+if os.path.exists(path):
+    try:
+        spec = importlib.util.spec_from_file_location('local_settings', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules['local_settings'] = module
+        from local_settings import *
+    except ImportError as e:
+        sys.stderr.write(str(e))
+        pass
