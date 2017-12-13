@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """ledger URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -15,29 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.urls import include, path
 from django.utils.translation import ugettext_lazy as _
-from django.views import static
 from django.views.generic.base import RedirectView
-from ledger import views
+
+from .views import dashboard
+
 
 admin.site.site_header = _('ledger administration')
 
 
 urlpatterns = [
-    url(r'^$', views.dashboard, name='dashboard'),
+    path('', dashboard, name='dashboard'),
 
-    url(r'^accounts/', include('accounts.urls', 'accounts')),
-    url(r'^categories/', include('categories.urls', 'categories')),
-    url(r'^files/', include('files.urls', 'files')),
-    url(r'^units/', include('units.urls', 'units')),
-    url(r'^users/', include('users.urls', 'users')),
+    path('accounts/', include('accounts.urls')),
+    path('categories/', include('categories.urls')),
+    path('files/', include('files.urls')),
+    path('units/', include('units.urls')),
+    path('users/', include('users.urls')),
 
-    url(r'^admin/', admin.site.urls),
-    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/logo.png')),
+    path('admin/', admin.site.urls),
+    path('favicon.ico', RedirectView.as_view(url='/static/images/logo.png')),
 ]
 
 if settings.DEBUG:
-    urlpatterns += [url(r'^media/(?P<path>.*)$', static.serve, {'document_root': settings.MEDIA_ROOT})]
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
