@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from django.conf.urls import url
+from django.urls import path
+
 from . import views
 
 
+app_name = 'files'
 urlpatterns = [
-    url(r'^file/add/(?P<content_type>[\d]+)/(?P<object_id>[\d]+)/$', views.add, name='add'),
-    url(r'^file/add_another/(?P<content_type>[\d]+)/(?P<object_id>[\d]+)/$', views.add_another, name='add_another'),
-    url(r'^file/(?P<slug>[\w-]+)/$', views.detail, name='file'),
-    url(r'^file/(?P<slug>[\w-]+)/edit/$', views.edit, name='edit'),
-    url(r'^file/(?P<slug>[\w-]+)/delete/$', views.delete, name='delete'),
+    path('file/add/<int:content_type>/<int:object_id>/', views.add,
+         name='add'),
+    path('file/add_another/<int:content_type>/<int:object_id>/',
+         views.add_another, name='add_another'),
+    path('file/<slug:slug>/', views.detail, name='file'),
+    path('file/<slug:slug>/edit/', views.edit, name='edit'),
+    path('file/<slug:slug>/delete/', views.delete, name='delete'),
 ]
