@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import accounts.models
+import ledger.fields
 from django.db import migrations, models
 import django.db.models.deletion
 
@@ -19,12 +20,12 @@ class Migration(migrations.Migration):
             name='Entry',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('serial_number', models.IntegerField(verbose_name='Serial number')),
                 ('day', models.DateField(verbose_name='Day')),
                 ('amount', models.FloatField(default=0, verbose_name='Amount')),
-                ('additional', accounts.models.TextFieldSingleLine(blank=True, null=True, verbose_name='Additional')),
+                ('additional', ledger.fields.SingleLineTextField(blank=True, null=True, verbose_name='Additional')),
                 ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='accounts.Account', verbose_name='Account')),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='categories.Category', verbose_name='Category')),
                 ('tags', models.ManyToManyField(blank=True, related_name='entries', to='categories.Tag', verbose_name='Tags')),

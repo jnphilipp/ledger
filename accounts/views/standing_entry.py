@@ -19,14 +19,30 @@ def add(request, slug=None):
     today = date.today()
 
     if request.method == 'POST':
-        form = StandingEntryForm(ledger, data=request.POST, exclude_account=bool(account))
+        form = StandingEntryForm(ledger, data=request.POST,
+                                 exclude_account=bool(account))
         if form.is_valid():
             if account:
                 form.instance.account = account
             entries = form.save()
 
-            messages.add_message(request, messages.SUCCESS, _('The standing entry with the entries %(entries)s was successfully created.') % {'entries': ', '.join('"#%s"' % entry.serial_number for entry in entries) if account else '%s - %s' % (entries[0].account.name, ', '.join('"#%s"' % entry.serial_number for entry in entries))})
-            return redirect('accounts:account_entries', slug=account.slug) if account else redirect('accounts:entries')
+            msg = _('The standing entry with the entries %(entries)s was ' +
+                    'successfully created.')
+            if account:
+                entries = ', '.join('"#%s"' % e.serial_number for e in entries)
+            else:
+                entries = '%s - %s' % (
+                    entries[0].account.name,
+                    ', '.join('"#%s"' % e.serial_number for e in entries)
+                )
+
+            messages.add_message(request, messages.SUCCESS,
+                                 msg % {'entries': entries})
+
+            if account:
+                return redirect('accounts:account_entries', slug=account.slug)
+            else:
+                return redirect('accounts:entries')
         return render(request, 'accounts/entry/form.html', locals())
     else:
         form = StandingEntryForm(ledger, exclude_account=bool(account))

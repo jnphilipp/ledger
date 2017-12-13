@@ -1,31 +1,60 @@
 # -*- coding: utf-8 -*-
 
 from categories.models import Category, Tag
-from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from ledger.fields import SingleLineTextField
 from time import time
 from units.models import Unit
 from users.models import Ledger
 
 
-class TextFieldSingleLine(models.TextField):
-    pass
-
-
 class Account(models.Model):
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created at')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Updated at')
+    )
 
-    slug = models.SlugField(unique=True)
-    name = TextFieldSingleLine(_('Name'))
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='accounts', verbose_name=_('Unit'))
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='accounts', null=True, verbose_name=_('Category'))
-    ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through, verbose_name=_('Ledgers'))
-    closed = models.BooleanField(_('Closed'), default=False)
-    statements = GenericRelation('files.File', related_query_name='accounts', verbose_name=_('Statements'))
+    slug = models.SlugField(
+        unique=True,
+        verbose_name=_('Slug')
+    )
+    name = SingleLineTextField(
+        verbose_name=_('Name')
+    )
+    unit = models.ForeignKey(
+        Unit,
+        models.CASCADE,
+        related_name='accounts',
+        verbose_name=_('Unit')
+    )
+    category = models.ForeignKey(
+        Category,
+        models.CASCADE,
+        related_name='accounts',
+        verbose_name=_('Category')
+    )
+    ledgers = models.ManyToManyField(
+        Ledger,
+        through=Ledger.accounts.through,
+        verbose_name=_('Ledgers')
+    )
+    closed = models.BooleanField(
+        default=False,
+        verbose_name=_('Closed')
+    )
+    statements = GenericRelation(
+        'files.File',
+        related_query_name='accounts',
+        verbose_name=_('Statements')
+    )
 
     def delete(self, *args, **kwargs):
         for file in self.statements:
@@ -42,11 +71,19 @@ class Account(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
+            if not Account.objects.filter(slug=slugify(self.name)).exists():
+                self.slug = slugify(self.name)
+            else:
+                self.slug = slugify('%s%s' % (int(round(time() * 1000)),
+                                              self.name))
         else:
             orig = Account.objects.get(pk=self.id)
             if orig.name != self.name:
-                self.slug = slugify(self.name) if not Account.objects.filter(slug=slugify(self.name)).exists() else slugify('%s%s' % (int(round(time() * 1000)), self.name))
+                if Account.objects.filter(slug=slugify(self.name)).exists():
+                    self.slug = slugify('%s%s' % (int(round(time() * 1000)),
+                                                  self.name))
+                else:
+                    self.slug = slugify(self.name)
         super(Account, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -59,17 +96,53 @@ class Account(models.Model):
 
 
 class Entry(models.Model):
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created at')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Updated at')
+    )
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='entries', verbose_name=_('Account'))
-    serial_number = models.IntegerField(_('Serial number'))
-    day = models.DateField(_('Day'))
-    amount = models.FloatField(_('Amount'), default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='entries', verbose_name=_('Category'))
-    additional = TextFieldSingleLine(_('Additional'), blank=True, null=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='entries', verbose_name=_('Tags'))
-    files = GenericRelation('files.File', related_query_name='entries', verbose_name=_('Files'))
+    account = models.ForeignKey(
+        Account,
+        models.CASCADE,
+        related_name='entries',
+        verbose_name=_('Account')
+    )
+    serial_number = models.IntegerField(
+        verbose_name=_('Serial number')
+    )
+    day = models.DateField(
+        verbose_name=_('Day')
+    )
+    amount = models.FloatField(
+        default=0,
+        verbose_name=_('Amount')
+    )
+    category = models.ForeignKey(
+        Category,
+        models.CASCADE,
+        related_name='entries',
+        verbose_name=_('Category')
+    )
+    additional = SingleLineTextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Additional')
+    )
+    tags = models.ManyToManyField(
+        Tag,
+        blank=True,
+        related_name='entries',
+        verbose_name=_('Tags')
+    )
+    files = GenericRelation(
+        'files.File',
+        related_query_name='entries',
+        verbose_name=_('Files')
+    )
 
     def delete(self, *args, **kwargs):
         for file in self.files.all():
@@ -77,30 +150,37 @@ class Entry(models.Model):
         super(Entry, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('accounts:account_entry', args=[self.account.slug, self.pk])
+        return reverse('accounts:account_entry',
+                       args=[self.account.slug, self.pk])
 
     def save(self, *args, **kwargs):
         move = False
         old_account = None
         if self.id:
             orig = Entry.objects.get(id=self.id)
-            entry = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last()
-            next_serial_number = entry.serial_number + 1 if entry else 1
-            if orig.day != self.day and (orig.serial_number + 1) != next_serial_number:
+            entry = Entry.objects.filter(account=self.account). \
+                filter(day__lte=self.day).last()
+            next_snr = entry.serial_number + 1 if entry else 1
+            if orig.day != self.day and (orig.serial_number + 1) != next_snr:
                 move = True
             if orig.account != self.account:
                 move = True
                 self.serial_number = None
                 old_account = orig.account
         if not self.id or move:
-            if Entry.objects.filter(account=self.account).filter(day__lte=self.day).exists():
-                next_serial_number = Entry.objects.filter(account=self.account).filter(day__lte=self.day).last().serial_number + 1
+            entries = Entry.objects.filter(account=self.account). \
+                filter(day__lte=self.day)
+            if entries.exists():
+                next_snr = entries.last().serial_number + 1
             else:
-                next_serial_number = 1
-            for entry in Entry.objects.filter(account=self.account).filter(serial_number__gte=next_serial_number).reverse():
+                next_snr = 1
+
+            entries = Entry.objects.filter(account=self.account). \
+                filter(serial_number__gte=next_snr)
+            for entry in entries.reverse():
                 entry.serial_number += 1
                 entry.save()
-            self.serial_number = next_serial_number
+            self.serial_number = next_snr
         super(Entry, self).save()
 
         if old_account:
