@@ -3,20 +3,36 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
-
-
-class TextFieldSingleLine(models.TextField):
-    pass
+from ledger.fields import SingleLineTextField
 
 
 class Unit(models.Model):
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created at')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Updated at')
+    )
 
-    slug = models.SlugField(max_length=2048, unique=True)
-    name = TextFieldSingleLine(_('Name'), unique=True)
-    symbol = TextFieldSingleLine(_('Symbol'), unique=True)
-    precision = models.PositiveIntegerField(_('Precision'), default=2)
+    slug = models.SlugField(
+        max_length=2048,
+        unique=True,
+        verbose_name=_('Slug')
+    )
+    name = SingleLineTextField(
+        unique=True,
+        verbose_name=_('Name')
+    )
+    symbol = SingleLineTextField(
+        unique=True,
+        verbose_name=_('Symbol')
+    )
+    precision = models.PositiveIntegerField(
+        default=2,
+        verbose_name=_('Precision')
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:

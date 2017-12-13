@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import ledger.fields
 import units.models
 
 
@@ -21,8 +22,8 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('slug', models.SlugField(max_length=2048, unique=True)),
-                ('name', units.models.TextFieldSingleLine(unique=True, verbose_name='Name')),
-                ('symbol', units.models.TextFieldSingleLine(unique=True, verbose_name='Symbol')),
+                ('name', ledger.fields.SingleLineTextField(unique=True, verbose_name='Name')),
+                ('symbol', ledger.fields.SingleLineTextField(unique=True, verbose_name='Symbol')),
                 ('precision', models.PositiveIntegerField(default=2, verbose_name='Precision')),
             ],
             options={
