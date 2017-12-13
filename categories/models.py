@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
-
-class TextFieldSingleLine(models.TextField):
-    pass
+from ledger.fields import SingleLineTextField
 
 
 class Category(models.Model):
@@ -15,7 +12,7 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     slug = models.SlugField(unique=True)
-    name = TextFieldSingleLine(_('Name'), unique=True)
+    name = SingleLineTextField(_('Name'), unique=True)
 
     def get_absolute_url(self):
         return reverse('categories:category', args=[self.slug])
@@ -43,7 +40,7 @@ class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     slug = models.SlugField(unique=True)
-    name = TextFieldSingleLine(_('Name'), unique=True)
+    name = SingleLineTextField(_('Name'), unique=True)
 
     def get_absolute_url(self):
         return reverse('categories:tag', args=[self.slug])

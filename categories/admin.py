@@ -1,37 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from categories.models import Category, Tag, TextFieldSingleLine
+from categories.models import Category, Tag
 from django.contrib import admin
 from django.forms import TextInput
 
 
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['slug', 'name']}),
+    ]
     list_display = ('name', 'updated_at')
     readonly_fields = ('slug',)
     search_fields = ('name',)
 
-    formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
-    }
 
-    fieldsets = [
-        (None, {'fields': ['slug', 'name']}),
-    ]
-
-
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'updated_at')
-    readonly_fields = ('slug',)
-    search_fields = ('name',)
-
-    formfield_overrides = {
-        TextFieldSingleLine: {'widget': TextInput(attrs={'autocomplete': 'off'})},
-    }
-
     fieldsets = [
         (None, {'fields': ['slug', 'name']}),
     ]
-
-
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Tag, TagAdmin)
+    list_display = ('name', 'updated_at')
+    readonly_fields = ('slug',)
+    search_fields = ('name',)
