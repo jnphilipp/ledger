@@ -29,6 +29,7 @@ class BudgetForm(forms.ModelForm):
         ).distinct()
         self.fields['income_tags'].widget.attrs['class'] = \
             'js-example-basic-multiple'
+        self.fields['income_tags'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['consumption_tags'].empty_label = ''
         self.fields['consumption_tags'].queryset = Tag.objects.filter(
@@ -36,6 +37,7 @@ class BudgetForm(forms.ModelForm):
         ).distinct()
         self.fields['consumption_tags'].widget.attrs['class'] = \
             'js-example-basic-multiple'
+        self.fields['consumption_tags'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['insurance_tags'].empty_label = ''
         self.fields['insurance_tags'].queryset = Tag.objects.filter(
@@ -43,6 +45,7 @@ class BudgetForm(forms.ModelForm):
         ).distinct()
         self.fields['insurance_tags'].widget.attrs['class'] = \
             'js-example-basic-multiple'
+        self.fields['insurance_tags'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['savings_tags'].empty_label = ''
         self.fields['savings_tags'].queryset = Tag.objects.filter(
@@ -50,6 +53,7 @@ class BudgetForm(forms.ModelForm):
         ).distinct()
         self.fields['savings_tags'].widget.attrs['class'] = \
             'js-example-basic-multiple'
+        self.fields['savings_tags'].widget.attrs['style'] = 'width: 100%;'
 
     class Meta:
         model = Budget

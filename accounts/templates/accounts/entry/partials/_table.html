@@ -30,7 +30,7 @@
                     <td>{{ entry.day|date:"D" }}</td>
                     <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
                     <td><a href="{% url "categories:category" entry.category.slug %}">{{ entry.category }}</a></td>
-                    <td>{{ entry.additional }}</td>
+                    <td>{{ entry.additional|default_if_none:'' }}</td>
                     <td>
                         {% for tag in entry.tags.all %}
                             <a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}

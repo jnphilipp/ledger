@@ -12,15 +12,13 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ('name',)
 
-    def __init__(self, *args, **kwargs):
-        super(CategoryForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget = forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
-
     def is_valid(self):
         valid = super(CategoryForm, self).is_valid()
-        if self.has_error('name', code='unique') and len(self._errors.as_data()) == 1 and len(self._errors.as_data()['name']) == 1:
-            self._errors = ''
-            return True
+        if self.has_error('name', code='unique'):
+            if len(self._errors.as_data()) == 1:
+                if len(self._errors.as_data()['name']) == 1:
+                    self._errors = ''
+                    return True
         return valid
 
     def save(self, commit=True):
@@ -36,15 +34,13 @@ class TagForm(forms.ModelForm):
         model = Tag
         fields = ('name',)
 
-    def __init__(self, *args, **kwargs):
-        super(TagForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget = forms.TextInput(attrs={'autocomplete': 'off', 'class': 'form-control'})
-
     def is_valid(self):
         valid = super(TagForm, self).is_valid()
-        if self.has_error('name', code='unique') and len(self._errors.as_data()) == 1 and len(self._errors.as_data()['name']) == 1:
-            self._errors = ''
-            return True
+        if self.has_error('name', code='unique'):
+            if len(self._errors.as_data()) == 1:
+                if len(self._errors.as_data()['name']) == 1:
+                    self._errors = ''
+                    return True
         return valid
 
     def save(self, commit=True):
@@ -56,9 +52,43 @@ class TagForm(forms.ModelForm):
 
 
 class FilterForm(forms.Form):
-    start_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': _('Start date'), 'class': 'form-control'}), required=False)
-    end_date = forms.DateField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'placeholder': _('End date'), 'class': 'form-control'}), required=False)
-    accounts = forms.ModelMultipleChoiceField(queryset=Account.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
-    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
-    units = forms.ModelMultipleChoiceField(queryset=Unit.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple', 'style': 'width: 200px;'}))
+    start_date = forms.DateField(
+        widget=forms.TextInput(attrs={'placeholder': _('Start date')}),
+        required=False
+    )
+    end_date = forms.DateField(
+        widget=forms.TextInput(attrs={'placeholder': _('End date')}),
+        required=False
+    )
+    accounts = forms.ModelMultipleChoiceField(
+        queryset=Account.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            'class': 'js-example-basic-multiple',
+            'style': 'width: 200px;'
+        })
+    )
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            'class': 'js-example-basic-multiple',
+            'style': 'width: 200px;'
+        })
+    )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            'class': 'js-example-basic-multiple',
+            'style': 'width: 200px;'
+        })
+    )
+    units = forms.ModelMultipleChoiceField(
+        queryset=Unit.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            'class': 'js-example-basic-multiple',
+            'style': 'width: 200px;'
+        })
+    )
