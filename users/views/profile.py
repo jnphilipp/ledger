@@ -15,7 +15,8 @@ def profile(request):
         form = UserChangeForm(instance=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, _('Your profile has been successfully updated.'))
+            messages.success(request,
+                             _('Your profile has been successfully updated.'))
     else:
         form = UserChangeForm(instance=request.user)
     return render(request, 'users/profile.html', locals())

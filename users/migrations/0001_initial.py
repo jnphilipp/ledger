@@ -21,8 +21,8 @@ class Migration(migrations.Migration):
             name='Ledger',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('accounts', models.ManyToManyField(blank=True, to='accounts.Account', verbose_name='Accounts')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='User')),
             ],

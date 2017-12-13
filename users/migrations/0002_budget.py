@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
             name='Budget',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('consumption_tags', models.ManyToManyField(blank=True, related_name='consumption_tags', to='categories.Tag', verbose_name='Consumption tags')),
                 ('income_tags', models.ManyToManyField(blank=True, related_name='income_tags', to='categories.Tag', verbose_name='Income tags')),
                 ('insurance_tags', models.ManyToManyField(blank=True, related_name='insurance_tags', to='categories.Tag', verbose_name='Insurance tags')),

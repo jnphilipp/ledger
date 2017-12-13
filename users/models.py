@@ -6,11 +6,25 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Ledger(models.Model):
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created at')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Updated at')
+    )
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=_('User'))
-    accounts = models.ManyToManyField('accounts.Account', blank=True, verbose_name=_('Accounts'))
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        models.CASCADE,
+        verbose_name=_('User')
+    )
+    accounts = models.ManyToManyField(
+        'accounts.Account',
+        blank=True,
+        verbose_name=_('Accounts')
+    )
 
     def __str__(self):
         return 'Ledger-%s' % self.user
@@ -22,14 +36,44 @@ class Ledger(models.Model):
 
 
 class Budget(models.Model):
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created at')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Updated at')
+    )
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=_('User'))
-    income_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='income_tags', verbose_name=_('Income tags'))
-    consumption_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='consumption_tags', verbose_name=_('Consumption tags'))
-    insurance_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='insurance_tags', verbose_name=_('Insurance tags'))
-    savings_tags = models.ManyToManyField('categories.Tag', blank=True, related_name='savings_tags', verbose_name=_('Savings tags'))
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        models.CASCADE,
+        verbose_name=_('User')
+    )
+    income_tags = models.ManyToManyField(
+        'categories.Tag',
+        blank=True,
+        related_name='income_tags',
+        verbose_name=_('Income tags')
+    )
+    consumption_tags = models.ManyToManyField(
+        'categories.Tag',
+        blank=True,
+        related_name='consumption_tags',
+        verbose_name=_('Consumption tags')
+    )
+    insurance_tags = models.ManyToManyField(
+        'categories.Tag',
+        blank=True,
+        related_name='insurance_tags',
+        verbose_name=_('Insurance tags')
+    )
+    savings_tags = models.ManyToManyField(
+        'categories.Tag',
+        blank=True,
+        related_name='savings_tags',
+        verbose_name=_('Savings tags')
+    )
 
     def __str__(self):
         return 'Budget-%s' % self.user
