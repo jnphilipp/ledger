@@ -19,9 +19,9 @@ class Migration(migrations.Migration):
             name='Unit',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('slug', models.SlugField(max_length=2048, unique=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
+                ('slug', models.SlugField(max_length=2048, unique=True, verbose_name='Slug')),
                 ('name', ledger.fields.SingleLineTextField(unique=True, verbose_name='Name')),
                 ('symbol', ledger.fields.SingleLineTextField(unique=True, verbose_name='Symbol')),
                 ('precision', models.PositiveIntegerField(default=2, verbose_name='Precision')),

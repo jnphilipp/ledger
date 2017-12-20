@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('slug', models.SlugField(unique=True)),
-                ('name', ledger.fields.TextFieldSingleLine(unique=True, verbose_name='Name')),
+                ('name', ledger.fields.SingleLineTextField(unique=True, verbose_name='Name')),
             ],
             options={
                 'verbose_name_plural': 'Tags',
