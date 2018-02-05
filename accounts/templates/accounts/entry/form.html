@@ -100,27 +100,27 @@
 {% else %}
     {% url "accounts:standing_entry_add" as standing_entry_url %}
 {% endif %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
-    <li><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
     {% if entry %}
-        <li><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
-        <li class="active">{% trans "Edit" %}</li>
+        <li class="breadcrumb-item"><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
     {% endif %}
 {% else %}
-    <li><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
     {% if entry %}
         <li><a href="{% url "accounts:entry" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
-        <li class="active">{% trans "Edit" %}</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
     {% endif %}
 {% endif %}
 {% if not entry %}
     {% if request.path == standing_entry_url %}
-        <li class="active">{% trans "Add standing entry" %}</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans "Add standing entry" %}</li>
     {% else %}
-        <li class="active">{% trans "Add entry" %}</li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans "Add entry" %}</li>
     {% endif %}
 {% endif %}
 {% endblock %}
@@ -133,47 +133,30 @@
     {% url "accounts:standing_entry_add" as standing_entry_url %}
 {% endif %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    {% if entry %}
-                        {% trans "Edit entry" %}
-                    {% else %}
-                        {% if request.path == standing_entry_url %}
-                            {% trans "Add standing entry" %}
-                        {% else %}
-                            {% trans "Add entry" %}
-                        {% endif %}
-                    {% endif %}
-                </h1>
-            </div>
-            <div class="panel-body">
-                {% if request.path == standing_entry_url %}
-                    {% if account %}
-                        {% url "accounts:account_standing_entry_add" account.slug as form_url %}
-                    {% else %}
-                        {% url "accounts:standing_entry_add" as form_url %}
-                    {% endif %}
+    <div class="col-md-6 offset-md-3">
+        {% if request.path == standing_entry_url %}
+            {% if account %}
+                {% url "accounts:account_standing_entry_add" account.slug as form_url %}
+            {% else %}
+                {% url "accounts:standing_entry_add" as form_url %}
+            {% endif %}
+        {% else %}
+            {% if account %}
+                {% if entry %}
+                    {% url "accounts:account_entry_edit" account.slug entry.id as form_url %}
                 {% else %}
-                    {% if account %}
-                        {% if entry %}
-                            {% url "accounts:account_entry_edit" account.slug entry.id as form_url %}
-                        {% else %}
-                            {% url "accounts:account_entry_add" account.slug as form_url %}
-                        {% endif %}
-                    {% else %}
-                        {% if entry %}
-                            {% url "accounts:entry_edit" entry.id as form_url %}
-                        {% else %}
-                            {% url "accounts:entry_add" as form_url %}
-                        {% endif %}
-                    {% endif %}
+                    {% url "accounts:account_entry_add" account.slug as form_url %}
                 {% endif %}
-                {% trans "Save" as save_trans %}
-                {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
-            </div>
-        </div>
+            {% else %}
+                {% if entry %}
+                    {% url "accounts:entry_edit" entry.id as form_url %}
+                {% else %}
+                    {% url "accounts:entry_add" as form_url %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {% trans "Save" as save_trans %}
+        {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}

@@ -3,24 +3,17 @@
 
 
 {% block breadcrumbs %}
-<li class="active"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="active">{% trans "Profile" %}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Profile" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">{% trans "Profile" %}</h1>
-            </div>
-            <div class="panel-body">
-                {% trans "Save" as save_trans %}
-                {% url "users:profile" as form_url %}
-                {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
-            </div>
-        </div>
+    <div class="col-md-8 offset-md-2">
+        {% trans "Save" as save_trans %}
+        {% url "users:profile" as form_url %}
+        {% bootstrap_form form=form url=form_url btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}

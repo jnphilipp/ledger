@@ -88,49 +88,40 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
 {% endif %}
-<li class="active">{% trans "Entries" %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Entries" %}</li>
 {% endblock %}
 
 
 {% block content %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title">{% trans "Entries" %}</h1>
+<div class="row">
+    <div class="col-md-3">
+        <ul class="list-inline">
+            <li class="list-inline-item align-top"><b>{% trans "Balance" %}:</b></li>
+            <li class="list-inline-item">{% balance entry_list %}</li>
+        </ul>
     </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-3">
-                <h5>
-                    <b>{% trans "Balance" %}:</b>
-                    {% balance entry_list %}
-                </h5>
-            </div>
-            <div class="col-md-6 text-center">
-                {% if account %}
-                    {% url "accounts:account_entries" account.slug as form_url %}
-                {% else %}
-                    {% url "accounts:entries" as form_url %}
-                {% endif %}
-                {% trans "Filter" as filter_trans %}
-                {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" btn_title=filter_trans %}
-            </div>
-           <div class="col-md-3 text-right">
-                {% if show_options %}
-                    <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_entry_add" account.slug %}{% else %}{% url "accounts:entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add entry" %}</a>
-                    <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_standing_entry_add" account.slug %}{% else %}{% url "accounts:standing_entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add standing entry" %}</a>
-                {% endif %}
-            </div>
-        </div>
+    <div class="col-md-6 text-center">
+        {% if account %}
+            {% url "accounts:account_entries" account.slug as form_url %}
+        {% else %}
+            {% url "accounts:entries" as form_url %}
+        {% endif %}
+        {% trans "Filter" as filter_trans %}
+        {% bootstrap_form form=form url=form_url type="inline" labels=False btn_title=filter_trans %}
     </div>
-    {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=show_options %}
-    <div class="panel-body">
-        {% trans "Entries" as pagination_title %}
-        {% pagination paginator entries pagination_title %}
+   <div class="col-md-3 text-right">
+        {% if show_options %}
+            <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_entry_add" account.slug %}{% else %}{% url "accounts:entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add entry" %}</a>
+            <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_standing_entry_add" account.slug %}{% else %}{% url "accounts:standing_entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add standing entry" %}</a>
+        {% endif %}
     </div>
 </div>
+{% include "accounts/entry/partials/_table.html" with account=account entries=entries options=show_options %}
+{% trans "Entries" as pagination_title %}
+{% pagination paginator entries pagination_title %}
 {% endblock %}

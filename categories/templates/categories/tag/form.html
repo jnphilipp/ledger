@@ -3,39 +3,27 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></li>
 {% if tag %}
-    <li><a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a></li>
-    <li class="active">{% trans "Edit" %}</li>
+    <li class="breadcrumb-item"><a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {% else  %}
-    <li class="active">{% trans "Add tag" %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Add tag" %}</li>
 {% endif %}
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    {% if tag %}
-                        {% trans "Edit tag" %}
-                    {% else %}
-                        {% trans "Add tag" %}
-                    {% endif %}
-                </h1>
-            </div>
-            <div class="panel-body">
-                {% if tag %}
-                    {% url "categories:tag_edit" tag.slug as form_url %}
-                {% else %}
-                    {% url "categories:tag_add" as form_url %}
-                {% endif %}
-                {% bootstrap_form form=form url=form_url %}
-            </div>
-        </div>
+    <div class="col-md-6 offset-md-3">
+        {% if tag %}
+            {% url "categories:tag_edit" tag.slug as form_url %}
+        {% else %}
+            {% url "categories:tag_add" as form_url %}
+        {% endif %}
+        {% trans "Save" as save_trans %}
+        {% bootstrap_form form=form url=form_url btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}

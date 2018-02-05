@@ -5,7 +5,7 @@
         {{ value|get_item:'balance' }} (<b>{% trans 'Outstanding' %}</b>: {{ value|get_item:'outstanding' }})
     {% endwith %}
 {% else %}
-    <ul>
+    <ul class="list-unstyled">
         {% for value in values %}
             <li>{{ value|get_item:'balance' }} (<b>{% trans 'Outstanding' %}</b>: {{ value|get_item:'outstanding' }})</li>
         {% endfor %}

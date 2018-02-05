@@ -9,102 +9,109 @@
         <link rel="shortcut icon" href="{% static "images/logo.png" %}"/>
         {% bootstrap_css %}
         {% bootstrap_js %}
+        <link rel="stylesheet" media="all" href="{% static "css/fontawesome-all.min.css" %}"/>
         <link rel="stylesheet" media="all" href="{% static "css/ledger.css" %}"/>
         <title>{% block title %}ledger{% endblock %}</title>
         {% block extrahead %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
-                        <span class="sr-only">{% trans "Toggle navigation" %}</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{% url "dashboard" %}">
-                        <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>ledger
-                    </a>
-                </div>
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{% url "dashboard" %}">
+                <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/> ledger
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="collapse navbar-collapse" id="navbar-collapse">
-                    {% if user.is_authenticated %}
-                        <ul class="nav navbar-nav">
-                            {% url "accounts:accounts" as accounts_url %}
-                            {% url "accounts:entries" as entries_url %}
-                            <li class="dropdown{% if request.path|startswith:entries_url or request.path|startswith:accounts_url %} active{% endif %}">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">{% trans "Accounts" %} {% if request.path|startswith:entries_url or request.path|startswith:accounts_url %} <span class="sr-only">(current)</span>{% endif %} <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    {% for account in user.ledger.accounts.all %}
-                                        {% url "accounts:account" account.slug as account_url %}
-                                        <li {% if request.path|startswith:account_url %}class="active"{% endif %}>
-                                            <a href="{{ account_url }}">
-                                                {{ account.name }}
-                                                {% if request.path|startswith:account_url %}<span class="sr-only">(current)</span>{% endif %}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                    {% if user.ledger.accounts.count > 0 %}
-                                        <li role="separator" class="divider"></li>
-                                    {% endif %}
-                                    <li><a href="{% url "accounts:account_add" %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add account" %}</a></li>
-                                </ul>
-                            </li>
-                            {% url "categories:categories" as categories_url %}
-                            <li {% if request.path|startswith:categories_url %}class="active"{% endif %}><a href="{{ categories_url }}">{% trans "Categories" %}{% if request.path|startswith:categories_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
-                            {% url "categories:tags" as tags_url %}
-                            <li {% if request.path|startswith:tags_url %} class="active"{% endif %}><a href="{{ tags_url }}">{% trans "Tags" %}{% if request.path|startswith:tags_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
-                            {% url "users:budget" as budget_url %}
-                            <li {% if request.path|startswith:budget_url %}class="active"{% endif %}><a href="{{ budget_url }}">{% trans "Budget" %}{% if request.path|startswith:budget_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
-                            {% url "users:statistics" as statistics_url %}
-                            <li {% if request.path|startswith:statistics_url %}class="active"{% endif %}><a href="{{ statistics_url }}">{% trans "Statistics" %}{% if request.path|startswith:statistics_url %} <span class="sr-only">(current)</span>{% endif %}</a></li>
-                        </ul>
-                    {% endif %}
+            <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
+                {% if user.is_authenticated %}
+                    <ul class="navbar-nav">
+                        {% url "accounts:accounts" as accounts_url %}
+                        {% url "accounts:entries" as entries_url %}
+                        <li class="nav-item dropdown{% if request.path|startswith:entries_url or request.path|startswith:accounts_url %} active{% endif %}">
+                            <a class="nav-link dropdown-toggle" href="#" id="accountsDropdown" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">
+                                {% trans "Accounts" %}
+                                {% if request.path|startswith:entries_url or request.path|startswith:accounts_url %}<span class="sr-only">(current)</span>{% endif %}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="accountsDropdown">
+                                {% for account in user.ledger.accounts.all %}
+                                    {% url "accounts:account" account.slug as account_url %}
+                                    <a class="dropdown-item{% if request.path|startswith:account_url %} active{% endif %}" href="{{ account_url }}">
+                                        {{ account.name }}
+                                        {% if request.path|startswith:account_url %}<span class="sr-only">(current)</span>{% endif %}
+                                    </a>
+                                {% endfor %}
+                                {% if user.ledger.accounts.count > 0 %}
+                                    <div class="dropdown-divider"></div>
+                                {% endif %}
+                                <a class="dropdown-item" href="{% url "accounts:account_add" %}">{% trans "Add account" %}</a>
+                            </div>
+                        </li>
+                        {% url "categories:categories" as categories_url %}
+                        <a class="nav-link{% if request.path|startswith:categories_url %} active{% endif %}" href="{{ categories_url }}">
+                            {% trans "Categories" %}
+                            {% if request.path|startswith:categories_url %}<span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                        {% url "categories:tags" as tags_url %}
+                        <a class="nav-link{% if request.path|startswith:tags_url %} active{% endif %}" href="{{ tags_url }}">
+                            {% trans "Tags" %}
+                            {% if request.path|startswith:tags_url %}<span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                        {% url "users:budget" as budget_url %}
+                        <a class="nav-link{% if request.path|startswith:budget_url %} active{% endif %}" href="{{ budget_url }}">
+                            {% trans "Budget" %}
+                            {% if request.path|startswith:budget_url %}<span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                        {% url "users:statistics" as statistics_url %}
+                        <a class="nav-link{% if request.path|startswith:statistics_url %} active{% endif %}" href="{{ statistics_url }}">
+                            {% trans "Statistics" %}
+                            {% if request.path|startswith:statistics_url %}<span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </ul>
+                {% endif %}
 
-                    {% if user.is_authenticated %}
-                        <ul class="nav navbar-nav navbar-right">
-                            {% url "users:users" as users_url %}
-                            <li class="dropdown{% if request.path|startswith:users_url %} active{% endif %}">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <b>{{ user.get_short_name|default:user.get_username }}</b>
-                                    <span class="caret"></span>
+                {% if user.is_authenticated %}
+                    <ul class="navbar-nav ml-auto">
+                        {% url "users:users" as users_url %}
+                        <li class="nav-item dropdown{% if request.path|startswith:users_url %} active{% endif %}">
+                            <a class="nav-link dropdown-toggle" href="#" id="profilesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <b>{{ user.get_short_name|default:user.get_username }}</b>
+                                {% if request.path|startswith:users_url %}<span class="sr-only">(current)</span>{% endif %}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="profilesDropdown">
+                                {% url "users:profile" as profile_url %}
+                                <a class="dropdown-item{% if request.path|startswith:profile_url %} active{% endif %}" href="{{ profile_url }}">
+                                    {% trans "Profile" %}
+                                    {% if request.path|startswith:profile_url %}<span class="sr-only">(current)</span>{% endif %}
                                 </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    {% url "users:profile" as profile_url %}
-                                    <li{% if request.path|startswith:profile_url %} class="active"{% endif %}>
-                                        <a href="{{ profile_url }}">
-                                            <span class="glyphicon glyphicon-user"></span>
-                                            {% trans "Profile" %}
-                                            {% if request.path|startswith:profile_url %}<span class="sr-only">(current)</span>{% endif %}
-                                        </a>
-                                    </li>
-                                    {% if user.is_staff %}
-                                        <li role="separator" class="divider"></li>
-                                        <li><a href="{% url "admin:index" %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Admin" %}</a></li>
-                                    {% endif %}
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="{% url "users:signout" %}"><span class="glyphicon glyphicon-log-out"></span> {% trans "Sign out" %}</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    {% else %}
-                        <div class="nav navbar-right" style="margin-right: 3px;">
-                            <a href="{% url "users:signup" %}" class="btn btn-success navbar-btn" role="button"><span class="glyphicon glyphicon-expand"></span> {% trans "Sign up" %}</a>
-                            <a href="{% url "users:signin" %}" class="btn btn-primary navbar-btn" role="button"><span class="glyphicon glyphicon-log-in"></span> {% trans "Sign in" %}</a>
-                        </div>
-                    {% endif %}
-                </div>
+                                {% if user.is_staff %}
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url "admin:index" %}">{% trans "Admin" %}</a>
+                                {% endif %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url "users:signout" %}">{% trans "Sign out" %}</a>
+                            </ul>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-success" href="{% url "users:signup" %}" role="button">{% trans "Sign up" %}</a>
+                            <a class="btn btn-outline-primary" href="{% url "users:signin" %}" role="button">{% trans "Sign in" %}</a>
+                        </li>
+                    </ul>
+                {% endif %}
             </div>
         </nav>
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <ol class="breadcrumb">
-                        {% block breadcrumbs %}{% endblock %}
-                    </ol>
+                <div class="col-md-10 offset-md-1">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            {% block breadcrumbs %}{% endblock %}
+                        </ol>
+                    </nav>
                     {% messages %}
                 </div>
             </div>

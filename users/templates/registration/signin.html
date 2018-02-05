@@ -3,24 +3,22 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
-<li class="active">{% trans "Sign in" %}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Sign in" %}</li>
 {% endblock %}
 
 
 {% block content %}
-<div class="row" style="margin-top: 5%;">
-    <div class="col-md-4 col-md-offset-4">
-        <h1 class="text-center">
-            <small><span class="glyphicon glyphicon-lock"></span></small> ledger
-        </h1>
+<div class="row mt-md-5">
+    <div class="col-md-4 offset-md-4">
+        <h1 class="text-center">ledger</h1>
     </div>
 </div>
-<div class="row" style="margin-top: 20px;">
-    <div class="col-md-2 col-md-offset-5">
+<div class="row mt-md-5">
+    <div class="col-md-2 offset-md-5">
         {% trans "Sign in" as sign_in_trans %}
-        {% bootstrap_form form=form type="vertical" url="?next="|add:gnext btn_title=sign_in_trans glyphicon="glyphicon glyphicon-log-in" %}
+        {% bootstrap_form form=form type="vertical" url="?next="|add:gnext btn_title=sign_in_trans %}
         <script type="text/javascript">
             $("#id_username").focus();
         </script>

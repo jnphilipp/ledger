@@ -3,32 +3,25 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "units:units" %}">{% trans "Units" %}</a></li>
-<li class="active">{{ unit.name }}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "units:units" %}">{% trans "Units" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ unit.name }}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">{{ unit.name }}</h1>
-            </div>
-            <div class="panel-body">
-                <dl class="dl-horizontal">
-                    <dt>{% trans "Created at" %}</dt>
-                    <dd>{{ unit.created_at|date:"r" }}</dd>
-                    <dt>{% trans "Last updated at" %}</dt>
-                    <dd>{{ unit.updated_at|date:"r" }}</dd>
-                    <dt>{% trans "Symbol" %}</dt>
-                    <dd>{{ unit.symbol }}</dd>
-                    <dt>{% trans "Precision" %}</dt>
-                    <dd>{{ unit.precision }}</dd>
-                </dl>
-            </div>
-        </div>
+    <div class="col-md-6 offset-md-3">
+        <dl class="row">
+            <dt class="col-md-3">{% trans "Created at" %}</dt>
+            <dd class="col-md-9">{{ unit.created_at|date:"r" }}</dd>
+            <dt class="col-md-3">{% trans "Last updated at" %}</dt>
+            <dd class="col-md-9">{{ unit.updated_at|date:"r" }}</dd>
+            <dt class="col-md-3">{% trans "Symbol" %}</dt>
+            <dd class="col-md-9">{{ unit.symbol }}</dd>
+            <dt class="col-md-3">{% trans "Precision" %}</dt>
+            <dd class="col-md-9">{{ unit.precision }}</dd>
+        </dl>
     </div>
 </div>
 {% endblock%}

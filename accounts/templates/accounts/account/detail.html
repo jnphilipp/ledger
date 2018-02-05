@@ -11,189 +11,199 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-<li class="active">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">
+    {{ account.name }}
+        {% if account.closed %}<small>{% trans "Closed" %}</small>
+    {% endif %}
+</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
     <div class="col-md-12 text-right">
-        <h1>
-            <a href="{% url "accounts:account_edit" account.slug  %}" class="btn btn-primary" role="button">
-                <span class="glyphicon glyphicon-pencil"></span>
-                {% trans "Edit account" %}
-            </a>
-            {% if account.closed %}
-                <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-primary" role="button">
-                    <span class="glyphicon glyphicon-folder-open"></span>
-                    {% trans "Re-open account" %}
-                </a>
-            {% else %}
-                <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-primary" role="button">
-                    <span class="glyphicon glyphicon-folder-close"></span>
-                    {% trans "Close account" %}
-                </a>
-            {% endif %}
-            <a href="{% url "accounts:account_delete" account.slug  %}" class="btn btn-danger" role="button">
-                <span class="glyphicon glyphicon-trash"></span>
-                {% trans "Delete account" %}
-            </a>
-        </h1>
+        <a href="{% url "accounts:account_edit" account.slug  %}" class="btn btn-primary" role="button">{% trans "Edit account" %}</a>
+        {% if account.closed %}
+            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-primary" role="button">{% trans "Re-open account" %}</a>
+        {% else %}
+            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-primary" role="button">{% trans "Close account" %}</a>
+        {% endif %}
+        <a href="{% url "accounts:account_delete" account.slug  %}" class="btn btn-danger" role="button">{% trans "Delete account" %}</a>
+    </div>
+</div>
+<div class="row mt-md-2">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
+                <dl class="row">
+                    <dt class="col-md-2">{% trans "Created at" %}</dt>
+                    <dd class="col-md-10">{{ account.created_at|date:"r" }}</dd>
+                    <dt class="col-md-2">{% trans "Last updated at" %}</dt>
+                    <dd class="col-md-10">{{ account.updated_at|date:"r" }}</dd>
+                    <dt class="col-md-2">{% trans "Users" %}</dt>
+                    <dd class="col-md-10">
+                        {% for l in account.ledgers.all %}
+                            {{ l.user.username }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </dd>
+                    <dt class="col-md-2">{% trans "Category" %}</dt>
+                    <dd class="col-md-10"><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
+                    <dt class="col-md-2">{% trans "Unit" %}</dt>
+                    <dd class="col-md-10"><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
+                </dl>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    {{ account.name }}
-                    {% if account.closed %}
-                        <small>{% trans "Closed" %}</small>
-                    {% endif %}
-                    <a class="collapse-link" data-toggle="collapse" data-target="#collapse-details" href="#collapse-details"></a>
-                </h1>
-            </div>
-            <div id="collapse-details" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
-                    <dl class="dl-horizontal">
-                        <dt>{% trans "Created at" %}</dt>
-                        <dd>{{ account.created_at|date:"r" }}</dd>
-                        <dt>{% trans "Last updated at" %}</dt>
-                        <dd>{{ account.updated_at|date:"r" }}</dd>
-                        <dt>{% trans "Users" %}</dt>
-                        <dd>
-                            {% for l in account.ledgers.all %}
-                                {{ l.user.username }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </dd>
-                        <dt>{% trans "Category" %}</dt>
-                        <dd><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
-                        <dt>{% trans "Unit" %}</dt>
-                        <dd><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
-                    </dl>
+    <div class="col-md-12 mt-md-2">
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingEntries">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="true" aria-controls="collapseEntries">
+                            {% trans "Entries" %}
+                        </button>
+                        <a class="btn btn-link float-right" href="{% url "accounts:account_entries" account.slug %}">{% trans "View all" %}</a>
+                    </h5>
                 </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a>
-                    <a class="collapse-link" data-toggle="collapse" data-target="#collapse-entries" href="#collapse-entries"></a>
-                </h1>
-            </div>
-            <div id="collapse-entries" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <b>{% trans "Balance" %}:</b> {{ account|balance }} (<b>{% trans "Outstanding"%}:</b> {{ account|outstanding }})
-                    {% if not account.closed %}
-                        <div class="pull-right">
-                            <a class="btn btn-primary" href="{% url "accounts:account_entry_add" account.slug %}" role="button">
-                                <span class="glyphicon glyphicon-plus"></span>
-                                {% trans "Add entry" %}
-                            </a>
-                            <a class="btn btn-primary" href="{% url "accounts:account_standing_entry_add" account.slug %}">
-                                <span class="glyphicon glyphicon-plus"></span>
-                                {% trans "Add standing entry" %}
-                            </a>
+                <div id="collapseEntries" class="collapse show" aria-labelledby="headingEntries" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <b>{% trans "Balance" %}:</b> {{ account|balance }} (<b>{% trans "Outstanding"%}:</b> {{ account|outstanding }})
+                                {% if not account.closed %}
+                                    <div class="float-right">
+                                        <a class="btn btn-primary" href="{% url "accounts:account_entry_add" account.slug %}" role="button">{% trans "Add entry" %}</a>
+                                        <a class="btn btn-primary" href="{% url "accounts:account_standing_entry_add" account.slug %}" role="button">{% trans "Add standing entry" %}</a>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
-                    {% endif %}
-                </div>
-                {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=False %}
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url "accounts:account_statements" account.slug %}">{% trans "Statements" %}</a>
-                    <a class="collapse-link" data-toggle="collapse" data-target="#collapse-statements" href="#collapse-statements"></a>
-                </h1>
-            </div>
-            <div id="collapse-statements" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <div class="pull-right">
-                        <a class="btn btn-primary" href="{% url "files:add" content_type.pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
-                            <span class="glyphicon glyphicon-upload"></span>
-                            {% trans "Upload file" %}
-                        </a>
+                        <div class="row">
+                            <div class="col-md-12 mt-md-2">
+                                {% include "accounts/entry/partials/_table.html" with account=account entries=entries options=False %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                {% include "files/file/partials/_table.html" with files=statements options=False %}
             </div>
+            <div class="card">
+                <div class="card-header" id="headingAccounts">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseAccounts" aria-expanded="false" aria-controls="collapseAccounts">
+                            {% trans "Statements" %}
+                        </button>
+                        <a class="btn btn-link float-right" href="{% url "accounts:account_statements" account.slug %}">{% trans "View all" %}</a>
+                    </h5>
+                </div>
+                <div id="collapseAccounts" class="collapse" aria-labelledby="headingAccounts" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="float-right">
+                                    <a class="btn btn-primary" href="{% url "files:add" content_type.pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">{% trans "Upload file" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mt-md-2">
+                                {% include "files/file/partials/_table.html" with files=statements options=False %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if account.entries.exists %}
+                <div class="card">
+                    <div class="card-header" id="headingStatisticsCategories">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseStatisticsCategories" aria-expanded="false" aria-controls="collapseStatisticsCategories">
+                                {% trans "Statistics" %}
+                                <small class="text-muted">{% trans "Categories" %}</small>
+                            </button>
+                            <a class="btn btn-link float-right" href="{% url "accounts:account_statistics" account.slug %}?chart=categories">{% trans "View" %}</a>
+                        </h5>
+                    </div>
+                    <div id="collapseStatisticsCategories" class="collapse" aria-labelledby="headingStatisticsCategories" data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="ascchart" style="min-width: 310px; height: 500px;"></div>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
+                                    statistics(ascchart_url, "ascchart");
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingStatisticsTags">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseStatisticsTags" aria-expanded="false" aria-controls="collapseStatisticsTags">
+                                {% trans "Statistics" %}
+                                <small class="text-muted">{% trans "Tags" %}</small>
+                            </button>
+                            <a class="btn btn-link float-right" href="{% url "accounts:account_statistics" account.slug %}?chart=tags">{% trans "View" %}</a>
+                        </h5>
+                    </div>
+                    <div id="collapseStatisticsTags" class="collapse" aria-labelledby="headingStatisticsTags" data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="astchart" style="min-width: 310px; height: 500px;"></div>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
+                                    statistics(astchart_url, "astchart");
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingCategories">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">
+                                {% trans "Categories" %}
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseCategories" class="collapse" aria-labelledby="headingCategories" data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="cchart" style="min-width: 310px; height: 500px;"></div>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
+                                    categories(cchart_url, "cchart");
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTags">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">
+                                {% trans "Tags" %}
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTags" class="collapse" aria-labelledby="headingTags" data-parent="#accordion">
+                        <div class="card-body">
+                            <div id="tchart" style="min-width: 310px; height: 500px;"></div>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";
+                                    tags(tchart_url, "tchart");
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-        {% if account.entries.exists %}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">
-                        <a href="{% url "accounts:account_statistics" account.slug %}?chart=categories">{% trans "Statistics" %}</a>
-                        <small>{% trans "Categories" %}</small>
-                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-categories-statistics" href="#collapse-categories-statistics"></a>
-                    </h1>
-                </div>
-                <div id="collapse-categories-statistics" class="panel-collapse collapse in">
-                    <div class="panel-body" id="ascchart" style="min-width: 310px; height: 400px;"></div>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
-                            statistics(ascchart_url, "ascchart");
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">
-                        <a href="{% url "accounts:account_statistics" account.slug %}?chart=tags">{% trans "Statistics" %}</a>
-                        <small>{% trans "Tags" %}</small>
-                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-tags-statistics" href="#collapse-tags-statistics"></a>
-                    </h1>
-                </div>
-                <div id="collapse-tags-statistics" class="panel-collapse collapse in">
-                    <div class="panel-body" id="astchart" style="min-width: 310px; height: 400px;"></div>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
-                            statistics(astchart_url, "astchart");
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">
-                        <a href="{% url "categories:categories" %}">{% trans "Categories" %}</a>
-                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-categories" href="#collapse-categories"></a>
-                    </h1>
-                </div>
-                <div id="collapse-categories" class="panel-collapse collapse in">
-                    <div class="panel-body" id="cchart" style="min-width: 310px; height: 400px;"></div>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
-                            categories(cchart_url, "cchart");
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h1 class="panel-title">
-                        <a href="{% url "categories:tags" %}">{% trans "Tags" %}</a>
-                        <a class="collapse-link" data-toggle="collapse" data-target="#collapse-tags" href="#collapse-tags"></a>
-                    </h1>
-                </div>
-                <div id="collapse-tags" class="panel-collapse collapse in">
-                    <div class="panel-body" id="tchart" style="min-width: 310px; height: 400px;"></div>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";
-                            tags(tchart_url, "tchart");
-                        });
-                    </script>
-                </div>
-            </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

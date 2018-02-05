@@ -9,78 +9,103 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "categories:categories" %}">{% trans "Categories" %}</a></li>
-<li class="active">{{ category.name }}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:categories" %}">{% trans "Categories" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
     <div class="col-md-12 text-right">
-        <h1>
-            <a href="{% url "categories:category_edit" category.slug  %}" class="btn btn-primary" role="button">
-                <span class="glyphicon glyphicon-pencil"></span>
-                {% trans "Edit category" %}
-            </a>
-            <a href="{% url "categories:category_delete" category.slug  %}" class="btn btn-danger" role="button">
-                <span class="glyphicon glyphicon-trash"></span>
-                {% trans "Delete category" %}
-            </a>
-        </h1>
+        <a href="{% url "categories:category_edit" category.slug  %}" class="btn btn-primary" role="button">{% trans "Edit category" %}</a>
+        <a href="{% url "categories:category_delete" category.slug  %}" class="btn btn-danger" role="button">{% trans "Delete category" %}</a>
     </div>
 </div>
-<div class="row">
+<div class="row mt-md-2">
     <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">{{ category.name }}</h1>
-            </div>
-            <div class="panel-body">
-                <dl class="dl-horizontal">
-                    <dt>{% trans "Created at" %}</dt>
-                    <dd>{{ category.created_at|date:"r" }}</dd>
-                    <dt>{% trans "Last updated at" %}</dt>
-                    <dd>{{ category.updated_at|date:"r" }}</dd>
-                    <dt>{% trans "Total" %}</dt>
-                    <dd>{% balance entry_list %}</dd>
-                </dl>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    <a href="{% url "categories:category_statistics" category.slug %}">{% trans "Statistics" %}</a>
-                    {% if year %}<small><a href="{% url "categories:category" category.slug %}">{{ year }}</a></small>{% endif %}
-                </h1>
-            </div>
-            <div class="panel-body">
-                {% if years %}
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans "Select a year" %} <span class="caret"></span>
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" id="headingDetails">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">
+                            {% trans "Details" %}
                         </button>
-                        <ul class="dropdown-menu">
-                            {% for year in years %}
-                                <li><a href="?year={{ year }}">{{ year }}</a></li>
-                            {% endfor %}
-                        </ul>
+                    </h5>
+                </div>
+                <div id="collapseDetails" class="collapse{% if not year %} show{% endif %}" aria-labelledby="headingDetails" data-parent="#accordion">
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-md-3">{% trans "Created at" %}</dt>
+                            <dd class="col-md-9">{{ category.created_at|date:"r" }}</dd>
+                            <dt class="col-md-3">{% trans "Last updated at" %}</dt>
+                            <dd class="col-md-9">{{ category.updated_at|date:"r" }}</dd>
+                            <dt class="col-md-3">{% trans "Total" %}</dt>
+                            <dd class="col-md-9">{% balance entry_list %}</dd>
+                        </dl>
                     </div>
-                {% endif %}
+                </div>
             </div>
-            <div class="panel-body" id="mchart" style="min-width: 310px; height: 500px;"></div>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    var url = "{% url "categories:category_chart_statistics" category.slug %}{% if year %}?year={{ year }}{% endif %}";
-                    statistics(url, "mchart");
-                });
-            </script>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title"><a href="{% url "categories:category_entries" category.slug %}">{% trans "Entries" %}</a></h1>
+            <div class="card">
+                <div class="card-header" id="headingStatistics">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="true" aria-controls="collapseStatistics">
+                            {% trans "Statistics" %}
+                            {% if year %}<small><a href="{% url "categories:category" category.slug %}">{{ year }}</a></small>{% endif %}
+                        </button>
+                        <a class="btn btn-link float-right" href="{% url "categories:category_statistics" category.slug %}">{% trans "View" %}</a>
+                    </h5>
+                </div>
+                <div id="collapseStatistics" class="collapse{% if year %} show{% endif %}" aria-labelledby="headingStatistics" data-parent="#accordion">
+                    <div class="card-body">
+                        {% if years %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="dropdown show">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownYears" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {% trans "Select a year" %}
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownYears">
+                                            {% for year in years %}
+                                                <a class="dropdown-item" href="?year={{ year }}">{{ year }}</a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-md-2">
+                        {% else %}
+                            <div class="row">
+                        {% endif %}
+                                <div class="col-md-12">
+                                    <div id="mchart" style="min-width: 310px; height: 500px;"></div>
+                                    <script type="text/javascript">
+                                        $(document).ready(function() {
+                                            var url = "{% url "categories:category_chart_statistics" category.slug %}{% if year %}?year={{ year }}{% endif %}";
+                                            statistics(url, "mchart");
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% include "accounts/entry/partials/_table.html" with entries=entries options=False %}
+            <div class="card">
+                <div class="card-header" id="headingEntries">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="true" aria-controls="collapseEntries">
+                            {% trans "Entries" %}
+                        </button>
+                        <a class="btn btn-link float-right" href="{% url "categories:category_entries" category.slug %}">{% trans "View all" %}</a>
+                    </h5>
+                </div>
+                <div id="collapseEntries" class="collapse" aria-labelledby="headingEntries" data-parent="#accordion">
+                    <div class="card-body">
+                        {% include "accounts/entry/partials/_table.html" with entries=entries options=False %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -2,7 +2,7 @@
 
 
 <div class="table-responsive">
-    <table class="table table-bordered table-condensed table-hover table-striped">
+    <table class="table table-bordered table-sm table-hover table-striped">
         <thead>
             <tr>
                 {% trans "Name" as name_trans %}
@@ -24,8 +24,8 @@
                     <td>{{ file.updated_at|date:"l, d. F Y" }}</td>
                     {% if options %}
                         <td>
-                            <a href="{% url "files:edit" file.slug %}" title="{% trans "Edit file" %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a href="{% url "files:delete" file.slug %}" title="{% trans "Delete file" %}"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a href="{% url "files:edit" file.slug %}" title="{% trans "Edit file" %}"><span class="fas fa-edit"></span></a>
+                            <a href="{% url "files:delete" file.slug %}" title="{% trans "Delete file" %}"><span class="fas fa-trash"></span></a>
                         </td>
                     {% endif %}
                 </tr>

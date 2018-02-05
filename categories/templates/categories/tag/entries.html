@@ -84,37 +84,28 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></li>
-<li><a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a></li>
-<li class="active">{% trans "Entries" %}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Entries" %}</li>
 {% endblock %}
 
 
 {% block content %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title">{% trans "Entries" %}</h1>
+<div class="row">
+    <div class="col-md-3">
+        <ul class="list-inline">
+            <li class="list-inline-item align-top"><b>{% trans "Total" %}:</b></li>
+            <li class="list-inline-item">{% balance entry_list %}</li>
+        </ul>
     </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-3">
-                <h5>
-                    <b>{% trans "Total" %}:</b>
-                    {% balance entry_list %}
-                </h5>
-            </div>
-            <div class="col-md-6 text-center">
-                {% trans "Filter" as filter_trans %}
-                {% url "categories:tag_entries" tag.slug as form_url %}
-                {% bootstrap_form form=form url=form_url type="inline" labels=False glyphicon="glyphicon glyphicon-search" btn_title=filter_trans %}
-            </div>
-        </div>
-    </div>
-    {% include "accounts/entry/partials/_table.html" with entries=entries options=True %}
-     <div class="panel-body">
-        {% trans "Entries" as pagination_title %}
-        {% pagination paginator entries pagination_title %}
+    <div class="col-md-9 text-center">
+        {% trans "Filter" as filter_trans %}
+        {% url "categories:tag_entries" tag.slug as form_url %}
+        {% bootstrap_form form=form url=form_url type="inline" labels=False btn_title=filter_trans %}
     </div>
 </div>
+{% include "accounts/entry/partials/_table.html" with entries=entries options=True %}
+{% trans "Entries" as pagination_title %}
+{% pagination paginator entries pagination_title %}
 {% endblock %}

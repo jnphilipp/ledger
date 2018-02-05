@@ -2,7 +2,7 @@
 
 
 <div class="table-responsive">
-    <table class="table table-bordered table-condensed table-hover table-striped">
+    <table class="table table-bordered table-sm table-hover table-striped">
         <thead>
             <tr>
                 <th>{% trans "Account" %}</th>
@@ -20,9 +20,9 @@
                     <th><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></th>
                     <td class="text-center">
                         {% if account.closed %}
-                            <span class="glyphicon glyphicon-ok"></span>
+                            {% trans "yes" %}
                         {% else %}
-                            <span class="glyphicon glyphicon-remove"></span>
+                            {% trans "no" %}
                         {% endif %}
                     </td>
                     <td class="text-right">{{ account|balance }}</td>

@@ -15,38 +15,41 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "categories:categories" %}">{% trans "Categories" %}</a></li>
-<li><a href="{% url "categories:category" category.slug %}">{{ category.name }}</a></li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:categories" %}">{% trans "Categories" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:category" category.slug %}">{{ category.name }}</a></li>
 {% if year %}
-    <li><a href="{% url "categories:category_statistics" category.slug %}">{% trans "Statistics" %}</a></li>
-    <li class="active">{{ year }}</li>
+    <li class="breadcrumb-item"><a href="{% url "categories:category_statistics" category.slug %}">{% trans "Statistics" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ year }}</li>
 {% else %}
-    <li class="active">{% trans "Statistics" %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Statistics" %}</li>
 {% endif %}
 {% endblock %}
 
 
+
 {% block content %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title">
-            {% trans "Statistics" %}
-            {% if year %}<small>{{ year }}</small>{% endif %}
-        </h1>
-    </div>
-    <div class="panel-body">
-        {% if years %}
-            <div class="btn-group" style="margin-left: 5px;">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{% trans "Select a year" %} <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu">
+{% if years %}
+    <div class="row">
+        <div class="col-md-2">
+            <div class="dropdown show">
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownYears" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% trans "Select a year" %}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownYears">
                     {% for year in years %}
-                        <li><a href="{% url "categories:category_statistics" category.slug %}?year={{ year }}">{{ year }}</a></li>
+                        <a class="dropdown-item" href="{% url "categories:category_statistics" category.slug %}?year={{ year }}">{{ year }}</a>
                     {% endfor %}
-                </ul>
+                </div>
             </div>
-        {% endif %}
-        <div id="chart" style="min-width: 310px; height: 770px;"></div>
+        </div>
+    </div>
+    <div class="row mt-md-2">
+{% else %}
+    <div class="row">
+{% endif %}
+    <div class="col-md-12">
+        <div id="chart" style="min-width: 310px; height: 800px;"></div>
     </div>
 </div>
 {% endblock %}

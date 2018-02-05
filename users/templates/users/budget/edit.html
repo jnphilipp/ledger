@@ -67,25 +67,18 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "users:budget" %}">{% trans "Budget" %}</a></li>
-<li class="active">{% trans "Edit" %}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "users:budget" %}">{% trans "Budget" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">{% trans "Edit budget" %}</h1>
-            </div>
-            <div class="panel-body">
-                {% trans "Save" as save_trans %}
-                {% url "users:budget_edit" as form_url %}
-                {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
-            </div>
-        </div>
+    <div class="col-md-6 offset-md-3">
+        {% trans "Save" as save_trans %}
+        {% url "users:budget_edit" as form_url %}
+        {% bootstrap_form form=form url=form_url btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}

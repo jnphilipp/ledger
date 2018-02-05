@@ -3,23 +3,17 @@
 
 
 {% block breadcrumbs %}
-<li class="active"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
-<li class="active">{% trans "Sign up" %}</li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Sign up" %}</li>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">{% trans "Register for ledger" %}</h1>
-            </div>
-        <div class="panel-body">
-            {% trans "Sign up" as sign_up_trans %}
-            {% bootstrap_form form=form btn_title=sign_up_trans %}
-        </div>
+    <div class="col-md-6 offset-md-3">
+        {% trans "Sign up" as sign_up_trans %}
+        {% bootstrap_form form=form btn_title=sign_up_trans %}
     </div>
 </div>
 {% endblock%}

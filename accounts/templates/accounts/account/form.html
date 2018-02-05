@@ -44,40 +44,27 @@
 
 
 {% block breadcrumbs %}
-<li><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
 {% if account %}
-    <li><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
-    <li class="active">{% trans "Edit" %}</li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {% else %}
-    <li class="active">{% trans "Add account" %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Add account" %}</li>
 {% endif %}
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1 class="panel-title">
-                    {% if account %}
-                        {% trans "Edit account" %}
-                    {% else %}
-                        {% trans "Add account" %}
-                    {% endif %}
-                </h1>
-            </div>
-            <div class="panel-body">
-                {% if account %}
-                    {% url "accounts:account_edit" account.slug as form_url %}
-                {% else %}
-                    {% url "accounts:account_add" as form_url %}
-                {% endif %}
-                {% trans "Save" as save_trans %}
-                {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
-            </div>
-        </div>
+    <div class="col-md-6 offset-md-3">
+        {% if account %}
+            {% url "accounts:account_edit" account.slug as form_url %}
+        {% else %}
+            {% url "accounts:account_add" as form_url %}
+        {% endif %}
+        {% trans "Save" as save_trans %}
+        {% bootstrap_form form=form url=form_url btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}
