@@ -60,7 +60,7 @@ class EntryForm(forms.ModelForm):
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
-        self.fields['day'].help_text = mark_safe('<a id="date_today" style="cursor: pointer;">%s</a> (%s: yyyy-mm-dd)' % (_('Today'), _('Date format')))
+        self.fields['day'].help_text = mark_safe('<a id="date_today" href="">%s</a> (%s: yyyy-mm-dd)' % (_('Today'), _('Date format')))
 
         self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
@@ -74,8 +74,8 @@ class EntryForm(forms.ModelForm):
 
 
 class StandingEntryForm(forms.ModelForm):
-    start_date = forms.CharField()
-    end_date = forms.CharField()
+    start_date = forms.CharField(help_text = mark_safe('%s: yyyy-mm-dd' % _('Date format')))
+    end_date = forms.CharField(help_text = mark_safe('%s: yyyy-mm-dd' % _('Date format')))
     execution = forms.ChoiceField(
         choices=((1, _('Monthly')), (2, _('Quarterly')), (3, _('Half-yearly')),
                  (4, _('Yearly'))),
