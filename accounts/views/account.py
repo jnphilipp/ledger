@@ -31,8 +31,8 @@ def detail(request, slug):
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
     content_type = ContentType.objects.get_for_model(Account)
-    entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:5]
-    statements = account.statements.all().reverse()[:5]
+    entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:10]
+    statements = account.statements.order_by(order).reverse()[:10]
     return render(request, 'accounts/account/detail.html', locals())
 
 
@@ -43,7 +43,7 @@ def statements(request, slug):
 
     ledger = get_object_or_404(Ledger, user=request.user)
     account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    statements = account.statements.all().order_by(order)
+    statements = account.statements.order_by(order)
     content_type = ContentType.objects.get_for_model(Account)
     return render(request, 'accounts/account/statements.html', locals())
 

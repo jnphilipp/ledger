@@ -55,7 +55,7 @@ class EntryForm(forms.ModelForm):
         if exclude_account:
             del self.fields['account']
         else:
-            self.fields['account'].queryset = ledger.accounts.all()
+            self.fields['account'].queryset = ledger.accounts.filter(closed=False)
             self.fields['account'].widget.attrs['class'] = 'js-example-basic-multiple'
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
@@ -102,7 +102,7 @@ class StandingEntryForm(forms.ModelForm):
         if exclude_account:
             del self.fields['account']
         else:
-            self.fields['account'].queryset = ledger.accounts.all()
+            self.fields['account'].queryset = ledger.accounts.filter(closed=False)
             self.fields['account'].widget.attrs['class'] = 'js-example-basic-multiple'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
