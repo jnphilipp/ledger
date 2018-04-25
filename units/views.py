@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from units.forms import UnitForm
@@ -39,9 +43,9 @@ def _add(request, template, do_redirect=True, target_id=None):
         form = UnitForm(request.POST)
         if form.is_valid():
             unit = form.save()
+            msg = _('The unit %(name)s was successfully created.')
             messages.add_message(request, messages.SUCCESS,
-                                 _('The unit %(name)s was successfully ' +
-                                   'created.' % {'name': unit.name}))
+                                 msg % {'name': unit.name})
             if do_redirect:
                 return redirect('units:unit', slug=unit.slug)
     else:
@@ -57,10 +61,36 @@ def edit(request, slug):
         form = UnitForm(instance=unit, data=request.POST)
         if form.is_valid():
             unit = form.save()
+            msg = _('The unit %(name)s was successfully updated.')
             messages.add_message(request, messages.SUCCESS,
-                                 _('The unit %(name)s was successfully ' +
-                                   'updated.') % {'name': unit.name})
+                                 msg % {'name': unit.name})
             return redirect('units:unit', slug=unit.slug)
     else:
         form = UnitForm(instance=unit)
     return render(request, 'units/unit/form.html', locals())
+
+
+@login_required
+def autocomplete(request):
+    """Handels GET/POST request to autocomplete units.
+
+    GET/POST parameters:
+    q --- search term
+    """
+    params = request.POST.copy() if request.method == 'POST' \
+        else request.GET.copy()
+    if 'application/json' == request.META.get('CONTENT_TYPE'):
+        params.update(json.loads(request.body.decode('utf-8')))
+
+    units = Unit.objects.filter(accounts__ledger__user=request.user).distinct()
+    if 'q' in params:
+        units = units.filter(name__icontains=params.pop('q')[0])
+
+    data = {
+        'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
+        'units': [{
+            'id': unit.id,
+            'text': unit.name
+        } for unit in units]
+    }
+    return JsonResponse(data)

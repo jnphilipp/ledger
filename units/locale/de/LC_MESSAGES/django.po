@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-27 19:13+0200\n"
-"PO-Revision-Date: 2017-06-27 19:13+0200\n"
+"POT-Creation-Date: 2018-04-25 17:21+0200\n"
+"PO-Revision-Date: 2018-04-25 17:21+0200\n"
 "Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -18,45 +18,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:9 models.py:35
+#: apps.py:9 models.py:51
 msgid "Unit"
 msgstr "Einheit"
 
-#: apps.py:10 models.py:36 templates/units/unit/detail.html:7
+#: apps.py:10 models.py:52 templates/units/unit/detail.html:7
 #: templates/units/unit/form.html:7 templates/units/unit/list.html:7
-#: templates/units/unit/list.html:16
 msgid "Units"
 msgstr "Einheiten"
 
-#: models.py:17 templates/units/unit/list.html:22
+#: models.py:12 templates/units/unit/detail.html:16
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: models.py:16
+msgid "Updated at"
+msgstr "Aktualisiert am"
+
+#: models.py:22
+msgid "Slug"
+msgstr "Slug"
+
+#: models.py:26 templates/units/unit/list.html:16
 msgid "Name"
 msgstr "Name"
 
-#: models.py:18 templates/units/unit/detail.html:25
-#: templates/units/unit/list.html:23
+#: models.py:30 templates/units/unit/detail.html:20
+#: templates/units/unit/list.html:17
 msgid "Symbol"
 msgstr "Symbol"
 
-#: models.py:19 templates/units/unit/detail.html:27
-#: templates/units/unit/list.html:24
+#: models.py:34 templates/units/unit/detail.html:22
+#: templates/units/unit/list.html:18
 msgid "Precision"
 msgstr "Genauigkeit"
 
-#: templates/units/unit/add_another.html:27 templates/units/unit/form.html:12
-#: templates/units/unit/form.html:26
+#: templates/units/unit/add_another.html:25 templates/units/unit/form.html:12
 msgid "Add unit"
 msgstr "Einheit hinzufügen"
+
+#: templates/units/unit/add_another.html:31 templates/units/unit/form.html:25
+msgid "Save"
+msgstr "Speichern"
 
 #: templates/units/unit/detail.html:6 templates/units/unit/form.html:6
 #: templates/units/unit/list.html:6
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: templates/units/unit/detail.html:21
-msgid "Created at"
-msgstr "Erstellt am"
-
-#: templates/units/unit/detail.html:23
+#: templates/units/unit/detail.html:18
 msgid "Last updated at"
 msgstr "Zuletzt aktualisiert am"
 
@@ -64,17 +74,12 @@ msgstr "Zuletzt aktualisiert am"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: templates/units/unit/form.html:24
-#, python-format
-msgid "Edit %(name)s"
-msgstr "%(name)s bearbeiten"
-
-#: views/unit.py:41
+#: views.py:46
 #, python-format
 msgid "The unit %(name)s was successfully created."
 msgstr "Die Einheit %(name)s wurde erfolgreich erstellt."
 
-#: views/unit.py:57
+#: views.py:64
 #, python-format
 msgid "The unit %(name)s was successfully updated."
 msgstr "Die Einheit %(name)s wurde erfolgreich aktualisiert."
