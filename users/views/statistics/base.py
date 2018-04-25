@@ -10,7 +10,7 @@ from users.models import Ledger
 
 
 @login_required
-def statistics(request):
+def detail(request):
     ledger = get_object_or_404(Ledger, user=request.user)
     unit_slug = request.GET.get('unit')
     chart = request.GET.get('chart')
@@ -18,7 +18,8 @@ def statistics(request):
     month = request.GET.get('month')
 
     if year and month:
-        month_name = date(year=int(year), month=int(month), day=1).strftime('%B')
+        month_name = date(year=int(year), month=int(month),
+                          day=1).strftime('%B')
 
     options = []
     if not unit_slug:
@@ -30,6 +31,7 @@ def statistics(request):
         } for unit in Unit.objects.filter(accounts__ledger=ledger).distinct()]
     else:
         unit = get_object_or_404(Unit, slug=unit_slug)
+        accounts = ledger.accounts.filter(unit=unit)
         if unit_slug and not chart:
             option_msg = _('Select a chart')
             options = [{
@@ -42,7 +44,8 @@ def statistics(request):
                 'value': _('Tags')
             }]
         elif unit_slug and chart and not year:
-            years = Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).dates('day', 'year')
+            years = Entry.objects.filter(account__in=accounts).dates('day',
+                                                                     'year')
             if chart == 'tags':
                 chart_name = _('Tags')
                 years = years.filter(tags__isnull=False)
@@ -55,7 +58,8 @@ def statistics(request):
                 'key': 'year',
                 'value': year.strftime('%Y')} for year in years]
         elif unit_slug and chart and year and not month:
-            months = Entry.objects.filter(account__in=ledger.accounts.filter(unit=unit)).filter(day__year=year).dates('day', 'month')
+            months = Entry.objects.filter(account__in=accounts). \
+                filter(day__year=year).dates('day', 'month')
             if chart == 'tags':
                 chart_name = _('Tags')
                 months = months.filter(tags__isnull=False)
