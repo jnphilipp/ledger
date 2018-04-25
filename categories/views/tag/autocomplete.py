@@ -4,7 +4,7 @@ import json
 
 from categories.models import Tag
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.utils import timezone
 
 
@@ -15,8 +15,13 @@ def autocomplete(request):
     GET/POST parameters:
     q --- search term
     """
-    params = request.POST.copy() if request.method == 'POST' else request.GET.copy()
-    tags = Tag.objects.filter(entries__account__ledger__user=request.user).distinct()
+    params = request.POST.copy() if request.method == 'POST' \
+        else request.GET.copy()
+    if 'application/json' == request.META.get('CONTENT_TYPE'):
+        params.update(json.loads(request.body.decode('utf-8')))
+
+    tags = Tag.objects.filter(
+        entries__account__ledger__user=request.user).distinct()
     if 'q' in params:
         tags = tags.filter(name__icontains=params.pop('q')[0])
     data = {
@@ -26,4 +31,4 @@ def autocomplete(request):
             'text': tag.name
         } for tag in tags]
     }
-    return HttpResponse(json.dumps(data), 'application/json')
+    return JsonResponse(data)

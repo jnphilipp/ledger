@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: categories\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-27 20:25+0200\n"
-"PO-Revision-Date: 2017-06-27 20:25+0200\n"
+"POT-Creation-Date: 2018-04-25 20:41+0200\n"
+"PO-Revision-Date: 2018-04-25 20:41+0200\n"
 "Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -18,27 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:9 models.py:37 templates/categories/category/delete.html:31
+#: apps.py:9 models.py:34 templates/categories/category/delete.html:21
 #: templates/categories/category/partials/_table.html:7
 msgid "Category"
 msgstr "Kategorie"
 
-#: apps.py:10 models.py:38 templates/categories/category/delete.html:7
+#: apps.py:10 models.py:35 templates/categories/category/delete.html:7
 #: templates/categories/category/detail.html:13
-#: templates/categories/category/entries.html:69
+#: templates/categories/category/entries.html:74
 #: templates/categories/category/form.html:7
 #: templates/categories/category/list.html:23
 #: templates/categories/category/list.html:71
-#: templates/categories/category/list.html:78
 #: templates/categories/category/statistics.html:19
-#: templates/categories/tag/detail.html:55
-#: templates/categories/tag/entries.html:35
+#: templates/categories/tag/entries.html:37
 #: templates/categories/tag/list.html:23
-#: templates/categories/tag/statistics.html:56 views/tag.py:100
+#: templates/categories/tag/statistics.html:47 views/tag/base.py:113
 msgid "Categories"
 msgstr "Kategorien"
 
-#: forms.py:59
+#: forms.py:56
 msgid "Start date"
 msgstr "Anfangsdatum"
 
@@ -46,42 +44,48 @@ msgstr "Anfangsdatum"
 msgid "End date"
 msgstr "Enddatum"
 
-#: models.py:18 models.py:46
+#: models.py:15 models.py:43
 msgid "Name"
 msgstr "Name"
 
-#: models.py:65 templates/categories/tag/delete.html:31
+#: models.py:62 templates/categories/tag/delete.html:21
 #: templates/categories/tag/partials/_table.html:7
 msgid "Tag"
 msgstr "Tag"
 
-#: models.py:66 templates/categories/category/entries.html:35
+#: models.py:63 templates/categories/category/entries.html:37
 #: templates/categories/category/list.html:37
 #: templates/categories/tag/delete.html:7
 #: templates/categories/tag/detail.html:13
-#: templates/categories/tag/entries.html:49
-#: templates/categories/tag/entries.html:83
+#: templates/categories/tag/entries.html:51
+#: templates/categories/tag/entries.html:88
 #: templates/categories/tag/form.html:7 templates/categories/tag/list.html:37
-#: templates/categories/tag/list.html:71 templates/categories/tag/list.html:78
+#: templates/categories/tag/list.html:71
 #: templates/categories/tag/statistics.html:21
 msgid "Tags"
 msgstr "Tags"
 
-#: templates/categories/category/add_another.html:27
+#: templates/categories/category/add_another.html:25
 #: templates/categories/category/form.html:12
-#: templates/categories/category/form.html:26
 msgid "Add category"
 msgstr "Kategorie hinzufügen"
 
+#: templates/categories/category/add_another.html:31
+#: templates/categories/category/form.html:25
+#: templates/categories/tag/add_another.html:31
+#: templates/categories/tag/form.html:25
+msgid "Save"
+msgstr "Save"
+
 #: templates/categories/category/delete.html:6
 #: templates/categories/category/detail.html:12
-#: templates/categories/category/entries.html:68
+#: templates/categories/category/entries.html:73
 #: templates/categories/category/form.html:6
 #: templates/categories/category/list.html:70
 #: templates/categories/category/statistics.html:18
 #: templates/categories/tag/delete.html:6
 #: templates/categories/tag/detail.html:12
-#: templates/categories/tag/entries.html:82
+#: templates/categories/tag/entries.html:87
 #: templates/categories/tag/form.html:6 templates/categories/tag/list.html:70
 #: templates/categories/tag/statistics.html:20
 msgid "Dashboard"
@@ -92,17 +96,12 @@ msgstr "Dashboard"
 msgid "Delete"
 msgstr "Löschen"
 
-#: templates/categories/category/delete.html:18
-#: templates/categories/category/detail.html:28
-msgid "Delete category"
-msgstr "Kategorie löschen"
-
-#: templates/categories/category/delete.html:25
-#: templates/categories/tag/delete.html:25
+#: templates/categories/category/delete.html:17
+#: templates/categories/tag/delete.html:17
 msgid "Confirm deletion"
 msgstr "Löschen bestätigen"
 
-#: templates/categories/category/delete.html:26
+#: templates/categories/category/delete.html:18
 msgid ""
 "Are you sure you want to delete this category? All of the following objects "
 "and their related items will be deleted:"
@@ -110,38 +109,46 @@ msgstr ""
 "Sind Sie sicher das Sie diese Kategorie löschen wollen? Alle folgenden "
 "Objekte und ihre verwandten Elemente werden gelöscht:"
 
-#: templates/categories/category/delete.html:36
+#: templates/categories/category/delete.html:26
 msgid "Account"
 msgstr "Konto"
 
+#: templates/categories/category/delete.html:29
 #: templates/categories/category/delete.html:39
-#: templates/categories/category/delete.html:49
 msgid "Entry"
 msgstr "Eintrag"
 
-#: templates/categories/category/delete.html:56
-#: templates/categories/tag/delete.html:35
+#: templates/categories/category/delete.html:48
+#: templates/categories/tag/delete.html:27
 msgid "Yes, I'm sure"
 msgstr "Ja, ich bin sicher"
 
-#: templates/categories/category/detail.html:24
-#: templates/categories/category/form.html:24
+#: templates/categories/category/detail.html:21
 msgid "Edit category"
 msgstr "Kategorie bearbeiten"
 
-#: templates/categories/category/detail.html:41
-#: templates/categories/tag/detail.html:41
+#: templates/categories/category/detail.html:22
+msgid "Delete category"
+msgstr "Kategorie löschen"
+
+#: templates/categories/category/detail.html:32
+#: templates/categories/tag/detail.html:32
+msgid "Details"
+msgstr "Details"
+
+#: templates/categories/category/detail.html:39
+#: templates/categories/tag/detail.html:39
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: templates/categories/category/detail.html:43
-#: templates/categories/tag/detail.html:43
+#: templates/categories/category/detail.html:41
+#: templates/categories/tag/detail.html:41
 msgid "Last updated at"
 msgstr "Zuletzt aktualisiert am"
 
-#: templates/categories/category/detail.html:45
+#: templates/categories/category/detail.html:43
 #: templates/categories/category/entries.html:84
-#: templates/categories/tag/detail.html:45
+#: templates/categories/tag/detail.html:43
 #: templates/categories/tag/entries.html:98
 msgid "Total"
 msgstr "Gesamt"
@@ -149,48 +156,61 @@ msgstr "Gesamt"
 #: templates/categories/category/detail.html:53
 #: templates/categories/category/statistics.html:22
 #: templates/categories/category/statistics.html:25
-#: templates/categories/category/statistics.html:34
 #: templates/categories/tag/detail.html:53
 #: templates/categories/tag/statistics.html:24
 #: templates/categories/tag/statistics.html:32
-#: templates/categories/tag/statistics.html:41
 msgid "Statistics"
 msgstr "Statistik"
 
-#: templates/categories/category/detail.html:61
-#: templates/categories/category/statistics.html:41
-#: templates/categories/tag/detail.html:64
-#: templates/categories/tag/statistics.html:62
+#: templates/categories/category/detail.html:56
+#: templates/categories/tag/detail.html:56
+msgid "View"
+msgstr ""
+
+#: templates/categories/category/detail.html:66
+#: templates/categories/category/statistics.html:37
+#: templates/categories/tag/detail.html:66
+#: templates/categories/tag/statistics.html:58
 msgid "Select a year"
 msgstr "Wählen Sie ein Jahr"
 
-#: templates/categories/category/detail.html:81
-#: templates/categories/category/entries.html:71
-#: templates/categories/category/entries.html:78
-#: templates/categories/category/entries.html:96
-#: templates/categories/tag/detail.html:84
-#: templates/categories/tag/entries.html:85
-#: templates/categories/tag/entries.html:92
-#: templates/categories/tag/entries.html:110
+#: templates/categories/category/detail.html:98
+#: templates/categories/category/entries.html:76
+#: templates/categories/category/entries.html:95
+#: templates/categories/tag/detail.html:98
+#: templates/categories/tag/entries.html:90
+#: templates/categories/tag/entries.html:109
 msgid "Entries"
 msgstr "Einträge"
 
-#: templates/categories/category/entries.html:21
+#: templates/categories/category/detail.html:100
+#: templates/categories/tag/detail.html:100
+msgid "View all"
+msgstr "Alle anzeigen"
+
+#: templates/categories/category/entries.html:23
 #: templates/categories/category/list.html:9
 #: templates/categories/category/partials/_table.html:8
-#: templates/categories/tag/entries.html:21
+#: templates/categories/tag/entries.html:23
 #: templates/categories/tag/list.html:9
 #: templates/categories/tag/partials/_table.html:8
-#: templates/categories/tag/statistics.html:55 views/tag.py:98
+#: templates/categories/tag/statistics.html:46 views/tag/base.py:111
 msgid "Accounts"
 msgstr "Konten"
 
-#: templates/categories/category/entries.html:49
+#: templates/categories/category/entries.html:51
 #: templates/categories/category/list.html:51
-#: templates/categories/tag/entries.html:63
+#: templates/categories/tag/entries.html:65
 #: templates/categories/tag/list.html:51
 msgid "Units"
 msgstr "Einheiten"
+
+#: templates/categories/category/entries.html:89
+#: templates/categories/category/list.html:78
+#: templates/categories/tag/entries.html:103
+#: templates/categories/tag/list.html:78
+msgid "Filter"
+msgstr "Filtern"
 
 #: templates/categories/category/form.html:10
 #: templates/categories/tag/form.html:10
@@ -202,17 +222,12 @@ msgstr "Bearbeiten"
 msgid "Number of entries"
 msgstr "Anzahl an Einträgen"
 
-#: templates/categories/tag/add_another.html:27
-#: templates/categories/tag/form.html:12 templates/categories/tag/form.html:26
+#: templates/categories/tag/add_another.html:25
+#: templates/categories/tag/form.html:12
 msgid "Add tag"
 msgstr "Tag hinzufügen"
 
 #: templates/categories/tag/delete.html:18
-#: templates/categories/tag/detail.html:28
-msgid "Delete tag"
-msgstr "Tag löschen"
-
-#: templates/categories/tag/delete.html:26
 msgid ""
 "Are you sure you want to delete this tag? All of the following objects and "
 "their related items will be deleted:"
@@ -220,64 +235,65 @@ msgstr ""
 "Sind Sie sicher das Sie diesen Tag löschen wollen? Alle folgenden Objekte "
 "und ihre verwandten Elemente werden gelöscht:"
 
-#: templates/categories/tag/detail.html:24
-#: templates/categories/tag/form.html:24
+#: templates/categories/tag/detail.html:21
 msgid "Edit tag"
 msgstr "Tag bearbeiten"
 
-#: templates/categories/tag/statistics.html:53
+#: templates/categories/tag/detail.html:22
+msgid "Delete tag"
+msgstr "Tag löschen"
+
+#: templates/categories/tag/statistics.html:43
 msgid "Select a chart"
 msgstr "Wählen Sie ein Chart"
 
-#: views/api/charts/category.py:29 views/api/charts/tag.py:30
-#: views/api/charts/tag.py:139
-msgid "Months"
-msgstr "Monate"
-
-#: views/api/charts/category.py:40 views/api/charts/category.py:90
-#: views/api/charts/tag.py:41 views/api/charts/tag.py:90
-#: views/api/charts/tag.py:150 views/api/charts/tag.py:200
-msgid "Loss and Profit"
-msgstr "Verlust und Gewinn"
-
-#: views/api/charts/category.py:65 views/api/charts/category.py:113
-#: views/api/charts/tag.py:64 views/api/charts/tag.py:113
-#: views/api/charts/tag.py:174 views/api/charts/tag.py:224
-#, python-format
-msgid "Average %(unit)s"
-msgstr "Durchschnitt %(unit)s"
-
-#: views/api/charts/category.py:79 views/api/charts/tag.py:79
-#: views/api/charts/tag.py:189
-msgid "Years"
-msgstr "Jahre"
-
-#: views/category.py:117
+#: views/category/base.py:137
 #, python-format
 msgid "The category \"%(name)s\" was successfully created."
 msgstr "Die Kategorie \"%(name)s\" wurde erfolgreich erstellt."
 
-#: views/category.py:133
+#: views/category/base.py:155
 #, python-format
 msgid "The category \"%(name)s\" was successfully updated."
 msgstr "Die Kategorie \"%(name)s\" wurde erfolgreich aktualisiert."
 
-#: views/category.py:146
+#: views/category/base.py:170
 #, python-format
 msgid "The category \"%(name)s\" was successfully deleted."
 msgstr "Die Kategorie \"%(name)s\" wurde erfolgreich gelöscht."
 
-#: views/tag.py:124
+#: views/category/charts.py:33 views/tag/charts.py:33 views/tag/charts.py:170
+msgid "Months"
+msgstr "Monate"
+
+#: views/category/charts.py:44 views/category/charts.py:108
+#: views/tag/charts.py:44 views/tag/charts.py:106 views/tag/charts.py:181
+#: views/tag/charts.py:246
+msgid "Loss and Profit"
+msgstr "Verlust und Gewinn"
+
+#: views/category/charts.py:82 views/category/charts.py:141
+#: views/tag/charts.py:80 views/tag/charts.py:139 views/tag/charts.py:220
+#: views/tag/charts.py:283
+#, python-format
+msgid "Average %(unit)s"
+msgstr "Durchschnitt %(unit)s"
+
+#: views/category/charts.py:97 views/tag/charts.py:95 views/tag/charts.py:235
+msgid "Years"
+msgstr "Jahre"
+
+#: views/tag/base.py:139
 #, python-format
 msgid "The tag \"%(name)s\" was successfully created."
 msgstr "Der Tag \"%(name)s\" wurde erfolgreich erstellt."
 
-#: views/tag.py:140
+#: views/tag/base.py:157
 #, python-format
 msgid "The tag \"%(name)s\" was successfully updated."
 msgstr "Der Tag \"%(name)s\" wurde erfolgreich aktualisiert."
 
-#: views/tag.py:153
+#: views/tag/base.py:172
 #, python-format
 msgid "The tag \"%(name)s\" was successfully deleted."
 msgstr "Der Tag \"%(name)s\" wurde erfolgreich gelöscht."
