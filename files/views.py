@@ -13,6 +13,10 @@ from files.models import File
 from users.models import Ledger
 
 
+account_type = ContentType.objects.get_for_model(Account)
+entry_type = ContentType.objects.get_for_model(Entry)
+
+
 @login_required
 def detail(request, slug):
     file = get_object_or_404(File, slug=slug)
@@ -49,14 +53,14 @@ def _add(request, content_type, object_id, template, do_reload=False, a='t'):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             file = form.save()
+            msg = _('The file "%(name)s" was successfully uploaded.')
             messages.add_message(request, messages.SUCCESS,
-                                 _('The file "%(name)s" was successfully ' +
-                                   'uploaded.') % {'name': file.name})
+                                 msg % {'name': file.name})
             if not do_reload:
-                if ContentType.objects.get_for_model(Account) == file.content_type:
+                if account_type == file.content_type:
                     return redirect('accounts:account_statements',
                                     slug=file.content_object.slug)
-                elif ContentType.objects.get_for_model(Entry) == file.content_type:
+                elif entry_type == file.content_type:
                     if a == 't' or a is None:
                         return redirect('accounts:account_entry',
                                         slug=file.content_object.account.slug,
@@ -82,13 +86,13 @@ def delete(request, slug):
     if file.uploader == request.user:
         if request.method == 'POST':
             file.delete()
+            msg = _('The file "%(name)s" was successfully deleted.')
             messages.add_message(request, messages.SUCCESS,
-                                 _('The file "%(name)s" was successfully ' +
-                                   'deleted.') % {'name': file.name})
-            if ContentType.objects.get_for_model(Account) == file.content_type:
+                                 msg % {'name': file.name})
+            if account_type == file.content_type:
                 return redirect('accounts:account_statements',
                                 slug=file.content_object.slug)
-            elif ContentType.objects.get_for_model(Entry) == file.content_type:
+            elif entry_type == file.content_type:
                 return redirect('accounts:account_entry',
                                 slug=file.content_object.account.slug,
                                 entry_id=file.content_object.pk)
@@ -108,13 +112,13 @@ def edit(request, slug):
             form = FileForm(request.POST, request.FILES, instance=file)
             if form.is_valid():
                 file = form.save()
+                msg = _('The file "%(name)s" was successfully updated.')
                 messages.add_message(request, messages.SUCCESS,
-                                     _('The file "%(name)s" was successfully ' +
-                                       'updated.') % {'name': file.name})
-                if ContentType.objects.get_for_model(Account) == file.content_type:
+                                     msg % {'name': file.name})
+                if account_type == file.content_type:
                     return redirect('accounts:account_statements',
                                     slug=file.content_object.slug)
-                elif ContentType.objects.get_for_model(Entry) == file.content_type:
+                elif entry_type == file.content_type:
                     return redirect('accounts:account_entry',
                                     slug=file.content_object.account.slug,
                                     entry_id=file.content_object.pk)
