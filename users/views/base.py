@@ -9,13 +9,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 
 from ..forms import (AuthenticationForm, PasswordChangeForm,
-                            SetPasswordForm, UserCreationForm)
+                     SetPasswordForm, UserCreationForm)
 from ..models import Budget, Ledger
 
 
 @csrf_protect
 def signin(request):
     gnext = request.GET.get('next')
+
+    if request.user.is_authenticated:
+        return redirect(gnext) if gnext else redirect('dashboard')
+
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
