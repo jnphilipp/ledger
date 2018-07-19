@@ -63,32 +63,20 @@ class FilterForm(forms.Form):
     accounts = forms.ModelMultipleChoiceField(
         queryset=Account.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
     units = forms.ModelMultipleChoiceField(
         queryset=Unit.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )

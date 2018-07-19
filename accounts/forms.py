@@ -30,11 +30,9 @@ class AccountForm(forms.ModelForm):
 
         self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
-        self.fields['category'].widget.attrs['class'] = 'js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['unit'].queryset = Unit.objects.all()
-        self.fields['unit'].widget.attrs['class'] = 'js-example-basic-single'
         self.fields['unit'].widget.attrs['style'] = 'width: 100%;'
         self.fields['unit'].help_text = mark_safe('<a href="%s?target_id=id_unit" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('units:unit_add_another'), _('Add new unit')))
 
@@ -56,7 +54,6 @@ class EntryForm(forms.ModelForm):
             del self.fields['account']
         else:
             self.fields['account'].queryset = ledger.accounts.filter(closed=False)
-            self.fields['account'].widget.attrs['class'] = 'js-example-basic-multiple'
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
@@ -64,12 +61,10 @@ class EntryForm(forms.ModelForm):
 
         self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
-        self.fields['category'].widget.attrs['class'] = 'js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['tags'].help_text = mark_safe('<a href="%s?target_id=id_tags" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:tag_add_another'), _('Add new tag')))
         self.fields['tags'].queryset = Tag.objects.all()
-        self.fields['tags'].widget.attrs['class'] = 'js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
 
 
@@ -79,10 +74,7 @@ class StandingEntryForm(forms.ModelForm):
     execution = forms.ChoiceField(
         choices=((1, _('Monthly')), (2, _('Quarterly')), (3, _('Half-yearly')),
                  (4, _('Yearly'))),
-        widget=forms.Select(attrs={
-            'class': 'js-example-basic-hide-search',
-            'style': 'width: 100%;'
-        })
+        widget=forms.Select(attrs={'style': 'width: 100%;'})
     )
 
     class Media:
@@ -103,18 +95,15 @@ class StandingEntryForm(forms.ModelForm):
             del self.fields['account']
         else:
             self.fields['account'].queryset = ledger.accounts.filter(closed=False)
-            self.fields['account'].widget.attrs['class'] = 'js-example-basic-multiple'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
 
         self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
-        self.fields['category'].widget.attrs['class'] = 'js-example-basic-single'
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['tags'].help_text = mark_safe('<a href="%s?target_id=id_tags" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:tag_add_another'), _('Add new tag')))
         self.fields['tags'].queryset = Tag.objects.all()
-        self.fields['tags'].widget.attrs['class'] = 'js-example-basic-multiple'
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
 
     def save(self, commit=True):
@@ -151,32 +140,20 @@ class EntryFilterForm(forms.Form):
     accounts = forms.ModelMultipleChoiceField(
         queryset=Account.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
     units = forms.ModelMultipleChoiceField(
         queryset=Unit.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={
-            'class': 'js-example-basic-multiple',
-            'style': 'width: 200px;'
-        })
+        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
     )
