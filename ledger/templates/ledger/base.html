@@ -26,16 +26,16 @@
             <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
                 {% if user.is_authenticated %}
                     <ul class="navbar-nav">
-                        {% url "accounts:accounts" as accounts_url %}
+                        {% url "accounts:account_list" as account_list_url %}
                         {% url "accounts:entries" as entries_url %}
-                        <li class="nav-item dropdown{% if request.path|startswith:entries_url or request.path|startswith:accounts_url %} active{% endif %}">
+                        <li class="nav-item dropdown{% if request.path|startswith:entries_url or request.path|startswith:account_list_url %} active{% endif %}">
                             <a class="nav-link dropdown-toggle" href="#" id="accountsDropdown" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">
                                 {% trans "Accounts" %}
-                                {% if request.path|startswith:entries_url or request.path|startswith:accounts_url %}<span class="sr-only">(current)</span>{% endif %}
+                                {% if request.path|startswith:entries_url or request.path|startswith:account_list_url %}<span class="sr-only">(current)</span>{% endif %}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="accountsDropdown">
                                 {% for account in user.ledger.accounts.all %}
-                                    {% url "accounts:account" account.slug as account_url %}
+                                    {% url "accounts:account_detail" account.slug as account_url %}
                                     <a class="dropdown-item{% if request.path|startswith:account_url %} active{% endif %}" href="{{ account_url }}">
                                         {{ account.name }}
                                         {% if request.path|startswith:account_url %}<span class="sr-only">(current)</span>{% endif %}
@@ -44,7 +44,7 @@
                                 {% if user.ledger.accounts.count > 0 %}
                                     <div class="dropdown-divider"></div>
                                 {% endif %}
-                                <a class="dropdown-item" href="{% url "accounts:account_add" %}">{% trans "Add account" %}</a>
+                                <a class="dropdown-item" href="{% url "accounts:account_create" %}">{% trans "Add account" %}</a>
                             </div>
                         </li>
                         {% url "categories:categories" as categories_url %}

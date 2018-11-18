@@ -22,14 +22,13 @@ from django.urls import include, path
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import RedirectView
 
-from .views import dashboard
-
 
 admin.site.site_header = _('ledger administration')
 
 
 urlpatterns = [
-    path('', dashboard, name='dashboard'),
+    path('', RedirectView.as_view(pattern_name='accounts:entry_list'),
+         name='dashboard'),
 
     path('accounts/', include('accounts.urls')),
     path('categories/', include('categories.urls')),

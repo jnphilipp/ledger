@@ -102,17 +102,17 @@
 {% endif %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_list" account.slug %}">{% trans "Entries" %}</a></li>
     {% if entry %}
         <li class="breadcrumb-item"><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
     {% endif %}
 {% else %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:entry_list" %}">{% trans "Entries" %}</a></li>
     {% if entry %}
-        <li><a href="{% url "accounts:entry" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url "accounts:entry_detail" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
     {% endif %}
 {% endif %}

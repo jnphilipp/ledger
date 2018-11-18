@@ -62,7 +62,7 @@ class Account(models.Model):
         super(Account, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('accounts:account', args=[self.slug])
+        return reverse('accounts:account_detail', args=[self.slug])
 
     def renumber_entries(self):
         for i, entry in enumerate(self.entries.all()):
@@ -150,8 +150,7 @@ class Entry(models.Model):
         super(Entry, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('accounts:account_entry',
-                       args=[self.account.slug, self.pk])
+        return reverse('accounts:entry_detail', args=[self.pk])
 
     def save(self, *args, **kwargs):
         move = False

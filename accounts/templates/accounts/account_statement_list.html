@@ -1,12 +1,12 @@
 {% extends "ledger/base.html" %}
-{% load i18n %}
+{% load i18n ledger %}
 
 
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
 <li class="breadcrumb-item">
-    <a href="{% url "accounts:account" account.slug %}">
+    <a href="{% url "accounts:account_detail" account.slug %}">
         {{ account.name }}
         {% if account.closed %}<small>{% trans "Closed" %}</small>{% endif %}
     </a>
@@ -17,16 +17,15 @@
 
 {% block content %}
 <div class="row">
-   <div class="col-md-2 offset-md-10 text-right">
-       <a class="btn btn-primary" href="{% url "files:add" content_type.pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
-            <span class="glyphicon glyphicon-upload"></span>
+    <div class="col-md-2 offset-md-10 text-right">
+        <a class="btn btn-outline-primary" href="{% url "files:add" account|content_type_pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
             {% trans "Upload file" %}
         </a>
-   </div>
+    </div>
 </div>
 <div class="row mt-md-2">
     <div class="col-md-12">
-        {% include "files/file/partials/_table.html" with files=statements options=True %}
+        {% include "files/partials/_file_table.html" with files=statements options=True %}
     </div>
 </div>
 {% endblock %}

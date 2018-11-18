@@ -4,13 +4,13 @@
     <table class="table table-striped table-hover table-bordered table-sm">
         <thead>
             <tr>
-                {% if not account %}<th><a href="{% url "accounts:accounts" %}">{% trans "Account" %}</a></th>{% endif %}
+                {% if not account %}<th>{% trans "Account" %}</th>{% endif %}
                 {% if account %}<th>{% trans "Ser. No." %}</th>{% endif %}
                 <th colspan="2">{% trans "Day" %}</th>
                 <th>{% trans "Amount" %}</th>
-                <th><a href="{% url "categories:categories" %}">{% trans "Category" %}</a></th>
+                <th>{% trans "Category" %}</th>
                 <th>{% trans "Additional" %}</th>
-                <th><a href="{% url "categories:tags" %}">{% trans "Tags" %}</a></th>
+                <th>{% trans "Tags" %}</th>
                 <th>{% trans "Files" %}</th>
                 {% if options %}
                     <th></th>
@@ -22,11 +22,11 @@
                 <tr>
                     {% if not account %}
                         <th>
-                            <a href="{% url "accounts:account" entry.account.slug %}">{{ entry.account.name }}</a>
-                            <a href="{% url "accounts:entry" entry.pk %}">#{{ entry.serial_number }}</a>
+                            <a href="{% url "accounts:account_detail" entry.account.slug %}">{{ entry.account.name }}</a>
+                            <a href="{% url "accounts:entry_detail" entry.pk %}">#{{ entry.serial_number }}</a>
                         </th>
                     {% else %}
-                        <th class="text-right"><a href="{% url "accounts:account_entry" account.slug entry.pk %}">{{ entry.serial_number }}</a></th>
+                        <th class="text-right"><a href="{% url "accounts:account_entry_detail" account.slug entry.pk %}">{{ entry.serial_number }}</a></th>
                     {% endif %}
                     <td>{{ entry.day|date:"d.m.Y" }}</td>
                     <td>{{ entry.day|date:"D" }}</td>

@@ -24,7 +24,7 @@ class AccountForm(forms.ModelForm):
         model = Account
         fields = ('name', 'category', 'unit')
 
-    def __init__(self, ledger, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields['name'].validators = [validate_account_name]
 
@@ -35,6 +35,10 @@ class AccountForm(forms.ModelForm):
         self.fields['unit'].queryset = Unit.objects.all()
         self.fields['unit'].widget.attrs['style'] = 'width: 100%;'
         self.fields['unit'].help_text = mark_safe('<a href="%s?target_id=id_unit" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('units:unit_add_another'), _('Add new unit')))
+
+    def clean_name(self):
+        return self.cleaned_data['name'] or None
+
 
 
 class EntryForm(forms.ModelForm):
@@ -69,8 +73,10 @@ class EntryForm(forms.ModelForm):
 
 
 class StandingEntryForm(forms.ModelForm):
-    start_date = forms.CharField(help_text = mark_safe('%s: yyyy-mm-dd' % _('Date format')))
-    end_date = forms.CharField(help_text = mark_safe('%s: yyyy-mm-dd' % _('Date format')))
+    start_date = forms.CharField(
+        help_text=mark_safe('%s: yyyy-mm-dd' % _('Date format')))
+    end_date = forms.CharField(
+        help_text=mark_safe('%s: yyyy-mm-dd' % _('Date format')))
     execution = forms.ChoiceField(
         choices=((1, _('Monthly')), (2, _('Quarterly')), (3, _('Half-yearly')),
                  (4, _('Yearly'))),
@@ -94,7 +100,9 @@ class StandingEntryForm(forms.ModelForm):
         if exclude_account:
             del self.fields['account']
         else:
-            self.fields['account'].queryset = ledger.accounts.filter(closed=False)
+            self.fields['account'].queryset = \
+                ledger.accounts.filter(closed=False)
+            self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
 
@@ -130,11 +138,17 @@ class StandingEntryForm(forms.ModelForm):
 
 class EntryFilterForm(forms.Form):
     start_date = forms.DateField(
-        widget=forms.TextInput(attrs={'placeholder': _('Start date'),}),
+        widget=forms.TextInput(attrs={
+            'placeholder': _('Start date'),
+            'style': 'width: 200px;'
+        }),
         required=False
     )
     end_date = forms.DateField(
-        widget=forms.TextInput(attrs={'placeholder': _('End date'),}),
+        widget=forms.TextInput(attrs={
+            'placeholder': _('End date'),
+            'style': 'width: 200px;'
+        }),
         required=False
     )
     accounts = forms.ModelMultipleChoiceField(

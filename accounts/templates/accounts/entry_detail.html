@@ -5,11 +5,11 @@
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_entries" account.slug %}">{% trans "Entries" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_list" account.slug %}">{% trans "Entries" %}</a></li>
 {% else %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:entries" %}">{% trans "Entries" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:entry_list" %}">{% trans "Entries" %}</a></li>
 {% endif %}
 <li class="breadcrumb-item active" aria-current="page">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</li>
 {% endblock %}
@@ -19,8 +19,8 @@
 <div class="row">
     <div class="col-md-12 text-right">
         <h1>
-            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.id  %}{% else %}{% url "accounts:entry_edit" entry.id  %}{% endif %}" class="btn btn-primary" role="button">{% trans "Edit entry" %}</a>
-            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id  %}{% else %}{% url "accounts:entry_delete" entry.id  %}{% endif %}" class="btn btn-danger" role="button">{% trans "Delete entry" %}</a>
+            <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.id  %}{% else %}{% url "accounts:entry_edit" entry.id  %}{% endif %}" class="btn btn-outline-primary" role="button">{% trans "Edit entry" %}</a>
+            <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.id  %}{% else %}{% url "accounts:entry_delete" entry.id  %}{% endif %}" class="btn btn-outline-danger" role="button">{% trans "Delete entry" %}</a>
         </h1>
     </div>
 </div>
@@ -34,7 +34,7 @@
                     <dt class="col-md-3">{% trans "Last updated at" %}</dt>
                     <dd class="col-md-9">{{ entry.updated_at|date:"r" }}</dd>
                     <dt class="col-md-3">{% trans "Account" %}</dt>
-                    <dd class="col-md-9"><a href="{% url "accounts:account" entry.account.slug %}">{{ entry.account.name }}</a></dd>
+                    <dd class="col-md-9"><a href="{% url "accounts:account_detail" entry.account.slug %}">{{ entry.account.name }}</a></dd>
                     <dt class="col-md-3">{% trans "Serial number" %}</dt>
                     <dd class="col-md-9">{{ entry.serial_number }}</dd>
                     <dt class="col-md-3">{% trans "Day" %}</dt>
@@ -44,7 +44,7 @@
                     <dt class="col-md-3">{% trans "Category" %}</dt>
                     <dd class="col-md-9"><a href="{% url "categories:category" entry.category.slug %}">{{ entry.category.name }}</a></dd>
                     <dt class="col-md-3">{% trans "Additional" %}</dt>
-                    <dd class="col-md-9">{{ entry.additional }}</dd>
+                    <dd class="col-md-9">{{ entry.additional|default_if_none:"" }}</dd>
                     <dt class="col-md-3">{% trans "Tags" %}</dt>
                     <dd class="col-md-9">
                         {% for tag in entry.tags.all %}
@@ -56,20 +56,22 @@
         </div>
     </div>
 </div>
-<div class="row mt-md-5">
-    <div class="col-md-6 offset-md-2">
-        <h4>
-            <span class="text-muted">#</span>
-            {% trans "Files" %}
-        </h4>
+{% if files %}
+    <div class="row mt-md-5">
+        <div class="col-md-6 offset-md-2">
+            <h4>
+                <span class="text-muted">#</span>
+                {% trans "Files" %}
+            </h4>
+        </div>
+        <div class="col-md-2 text-right">
+            <a class="btn btn-outline-primary" href="{% url "files:add" content_type.pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">{% trans "Upload file" %}</a>
+       </div>
     </div>
-    <div class="col-md-2 text-right">
-        <a class="btn btn-primary" href="{% url "files:add" content_type.pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">{% trans "Upload file" %}</a>
-   </div>
-</div>
-<div class="row mt-md-2">
-    <div class="col-md-8 offset-md-2">
-        {% include "files/file/partials/_table.html" with files=files options=True %}
+    <div class="row mt-md-2">
+        <div class="col-md-8 offset-md-2">
+            {% include "files/partials/_file_table.html" with files=files options=True %}
+        </div>
     </div>
-</div>
+{% endif %}
 {% endblock %}

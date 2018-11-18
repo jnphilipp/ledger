@@ -1,0 +1,171 @@
+{% extends "ledger/base.html" %}
+{% load accounts i18n static %}
+
+
+{% block extrahead %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/accounts/statistics.js" %}"></script>
+<script src="{% static "js/accounts/categories.js" %}"></script>
+<script src="{% static "js/accounts/tags.js" %}"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">
+    {{ account.name }}
+        {% if account.closed %}<small>{% trans "Closed" %}</small>
+    {% endif %}
+</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col text-right">
+        <a href="{% url "accounts:account_edit" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Edit account" %}</a>
+        {% if account.closed %}
+            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Re-open account" %}</a>
+        {% else %}
+            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Close account" %}</a>
+        {% endif %}
+        <a href="{% url "accounts:account_delete" account.slug  %}" class="btn btn-outline-danger" role="button">{% trans "Delete account" %}</a>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col">
+        <div class="btn-group" role="group">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">{% trans "Details" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="false" aria-controls="collapseEntries">{% trans "Entries" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatements" aria-expanded="false" aria-controls="collapseStatements">{% trans "Statements" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatisticsCategories" aria-expanded="false" aria-controls="collapseStatisticsCategories">
+                {% trans "Statistics" %}
+                <small class="text-muted">{% trans "Categories" %}</small>
+            </button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatisticsTags" aria-expanded="false" aria-controls="collapseStatisticsTags">
+                {% trans "Statistics" %}
+                <small class="text-muted">{% trans "Tags" %}</small>
+            </button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">{% trans "Categories" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">{% trans "Tags" %}</button>
+        </div>
+    </div>
+</div>
+<div id="account">
+    <div class="collapse show" id="collapseDetails" aria-labelledby="collapseDetails" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col">
+                <div class="card card-body">
+                    {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
+                    <dl class="row">
+                        <dt class="col-md-2">{% trans "Created at" %}</dt>
+                        <dd class="col-md-10">{{ account.created_at|date:"r" }}</dd>
+                        <dt class="col-md-2">{% trans "Last updated at" %}</dt>
+                        <dd class="col-md-10">{{ account.updated_at|date:"r" }}</dd>
+                        <dt class="col-md-2">{% trans "Users" %}</dt>
+                        <dd class="col-md-10">
+                            {% for l in account.ledgers.all %}
+                                {{ l.user.username }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </dd>
+                        <dt class="col-md-2">{% trans "Category" %}</dt>
+                        <dd class="col-md-10"><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
+                        <dt class="col-md-2">{% trans "Unit" %}</dt>
+                        <dd class="col-md-10"><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseEntries" aria-labelledby="collapseEntries" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col-md-10">
+                {% balance account %}
+            </div>
+            <div class="col-md-2 text-right">
+                <a class="btn btn-link" href="{% url "accounts:account_entry_list" account.slug %}">{% trans "View all" %}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% include "accounts/partials/_entry_table.html" with account=account entries=entries options=False %}
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseStatements" aria-labelledby="collapseStatements" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col-md-2 offset-md-10 text-right">
+                <a class="btn btn-link" href="{% url "accounts:account_statement_list" account.slug %}">{% trans "View all" %}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% include "files/partials/_file_table.html" with files=statements options=False %}
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseStatisticsCategories" aria-labelledby="collapseStatisticsCategories" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col-md-2 offset-md-10 text-right">
+                <a class="btn btn-link" href="{% url "accounts:account_statistics" account.slug %}?chart=categories">{% trans "View" %}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="ascchart" style="min-width: 310px; height: 650px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
+                        statistics(ascchart_url, "ascchart");
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseStatisticsTags" aria-labelledby="collapseStatisticsTags" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col-md-2 offset-md-10 text-right">
+                <a class="btn btn-link" href="{% url "accounts:account_statistics" account.slug %}?chart=tags">{% trans "View" %}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="astchart" style="min-width: 310px; height: 650px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
+                        statistics(astchart_url, "astchart");
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseCategories" aria-labelledby="collapseCategories" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col">
+                <div id="cchart" style="min-width: 310px; height: 650px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
+                        categories(cchart_url, "cchart");
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseTags" aria-labelledby="collapseTags" data-parent="#account">
+        <div class="row mt-2">
+            <div class="col">
+                <div id="tchart" style="min-width: 310px; height: 650px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";
+                        tags(tchart_url, "tchart");
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

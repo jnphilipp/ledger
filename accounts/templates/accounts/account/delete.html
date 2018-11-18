@@ -22,7 +22,7 @@
                     {% if account.entries %}
                         <ul>
                             {% for entry in account.entries.all %}
-                                <li>{% trans "Entry" %}: <a href="{% url "accounts:entry" entry.id %}">#{{ entry.serial_number }}: {{ entry.day|date:"D., d. F Y" }} - {{ entry.category.name }}</a></li>
+                                <li>{% trans "Entry" %}: <a href="{% url "accounts:entry_detail" entry.id %}">#{{ entry.serial_number }}: {{ entry.day|date:"D., d. F Y" }} - {{ entry.category.name }}</a></li>
                             {% endfor %}
                         </ul>
                     {% endif %}

@@ -6,46 +6,52 @@ from categories.models import Category, Tag
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views import generic
 from django.views.decorators.csrf import csrf_protect
 from ledger.functions.dates import get_last_date_current_month
 from users.models import Ledger
 
 
-@login_required
-def list(request):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    accounts = Account.objects.filter(ledger=ledger)
-    return render(request, 'accounts/account/list.html', locals())
+@method_decorator(login_required, name='dispatch')
+class ListView(generic.ListView):
+    context_object_name = 'accounts'
+    model = Account
+
+    def get_queryset(self):
+        return Account.objects.filter(ledger__user=self.request.user)
 
 
-@login_required
-def detail(request, slug):
-    o = request.GET.get('o') if not request.GET.get('o') == None else 'updated_at'
-    order = o if o else 'updated_at'
+@method_decorator(login_required, name='dispatch')
+class DetailView(generic.DetailView):
+    model = Account
 
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    content_type = ContentType.objects.get_for_model(Account)
-    entries = account.entries.filter(day__lte=get_last_date_current_month()).reverse()[:10]
-    statements = account.statements.order_by(order).reverse()[:10]
-    return render(request, 'accounts/account/detail.html', locals())
+    def get_queryset(self):
+        return Account.objects.filter(ledger__user=self.request.user)
 
+    def get_template_names(self):
+        if 'statements' in self.request.path:
+            return 'accounts/account_statement_list.html'
+        return 'accounts/account_detail.html'
 
-@login_required
-def statements(request, slug):
-    o = request.GET.get('o') if not request.GET.get('o') == None else 'updated_at'
-    order = o if o else 'updated_at'
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetailView, self).get_context_data(*args, **kwargs)
+        context['o'] = '-updated_at'
+        if 'o' in self.request.GET:
+            context['o'] = self.request.GET.get('o')
 
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    statements = account.statements.order_by(order)
-    content_type = ContentType.objects.get_for_model(Account)
-    return render(request, 'accounts/account/statements.html', locals())
+        if 'statements' in self.request.path:
+            context['statements'] = context['account'].statements. \
+                order_by(context['o'])
+        else:
+            context['entries'] = context['account'].entries. \
+                filter(day__lte=get_last_date_current_month()).reverse()[:20]
+            context['statements'] = context['account'].statements. \
+                order_by(context['o'])[:20]
+        return context
 
 
 @login_required
@@ -125,24 +131,22 @@ def statistics(request, slug):
     return render(request, 'accounts/account/statistics.html', locals())
 
 
-@login_required
-@csrf_protect
-def add(request):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    if request.method == 'POST':
-        form = AccountForm(ledger, data=request.POST)
-        if form.is_valid():
-            account = form.save()
-            ledger = get_object_or_404(Ledger, user=request.user)
-            ledger.accounts.add(account)
-            ledger.save()
-            messages.add_message(request, messages.SUCCESS, _('The account %(name)s was successfully created.' % {'name': account.name}))
-            return redirect('accounts:account', slug=account.slug)
-        return render(request, 'accounts/account/form.html', locals())
-    else:
-        form = AccountForm(ledger)
-    return render(request, 'accounts/account/form.html', locals())
+@method_decorator(login_required, name='dispatch')
+class CreateView(generic.edit.CreateView):
+    model = Account
+    form_class = AccountForm
 
+    def get_initial(self):
+        return {'ledger': self.request.user.ledger}
+
+    def form_valid(self, form):
+        r = super(CreateView, self).form_valid(form)
+        self.request.user.ledger.accounts.add(self.object)
+        self.request.user.ledger.save()
+        msg = _('The account %(name)s was successfully created.' % \
+            {'name': self.object.name})
+        messages.add_message(self.request, messages.SUCCESS, msg)
+        return r
 
 @login_required
 @csrf_protect

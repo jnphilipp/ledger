@@ -45,12 +45,12 @@
 
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
 {% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {% else %}
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Add account" %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Add" %}</li>
 {% endif %}
 {% endblock %}
 

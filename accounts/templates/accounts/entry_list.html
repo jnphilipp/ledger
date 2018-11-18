@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load accounts bootstrap i18n ledger static %}
+{% load accounts bootstrap i18n static %}
 
 
 {% block extrahead %}
@@ -90,8 +90,8 @@
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 {% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:accounts" %}">{% trans "Accounts" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}{% if account.closed %} <small>{% trans "Closed" %}</small>{% endif %}</a></li>
 {% endif %}
 <li class="breadcrumb-item active" aria-current="page">{% trans "Entries" %}</li>
 {% endblock %}
@@ -100,28 +100,34 @@
 {% block content %}
 <div class="row">
     <div class="col-md-3">
-        <ul class="list-inline">
-            <li class="list-inline-item align-top"><b>{% trans "Balance" %}:</b></li>
-            <li class="list-inline-item">{% balance entry_list %}</li>
-        </ul>
+        {% balance account %}
     </div>
     <div class="col-md-6 text-center">
         {% if account %}
-            {% url "accounts:account_entries" account.slug as form_url %}
+            {% url "accounts:account_entry_list" account.slug as form_url %}
         {% else %}
-            {% url "accounts:entries" as form_url %}
+            {% url "accounts:entry_list" as form_url %}
         {% endif %}
         {% trans "Filter" as filter_trans %}
-        {% bootstrap_form form=form url=form_url type="inline" labels=False btn_title=filter_trans %}
+        {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" labels=False btn_title=filter_trans %}
     </div>
    <div class="col-md-3 text-right">
         {% if show_options %}
-            <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_entry_add" account.slug %}{% else %}{% url "accounts:entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add entry" %}</a>
-            <a class="btn btn-primary" href="{% if account %}{% url "accounts:account_standing_entry_add" account.slug %}{% else %}{% url "accounts:standing_entry_add" %}{% endif %}"><span class="glyphicon glyphicon-plus"></span> {% trans "Add standing entry" %}</a>
+            <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_entry_add" account.slug %}{% else %}{% url "accounts:entry_add" %}{% endif %}">{% trans "Add entry" %}</a>
+            <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_standing_entry_add" account.slug %}{% else %}{% url "accounts:standing_entry_add" %}{% endif %}">{% trans "Add standing entry" %}</a>
         {% endif %}
     </div>
 </div>
-{% include "accounts/entry/partials/_table.html" with account=account entries=entries options=show_options %}
-{% trans "Entries" as pagination_title %}
-{% pagination paginator entries pagination_title %}
+<div class="row mt-2">
+    <div class="col">
+        {% include "accounts/partials/_entry_table.html" with account=account entries=entries options=show_options %}
+        {% if account %}
+            {% url "accounts:account_entry_list" account.slug as base_path %}
+        {% else %}
+            {% url "accounts:account_entry_list" account.slug as base_path %}
+        {% endif %}
+        {% trans "Entries" as pagination_title %}
+        {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date accounts=accounts|join:"&accounts=" categories=categories|join:"&categories=" tags=tags|join:"&tags=" units=units|join:"&units=" %}
+    </div>
+</div>
 {% endblock %}
