@@ -5,9 +5,7 @@ from accounts.models import Account, Entry
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -30,12 +28,10 @@ class ListView(generic.ListView):
             entries = Entry.objects. \
                 filter(account__ledger__user=self.request.user). \
                 filter(account__slug=self.kwargs['slug']). \
-                filter(day__lte=get_last_date_current_month()). \
                 order_by('-serial_number')
         else:
             entries = Entry.objects. \
                 filter(account__ledger__user=self.request.user). \
-                filter(day__lte=get_last_date_current_month()). \
                 order_by('-day', '-id')
 
         self.start_date = None
@@ -67,6 +63,8 @@ class ListView(generic.ListView):
                     self.form.cleaned_data['units']:
                 self.units = [u.pk for u in self.form.cleaned_data['units']]
                 entries = entries.filter(account__unit__in=self.units)
+        else:
+            entries = entries.filter(day__lte=get_last_date_current_month())
 
         return entries.distinct()
 
@@ -80,7 +78,6 @@ class ListView(generic.ListView):
         context['categories'] = self.categories
         context['tags'] = self.tags
         context['units'] = self.units
-        context['content_type'] = ContentType.objects.get_for_model(Entry)
         if 'slug' in self.kwargs:
             context['account'] = context['entries'][0].account
             context['show_options'] = not context['account'].closed
@@ -111,34 +108,27 @@ class DetailView(generic.DetailView):
             context['account'] = context['entry'].account
         return context
 
-# @csrf_protect
-# def detail(request, entry_id, slug=None):
-#     o = request.GET.get('o') if not request.GET.get('o') == None else 'name'
-#     order = o if o else 'name'
-
-#     ledger = get_object_or_404(Ledger, user=request.user)
-#     account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
-#     entry = get_object_or_404(Entry, id=entry_id)
-#     files = entry.files.all().order_by(order)
-#     content_type = ContentType.objects.get_for_model(Entry)
-#     return render(request, 'accounts/entry/detail.html', locals())
-
 
 @login_required
 @csrf_protect
 def add(request, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
+    account = get_object_or_404(Account, slug=slug,
+                                ledger=ledger) if slug else None
     today = date.today()
 
     if request.method == 'POST':
-        form = EntryForm(ledger, data=request.POST, exclude_account=bool(account))
+        form = EntryForm(ledger, data=request.POST,
+                         exclude_account=bool(account))
         if form.is_valid():
             if account:
                 form.instance.account = account
             entry = form.save()
 
-            messages.add_message(request, messages.SUCCESS, _('The entry "%(entry)s" was successfully created.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name, entry.serial_number)})
+            msg = _('The entry "%(entry)s" was successfully created.') % {
+                'entry': '#%s' % entry.serial_number if account
+                else '%s - #%s' % (entry.account.name, entry.serial_number)}
+            messages.add_message(request, messages.SUCCESS, msg)
 
             if account:
                 return redirect('accounts:account_entry_list',
@@ -155,23 +145,31 @@ def add(request, slug=None):
 @csrf_protect
 def edit(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
+    account = get_object_or_404(Account, slug=slug,
+                                ledger=ledger) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
     today = date.today()
 
     if request.method == 'POST':
-        form = EntryForm(ledger, instance=entry, data=request.POST, exclude_account=bool(account))
+        form = EntryForm(ledger, instance=entry, data=request.POST,
+                         exclude_account=bool(account))
         if form.is_valid():
             no = entry.serial_number
             if account:
                 form.instance.account = account
             entry = form.save()
 
-
             if no == entry.serial_number:
-                msg = _('The entry "%(entry)s" was successfully updated.') % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name, no)}
+                msg = _('The entry "%(entry)s" was successfully updated.') % {
+                    'entry': '#%s' % no if account
+                    else '%s - #%s' % (entry.account.name, no)}
             else:
-                msg = _('The entry "%(entry)s" was successfully updated and moved to "%(no)s".') % {'entry': '#%s' % no if account else '%s - #%s'% (entry.account.name, no), 'no': '#%s' % entry.serial_number if account else '%s - #%s'% (entry.account.name, entry.serial_number)}
+                msg = _('The entry "%(entry)s" was successfully updated and' +
+                        ' moved to "%(no)s".') % {
+                    'entry': '#%s' % no if account else
+                    '%s - #%s' % (entry.account.name, no),
+                    'no': '#%s' % entry.serial_number if account else
+                    '%s - #%s' % (entry.account.name, entry.serial_number)}
             messages.add_message(request, messages.SUCCESS, msg)
 
             if account:
@@ -189,12 +187,17 @@ def edit(request, entry_id, slug=None):
 @csrf_protect
 def delete(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
+    account = get_object_or_404(Account, slug=slug,
+                                ledger=ledger) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
     if request.method == 'POST':
         entry.delete()
-        messages.add_message(request, messages.SUCCESS, _('The entry "%(entry)s" was successfully deleted.') % {'entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name, entry.serial_number)})
-        for entry in Entry.objects.filter(account=entry.account).filter(serial_number__gt=entry.serial_number):
+        msg = _('The entry "%(entry)s" was successfully deleted.') % {
+            'entry': '#%s' % entry.serial_number if account
+            else '%s - #%s' % (entry.account.name, entry.serial_number)}
+        messages.add_message(request, messages.SUCCESS, msg)
+        for entry in Entry.objects.filter(account=entry.account). \
+                filter(serial_number__gt=entry.serial_number):
             entry.serial_number -= 1
             entry.save()
         entry.account.save()
@@ -208,14 +211,24 @@ def delete(request, entry_id, slug=None):
 @login_required
 def duplicate(request, entry_id, slug=None):
     ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
+    account = get_object_or_404(Account, slug=slug,
+                                ledger=ledger) if slug else None
     entry = get_object_or_404(Entry, id=entry_id)
 
-    new = Entry.objects.create(account=account if account else entry.account, day=date.today(), amount=entry.amount, category=entry.category, additional=entry.additional)
+    new = Entry.objects.create(account=account if account
+                               else entry.account, day=date.today(),
+                               amount=entry.amount, category=entry.category,
+                               additional=entry.additional)
     for tag in entry.tags.all():
         new.tags.add(tag.id)
     new.save()
-    messages.add_message(request, messages.SUCCESS, _('The entry "%(old_entry)s" has been successfully duplicated as entry "%(new_entry)s".') % {'old_entry': '#%s' % entry.serial_number if account else '%s - #%s' % (entry.account.name, entry.serial_number), 'new_entry': '#%s' % new.serial_number if account else '%s - #%s' % (new.account.name, new.serial_number)})
+    msg = _('The entry "%(old_entry)s" has been successfully duplicated as ' +
+            'entry "%(new_entry)s".') % {
+        'old_entry': '#%s' % entry.serial_number if account
+        else '%s - #%s' % (entry.account.name, entry.serial_number),
+        'new_entry': '#%s' % new.serial_number if account
+        else '%s - #%s' % (new.account.name, new.serial_number)}
+    messages.add_message(request, messages.SUCCESS, msg)
     if account:
         return redirect('accounts:account_entry_list', slug=account.slug)
     else:
@@ -240,5 +253,7 @@ def swap(request, slug, e1, e2):
     e2.serial_number = tmp
     e2.save()
 
-    messages.add_message(request, messages.SUCCESS, _('The entries "#%(e1)s" and "#%(e2)s" were successfully swaped.') % {'e1': e2.serial_number, 'e2': e1.serial_number})
+    msg = _('The entries "#%(e1)s" and "#%(e2)s" were successfully ' +
+            'swaped.') % {'e1': e2.serial_number, 'e2': e1.serial_number}
+    messages.add_message(request, messages.SUCCESS, msg)
     return redirect('accounts:account_entry_list', slug=account.slug)
