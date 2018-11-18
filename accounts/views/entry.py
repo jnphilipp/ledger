@@ -34,6 +34,7 @@ class ListView(generic.ListView):
                 filter(account__ledger__user=self.request.user). \
                 order_by('-day', '-id')
 
+        filtered = False
         self.start_date = None
         self.end_date = None
         self.accounts = []
@@ -42,28 +43,35 @@ class ListView(generic.ListView):
         self.units = []
         if self.form.is_valid():
             if self.form.cleaned_data['start_date']:
+                filtered = True
                 self.start_date = self.form.cleaned_data['start_date']
                 entries = entries.filter(day__gte=self.start_date)
             if self.form.cleaned_data['end_date']:
+                filtered = True
                 self.end_date = self.form.cleaned_data['end_date']
                 entries = entries.filter(day__lte=self.end_date)
             if 'accounts' in self.form.cleaned_data and \
                     self.form.cleaned_data['accounts']:
+                filtered = True
                 self.accounts = [a.pk for a in
                                  self.form.cleaned_data['accounts']]
                 entries = entries.filter(account__in=self.accounts)
             if self.form.cleaned_data['categories']:
+                filtered = True
                 self.categories = [c.pk for c in
                                    self.form.cleaned_data['categories']]
                 entries = entries.filter(category__in=self.categories)
             if self.form.cleaned_data['tags']:
+                filtered = True
                 self.tags = [t.pk for t in self.form.cleaned_data['tags']]
                 entries = entries.filter(tags__in=self.tags)
             if 'units' in self.form.cleaned_data and \
                     self.form.cleaned_data['units']:
+                filtered = True
                 self.units = [u.pk for u in self.form.cleaned_data['units']]
                 entries = entries.filter(account__unit__in=self.units)
-        else:
+
+        if not filtered:
             entries = entries.filter(day__lte=get_last_date_current_month())
 
         return entries.distinct()
