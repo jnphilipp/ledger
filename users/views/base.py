@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, views
-from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views import generic
 from django.views.decorators.csrf import csrf_protect
 
-from ..forms import (AuthenticationForm, PasswordChangeForm,
-                     SetPasswordForm, UserCreationForm)
+from ..forms import AuthenticationForm, UserChangeForm, UserCreationForm
 from ..models import Budget, Ledger
 
 
@@ -51,57 +51,25 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-            Ledger.objects.create(user=new_user)
-            Budget.objects.create(user=new_user)
             messages.info(request, messages.SUCCESS,
                           _('Thanks for signing up. You are now logged in.'))
             new_user = authenticate(username=form.cleaned_data['username'],
                                     password=form.cleaned_data['password1'])
             login(request, new_user)
-            return redirect('users:profile')
+            return redirect('profiles:profile')
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', locals())
 
 
-@csrf_protect
-def signout(request):
-    return views.logout(request, template_name='registration/signout.html')
+@method_decorator(login_required, name='dispatch')
+class UpdateView(generic.edit.UpdateView):
+    model = get_user_model()
+    form_class = UserChangeForm
 
+    def get_object(self, queryset=None):
+        return self.request.user
 
-@csrf_protect
-def password_change(request):
-    done_url = reverse('users:password_change_done')
-    return views.password_change(request,
-                                 password_change_form=PasswordChangeForm,
-                                 post_change_redirect=done_url)
-
-
-@csrf_protect
-def password_change_done(request):
-    return views.password_change_done(request)
-
-
-@csrf_protect
-def password_reset(request):
-    done_url = reverse('users:password_reset_done')
-    return views.password_reset(request, password_reset_form=PasswordResetForm,
-                                post_reset_redirect=done_url)
-
-
-@csrf_protect
-def password_reset_done(request):
-    return views.password_reset_done(request)
-
-
-@csrf_protect
-def password_reset_confirm(request, uidb64=None, token=None):
-    complete_url = reverse('users:password_reset_complete')
-    return views.password_reset_confirm(request, uidb64=uidb64, token=token,
-                                        set_password_form=SetPasswordForm,
-                                        post_reset_redirect=complete_url)
-
-
-@csrf_protect
-def password_reset_complete(request):
-    return views.password_reset_complete(request)
+    def get_success_url(self):
+        from django.urls import reverse
+        return reverse('profiles:profile')

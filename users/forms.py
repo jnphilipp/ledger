@@ -53,26 +53,11 @@ class BudgetForm(forms.ModelForm):
                   'savings_tags')
 
 
-class PasswordChangeForm(authforms.PasswordChangeForm):
-    def __init__(self, *args, **kwargs):
-        super(PasswordChangeForm, self).__init__(*args, **kwargs)
-        self.fields['new_password1'].help_text = \
-            mark_safe(self.fields['new_password1'].help_text)
-
-
-class SetPasswordForm(authforms.SetPasswordForm):
-    def __init__(self, *args, **kwargs):
-        super(SetPasswordForm, self).__init__(*args, **kwargs)
-        self.fields['new_password1']. \
-            help_text = mark_safe(self.fields['new_password1'].help_text)
-
-
 class UserChangeForm(authforms.UserChangeForm):
     def __init__(self, *args, **kwargs):
         super(UserChangeForm, self).__init__(*args, **kwargs)
-        self.fields['password'].help_text = mark_safe(
-            self.fields['password'].help_text
-        )
+        self.fields['password']. \
+            help_text = mark_safe(self.fields['password'].help_text)
 
     class Meta(authforms.UserChangeForm.Meta):
         model = get_user_model()
@@ -82,5 +67,9 @@ class UserChangeForm(authforms.UserChangeForm):
 class UserCreationForm(authforms.UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
-        self.fields['password1'].\
+        self.fields['password1']. \
             help_text = mark_safe(self.fields['password1'].help_text)
+
+    class Meta(authforms.UserCreationForm.Meta):
+        model = get_user_model()
+        fields = ('email',)
