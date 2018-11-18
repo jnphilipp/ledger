@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from . import register
+from django.contrib.contenttypes.models import ContentType
+from django.template import Library
+from django.utils import timezone
+
+
+register = Library()
 
 
 @register.filter
@@ -20,7 +25,7 @@ def startswith(value, start):
 def previous(value, arg):
     try:
         return value[int(arg) - 1] if int(arg) - 1 != -1 else None
-    except:
+    except IndexError:
         return None
 
 
@@ -28,5 +33,15 @@ def previous(value, arg):
 def next(value, arg):
     try:
         return value[int(arg) + 1]
-    except:
+    except IndexError:
         return None
+
+
+@register.filter
+def content_type_pk(model):
+    return ContentType.objects.get_for_model(model).pk
+
+
+@register.simple_tag
+def timestamp(format_str):
+    return timezone.now().strftime(format_str)
