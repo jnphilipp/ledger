@@ -42,7 +42,7 @@
                     {% if options %}
                         <td>
                             <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.pk %}{% else %}{% url "accounts:entry_edit" entry.pk %}{% endif %}" title="{% trans "Edit entry" %}"><i class="fas fa-edit"></i></a>
-                            <a class="ajax-popup-link" href="{% url "files:add_another" content_type.pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
+                            <a class="ajax-popup-link" href="{% url "files:add_another" entry|content_type_pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.pk %}{% else %}{% url "accounts:entry_duplicate" entry.pk %}{% endif %}" title="{% trans "Duplicate entry" %}"><i class="fas fa-clone"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.pk %}{% else %}{% url "accounts:entry_delete" entry.pk %}{% endif %}" title="{% trans "Delete entry" %}"><i class="fas fa-trash"></i></a>
                             {% if account %}
