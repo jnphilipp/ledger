@@ -11,11 +11,16 @@ from units.models import Unit
 
 
 @register.inclusion_tag('ledger/partials/_balances.html', takes_context=True)
-def balance(context, entries=None):
+def balance(context, account=None):
     values = []
-    units = Unit.objects.filter(id__in=set(entries.values_list('account__unit',
-                                                               flat=True)))
-    for unit in units:
+
+    if account:
+        entries = account.entries.all()
+    else:
+        entries = Entry.objects.filter(account__ledger__user=context['user'])
+
+    ids = set(entries.values_list('account__unit', flat=True))
+    for unit in Unit.objects.filter(id__in=ids):
         e = entries.filter(account__unit=unit)
         b = e.filter(day__lte=date.today()).aggregate(sum=Sum('amount'))['sum']
         o = e.filter(day__gt=date.today()). \

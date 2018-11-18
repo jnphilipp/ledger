@@ -1,13 +1,28 @@
 {% load i18n ledger %}
 
-{% if values|length == 1 %}
-    {% with value=values|get_item:0 %}
-        {{ value|get_item:'balance' }} (<b>{% trans 'Outstanding' %}</b>: {{ value|get_item:'outstanding' }})
-    {% endwith %}
-{% else %}
-    <ul class="list-unstyled">
-        {% for value in values %}
-            <li>{{ value|get_item:'balance' }} (<b>{% trans 'Outstanding' %}</b>: {{ value|get_item:'outstanding' }})</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<ul class="list-inline">
+    <li class="list-inline-item align-top"><b>{% trans "Balance" %}:</b></li>
+    <li class="list-inline-item">
+        {% if values|length == 1 %}
+            {{ values|get_item:0|get_item:"balance" }}
+        {% else %}
+            <ul class="list-unstyled">
+                {% for value in values %}
+                    <li>{{ value|get_item:"balance" }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+    <li class="list-inline-item align-top"><b>{% trans "Outstanding" %}:</b></li>
+    <li class="list-inline-item">
+        {% if values|length == 1 %}
+            {{ values|get_item:0|get_item:"outstanding" }}
+        {% else %}
+            <ul class="list-unstyled">
+                {% for value in values %}
+                    <li>{{ value|get_item:"outstanding" }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+</ul>
