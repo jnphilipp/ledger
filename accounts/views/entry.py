@@ -119,11 +119,12 @@ class DetailView(generic.DetailView):
             context['account'] = context['entry'].account
         return context
 
+
 @method_decorator(login_required, name='dispatch')
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = EntryForm
     model = Entry
-    success_message =_('The entry "%(entry)s" was successfully created.')
+    success_message = _('The entry "%(entry)s" was successfully created.')
 
     def get_context_data(self, *args, **kwargs):
         context = super(CreateView, self).get_context_data(*args, **kwargs)
@@ -141,10 +142,12 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         return Entry.objects.filter(account__ledger__user=self.request.user)
 
     def get_success_message(self, cleaned_data):
-        return self.success_message % {
-            'entry': '#%s' % self.object.serial_number if 'slug' in self.kwargs
-            else '%s - #%s' % (self.object.account.name,
-                               self.object.serial_number)}
+        if 'slug' in self.kwargs:
+            entry = '#%s' % self.object.serial_number
+        else:
+            entry = '%s - #%s' % (self.object.account.name,
+                                  self.object.serial_number)
+        return self.success_message % {'entry': entry}
 
     def get_success_url(self):
         if 'slug' in self.kwargs:
@@ -204,9 +207,8 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
+class DeleteView(generic.edit.DeleteView):
     model = Entry
-    success_message = _('The entry "%(entry)s" was successfully deleted.')
 
     def delete(self, request, *args, **kwargs):
         v = super(DeleteView, self).delete(request, *args, **kwargs)
@@ -220,47 +222,59 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
     def get_queryset(self):
         return Entry.objects.filter(account__ledger__user=self.request.user)
 
-    def get_success_message(self, cleaned_data):
-        if 'slug' in self.kwargs:
-            entry = '#%s' % self.object.serial_number
-        else:
-            entry = '%s - #%s' % (self.object.account.name,
-                                  self.object.serial_number)
-        return self.success_message % {'entry': entry}
-
     def get_success_url(self):
+        msg = _('The entry "%(entry)s" was successfully deleted.')
         if 'slug' in self.kwargs:
+            msg %= {'entry': '#%s' % self.object.serial_number}
+            messages.add_message(self.request, messages.SUCCESS, msg)
             return reverse_lazy('accounts:account_entry_list',
                                 args=[self.kwargs['slug']])
         else:
+            msg %= {'entry': '%s - #%s' % (self.object.account.name,
+                                           self.object.serial_number)}
+            messages.add_message(self.request, messages.SUCCESS, msg)
             return reverse_lazy('accounts:entry_list')
 
 
-@login_required
-def duplicate(request, entry_id, slug=None):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug,
-                                ledger=ledger) if slug else None
-    entry = get_object_or_404(Entry, id=entry_id)
+@method_decorator(login_required, name='dispatch')
+class DuplicateView(generic.base.RedirectView):
+    permanent = False
+    query_string = True
 
-    new = Entry.objects.create(account=account if account
-                               else entry.account, day=date.today(),
-                               amount=entry.amount, category=entry.category,
-                               additional=entry.additional)
-    for tag in entry.tags.all():
-        new.tags.add(tag.id)
-    new.save()
-    msg = _('The entry "%(old_entry)s" has been successfully duplicated as ' +
-            'entry "%(new_entry)s".') % {
-        'old_entry': '#%s' % entry.serial_number if account
-        else '%s - #%s' % (entry.account.name, entry.serial_number),
-        'new_entry': '#%s' % new.serial_number if account
-        else '%s - #%s' % (new.account.name, new.serial_number)}
-    messages.add_message(request, messages.SUCCESS, msg)
-    if account:
-        return redirect('accounts:account_entry_list', slug=account.slug)
-    else:
-        return redirect('accounts:entry_list')
+    def get_redirect_url(self, *args, **kwargs):
+        ledger = get_object_or_404(Ledger, user=self.request.user)
+
+        if 'slug' in kwargs:
+            account = get_object_or_404(Account, slug=kwargs['slug'],
+                                        ledger=ledger)
+            entry = get_object_or_404(Entry, pk=kwargs['pk'], account=account)
+        else:
+            account = None
+            entry = get_object_or_404(Entry, pk=kwargs['pk'])
+
+        new = Entry.objects.create(account=entry.account, day=date.today(),
+                                   amount=entry.amount,
+                                   category=entry.category,
+                                   additional=entry.additional)
+        for tag in entry.tags.all():
+            new.tags.add(tag.id)
+        new.save()
+
+        msg = _('The entry "%(old_entry)s" has been successfully duplicated ' +
+                'as entry "%(new_entry)s".')
+        if account:
+            old_entry = '#%s' % entry.serial_number
+            new_entry = '#%s' % new.serial_number
+            msg %= {'old_entry': old_entry, 'new_entry': new_entry}
+            self.url = reverse_lazy('accounts:account_entry_list',
+                                    args=[kwargs['slug']])
+        else:
+            old_entry = '%s - #%s' % (entry.account.name, entry.serial_number)
+            new_entry = '%s - #%s' % (new.account.name, new.serial_number)
+            msg %= {'old_entry': old_entry, 'new_entry': new_entry}
+            self.url = reverse_lazy('accounts:entry_list')
+        messages.add_message(self.request, messages.SUCCESS, msg)
+        return super().get_redirect_url(*args, **kwargs)
 
 
 @login_required

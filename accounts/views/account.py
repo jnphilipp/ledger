@@ -63,11 +63,19 @@ def statistics(request, slug):
     chart = request.GET.get('chart')
     year = request.GET.get('year')
     month = request.GET.get('month')
-    category = get_object_or_404(Category, slug=request.GET.get('category')) if request.GET.get('category') else None
-    tag = get_object_or_404(Tag, slug=request.GET.get('tag')) if request.GET.get('tag') else None
+    if request.GET.get('category'):
+        category = get_object_or_404(Category,
+                                     slug=request.GET.get('category'))
+    else:
+        category = None
+    if request.GET.get('tag'):
+        tag = get_object_or_404(Tag, slug=request.GET.get('tag'))
+    else:
+        tag = None
 
     if year and month:
-        month_name = date(year=int(year), month=int(month), day=1).strftime('%B')
+        month_name = date(year=int(year), month=int(month),
+                          day=1).strftime('%B')
 
     options = []
     if not chart:
@@ -76,8 +84,7 @@ def statistics(request, slug):
             'id': 'categories',
             'key': 'chart',
             'value': _('Categories')
-        },
-        {
+        }, {
             'id': 'tags',
             'key': 'chart',
             'value': _('Tags')
@@ -119,7 +126,10 @@ def statistics(request, slug):
                 'id': category.slug,
                 'key': 'category',
                 'value': category.name
-            } for category in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
+            } for category in Category.objects.filter(
+                Q(entries__account=account) &
+                Q(entries__day__year=year) &
+                Q(entries__day__month=month)).distinct()]
         elif chart == 'tags':
             chart_name = _('Tags')
             option_msg = _('Select a tag')
@@ -127,17 +137,20 @@ def statistics(request, slug):
                 'id': tag.slug,
                 'key': 'tag',
                 'value': tag.name
-            } for tag in Tag.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
+            } for tag in Tag.objects.filter(
+                Q(entries__account=account) &
+                Q(entries__day__year=year) &
+                Q(entries__day__month=month)).distinct()]
     else:
         chart_name = _('Tags') if chart == 'tags' else _('Categories')
     return render(request, 'accounts/account/statistics.html', locals())
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateView(generic.edit.CreateView):
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = AccountForm
     model = Account
-    success_message =_('The account %(name)s was successfully created.')
+    success_message = _('The account %(name)s was successfully created.')
 
     def get_initial(self):
         return {'ledger': self.request.user.ledger}
@@ -162,24 +175,35 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 @method_decorator(login_required, name='dispatch')
 class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
     model = Account
-    success_url = reverse_lazy('accounts:account_list')
-    success_message = _('The account %(name)s was successfully deleted.')
 
     def get_queryset(self):
         return Account.objects.filter(ledger__user=self.request.user)
 
-
-@login_required
-def close(request, slug):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    account.closed = not account.closed
-    account.save()
-    if account.closed:
-        messages.add_message(request, messages.SUCCESS, _('The account %(name)s was successfully closed.') % {'name': account.name})
-    else:
-        messages.add_message(request, messages.SUCCESS, _('The account %(name)s was successfully re-open.') % {'name': account.name})
-    return redirect('accounts:account', slug=account.slug)
+    def get_success_url(self):
+        msg = _('The account %(name)s was successfully deleted.')
+        msg %= {'name': self.object.name}
+        messages.add_message(self.request, messages.SUCCESS, msg)
+        return reverse_lazy('accounts:account_list')
 
 
+@method_decorator(login_required, name='dispatch')
+class CloseView(generic.base.RedirectView):
+    permanent = False
+    query_string = True
+    pattern_name = 'accounts:account_detail'
 
+    def get_redirect_url(self, *args, **kwargs):
+        ledger = get_object_or_404(Ledger, user=self.request.user)
+        account = get_object_or_404(Account, slug=kwargs['slug'],
+                                    ledger=ledger)
+        account.closed = not account.closed
+        account.save()
+
+        if account.closed:
+            msg = _('The account %(name)s was successfully closed.')
+        else:
+            msg = _('The account %(name)s was successfully re-open.')
+
+        msg %= {'name': account.name}
+        messages.add_message(self.request, messages.SUCCESS, msg)
+        return super().get_redirect_url(*args, **kwargs)
