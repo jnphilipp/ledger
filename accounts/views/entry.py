@@ -277,25 +277,50 @@ class DuplicateView(generic.base.RedirectView):
         return super().get_redirect_url(*args, **kwargs)
 
 
-@login_required
-@csrf_protect
-def swap(request, slug, e1, e2):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
+@method_decorator(login_required, name='dispatch')
+class SwapView(generic.base.RedirectView):
+    permanent = False
+    query_string = True
 
-    e1 = get_object_or_404(Entry, id=e1)
-    e2 = get_object_or_404(Entry, id=e2)
+    def get_redirect_url(self, *args, **kwargs):
+        ledger = get_object_or_404(Ledger, user=self.request.user)
+        if 'slug' in kwargs:
+            account = get_object_or_404(Account, slug=kwargs['slug'],
+                                        ledger=ledger)
+            e1 = get_object_or_404(Entry, id=kwargs['pk'], account=account)
+        else:
+            e1 = get_object_or_404(Entry, id=kwargs['pk'],
+                                   account__ledger=ledger)
 
-    tmp = e1.serial_number
-    e1.serial_number = e2.serial_number
-    e2.serial_number = -1
-    e2.save()
-    e1.save()
+        if kwargs['direction'] == 'down':
+            e2 = Entry.objects.filter(account=e1.account). \
+                filter(serial_number__lt=e1.serial_number). \
+                order_by('-serial_number')[:1]
+        elif kwargs['direction'] == 'up':
+            e2 = Entry.objects.filter(account=e1.account). \
+                filter(serial_number__gt=e1.serial_number). \
+                order_by('serial_number')[:1]
 
-    e2.serial_number = tmp
-    e2.save()
+        if e2.count() == 1:
+            e2 = e2[0]
 
-    msg = _('The entries "#%(e1)s" and "#%(e2)s" were successfully ' +
-            'swaped.') % {'e1': e2.serial_number, 'e2': e1.serial_number}
-    messages.add_message(request, messages.SUCCESS, msg)
-    return redirect('accounts:account_entry_list', slug=account.slug)
+            tmp = e1.serial_number
+            e1.serial_number = e2.serial_number
+            e2.serial_number = -1
+            e2.save()
+            e1.save()
+
+            e2.serial_number = tmp
+            e2.save()
+
+            msg = _('The entries "#%(e1)s" and "#%(e2)s" were successfully ' +
+                    'swaped.')
+            msg %= {'e1': e1.serial_number, 'e2': e2.serial_number}
+            messages.add_message(self.request, messages.SUCCESS, msg)
+
+        if 'slug' in kwargs:
+            self.url = reverse_lazy('accounts:account_entry_list',
+                                    args=[kwargs['slug']])
+        else:
+            self.url = reverse_lazy('accounts:entry_list')
+        return super().get_redirect_url(*args, **kwargs)

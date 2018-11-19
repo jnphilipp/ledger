@@ -46,18 +46,8 @@
                             <a class="ajax-popup-link" href="{% url "files:add_another" entry|content_type_pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.pk %}{% else %}{% url "accounts:entry_duplicate" entry.pk %}{% endif %}" title="{% trans "Duplicate entry" %}"><i class="fas fa-clone"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.pk %}{% else %}{% url "accounts:entry_delete" entry.pk %}{% endif %}" title="{% trans "Delete entry" %}"><i class="fas fa-trash"></i></a>
-                            {% if account %}
-                                {% with entries|previous:forloop.counter0 as previous %}
-                                {% with entries|next:forloop.counter0 as next %}
-                                    {% if next %}
-                                        <a href="{% url "accounts:account_entry_swap" account.slug entry.pk next.pk %}" title="{% trans "Move down" %}"><i class="fas fa-arrow-down"></i></a>
-                                    {% endif %}
-                                    {% if previous %}
-                                        <a href="{% url "accounts:account_entry_swap" account.slug previous.pk entry.pk %}" title="{% trans "Move up" %}"><i class="fas fa-arrow-up"></i></a>
-                                    {% endif %}
-                                {% endwith %}
-                                {% endwith %}
-                            {% endif %}
+                            <a href="{% if account %}{% url "accounts:account_entry_swap" account.slug entry.pk "down" %}{% else %}{% url "accounts:entry_swap" entry.pk "down" %}{% endif %}" title="{% trans "Move down" %}"><i class="fas fa-arrow-down"></i></a>
+                            <a href="{% if account %}{% url "accounts:account_entry_swap" account.slug entry.pk "up" %}{% else %}{% url "accounts:entry_swap" entry.pk "up" %}{% endif %}" title="{% trans "Move up" %}"><i class="fas fa-arrow-up"></i></a>
                         </td>
                     {% endif %}
                 </tr>
