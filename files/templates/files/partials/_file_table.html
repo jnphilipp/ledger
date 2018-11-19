@@ -2,8 +2,8 @@
 
 
 <div class="table-responsive">
-    <table class="table table-bordered table-sm table-hover table-striped">
-        <thead>
+    <table class="table table-hover table-sm">
+        <thead class="thead-light">
             <tr>
                 {% trans "Name" as name_trans %}
                 {% sortable_th column_name=name_trans o=o get_name='o' get_value='name' %}

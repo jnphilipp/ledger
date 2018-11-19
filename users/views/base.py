@@ -3,6 +3,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
@@ -56,20 +57,21 @@ def signup(request):
             new_user = authenticate(username=form.cleaned_data['username'],
                                     password=form.cleaned_data['password1'])
             login(request, new_user)
-            return redirect('profiles:profile')
+            return redirect('users:profile')
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', locals())
 
 
 @method_decorator(login_required, name='dispatch')
-class UpdateView(generic.edit.UpdateView):
-    model = get_user_model()
+class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = UserChangeForm
+    model = get_user_model()
+    success_message = _('Your profile was successfully updated.')
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def get_success_url(self):
         from django.urls import reverse
-        return reverse('profiles:profile')
+        return reverse('users:profile')
