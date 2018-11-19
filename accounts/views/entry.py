@@ -107,7 +107,6 @@ class DetailView(generic.DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(DetailView, self).get_context_data(*args, **kwargs)
-        context['content_type'] = ContentType.objects.get_for_model(Entry)
         context['o'] = 'name'
         if 'o' in self.request.GET:
             context['o'] = self.request.GET.get('o')
