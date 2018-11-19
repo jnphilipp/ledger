@@ -5,7 +5,9 @@ from accounts.models import Account, Entry
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -23,6 +25,7 @@ class ListView(generic.ListView):
     def get_queryset(self):
         self.form = EntryFilterForm(self.request.GET)
         if 'slug' in self.kwargs:
+            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
             del self.form.fields['accounts']
             del self.form.fields['units']
             entries = Entry.objects. \
@@ -30,6 +33,7 @@ class ListView(generic.ListView):
                 filter(account__slug=self.kwargs['slug']). \
                 order_by('-serial_number')
         else:
+            self.account = None
             entries = Entry.objects. \
                 filter(account__ledger__user=self.request.user). \
                 order_by('-day', '-id')
@@ -87,7 +91,7 @@ class ListView(generic.ListView):
         context['tags'] = self.tags
         context['units'] = self.units
         if 'slug' in self.kwargs:
-            context['account'] = context['entries'][0].account
+            context['account'] = self.account
             context['show_options'] = not context['account'].closed
         else:
             context['show_options'] = True
@@ -115,104 +119,121 @@ class DetailView(generic.DetailView):
             context['account'] = context['entry'].account
         return context
 
+@method_decorator(login_required, name='dispatch')
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
+    form_class = EntryForm
+    model = Entry
+    success_message =_('The entry "%(entry)s" was successfully created.')
 
-@login_required
-@csrf_protect
-def add(request, slug=None):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug,
-                                ledger=ledger) if slug else None
-    today = date.today()
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateView, self).get_context_data(*args, **kwargs)
+        context['account'] = self.account
+        return context
 
-    if request.method == 'POST':
-        form = EntryForm(ledger, data=request.POST,
-                         exclude_account=bool(account))
-        if form.is_valid():
-            if account:
-                form.instance.account = account
-            entry = form.save()
+    def get_initial(self):
+        self.account = None
+        if 'slug' in self.kwargs:
+            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
+        return {'ledger': self.request.user.ledger,
+                'show_account': 'slug' not in self.kwargs}
 
-            msg = _('The entry "%(entry)s" was successfully created.') % {
-                'entry': '#%s' % entry.serial_number if account
-                else '%s - #%s' % (entry.account.name, entry.serial_number)}
-            messages.add_message(request, messages.SUCCESS, msg)
+    def get_queryset(self):
+        return Entry.objects.filter(account__ledger__user=self.request.user)
 
-            if account:
-                return redirect('accounts:account_entry_list',
-                                slug=account.slug)
-            else:
-                return redirect('accounts:entry_list')
-        return render(request, 'accounts/entry/form.html', locals())
-    else:
-        form = EntryForm(ledger, exclude_account=bool(account))
-    return render(request, 'accounts/entry/form.html', locals())
+    def get_success_message(self, cleaned_data):
+        return self.success_message % {
+            'entry': '#%s' % self.object.serial_number if 'slug' in self.kwargs
+            else '%s - #%s' % (self.object.account.name,
+                               self.object.serial_number)}
 
-
-@login_required
-@csrf_protect
-def edit(request, entry_id, slug=None):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug,
-                                ledger=ledger) if slug else None
-    entry = get_object_or_404(Entry, id=entry_id)
-    today = date.today()
-
-    if request.method == 'POST':
-        form = EntryForm(ledger, instance=entry, data=request.POST,
-                         exclude_account=bool(account))
-        if form.is_valid():
-            no = entry.serial_number
-            if account:
-                form.instance.account = account
-            entry = form.save()
-
-            if no == entry.serial_number:
-                msg = _('The entry "%(entry)s" was successfully updated.') % {
-                    'entry': '#%s' % no if account
-                    else '%s - #%s' % (entry.account.name, no)}
-            else:
-                msg = _('The entry "%(entry)s" was successfully updated and' +
-                        ' moved to "%(no)s".') % {
-                    'entry': '#%s' % no if account else
-                    '%s - #%s' % (entry.account.name, no),
-                    'no': '#%s' % entry.serial_number if account else
-                    '%s - #%s' % (entry.account.name, entry.serial_number)}
-            messages.add_message(request, messages.SUCCESS, msg)
-
-            if account:
-                return redirect('accounts:account_entry_list',
-                                slug=account.slug)
-            else:
-                return redirect('accounts:entry_list')
-        return render(request, 'accounts/entry/form.html', locals())
-    else:
-        form = EntryForm(ledger, instance=entry, exclude_account=bool(account))
-    return render(request, 'accounts/entry/form.html', locals())
+    def get_success_url(self):
+        if 'slug' in self.kwargs:
+            return reverse_lazy('accounts:account_entry_list',
+                                args=[self.kwargs['slug']])
+        else:
+            return reverse_lazy('accounts:entry_list')
 
 
-@login_required
-@csrf_protect
-def delete(request, entry_id, slug=None):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug,
-                                ledger=ledger) if slug else None
-    entry = get_object_or_404(Entry, id=entry_id)
-    if request.method == 'POST':
-        entry.delete()
-        msg = _('The entry "%(entry)s" was successfully deleted.') % {
-            'entry': '#%s' % entry.serial_number if account
-            else '%s - #%s' % (entry.account.name, entry.serial_number)}
-        messages.add_message(request, messages.SUCCESS, msg)
-        for entry in Entry.objects.filter(account=entry.account). \
-                filter(serial_number__gt=entry.serial_number):
+@method_decorator(login_required, name='dispatch')
+class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
+    form_class = EntryForm
+    model = Entry
+
+    def form_valid(self, form):
+        self.orig_serial_number = self.object.serial_number
+        return super(UpdateView, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(UpdateView, self).get_context_data(*args, **kwargs)
+        context['account'] = self.account
+        return context
+
+    def get_initial(self):
+        self.account = None
+        if 'slug' in self.kwargs:
+            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
+        return {'ledger': self.request.user.ledger,
+                'show_account': 'slug' not in self.kwargs}
+
+    def get_queryset(self):
+        return Entry.objects.filter(account__ledger__user=self.request.user)
+
+    def get_success_message(self, cleaned_data):
+        if 'slug' in self.kwargs:
+            entry = '#%s' % self.orig_serial_number
+            no = '#%s' % self.object.serial_number
+        else:
+            entry = '%s - #%s' % (self.object.account.name,
+                                  self.orig_serial_number)
+            no = '%s - #%s' % (self.object.account.name,
+                               self.object.serial_number)
+
+        if self.orig_serial_number == self.object.serial_number:
+            return _('The entry "%(entry)s" was successfully updated.') % \
+                {'entry': entry}
+        else:
+            return _('The entry "%(entry)s" was successfully updated and' +
+                     ' moved to "%(no)s".') % {'entry': entry, 'no': no}
+
+    def get_success_url(self):
+        if 'slug' in self.kwargs:
+            return reverse_lazy('accounts:account_entry_list',
+                                args=[self.kwargs['slug']])
+        else:
+            return reverse_lazy('accounts:entry_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
+    model = Entry
+    success_message = _('The entry "%(entry)s" was successfully deleted.')
+
+    def delete(self, request, *args, **kwargs):
+        v = super(DeleteView, self).delete(request, *args, **kwargs)
+        for entry in Entry.objects.filter(account=self.object.account). \
+                filter(serial_number__gt=self.object.serial_number):
             entry.serial_number -= 1
             entry.save()
-        entry.account.save()
-        if account:
-            return redirect('accounts:account_entry_list', slug=account.slug)
+        self.object.account.save()
+        return v
+
+    def get_queryset(self):
+        return Entry.objects.filter(account__ledger__user=self.request.user)
+
+    def get_success_message(self, cleaned_data):
+        if 'slug' in self.kwargs:
+            entry = '#%s' % self.object.serial_number
         else:
-            return redirect('accounts:entry_list')
-    return render(request, 'accounts/entry/delete.html', locals())
+            entry = '%s - #%s' % (self.object.account.name,
+                                  self.object.serial_number)
+        return self.success_message % {'entry': entry}
+
+    def get_success_url(self):
+        if 'slug' in self.kwargs:
+            return reverse_lazy('accounts:account_entry_list',
+                                args=[self.kwargs['slug']])
+        else:
+            return reverse_lazy('accounts:entry_list')
 
 
 @login_required

@@ -57,7 +57,7 @@ class Account(models.Model):
     )
 
     def delete(self, *args, **kwargs):
-        for file in self.statements:
+        for file in self.statements.all():
             file.delete()
         super(Account, self).delete(*args, **kwargs)
 

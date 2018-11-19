@@ -10,4 +10,7 @@ from files.models import File
 
 @receiver(pre_delete, sender=File)
 def delete_files(sender, instance, **kwargs):
-    os.remove(os.path.join(settings.MEDIA_ROOT, instance.file.name))
+    try:
+        os.remove(os.path.join(settings.MEDIA_ROOT, instance.file.name))
+    except FileNotFoundError:
+        pass

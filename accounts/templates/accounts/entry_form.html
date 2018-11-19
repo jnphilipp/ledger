@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load bootstrap i18n %}
+{% load bootstrap i18n ledger %}
 
 
 {% block extrahead %}
@@ -35,7 +35,7 @@
                 selectOtherMonths: true
             });
             $("#date_today").click(function() {
-                $("#id_day").val("{{ today|date:"Y-m-d" }}");
+                $("#id_day").val("{% timestamp "%Y-%m-%d" %}");
                 $("#id_amount").focus();
                 return false;
             });
@@ -86,7 +86,7 @@
                 }
             }
         });
-        $(".ajax-popup-link").magnificPopup({
+        $(".mpopup").magnificPopup({
             type: "iframe"
         });
     });
@@ -106,7 +106,7 @@
     <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
     <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_list" account.slug %}">{% trans "Entries" %}</a></li>
     {% if entry %}
-        <li class="breadcrumb-item"><a href="{% url "accounts:account_entry" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_detail" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
     {% endif %}
 {% else %}

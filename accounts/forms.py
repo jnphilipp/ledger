@@ -52,22 +52,40 @@ class EntryForm(forms.ModelForm):
         model = Entry
         exclude = ['serial_number']
 
-    def __init__(self, ledger, exclude_account=True, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(EntryForm, self).__init__(*args, **kwargs)
-        if exclude_account:
-            del self.fields['account']
+
+        if 'ledger' in kwargs:
+            ledger = kwargs['ledger']
+        elif 'initial' in kwargs and 'ledger' in kwargs['initial']:
+            ledger = kwargs['initial']['ledger']
+        if 'show_account' in kwargs:
+            show_account = kwargs['show_account']
+        elif 'initial' in kwargs and 'show_account' in kwargs['initial']:
+            show_account = kwargs['initial']['show_account']
+
+        if not show_account:
+            self.fields['account'].widget = forms.HiddenInput()
         else:
-            self.fields['account'].queryset = ledger.accounts.filter(closed=False)
+            self.fields['account'].queryset = \
+                ledger.accounts.filter(closed=False)
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
-        self.fields['day'].help_text = mark_safe('<a id="date_today" href="">%s</a> (%s: yyyy-mm-dd)' % (_('Today'), _('Date format')))
+        self.fields['day'].help_text = \
+            mark_safe('<a id="date_today" href="">%s</a> (%s: yyyy-mm-dd)' %
+                      (_('Today'), _('Date format')))
 
-        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
+        self.fields['category'].help_text = \
+            mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
+                       '</a>') % (reverse('categories:category_add_another'),
+                                  _('Add category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
-        self.fields['tags'].help_text = mark_safe('<a href="%s?target_id=id_tags" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:tag_add_another'), _('Add new tag')))
+        self.fields['tags'].help_text = \
+            mark_safe('<a href="%s?target_id=id_tags" class="mpopup">%s</a>' %
+                      (reverse('categories:tag_add_another'), _('Add tag')))
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
 

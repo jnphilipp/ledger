@@ -6,8 +6,10 @@ from categories.models import Category, Tag
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
@@ -133,8 +135,9 @@ def statistics(request, slug):
 
 @method_decorator(login_required, name='dispatch')
 class CreateView(generic.edit.CreateView):
-    model = Account
     form_class = AccountForm
+    model = Account
+    success_message =_('The account %(name)s was successfully created.')
 
     def get_initial(self):
         return {'ledger': self.request.user.ledger}
@@ -143,26 +146,27 @@ class CreateView(generic.edit.CreateView):
         r = super(CreateView, self).form_valid(form)
         self.request.user.ledger.accounts.add(self.object)
         self.request.user.ledger.save()
-        msg = _('The account %(name)s was successfully created.' % \
-            {'name': self.object.name})
-        messages.add_message(self.request, messages.SUCCESS, msg)
         return r
 
-@login_required
-@csrf_protect
-def edit(request, slug):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    if request.method == 'POST':
-        form = AccountForm(ledger, instance=account, data=request.POST)
-        if form.is_valid():
-            account = form.save()
-            messages.add_message(request, messages.SUCCESS, _('The account %(name)s was successfully updated.') % {'name': account.name})
-            return redirect('accounts:account', slug=account.slug)
-        return render(request, 'accounts/account/form.html', locals())
-    else:
-        form = AccountForm(ledger, instance=account)
-    return render(request, 'accounts/account/form.html', locals())
+
+@method_decorator(login_required, name='dispatch')
+class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
+    form_class = AccountForm
+    model = Account
+    success_message = _('The account %(name)s was successfully updated.')
+
+    def get_queryset(self):
+        return Account.objects.filter(ledger__user=self.request.user)
+
+
+@method_decorator(login_required, name='dispatch')
+class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
+    model = Account
+    success_url = reverse_lazy('accounts:account_list')
+    success_message = _('The account %(name)s was successfully deleted.')
+
+    def get_queryset(self):
+        return Account.objects.filter(ledger__user=self.request.user)
 
 
 @login_required
@@ -178,13 +182,4 @@ def close(request, slug):
     return redirect('accounts:account', slug=account.slug)
 
 
-@login_required
-@csrf_protect
-def delete(request, slug):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    if request.method == 'POST':
-        account.delete()
-        messages.add_message(request, messages.SUCCESS, _('The account %(name)s was successfully deleted.') % {'name': account.name})
-        return redirect('dashboard')
-    return render(request, 'accounts/account/delete.html', locals())
+
