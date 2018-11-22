@@ -22,18 +22,20 @@ def daterange(start, end, execution=1):
     c = start
     dates = []
     for i in count(step=step):
-        if c == end:
-            break;
         c = start + relativedelta(months=+i)
+        if c >= end:
+            break
         dates.append(c)
     return dates
 
 
 def days_in_month(month):
     """https://cmcenroe.me/2014/12/05/days-in-month-formula.html"""
-    return 28 + (month + floor(month / 8)) % 2 + 2 % month + 2 * floor(1 / month)
+    return 28 + (month + floor(month / 8)) % 2 + 2 % month + 2 * \
+        floor(1 / month)
 
 
 def get_last_date_current_month():
     today = date.today()
-    return date(year=today.year, month=today.month, day=monthrange(today.year, today.month)[1])
+    return date(year=today.year, month=today.month,
+                day=monthrange(today.year, today.month)[1])
