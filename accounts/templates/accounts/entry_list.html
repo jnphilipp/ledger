@@ -114,7 +114,7 @@
    <div class="col-md-3 text-right">
         {% if show_options %}
             <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_entry_create" account.slug %}{% else %}{% url "accounts:entry_create" %}{% endif %}">{% trans "Add entry" %}</a>
-            <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_standing_entry_add" account.slug %}{% else %}{% url "accounts:standing_entry_add" %}{% endif %}">{% trans "Add standing entry" %}</a>
+            <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_standing_entry_create" account.slug %}{% else %}{% url "accounts:standing_entry_create" %}{% endif %}">{% trans "Add standing entry" %}</a>
         {% endif %}
     </div>
 </div>

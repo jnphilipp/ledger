@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.decorators.csrf import csrf_protect
-from ledger.functions.dates import get_last_date_current_month
+from ledger.dates import get_last_date_current_month
 from users.models import Ledger
 
 
@@ -137,9 +137,6 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
         return {'ledger': self.request.user.ledger,
                 'show_account': 'slug' not in self.kwargs}
-
-    def get_queryset(self):
-        return Entry.objects.filter(account__ledger__user=self.request.user)
 
     def get_success_message(self, cleaned_data):
         if 'slug' in self.kwargs:

@@ -1,29 +1,27 @@
 # -*- coding: utf-8 -*-
 
-import json
-
 from accounts.models import Account, Entry
 from categories.models import Category, Tag
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
 
 @login_required
-def categories(request, slug):
+def categories(request, slug, year=None, month=None, category=None):
     account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
-    year = request.GET.get('year')
-    month = request.GET.get('month')
-    c = request.GET.get('category')
 
     data = None
-    if c and month and year:
-        days = account.entries.filter(Q(day__year=year) & Q(day__month=month) & Q(category__slug=c)).dates('day', 'day')
+    if category and month and year:
+        c = get_object_or_404(Category, slug=category)
+        days = account.entries.filter(Q(day__year=year) & Q(day__month=month) &
+                                      Q(category=c)).dates('day', 'day')
         data = {
             'xAxis': {
-                'categories': ['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days],
+                'categories': ['%s. %s' % (d.strftime('%d'),
+                                           d.strftime('%B')) for d in days],
                 'title': {
                     'text': str(_('Days'))
                 }
@@ -43,15 +41,18 @@ def categories(request, slug):
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': category.name,
-                'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(category=category) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
-            } for category in Category.objects.filter(slug=c).distinct()]
+                'name': c.name,
+                'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')),
+                          account.entries.filter(Q(category=c) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
+            }]
         }
     elif month and year:
-        days = account.entries.filter(Q(day__year=year) & Q(day__month=month)).dates('day', 'day')
+        days = account.entries.filter(Q(day__year=year) &
+                                      Q(day__month=month)).dates('day', 'day')
         data = {
             'xAxis': {
-                'categories': ['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days],
+                'categories': ['%s. %s' % (d.strftime('%d'),
+                                           d.strftime('%B')) for d in days],
                 'title': {
                     'text': str(_('Days'))
                 }
@@ -71,9 +72,9 @@ def categories(request, slug):
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': category.name,
-                'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(category=category) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
-            } for category in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
+                'name': c.name,
+                'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(category=c) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
+            } for c in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year) & Q(entries__day__month=month)).distinct()]
         }
     elif year:
         months = account.entries.filter(day__year=year).dates('day', 'month')
@@ -99,9 +100,13 @@ def categories(request, slug):
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': category.name,
-                'data': [[m.strftime('%B'), account.entries.filter(Q(category=category) & Q(day__year=year) & Q(day__month=m.strftime('%m'))).aggregate(sum=Sum('amount'))['sum']] for m in months]
-            } for category in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year)).distinct()]
+                'name': c.name,
+                'data': [[m.strftime('%B'),
+                          account.entries.filter(Q(category=c) &
+                                                 Q(day__year=year) &
+                                                 Q(day__month=m.strftime('%m'))
+                          ).aggregate(sum=Sum('amount'))['sum']] for m in months]
+            } for c in Category.objects.filter(Q(entries__account=account) & Q(entries__day__year=year)).distinct()]
         }
     else:
         years = account.entries.dates('day', 'year')
@@ -127,26 +132,31 @@ def categories(request, slug):
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': category.name,
-                'data': [[y.strftime('%Y'), account.entries.filter(Q(category=category) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years]
-            } for category in Category.objects.filter(entries__account=account).distinct()]
+                'name': c.name,
+                'data': [[y.strftime('%Y'),
+                          account.entries.filter(Q(category=c) &
+                                                 Q(day__year=y.strftime('%Y'))
+                          ).aggregate(sum=Sum('amount'))['sum']]
+                         for y in years]
+            } for c in Category.objects.filter(entries__account=account). \
+                distinct()]
         }
-    return HttpResponse(json.dumps(data), 'application/json')
+    return JsonResponse(data)
 
 
 @login_required
-def tags(request, slug):
+def tags(request, slug, year=None, month=None, tag=None):
     account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
-    year = request.GET.get('year')
-    month = request.GET.get('month')
-    t = request.GET.get('tag')
 
     data = None
-    if t and month and year:
-        days = account.entries.filter(Q(day__year=year) & Q(day__month=month) & Q(tags__slug=t)).dates('day', 'day')
+    if tag and month and year:
+        t = get_object_or_404(Tag, slug=tag)
+        days = account.entries.filter(Q(day__year=year) & Q(day__month=month) &
+                                      Q(tags=t)).dates('day', 'day')
         data = {
             'xAxis': {
-                'categories': ['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days],
+                'categories': ['%s. %s' % (d.strftime('%d'),
+                                           d.strftime('%B')) for d in days],
                 'title': {
                     'text': str(_('Days'))
                 }
@@ -166,12 +176,13 @@ def tags(request, slug):
                 'valueSuffix': account.unit.symbol
             },
             'series': [{
-                'name': tag.name,
-                'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(tags=tag) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
-            } for tag in Tag.objects.filter(slug=t).distinct()]
+                'name': t.name,
+                'data': [['%s. %s' % (d.strftime('%d'), d.strftime('%B')), account.entries.filter(Q(tags=t) & Q(day__year=year) & Q(day__month=month) & Q(day__day=d.strftime('%d'))).aggregate(sum=Sum('amount'))['sum']] for d in days]
+            }]
         }
     elif month and year:
-        days = account.entries.filter(Q(day__year=year) & Q(day__month=month)).dates('day', 'day')
+        days = account.entries.filter(Q(day__year=year) &
+                                      Q(day__month=month)).dates('day', 'day')
         data = {
             'xAxis': {
                 'categories': ['%s. %s' % (d.strftime('%d'), d.strftime('%B')) for d in days],
@@ -250,8 +261,11 @@ def tags(request, slug):
                 'valueSuffix':account.unit.symbol
             },
             'series': [{
-                'name': tag.name,
-                'data': [[y.strftime('%Y'), account.entries.filter(Q(tags=tag) & Q(day__year=y.strftime('%Y'))).aggregate(sum=Sum('amount'))['sum']] for y in years]
-            } for tag in Tag.objects.filter(entries__account=account).distinct()]
+                'name': t.name,
+                'data': [[y.strftime('%Y'),
+                          account.entries.filter(Q(tags=t) &
+                                                 Q(day__year=y.strftime('%Y'))
+                                                ).aggregate(sum=Sum('amount'))['sum']] for y in years]
+            } for t in Tag.objects.filter(entries__account=account).distinct()]
         }
-    return HttpResponse(json.dumps(data), 'application/json')
+    return JsonResponse(data)

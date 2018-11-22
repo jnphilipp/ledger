@@ -4,7 +4,7 @@ import json
 
 from accounts.models import Account
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.utils import timezone
 
 
@@ -15,10 +15,16 @@ def autocomplete(request):
     GET/POST parameters:
     q --- search term
     """
-    params = request.POST.copy() if request.method == 'POST' else request.GET.copy()
+
+    params = request.POST.copy() if request.method == 'POST' \
+        else request.GET.copy()
+    if 'application/json' == request.META.get('CONTENT_TYPE'):
+        params.update(json.loads(request.body.decode('utf-8')))
+
     accounts = Account.objects.filter(ledger__user=request.user).distinct()
     if 'q' in params:
         accounts = accounts.filter(name__icontains=params.pop('q')[0])
+
     data = {
         'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
         'accounts': [{
@@ -26,4 +32,4 @@ def autocomplete(request):
             'text': account.name
         } for account in accounts]
     }
-    return HttpResponse(json.dumps(data), 'application/json')
+    return JsonResponse(data)

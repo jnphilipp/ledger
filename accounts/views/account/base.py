@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.decorators.csrf import csrf_protect
-from ledger.functions.dates import get_last_date_current_month
+from ledger.dates import get_last_date_current_month
 from users.models import Ledger
 
 
@@ -56,94 +56,100 @@ class DetailView(generic.DetailView):
         return context
 
 
-@login_required
-def statistics(request, slug):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger)
-    chart = request.GET.get('chart')
-    year = request.GET.get('year')
-    month = request.GET.get('month')
-    if request.GET.get('category'):
-        category = get_object_or_404(Category,
-                                     slug=request.GET.get('category'))
-    else:
-        category = None
-    if request.GET.get('tag'):
-        tag = get_object_or_404(Tag, slug=request.GET.get('tag'))
-    else:
-        tag = None
+@method_decorator(login_required, name='dispatch')
+class StatisticsView(generic.DetailView):
+    model = Account
+    template_name = 'accounts/account_statistics.html'
 
-    if year and month:
-        month_name = date(year=int(year), month=int(month),
-                          day=1).strftime('%B')
+    def get_queryset(self):
+        return Account.objects.filter(ledger__user=self.request.user)
 
-    options = []
-    if not chart:
-        option_msg = _('Select a chart')
-        options = [{
-            'id': 'categories',
-            'key': 'chart',
-            'value': _('Categories')
-        }, {
-            'id': 'tags',
-            'key': 'chart',
-            'value': _('Tags')
-        }]
-    elif chart and not year:
-        years = account.entries.dates('day', 'year')
-        if chart == 'tags':
-            chart_name = _('Tags')
-            years = years.filter(tags__isnull=False)
+    def get_context_data(self, *args, **kwargs):
+        context = super(StatisticsView, self).get_context_data(*args, **kwargs)
+
+        if 'chart' in self.kwargs and (self.kwargs['chart'] == 'tags' or \
+                self.kwargs['chart'] == 'categories'):
+            context['chart'] = self.kwargs['chart']
+            if context['chart'] == 'tags':
+                context['chart_name'] = _('Tags')
+            else:
+                context['chart_name'] = _('Categories')
         else:
-            chart_name = _('Categories')
+            context['option_msg'] = _('Select a chart')
+            context['options'] = [{
+                'id': 'categories',
+                'key': 'chart',
+                'value': _('Categories')
+            }, {
+                'id': 'tags',
+                'key': 'chart',
+                'value': _('Tags')
+            }]
+            return context
 
-        option_msg = _('Select a year')
-        option_name = 'year'
-        options = [{
-            'id': year.strftime('%Y'),
-            'key': 'year',
-            'value': year.strftime('%Y')
-        } for year in years]
-    elif chart and year and not month:
-        months = account.entries.filter(day__year=year).dates('day', 'month')
-        if chart == 'tags':
-            chart_name = _('Tags')
-            months = months.filter(tags__isnull=False)
+        if 'year' in self.kwargs:
+            context['year'] = self.kwargs['year']
         else:
-            chart_name = _('Categories')
+            years = context['account'].entries.dates('day', 'year')
+            if context['chart'] == 'tags':
+                years = years.filter(tags__isnull=False)
 
-        option_msg = _('Select a month')
-        options = [{
-            'id': month.strftime('%m'),
-            'key': 'month',
-            'value': _(month.strftime('%B'))
-        } for month in months]
-    elif chart and year and month and not category and not tag:
-        if chart == 'categories':
-            chart_name = _('Categories')
-            option_msg = _('Select a category')
-            options = [{
-                'id': category.slug,
-                'key': 'category',
-                'value': category.name
-            } for category in Category.objects.filter(
-                Q(entries__account=account) &
-                Q(entries__day__year=year) &
-                Q(entries__day__month=month)).distinct()]
-        elif chart == 'tags':
-            chart_name = _('Tags')
-            option_msg = _('Select a tag')
-            options = [{
-                'id': tag.slug,
-                'key': 'tag',
-                'value': tag.name
-            } for tag in Tag.objects.filter(
-                Q(entries__account=account) &
-                Q(entries__day__year=year) &
-                Q(entries__day__month=month)).distinct()]
-    else:
-        chart_name = _('Tags') if chart == 'tags' else _('Categories')
-    return render(request, 'accounts/account/statistics.html', locals())
+            context['option_msg'] = _('Select a year')
+            context['options'] = [{
+                'id': year.strftime('%Y'),
+                'key': 'year',
+                'value': year.strftime('%Y')
+            } for year in years]
+            return context
+
+        if 'month' in self.kwargs:
+            context['month'] = self.kwargs['month']
+            context['month_name'] = date(year=context['year'],
+                                         month=context['month'],
+                                         day=1).strftime('%B')
+        else:
+            months = context['account'].entries. \
+                filter(day__year=context['year']).dates('day', 'month')
+            if context['chart'] == 'tags':
+                months = months.filter(tags__isnull=False)
+
+            context['option_msg'] = _('Select a month')
+            context['options'] = [{
+                'id': month.strftime('%m'),
+                'key': 'month',
+                'value': _(month.strftime('%B'))
+            } for month in months]
+            return context
+
+        if 'obj' in self.kwargs:
+            obj = self.kwargs['obj']
+            if context['chart'] == 'categories':
+                context['category'] = get_object_or_404(Category, slug=obj)
+            elif context['chart'] == 'tags':
+                context['tag'] = get_object_or_404(Tag, slug=obj)
+        else:
+            if context['chart'] == 'categories':
+                context['option_msg'] = _('Select a category')
+                context['options'] = [{
+                    'id': category.slug,
+                    'key': 'category',
+                    'value': category.name
+                } for category in Category.objects.filter(
+                    Q(entries__account=context['account']) &
+                    Q(entries__day__year=context['year']) &
+                    Q(entries__day__month=context['month'])).distinct()]
+            elif context['chart'] == 'tags':
+                context['option_msg'] = _('Select a tag')
+                context['options'] = [{
+                    'id': tag.slug,
+                    'key': 'tag',
+                    'value': tag.name
+                } for tag in Tag.objects.filter(
+                    Q(entries__account=context['account']) &
+                    Q(entries__day__year=context['year']) &
+                    Q(entries__day__month=context['month'])).distinct()]
+
+        return context
 
 
 @method_decorator(login_required, name='dispatch')

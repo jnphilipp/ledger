@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from ledger.functions.dates import daterange
+from ledger.dates import daterange
 from units.models import Unit
 
 
@@ -28,13 +28,18 @@ class AccountForm(forms.ModelForm):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields['name'].validators = [validate_account_name]
 
-        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
+        self.fields['category'].help_text = \
+            mark_safe('<a href="%s?target_id=id_category" class="mpopup">%s' +
+                      '</a>' % (reverse('categories:category_add_another'),
+                                _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['unit'].queryset = Unit.objects.all()
         self.fields['unit'].widget.attrs['style'] = 'width: 100%;'
-        self.fields['unit'].help_text = mark_safe('<a href="%s?target_id=id_unit" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('units:unit_add_another'), _('Add new unit')))
+        self.fields['unit'].help_text = \
+            mark_safe('<a href="%s?target_id=id_unit" class="mpopup">%s</a>' %
+                      (reverse('units:unit_add_another'), _('Add new unit')))
 
     def clean_name(self):
         return self.cleaned_data['name'] or None
@@ -113,10 +118,20 @@ class StandingEntryForm(forms.ModelForm):
         fields = ['account', 'start_date', 'end_date', 'execution', 'amount',
                   'category', 'additional', 'tags']
 
-    def __init__(self, ledger, exclude_account=True, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(StandingEntryForm, self).__init__(*args, **kwargs)
-        if exclude_account:
-            del self.fields['account']
+
+        if 'ledger' in kwargs:
+            ledger = kwargs['ledger']
+        elif 'initial' in kwargs and 'ledger' in kwargs['initial']:
+            ledger = kwargs['initial']['ledger']
+        if 'show_account' in kwargs:
+            show_account = kwargs['show_account']
+        elif 'initial' in kwargs and 'show_account' in kwargs['initial']:
+            show_account = kwargs['initial']['show_account']
+
+        if not show_account:
+            self.fields['account'].widget = forms.HiddenInput()
         else:
             self.fields['account'].queryset = \
                 ledger.accounts.filter(closed=False)
@@ -124,11 +139,17 @@ class StandingEntryForm(forms.ModelForm):
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
 
-        self.fields['category'].help_text = mark_safe('<a href="%s?target_id=id_category" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:category_add_another'), _('Add new category')))
+        self.fields['category'].help_text = \
+            mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
+                       '</a>') % (reverse('categories:category_add_another'),
+                                 _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
-        self.fields['tags'].help_text = mark_safe('<a href="%s?target_id=id_tags" class="ajax-popup-link"><span class="glyphicon glyphicon-plus text-success"></span> %s</a>' % (reverse('categories:tag_add_another'), _('Add new tag')))
+        self.fields['tags'].help_text = \
+            mark_safe('<a href="%s?target_id=id_tags" class="mpopup">%s</a>' %
+                      (reverse('categories:tag_add_another'),
+                       _('Add new tag')))
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
 

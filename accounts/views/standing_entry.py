@@ -1,49 +1,46 @@
 # -*- coding: utf-8 -*-
 
 from accounts.forms import StandingEntryForm
-from accounts.models import Account
-from datetime import date
-from django.contrib import messages
+from accounts.models import Account, Entry
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.csrf import csrf_protect
-from users.models import Ledger
+from django.utils.decorators import method_decorator
+from django.views import generic
 
 
-@login_required
-@csrf_protect
-def add(request, slug=None):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    account = get_object_or_404(Account, slug=slug, ledger=ledger) if slug else None
-    today = date.today()
+@method_decorator(login_required, name='dispatch')
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
+    form_class = StandingEntryForm
+    model = Entry
+    success_message = _('The entries %(entries)s were successfully created.')
 
-    if request.method == 'POST':
-        form = StandingEntryForm(ledger, data=request.POST,
-                                 exclude_account=bool(account))
-        if form.is_valid():
-            if account:
-                form.instance.account = account
-            entries = form.save()
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateView, self).get_context_data(*args, **kwargs)
+        context['account'] = self.account
+        return context
 
-            msg = _('The standing entry with the entries %(entries)s was ' +
-                    'successfully created.')
-            if account:
-                entries = ', '.join('"#%s"' % e.serial_number for e in entries)
-            else:
-                entries = '%s - %s' % (
-                    entries[0].account.name,
-                    ', '.join('"#%s"' % e.serial_number for e in entries)
-                )
+    def get_initial(self):
+        self.account = None
+        if 'slug' in self.kwargs:
+            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
+        return {'ledger': self.request.user.ledger,
+                'show_account': 'slug' not in self.kwargs}
 
-            messages.add_message(request, messages.SUCCESS,
-                                 msg % {'entries': entries})
+    def get_success_message(self, cleaned_data):
+        if 'slug' in self.kwargs:
+            entries = ', '.join('"#%s"' % e.serial_number for e in self.object)
+        else:
+            entries = '%s - %s' % (self.object[0].account.name,
+                                   ', '.join('"#%s"' % e.serial_number
+                                             for e in self.object))
+        return self.success_message % {'entries': entries}
 
-            if account:
-                return redirect('accounts:account_entries', slug=account.slug)
-            else:
-                return redirect('accounts:entries')
-        return render(request, 'accounts/entry/form.html', locals())
-    else:
-        form = StandingEntryForm(ledger, exclude_account=bool(account))
-    return render(request, 'accounts/entry/form.html', locals())
+    def get_success_url(self):
+        if 'slug' in self.kwargs:
+            return reverse_lazy('accounts:account_entry_list',
+                                args=[self.kwargs['slug']])
+        else:
+            return reverse_lazy('accounts:entry_list')

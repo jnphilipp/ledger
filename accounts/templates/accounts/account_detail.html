@@ -108,15 +108,15 @@
     <div class="collapse" id="collapseStatisticsCategories" aria-labelledby="collapseStatisticsCategories" data-parent="#account">
         <div class="row mt-2">
             <div class="col-md-2 offset-md-10 text-right">
-                <a class="btn btn-link" href="{% url "accounts:account_statistics" account.slug %}?chart=categories">{% trans "View" %}</a>
+                <a class="btn btn-link" href="{% url "accounts:account_statistics" account.slug "categories" %}">{% trans "View" %}</a>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <div id="ascchart" style="min-width: 310px; height: 650px;"></div>
+                <div id="ascchart" style="min-width: 310px; height: 750px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var ascchart_url = "{% url "accounts:account_chart_categories_statistics" account.slug %}";
+                        var ascchart_url = "{% url "accounts:account_chart_statistics_categories" account.slug %}";
                         statistics(ascchart_url, "ascchart");
                     });
                 </script>
@@ -131,10 +131,10 @@
         </div>
         <div class="row">
             <div class="col">
-                <div id="astchart" style="min-width: 310px; height: 650px;"></div>
+                <div id="astchart" style="min-width: 310px; height: 750px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
-                        var astchart_url = "{% url "accounts:account_chart_tags_statistics" account.slug %}";
+                        var astchart_url = "{% url "accounts:account_chart_statistics_tags" account.slug %}";
                         statistics(astchart_url, "astchart");
                     });
                 </script>
@@ -144,7 +144,7 @@
     <div class="collapse" id="collapseCategories" aria-labelledby="collapseCategories" data-parent="#account">
         <div class="row mt-2">
             <div class="col">
-                <div id="cchart" style="min-width: 310px; height: 650px;"></div>
+                <div id="cchart" style="min-width: 310px; height: 750px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
                         var cchart_url = "{% url "accounts:account_chart_categories" account.slug %}";
@@ -157,7 +157,7 @@
     <div class="collapse" id="collapseTags" aria-labelledby="collapseTags" data-parent="#account">
         <div class="row mt-2">
             <div class="col">
-                <div id="tchart" style="min-width: 310px; height: 650px;"></div>
+                <div id="tchart" style="min-width: 310px; height: 750px;"></div>
                 <script type="text/javascript">
                     $(document).ready(function() {
                         var tchart_url = "{% url "accounts:account_chart_tags" account.slug %}";

@@ -4,9 +4,9 @@
 
 {% block extrahead %}
 {% if account %}
-    {% url "accounts:account_standing_entry_add" account.slug as standing_entry_url %}
+    {% url "accounts:account_standing_entry_create" account.slug as standing_entry_url %}
 {% else %}
-    {% url "accounts:standing_entry_add" as standing_entry_url %}
+    {% url "accounts:standing_entry_create" as standing_entry_url %}
 {% endif %}
 <script type="text/javascript">
     $(function() {
@@ -86,6 +86,7 @@
                 }
             }
         });
+        $("#id_execution").select2();
         $(".mpopup").magnificPopup({
             type: "iframe"
         });

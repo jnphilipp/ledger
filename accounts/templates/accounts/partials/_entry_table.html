@@ -1,8 +1,8 @@
 {% load accounts i18n ledger %}
 
 <div class="table-responsive">
-    <table class="table table-hover table-bordered table-sm">
-        <thead class="thead-light">
+    <table class="table table-hover table-bordered table-sm table-striped">
+        <thead>
             <tr>
                 {% if not account %}<th>{% trans "Account" %}</th>{% endif %}
                 {% if account %}<th>{% trans "Ser. No." %}</th>{% endif %}

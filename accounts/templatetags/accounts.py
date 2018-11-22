@@ -6,7 +6,7 @@ from django.db.models import Sum
 from django.template import Library
 from django.utils.numberformat import format
 from django.utils.safestring import mark_safe
-from ledger.functions.dates import get_last_date_current_month
+from ledger.dates import get_last_date_current_month
 from units.models import Unit
 
 
