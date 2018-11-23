@@ -23,7 +23,7 @@
                 <tr {% if entry.day|date:"Y-m-d" == today %}class="table-info"{% endif %}>
                     {% if not account %}
                         <th>
-                            <a href="{% url "accounts:account_detail" entry.account.slug %}">{{ entry.account.name }}</a>
+                            <a href="{% url "accounts:entry_list" %}?accounts={{ entry.account.pk }}">{{ entry.account.name }}</a>
                             <a href="{% url "accounts:entry_detail" entry.pk %}">#{{ entry.serial_number }}</a>
                         </th>
                     {% else %}
@@ -32,18 +32,18 @@
                     <td>{{ entry.day|date:"d.m.Y" }}</td>
                     <td>{{ entry.day|date:"D" }}</td>
                     <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
-                    <td><a href="{% url "categories:category" entry.category.slug %}">{{ entry.category }}</a></td>
+                    <td><a href="{% if account%}{% url "accounts:account_entry_list" account.slug %}{% else %}{% url "accounts:entry_list" %}{% endif %}?categories={{ entry.category.pk }}">{{ entry.category }}</a></td>
                     <td>{{ entry.additional|default_if_none:'' }}</td>
                     <td>
                         {% for tag in entry.tags.all %}
-                            <a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                            <a href="{% if account%}{% url "accounts:account_entry_list" account.slug %}{% else %}{% url "accounts:entry_list" %}{% endif %}?tags={{ tag.pk }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
                     <td>{{ entry.files.count }}</td>
                     {% if options %}
                         <td>
                             <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.pk %}{% else %}{% url "accounts:entry_edit" entry.pk %}{% endif %}" title="{% trans "Edit entry" %}"><i class="fas fa-edit"></i></a>
-                            <a class="ajax-popup-link" href="{% url "files:add_another" entry|content_type_pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
+                            <a class="mpopup" href="{% url "files:create_another" entry|content_type_pk entry.pk %}" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.pk %}{% else %}{% url "accounts:entry_duplicate" entry.pk %}{% endif %}" title="{% trans "Duplicate entry" %}"><i class="fas fa-clone"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.pk %}{% else %}{% url "accounts:entry_delete" entry.pk %}{% endif %}" title="{% trans "Delete entry" %}"><i class="fas fa-trash"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_swap" account.slug entry.pk "down" %}{% else %}{% url "accounts:entry_swap" entry.pk "down" %}{% endif %}" title="{% trans "Move down" %}"><i class="fas fa-arrow-down"></i></a>

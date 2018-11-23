@@ -18,7 +18,7 @@
 {% block content %}
 <div class="row">
     <div class="col-md-2 offset-md-10 text-right">
-        <a class="btn btn-outline-primary" href="{% url "files:add" account|content_type_pk account.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">
+        <a class="btn btn-outline-primary" href="{% url "files:create" account|content_type_pk account.pk %}" role="button">
             {% trans "Upload file" %}
         </a>
     </div>

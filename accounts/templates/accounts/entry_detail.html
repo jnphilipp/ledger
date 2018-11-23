@@ -65,7 +65,7 @@
             </h4>
         </div>
         <div class="col-md-2 text-right">
-            <a class="btn btn-outline-primary" href="{% url "files:add" entry|content_type_pk entry.pk %}?a={% if account %}t{% else %}f{% endif %}" role="button">{% trans "Upload file" %}</a>
+            <a class="btn btn-outline-primary" href="{% url "files:create" entry|content_type_pk entry.pk %}" role="button">{% trans "Upload file" %}</a>
        </div>
     </div>
     <div class="row mt-md-2">
