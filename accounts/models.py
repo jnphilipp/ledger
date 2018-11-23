@@ -4,7 +4,7 @@ from categories.models import Category, Tag
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from ledger.fields import SingleLineTextField
 from time import time
@@ -62,7 +62,7 @@ class Account(models.Model):
         super(Account, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('accounts:account_detail', args=[self.slug])
+        return reverse_lazy('accounts:account_detail', args=[self.slug])
 
     def renumber_entries(self):
         for i, entry in enumerate(self.entries.all()):
@@ -150,7 +150,7 @@ class Entry(models.Model):
         super(Entry, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('accounts:entry_detail', args=[self.pk])
+        return reverse_lazy('accounts:entry_detail', args=[self.pk])
 
     def save(self, *args, **kwargs):
         move = False

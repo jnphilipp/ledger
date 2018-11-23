@@ -54,7 +54,11 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         if 'another' in self.request.path:
             url = reverse_lazy('create_another_success')
             if 'reload' in self.request.GET:
-                url = '%s?reload=%s' % (url, self.request.GET.get('reload')[0])
+                url = '%s?reload=%s' % (url, self.request.GET.get('reload'))
+            elif 'target_id' in self.request.GET:
+                url = '%s?target_id=%s&value=%s&name=%s' % (
+                    url, self.request.GET.get('target_id'), self.object.pk,
+                    self.object.name)
             return url
         elif self.object.content_type == account_type:
             return reverse_lazy('accounts:account_statement_list',

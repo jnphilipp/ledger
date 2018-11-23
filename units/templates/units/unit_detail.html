@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "units:units" %}">{% trans "Units" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "units:list" %}">{% trans "Units" %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{ unit.name }}</li>
 {% endblock %}
 

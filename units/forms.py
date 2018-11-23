@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from units.models import Unit
+
+from .models import Unit
 
 
 class UnitForm(forms.ModelForm):
@@ -15,6 +16,8 @@ class UnitForm(forms.ModelForm):
             if self.has_error('symbol', code='unique'):
                 if len(self._errors.as_data()) == 2:
                    if len(self._errors.as_data()['name']) <= 2:
+                        self.cleaned_data['name'] = self.instance.name
+                        self.cleaned_data['symbol'] = self.instance.symbol
                         self._errors = ''
                         return True
         return valid

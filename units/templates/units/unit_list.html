@@ -10,7 +10,7 @@
 
 {% block content %}
 <div class="table-responsive">
-    <table class="table table-bordered table-sm table-hover table-striped">
+    <table class="table table-sm table-hover table-striped">
         <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
@@ -21,7 +21,7 @@
         <tbody>
             {% for unit in units %}
                 <tr>
-                    <th><a href="{% url "units:unit" unit.slug %}">{{ unit.name }}</a></th>
+                    <th><a href="{% url "units:detail" unit.slug %}">{{ unit.name }}</a></th>
                     <td>{{ unit.symbol }}</td>
                     <td>{{ unit.precision }}</td>
                 </tr>

@@ -2,72 +2,64 @@
 
 import json
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.csrf import csrf_protect
-from units.forms import UnitForm
-from units.models import Unit
+from django.views import generic
+
+from .forms import UnitForm
+from .models import Unit
 
 
-@login_required
-def list(request):
-    units = Unit.objects.all()
-    return render(request, 'units/unit/list.html', locals())
+@method_decorator(login_required, name='dispatch')
+class ListView(generic.ListView):
+    context_object_name = 'units'
+    model = Unit
 
 
-@login_required
-def detail(request, slug):
-    unit = get_object_or_404(Unit, slug=slug)
-    return render(request, 'units/unit/detail.html', locals())
+@method_decorator(login_required, name='dispatch')
+class DetailView(generic.DetailView):
+    model = Unit
 
 
-@login_required
-@csrf_protect
-def add(request):
-    return _add(request, 'units/unit/form.html')
+@method_decorator(login_required, name='dispatch')
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
+    form_class = UnitForm
+    model = Unit
+    success_message = _('The unit "%(name)s" was successfully created.')
+
+    def get_template_names(self):
+        if 'another' in self.request.path:
+            return 'units/unit_another_form.html'
+        return 'units/unit_form.html'
+
+    def get_success_message(self, cleaned_data):
+        print(cleaned_data)
+        return super(CreateView, self).get_success_message(cleaned_data)
+
+    def get_success_url(self):
+        if 'another' in self.request.path:
+            url = reverse_lazy('create_another_success')
+            if 'reload' in self.request.GET:
+                url = '%s?reload=%s' % (url, self.request.GET.get('reload'))
+            elif 'target_id' in self.request.GET:
+                url = '%s?target_id=%s&value=%s&name=%s' % (
+                    url, self.request.GET.get('target_id'), self.object.pk,
+                    self.object.name)
+            return url
+        else:
+            return reverse_lazy('units:detail', args=[self.object.slug])
 
 
-@login_required
-@csrf_protect
-def add_another(request):
-    return _add(request, 'units/unit/add_another.html', False,
-                request.GET.get('target_id'))
-
-
-def _add(request, template, do_redirect=True, target_id=None):
-    if request.method == 'POST':
-        form = UnitForm(request.POST)
-        if form.is_valid():
-            unit = form.save()
-            msg = _('The unit %(name)s was successfully created.')
-            messages.add_message(request, messages.SUCCESS,
-                                 msg % {'name': unit.name})
-            if do_redirect:
-                return redirect('units:unit', slug=unit.slug)
-    else:
-        form = UnitForm()
-    return render(request, template, locals())
-
-
-@login_required
-@csrf_protect
-def edit(request, slug):
-    unit = get_object_or_404(Unit, slug=slug)
-    if request.method == 'POST':
-        form = UnitForm(instance=unit, data=request.POST)
-        if form.is_valid():
-            unit = form.save()
-            msg = _('The unit %(name)s was successfully updated.')
-            messages.add_message(request, messages.SUCCESS,
-                                 msg % {'name': unit.name})
-            return redirect('units:unit', slug=unit.slug)
-    else:
-        form = UnitForm(instance=unit)
-    return render(request, 'units/unit/form.html', locals())
+@method_decorator(login_required, name='dispatch')
+class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
+    form_class = UnitForm
+    model = Unit
+    success_message = _('The unit %(name)s was successfully updated.')
 
 
 @login_required
@@ -77,6 +69,7 @@ def autocomplete(request):
     GET/POST parameters:
     q --- search term
     """
+
     params = request.POST.copy() if request.method == 'POST' \
         else request.GET.copy()
     if 'application/json' == request.META.get('CONTENT_TYPE'):

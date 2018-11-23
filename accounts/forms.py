@@ -29,9 +29,9 @@ class AccountForm(forms.ModelForm):
         self.fields['name'].validators = [validate_account_name]
 
         self.fields['category'].help_text = \
-            mark_safe('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                      '</a>' % (reverse('categories:category_add_another'),
-                                _('Add new category')))
+            mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
+                       '</a>') % (reverse('categories:category_add_another'),
+                                  _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
@@ -39,7 +39,7 @@ class AccountForm(forms.ModelForm):
         self.fields['unit'].widget.attrs['style'] = 'width: 100%;'
         self.fields['unit'].help_text = \
             mark_safe('<a href="%s?target_id=id_unit" class="mpopup">%s</a>' %
-                      (reverse('units:unit_add_another'), _('Add new unit')))
+                      (reverse('units:create_another'), _('Add new unit')))
 
     def clean_name(self):
         return self.cleaned_data['name'] or None

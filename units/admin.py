@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from units.models import Unit
 from django.contrib import admin
-from django.forms import TextInput
+
+from .models import Unit
 
 
 @admin.register(Unit)

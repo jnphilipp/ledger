@@ -8,7 +8,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from ledger.fields import SingleLineTextField
 
@@ -67,7 +67,7 @@ class File(models.Model):
     )
 
     def get_absolute_url(self):
-        return reverse('files:file', args=[str(self.slug)])
+        return reverse_lazy('files:detail', args=[self.slug])
 
     def save(self, *args, **kwargs):
         if not self.pk:

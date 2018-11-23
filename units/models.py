@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from ledger.fields import SingleLineTextField
 
@@ -33,6 +34,9 @@ class Unit(models.Model):
         default=2,
         verbose_name=_('Precision')
     )
+
+    def get_absolute_url(self):
+        return reverse_lazy('units:detail', args=[self.slug])
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -6,6 +6,13 @@
 <script type="text/javascript">
     $(document).ready(function() {
         parent.$("#messages").append($("#messages").html());
+        {% if target_id and value and name %}
+            parent.$("#{{ target_id }}").append($("<option></option>")
+                .attr("value", "{{ value }}")
+                .attr("name", "{{ name }}")
+                .text("{{ name }}"));
+            parent.$("#{{ target_id }}").val("{{ value }}").trigger("change");
+        {% endif %}
         {% if reload %}parent.location.reload();{% endif %}
         parent.$.magnificPopup.close();
     });
