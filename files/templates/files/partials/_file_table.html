@@ -2,8 +2,8 @@
 
 
 <div class="table-responsive">
-    <table class="table table-hover table-sm">
-        <thead class="thead-light">
+    <table class="table table-hover table-sm table-striped">
+        <thead>
             <tr>
                 {% trans "Name" as name_trans %}
                 {% sortable_th column_name=name_trans o=o get_name='o' get_value='name' %}
@@ -19,7 +19,7 @@
         <tbody>
             {% for file in files %}
                 <tr>
-                    <th><a href="{% url "files:file" file.slug %}">{{ file.name }}</a></th>
+                    <th><a href="{% url "files:detail" file.slug %}">{{ file.name }}</a></th>
                     <td>{{ file.uploader }}</td>
                     <td>{{ file.updated_at|date:"l, d. F Y" }}</td>
                     {% if options %}

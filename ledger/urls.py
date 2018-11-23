@@ -22,6 +22,8 @@ from django.urls import include, path
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import RedirectView
 
+from . import views
+
 
 admin.site.site_header = _('ledger administration')
 
@@ -29,6 +31,8 @@ admin.site.site_header = _('ledger administration')
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='accounts:entry_list'),
          name='dashboard'),
+    path('add/another/success/', views.AnotherSuccessView.as_view(),
+         name='create_another_success'),
 
     path('accounts/', include('accounts.urls')),
     path('categories/', include('categories.urls')),

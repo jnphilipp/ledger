@@ -6,10 +6,10 @@
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 <li class="breadcrumb-item">{% trans "Files" %}</li>
 {% if file %}
-    <li class="breadcrumb-item"><a href="{% url "files:file" file.slug %}">{{ file.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{% url "files:detail" file.slug %}">{{ file.name }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {% else %}
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Add file" %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Add" %}</li>
 {% endif %}
 {% endblock %}
 
@@ -17,13 +17,8 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6 offset-md-3">
-        {% if file %}
-            {% url "files:file_edit" file.slug as form_url %}
-        {% else %}
-            {% url "files:file_add" content_type object_id as form_url %}
-        {% endif %}
         {% trans "Save" as save_trans %}
-        {% bootstrap_form form=form url=form_url enctype="multipart/form-data" btn_title=save_trans %}
+        {% bootstrap_form form=form enctype="multipart/form-data" btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}

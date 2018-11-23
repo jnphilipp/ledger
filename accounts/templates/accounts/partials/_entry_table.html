@@ -43,7 +43,7 @@
                     {% if options %}
                         <td>
                             <a href="{% if account %}{% url "accounts:account_entry_edit" account.slug entry.pk %}{% else %}{% url "accounts:entry_edit" entry.pk %}{% endif %}" title="{% trans "Edit entry" %}"><i class="fas fa-edit"></i></a>
-                            <a class="mpopup" href="{% url "files:create_another" entry|content_type_pk entry.pk %}" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
+                            <a class="mpopup" href="{% url "files:create_another" entry|content_type_pk entry.pk %}?reload=True" title="{% trans "Upload file" %}"><i class="fas fa-upload"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_duplicate" account.slug entry.pk %}{% else %}{% url "accounts:entry_duplicate" entry.pk %}{% endif %}" title="{% trans "Duplicate entry" %}"><i class="fas fa-clone"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_delete" account.slug entry.pk %}{% else %}{% url "accounts:entry_delete" entry.pk %}{% endif %}" title="{% trans "Delete entry" %}"><i class="fas fa-trash"></i></a>
                             <a href="{% if account %}{% url "accounts:account_entry_swap" account.slug entry.pk "down" %}{% else %}{% url "accounts:entry_swap" entry.pk "down" %}{% endif %}" title="{% trans "Move down" %}"><i class="fas fa-arrow-down"></i></a>
