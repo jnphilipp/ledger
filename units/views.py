@@ -37,10 +37,6 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             return 'units/unit_another_form.html'
         return 'units/unit_form.html'
 
-    def get_success_message(self, cleaned_data):
-        print(cleaned_data)
-        return super(CreateView, self).get_success_message(cleaned_data)
-
     def get_success_url(self):
         if 'another' in self.request.path:
             url = reverse_lazy('create_another_success')

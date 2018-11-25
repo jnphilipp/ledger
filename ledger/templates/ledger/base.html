@@ -27,11 +27,11 @@
                 {% if user.is_authenticated %}
                     <ul class="navbar-nav">
                         {% url "accounts:account_list" as account_list_url %}
-                        {% url "accounts:entries" as entries_url %}
-                        <li class="nav-item dropdown{% if request.path|startswith:entries_url or request.path|startswith:account_list_url %} active{% endif %}">
+                        {% url "accounts:entry_list" as entry_list_url %}
+                        <li class="nav-item dropdown{% if request.path|startswith:entry_list_url or request.path|startswith:account_list_url %} active{% endif %}">
                             <a class="nav-link dropdown-toggle" href="#" id="accountsDropdown" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">
                                 {% trans "Accounts" %}
-                                {% if request.path|startswith:entries_url or request.path|startswith:account_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                                {% if request.path|startswith:entry_list_url or request.path|startswith:account_list_url %}<span class="sr-only">(current)</span>{% endif %}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="accountsDropdown">
                                 {% for account in user.ledger.accounts.all %}
@@ -47,15 +47,15 @@
                                 <a class="dropdown-item" href="{% url "accounts:account_create" %}">{% trans "Add account" %}</a>
                             </div>
                         </li>
-                        {% url "categories:categories" as categories_url %}
-                        <a class="nav-link{% if request.path|startswith:categories_url %} active{% endif %}" href="{{ categories_url }}">
+                        {% url "categories:category_list" as category_list_url %}
+                        <a class="nav-link{% if request.path|startswith:category_list_url %} active{% endif %}" href="{{ category_list_url }}">
                             {% trans "Categories" %}
-                            {% if request.path|startswith:categories_url %}<span class="sr-only">(current)</span>{% endif %}
+                            {% if request.path|startswith:category_list_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>
-                        {% url "categories:tags" as tags_url %}
-                        <a class="nav-link{% if request.path|startswith:tags_url %} active{% endif %}" href="{{ tags_url }}">
+                        {% url "categories:tag_list" as tag_list_url %}
+                        <a class="nav-link{% if request.path|startswith:tag_list_url %} active{% endif %}" href="{{ tag_list_url }}">
                             {% trans "Tags" %}
-                            {% if request.path|startswith:tags_url %}<span class="sr-only">(current)</span>{% endif %}
+                            {% if request.path|startswith:tag_list_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>
                         {% url "users:budget" as budget_url %}
                         <a class="nav-link{% if request.path|startswith:budget_url %} active{% endif %}" href="{{ budget_url }}">

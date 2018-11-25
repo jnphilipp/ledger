@@ -15,7 +15,7 @@ class Category(models.Model):
     name = SingleLineTextField(_('Name'), unique=True)
 
     def get_absolute_url(self):
-        return reverse('categories:category', args=[self.slug])
+        return reverse('categories:category_detail', args=[self.slug])
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -43,7 +43,7 @@ class Tag(models.Model):
     name = SingleLineTextField(_('Name'), unique=True)
 
     def get_absolute_url(self):
-        return reverse('categories:tag', args=[self.slug])
+        return reverse('categories:tag_detail', args=[self.slug])
 
     def save(self, *args, **kwargs):
         if not self.slug:

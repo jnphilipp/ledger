@@ -26,6 +26,7 @@ def autocomplete(request):
         Q(accounts__ledger__user=request.user)).distinct()
     if 'q' in params:
         categories = categories.filter(name__icontains=params.pop('q')[0])
+
     data = {
         'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
         'categories': [{

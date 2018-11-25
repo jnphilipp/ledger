@@ -12,8 +12,7 @@ from users.models import Ledger
 
 
 @login_required
-def statistics(request, slug):
-    year = request.GET.get('year')
+def statistics(request, slug, year=None):
     category = get_object_or_404(Category, slug=slug)
     ledger = get_object_or_404(Ledger, user=request.user)
 

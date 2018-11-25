@@ -1,0 +1,94 @@
+{% extends "ledger/base.html" %}
+{% load i18n categories static %}
+
+
+{% block extrahead %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/categories/categories.js" %}"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:category_list" %}">{% trans "Categories" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="btn-group" role="group">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="{% if year %}false{% else %}true{% endif%}" aria-controls="collapseDetails">{% trans "Details" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="{% if year %}true{% else %}false{% endif%}" aria-controls="collapseStatistics">{% trans "Statistics" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="false" aria-controls="collapseEntries">{% trans "Entries" %}</button>
+        </div>
+    </div>
+    <div class="col-md-4 text-right">
+        <a href="{% url "categories:category_edit" category.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Edit category" %}</a>
+        <a href="{% url "categories:category_delete" category.slug  %}" class="btn btn-outline-danger" role="button">{% trans "Delete category" %}</a>
+    </div>
+</div>
+<div id="category">
+    <div class="collapse{% if not year %} show{% endif%}" id="collapseDetails" aria-labelledby="collapseDetails" data-parent="#category">
+        <div class="row mt-2">
+            <div class="col">
+                <div class="card card-body">
+                    <dl class="row">
+                        <dt class="col-md-3">{% trans "Created at" %}</dt>
+                        <dd class="col-md-9">{{ category.created_at|date:"r" }}</dd>
+                        <dt class="col-md-3">{% trans "Last updated at" %}</dt>
+                        <dd class="col-md-9">{{ category.updated_at|date:"r" }}</dd>
+                        <dt class="col-md-3">{% trans "Accounts" %}</dt>
+                        <dd class="col-md-9">
+                            {% for account in category|accounts:user %}
+                                {% if account.category == category %}
+                                    <a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </dd>
+                        <dt class="col-md-3">{% trans "#Entries" %}</dt>
+                        <dd class="col-md-9">{{ category|entry_count:user }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="collapse{% if year %}show{% endif%}" id="collapseStatistics" aria-labelledby="collapseStatistics" data-parent="#category">
+        <div class="row mt-2">
+            <div class="col">
+                {% if years %}
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownYears" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% trans "Select a year" %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownYears">
+                            {% for year in years %}
+                                <a class="dropdown-item" href="{% url "categories:category_detail" category.slug year %}">{{ year }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="schart" style="min-width: 310px; height: 750px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var url = "{% if year %}{% url "categories:category_chart_statistics" category.slug year %}{% else %}{% url "categories:category_chart_statistics" category.slug %}{% endif %}";
+                        statistics(url, "schart");
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseEntries" aria-labelledby="collapseEntries" data-parent="#category">
+        <div class="row mt-2">
+            <div class="col">
+                {% include "accounts/partials/_entry_table.html" with entries=entry_list options=False %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

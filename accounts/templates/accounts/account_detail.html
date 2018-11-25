@@ -23,18 +23,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col text-right">
-        <a href="{% url "accounts:account_edit" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Edit account" %}</a>
-        {% if account.closed %}
-            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Re-open account" %}</a>
-        {% else %}
-            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Close account" %}</a>
-        {% endif %}
-        <a href="{% url "accounts:account_delete" account.slug  %}" class="btn btn-outline-danger" role="button">{% trans "Delete account" %}</a>
-    </div>
-</div>
-<div class="row mt-2">
-    <div class="col">
+    <div class="col-md-8">
         <div class="btn-group" role="group">
             <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails">{% trans "Details" %}</button>
             <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="false" aria-controls="collapseEntries">{% trans "Entries" %}</button>
@@ -50,6 +39,15 @@
             <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">{% trans "Categories" %}</button>
             <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">{% trans "Tags" %}</button>
         </div>
+    </div>
+    <div class="col-md-4 text-right">
+        <a href="{% url "accounts:account_edit" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Edit account" %}</a>
+        {% if account.closed %}
+            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Re-open account" %}</a>
+        {% else %}
+            <a href="{% url "accounts:account_close" account.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Close account" %}</a>
+        {% endif %}
+        <a href="{% url "accounts:account_delete" account.slug  %}" class="btn btn-outline-danger" role="button">{% trans "Delete account" %}</a>
     </div>
 </div>
 <div id="account">
@@ -70,9 +68,9 @@
                             {% endfor %}
                         </dd>
                         <dt class="col-md-2">{% trans "Category" %}</dt>
-                        <dd class="col-md-10"><a href="{% url "categories:category" account.category.slug %}">{{ account.category.name }}</a></dd>
+                        <dd class="col-md-10"><a href="{% url "categories:category_detail" account.category.slug %}">{{ account.category.name }}</a></dd>
                         <dt class="col-md-2">{% trans "Unit" %}</dt>
-                        <dd class="col-md-10"><a href="{% url "units:unit" account.unit.slug %}">{{ account.unit.name }}</a></dd>
+                        <dd class="col-md-10"><a href="{% url "units:detail" account.unit.slug %}">{{ account.unit.name }}</a></dd>
                     </dl>
                 </div>
             </div>

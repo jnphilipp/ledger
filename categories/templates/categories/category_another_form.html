@@ -6,15 +6,15 @@
 <div class="row">
     <div class="col-md-10 offset-md-1">
         <h4 class="text-muted">
-            {% if unit %}
+            {% if category %}
                 {% if "another" in request.path %}
-                    {% blocktrans with name=unit.name %}Edit {{ name }}{% endblocktrans%}
+                    {% blocktrans with name=category.name %}Edit {{ name }}{% endblocktrans%}
                 {% else %}
                     {% trans "Edit" %}
                 {% endif %}
             {% else %}
                 {% if "another" in request.path %}
-                    {% trans "Add unit" %}
+                    {% trans "Add category" %}
                 {% else %}
                     {% trans "Add" %}
                 {% endif %}

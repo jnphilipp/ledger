@@ -30,7 +30,7 @@ class AccountForm(forms.ModelForm):
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') % (reverse('categories:category_add_another'),
+                       '</a>') % (reverse('categories:category_create_another'),
                                   _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
@@ -83,14 +83,14 @@ class EntryForm(forms.ModelForm):
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') % (reverse('categories:category_add_another'),
+                       '</a>') % (reverse('categories:category_create_another'),
                                   _('Add category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['tags'].help_text = \
             mark_safe('<a href="%s?target_id=id_tags" class="mpopup">%s</a>' %
-                      (reverse('categories:tag_add_another'), _('Add tag')))
+                      (reverse('categories:tag_create_another'), _('Add tag')))
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
 
@@ -141,14 +141,14 @@ class StandingEntryForm(forms.ModelForm):
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') % (reverse('categories:category_add_another'),
+                       '</a>') % (reverse('categories:category_create_another'),
                                  _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['tags'].help_text = \
             mark_safe('<a href="%s?target_id=id_tags" class="mpopup">%s</a>' %
-                      (reverse('categories:tag_add_another'),
+                      (reverse('categories:tag_create_another'),
                        _('Add new tag')))
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'

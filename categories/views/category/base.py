@@ -1,174 +1,103 @@
 # -*- coding: utf-8 -*-
 
-from accounts.models import Entry
-from categories.forms import CategoryForm, FilterForm
+from categories.forms import CategoryForm
 from categories.models import Category
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.csrf import csrf_protect
-from users.models import Ledger
+from django.views import generic
 
 
-@login_required
-def list(request):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    categories = Category.objects.filter(
-        Q(entries__account__ledger=ledger) |
-        Q(accounts__ledger=ledger)).distinct().extra(select={
-            'lname': 'lower(categories_category.name)'}).order_by('lname')
-    if request.method == 'POST':
-        form = FilterForm(request.POST)
-        del form.fields['start_date']
-        del form.fields['end_date']
-        if form.is_valid():
-            if form.cleaned_data['accounts']:
-                categories = categories.filter(
-                    entries__account__in=form.cleaned_data['accounts'])
-            if form.cleaned_data['categories']:
-                categories = categories.filter(
-                    id__in=form.cleaned_data['categories'])
-            if form.cleaned_data['tags']:
-                categories = categories.filter(
-                    entries__tags__in=form.cleaned_data['tags'])
-            if form.cleaned_data['units']:
-                categories = categories.filter(
-                    entries__account__unit__in=form.cleaned_data['units'])
-    else:
-        form = FilterForm()
-        del form.fields['start_date']
-        del form.fields['end_date']
-    return render(request, 'categories/category/list.html', locals())
+@method_decorator(login_required, name='dispatch')
+class ListView(generic.ListView):
+    context_object_name = 'categories'
+    model = Category
+
+    def get_queryset(self):
+        return Category.objects.filter(
+            Q(entries__account__ledger__user=self.request.user) |
+            Q(accounts__ledger__user=self.request.user)).distinct().extra(
+                select={'lname': 'lower(categories_category.name)'}
+            ).order_by('lname')
 
 
-@login_required
-def detail(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    ledger = get_object_or_404(Ledger, user=request.user)
-    year = request.GET.get('year')
+@method_decorator(login_required, name='dispatch')
+class DetailView(generic.DetailView):
+    model = Category
 
-    entry_list = category.entries.filter(account__ledger=ledger)
-    entries = entry_list.order_by('day').reverse()[:5]
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetailView, self).get_context_data(*args, **kwargs)
+        context['entry_list'] = context['category'].entries.filter(
+            account__ledger__user=self.request.user)
 
-    if not year:
-        years = category.entries.filter(account__ledger=ledger).dates('day',
-                                                                      'year')
-        years = [y.strftime('%Y') for y in years]
-    return render(request, 'categories/category/detail.html', locals())
+        if 'year' not in self.kwargs:
+            years = context['category'].entries.filter(
+                account__ledger__user=self.request.user).dates('day', 'year')
+            context['years'] = [y.strftime('%Y') for y in years]
+        else:
+            context['year'] = self.kwargs['year']
 
+        return context
 
-@login_required
-def entries(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    ledger = get_object_or_404(Ledger, user=request.user)
-
-    entry_list = category.entries.filter(account__ledger=ledger). \
-        order_by('-day')
-
-    if request.method == 'POST':
-        form = FilterForm(request.POST)
-        del form.fields['categories']
-        if form.is_valid():
-            if form.cleaned_data['start_date']:
-                entry_list = entry_list.filter(
-                    day__gte=form.cleaned_data['start_date'])
-            if form.cleaned_data['end_date']:
-                entry_list = entry_list.filter(
-                    day__lte=form.cleaned_data['end_date'])
-            if form.cleaned_data['accounts']:
-                entry_list = entry_list.filter(
-                    account__in=form.cleaned_data['accounts'])
-            if form.cleaned_data['tags']:
-                entry_list = entry_list.filter(
-                    tags__in=form.cleaned_data['tags'])
-            if form.cleaned_data['tags']:
-                entry_list = entry_list.filter(
-                    account__unit__in=form.cleaned_data['units'])
-    else:
-        form = FilterForm()
-        del form.fields['categories']
-
-    paginator = Paginator(entry_list, 200)
-    page = request.GET.get('page')
-    try:
-        entries = paginator.page(page)
-    except PageNotAnInteger:
-        entries = paginator.page(1)
-    except EmptyPage:
-        entries = paginator.page(paginator.num_pages)
-    content_type = ContentType.objects.get_for_model(Entry)
-    return render(request, 'categories/category/entries.html', locals())
+    def get_queryset(self):
+        return Category.objects.filter(
+            Q(entries__account__ledger__user=self.request.user) |
+            Q(accounts__ledger__user=self.request.user)).distinct()
 
 
-@login_required
-def statistics(request, slug):
-    ledger = get_object_or_404(Ledger, user=request.user)
-    category = get_object_or_404(Category, slug=slug)
-    year = request.GET.get('year')
-    if not year:
-        years = category.entries.filter(account__ledger=ledger).dates('day',
-                                                                      'year')
-        years = [y.strftime('%Y') for y in years]
-    return render(request, 'categories/category/statistics.html', locals())
+@method_decorator(login_required, name='dispatch')
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
+    form_class = CategoryForm
+    model = Category
+    success_message = _('The category "%(name)s" was successfully created.')
+
+    def get_template_names(self):
+        if 'another' in self.request.path:
+            return 'categories/category_another_form.html'
+        return 'categories/category_form.html'
+
+    def get_success_url(self):
+        if 'another' in self.request.path:
+            url = reverse_lazy('create_another_success')
+            if 'reload' in self.request.GET:
+                url = '%s?reload=%s' % (url, self.request.GET.get('reload'))
+            elif 'target_id' in self.request.GET:
+                url = '%s?target_id=%s&value=%s&name=%s' % (
+                    url, self.request.GET.get('target_id'), self.object.pk,
+                    self.object.name)
+            return url
+        else:
+            return reverse_lazy('categories:category_detail',
+                                args=[self.object.slug])
 
 
-@login_required
-@csrf_protect
-def add(request):
-    return _add(request, 'categories/category/form.html')
+@method_decorator(login_required, name='dispatch')
+class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
+    form_class = CategoryForm
+    model = Category
+    success_message = _('The category "%(name)s" was successfully updated.')
+
+    def get_queryset(self):
+        return Category.objects.filter(
+            Q(entries__account__ledger__user=self.request.user) |
+            Q(accounts__ledger__user=self.request.user)).distinct()
 
 
-@login_required
-@csrf_protect
-def add_another(request):
-    return _add(request, 'categories/category/add_another.html', False,
-                request.GET.get('target_id'))
+@method_decorator(login_required, name='dispatch')
+class DeleteView(generic.edit.DeleteView):
+    model = Category
 
+    def get_queryset(self):
+        return Category.objects.filter(
+            Q(entries__account__ledger__user=self.request.user) |
+            Q(accounts__ledger__user=self.request.user)).distinct()
 
-def _add(request, template, do_redirect=True, target_id=None):
-    if request.method == 'POST':
-        form = CategoryForm(data=request.POST)
-        if form.is_valid():
-            category = form.save()
-            msg = _('The category "%(name)s" was successfully created.')
-            messages.add_message(request, messages.SUCCESS,
-                                 msg % {'name': category.name})
-            if do_redirect:
-                return redirect('categories:category', slug=category.slug)
-    else:
-        form = CategoryForm()
-    return render(request, template, locals())
-
-
-@login_required
-@csrf_protect
-def edit(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    if request.method == 'POST':
-        form = CategoryForm(instance=category, data=request.POST)
-        if form.is_valid():
-            category = form.save()
-            msg = _('The category "%(name)s" was successfully updated.')
-            messages.add_message(request, messages.SUCCESS,
-                                 msg % {'name': category.name})
-            return redirect('categories:category', slug=category.slug)
-    else:
-        form = CategoryForm(instance=category)
-    return render(request, 'categories/category/form.html', locals())
-
-
-@login_required
-@csrf_protect
-def delete(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    if request.method == 'POST':
-        category.delete()
+    def get_success_url(self):
         msg = _('The category "%(name)s" was successfully deleted.')
-        messages.add_message(request, messages.SUCCESS,
-                             msg % {'name': category.name})
-        return redirect('categories:categories')
-    return render(request, 'categories/category/delete.html', locals())
+        messages.add_message(self.request, messages.SUCCESS,
+                             msg % {'name': self.object.name})
+        return reverse_lazy('categories:category_list')

@@ -1,5 +1,6 @@
 {% load accounts i18n ledger %}
 
+{% url "accounts:entry_list" as entry_list_url %}
 <div class="table-responsive">
     <table class="table table-hover table-bordered table-sm table-striped">
         <thead>
@@ -20,10 +21,11 @@
         <tbody>
             {% timestamp "%Y-%m-%d" as today %}
             {% for entry in entries %}
+                {% url "accounts:account_entry_list" entry.account.slug as account_entry_list_url %}
                 <tr {% if entry.day|date:"Y-m-d" == today %}class="table-info"{% endif %}>
                     {% if not account %}
                         <th>
-                            <a href="{% url "accounts:entry_list" %}?accounts={{ entry.account.pk }}">{{ entry.account.name }}</a>
+                            <a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?accounts={{ entry.account.pk }}{% else %}{% url "accounts:account_detail" entry.account.slug %}{% endif %}">{{ entry.account.name }}</a>
                             <a href="{% url "accounts:entry_detail" entry.pk %}">#{{ entry.serial_number }}</a>
                         </th>
                     {% else %}
@@ -32,11 +34,11 @@
                     <td>{{ entry.day|date:"d.m.Y" }}</td>
                     <td>{{ entry.day|date:"D" }}</td>
                     <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
-                    <td><a href="{% if account%}{% url "accounts:account_entry_list" account.slug %}{% else %}{% url "accounts:entry_list" %}{% endif %}?categories={{ entry.category.pk }}">{{ entry.category }}</a></td>
+                    <td><a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?categories={{ entry.category.pk }}{% elif request.path|startswith:account_entry_list_url %}{{ account_entry_list_url }}?categories={{ entry.category.pk }}{% else %}{% url "categories:category_detail" entry.category.slug %}{% endif %}">{{ entry.category }}</a></td>
                     <td>{{ entry.additional|default_if_none:'' }}</td>
                     <td>
                         {% for tag in entry.tags.all %}
-                            <a href="{% if account%}{% url "accounts:account_entry_list" account.slug %}{% else %}{% url "accounts:entry_list" %}{% endif %}?tags={{ tag.pk }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                            <a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?tags={{ tag.pk }}{% elif request.path|startswith:account_entry_list_url %}{{ account_entry_list_url }}?tags={{ tag.pk }}{% else %}{% url "categories:tag_detail" tag.slug %}{% endif %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
                     <td>{{ entry.files.count }}</td>

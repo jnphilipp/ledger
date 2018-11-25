@@ -1,0 +1,86 @@
+{% extends "ledger/base.html" %}
+{% load categories i18n static %}
+
+
+{% block extrahead %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/categories/tags.js" %}"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
+<li class="breadcrumb-item"><a href="{% url "categories:tag_list" %}">{% trans "Tags" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ tag.name }}</li>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="btn-group" role="group">
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="{% if year %}false{% else %}true{% endif%}" aria-controls="collapseDetails">{% trans "Details" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="{% if year %}true{% else %}false{% endif%}" aria-controls="collapseStatistics">{% trans "Statistics" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="false" aria-controls="collapseEntries">{% trans "Entries" %}</button>
+        </div>
+    </div>
+    <div class="col-md-4 text-right">
+        <a href="{% url "categories:tag_edit" tag.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Edit tag" %}</a>
+        <a href="{% url "categories:tag_delete" tag.slug  %}" class="btn btn-outline-danger" role="button">{% trans "Delete tag" %}</a>
+    </div>
+</div>
+<div id="tag">
+    <div class="collapse{% if not year %} show{% endif%}" id="collapseDetails" aria-labelledby="collapseDetails" data-parent="#tag">
+        <div class="row mt-2">
+            <div class="col">
+                <div class="card card-body">
+                    <dl class="row">
+                        <dt class="col-md-3">{% trans "Created at" %}</dt>
+                        <dd class="col-md-9">{{ tag.created_at|date:"r" }}</dd>
+                        <dt class="col-md-3">{% trans "Last updated at" %}</dt>
+                        <dd class="col-md-9">{{ tag.updated_at|date:"r" }}</dd>
+                        <dt class="col-md-3">{% trans "#Entries" %}</dt>
+                        <dd class="col-md-9">{{ tag|entry_count:user }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="collapse{% if year %}show{% endif%}" id="collapseStatistics" aria-labelledby="collapseStatistics" data-parent="#tag">
+        <div class="row mt-2">
+            <div class="col">
+                {% if years %}
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownYears" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% trans "Select a year" %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownYears">
+                            {% for year in years %}
+                                <a class="dropdown-item" href="{% url "categories:tag_detail" tag.slug year %}">{{ year }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="schart" style="min-width: 310px; height: 750px;"></div>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        var url = "{% if year %}{% url "categories:tag_chart_statistics" tag.slug year %}{% else %}{% url "categories:tag_chart_statistics" tag.slug %}{% endif %}";
+                        statistics(url, "schart");
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="collapseEntries" aria-labelledby="collapseEntries" data-parent="#tag">
+        <div class="row mt-2">
+            <div class="col">
+                {% include "accounts/partials/_entry_table.html" with entries=entry_list options=False %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
