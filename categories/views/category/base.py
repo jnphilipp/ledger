@@ -5,7 +5,7 @@ from categories.models import Category
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
+from django.db.models import F, Func, Q
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
@@ -20,9 +20,9 @@ class ListView(generic.ListView):
     def get_queryset(self):
         return Category.objects.filter(
             Q(entries__account__ledger__user=self.request.user) |
-            Q(accounts__ledger__user=self.request.user)).distinct().extra(
-                select={'lname': 'lower(categories_category.name)'}
-            ).order_by('lname')
+            Q(accounts__ledger__user=self.request.user)).annotate(
+            lname=Func(F('name'), function='LOWER')).distinct(). \
+            order_by('lname')
 
 
 @method_decorator(login_required, name='dispatch')
