@@ -70,8 +70,32 @@ def balance(context, account=None):
         o = e.filter(day__gt=date.today()). \
             filter(day__lte=get_last_date_current_month()). \
             aggregate(sum=Sum('amount'))['sum']
-        values.append({
-            'balance': colorfy(b, unit),
-            'outstanding': colorfy(o, unit)
-        })
+
+        if account:
+            values.append({
+                'balance': colorfy(b, unit),
+                'outstanding': colorfy(o, unit)
+            })
+        else:
+            accounts = []
+            for a in unit.accounts.filter(ledger__user=context['user']):
+                b = a.entries.filter(day__lte=date.today()). \
+                    aggregate(sum=Sum('amount'))['sum']
+                o = a.entries.filter(day__gt=date.today()). \
+                    filter(day__lte=get_last_date_current_month()). \
+                    aggregate(sum=Sum('amount'))['sum']
+                accounts.append({
+                    'name': a.name,
+                    'balance': '%s %s' % (floatdot(b, unit.precision),
+                                          unit.symbol),
+                    'outstanding': '%s %s' % (floatdot(o, unit.precision),
+                                              unit.symbol)
+                })
+
+            values.append({
+                'balance': colorfy(b, unit),
+                'outstanding': colorfy(o, unit),
+                'accounts': accounts
+            })
+    print(values)
     return {'values': values}

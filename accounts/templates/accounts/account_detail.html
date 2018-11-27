@@ -71,6 +71,8 @@
                         <dd class="col-md-10"><a href="{% url "categories:category_detail" account.category.slug %}">{{ account.category.name }}</a></dd>
                         <dt class="col-md-2">{% trans "Unit" %}</dt>
                         <dd class="col-md-10"><a href="{% url "units:detail" account.unit.slug %}">{{ account.unit.name }}</a></dd>
+                        <dt class="col-md-2">{% trans "Balance" %}</dt>
+                        <dd class="col-md-10">{% balance account %}</dd>
                     </dl>
                 </div>
             </div>

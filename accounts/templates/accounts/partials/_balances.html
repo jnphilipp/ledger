@@ -8,7 +8,11 @@
         {% else %}
             <ul class="list-unstyled">
                 {% for value in values %}
-                    <li>{{ value|get_item:"balance" }}</li>
+                    {% if "accounts" in value  %}
+                        <li data-toggle="tooltip" data-placement="right" data-html="true" title="<table><tbody>{% for account in value|get_item:"accounts" %}<tr><th class='text-left'>{{ account|get_item:"name" }}</th><td class='text-right'>{{ account|get_item:"balance" }}</td></tr>{% endfor %}</tbody></table">{{ value|get_item:"balance" }}</li>
+                    {% else %}
+                        <li>{{ value|get_item:"balance" }}</li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% endif %}
@@ -20,7 +24,11 @@
         {% else %}
             <ul class="list-unstyled">
                 {% for value in values %}
-                    <li>{{ value|get_item:"outstanding" }}</li>
+                    {% if "accounts" in value  %}
+                        <li data-toggle="tooltip" data-placement="right" data-html="true" title="<table><tbody>{% for account in value|get_item:"accounts" %}<tr><th class='text-left'>{{ account|get_item:"name" }}</th><td class='text-right'>{{ account|get_item:"outstanding" }}</td></tr>{% endfor %}</tbody></table">{{ value|get_item:"outstanding" }}</li>
+                    {% else %}
+                        <li>{{ value|get_item:"outstanding" }}</li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% endif %}
