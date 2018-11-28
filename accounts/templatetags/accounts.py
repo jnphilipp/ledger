@@ -66,19 +66,21 @@ def balance(context, account=None):
     ids = set(entries.values_list('account__unit', flat=True))
     for unit in Unit.objects.filter(id__in=ids):
         e = entries.filter(account__unit=unit)
-        b = e.filter(day__lte=date.today()).aggregate(sum=Sum('amount'))['sum']
-        o = e.filter(day__gt=date.today()). \
+        balance = e.filter(day__lte=date.today()). \
+            aggregate(sum=Sum('amount'))['sum']
+        outstanding = e.filter(day__gt=date.today()). \
             filter(day__lte=get_last_date_current_month()). \
             aggregate(sum=Sum('amount'))['sum']
 
         if account:
             values.append({
-                'balance': colorfy(b, unit),
+                'balance': colorfy(balance, unit),
                 'outstanding': colorfy(o, unit)
             })
         else:
             accounts = []
-            for a in unit.accounts.filter(ledger__user=context['user']):
+            for a in unit.accounts.filter(Q(closed=False) &
+                                          Q(ledger__user=context['user'])):
                 b = a.entries.filter(day__lte=date.today()). \
                     aggregate(sum=Sum('amount'))['sum']
                 o = a.entries.filter(day__gt=date.today()). \
@@ -93,9 +95,8 @@ def balance(context, account=None):
                 })
 
             values.append({
-                'balance': colorfy(b, unit),
-                'outstanding': colorfy(o, unit),
+                'balance': colorfy(balance, unit),
+                'outstanding': colorfy(outstanding, unit),
                 'accounts': accounts
             })
-    print(values)
     return {'values': values}
