@@ -79,8 +79,8 @@ def balance(context, account=None):
             })
         else:
             accounts = []
-            for a in unit.accounts.filter(Q(closed=False) &
-                                          Q(ledger__user=context['user'])):
+            for a in unit.accounts.filter(closed=False). \
+                    filter(ledger__user=context['user']):
                 b = a.entries.filter(day__lte=date.today()). \
                     aggregate(sum=Sum('amount'))['sum']
                 o = a.entries.filter(day__gt=date.today()). \
