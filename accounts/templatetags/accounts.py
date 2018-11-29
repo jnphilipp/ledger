@@ -75,7 +75,7 @@ def balance(context, account=None):
         if account:
             values.append({
                 'balance': colorfy(balance, unit),
-                'outstanding': colorfy(o, unit)
+                'outstanding': colorfy(outstanding, unit)
             })
         else:
             accounts = []
