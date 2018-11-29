@@ -26,8 +26,10 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         self.account = None
         if 'slug' in self.kwargs:
             self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
-        return {'ledger': self.request.user.ledger,
-                'show_account': 'slug' not in self.kwargs}
+            return {'ledger': self.request.user.ledger, 'show_account': False,
+                    'account': self.account}
+        else:
+            return {'ledger': self.request.user.ledger, 'show_account': True}
 
     def get_success_message(self, cleaned_data):
         if 'slug' in self.kwargs:

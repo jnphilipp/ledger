@@ -128,36 +128,10 @@
 
 
 {% block content %}
-{% if account %}
-    {% url "accounts:account_standing_entry_add" account.slug as standing_entry_url %}
-{% else %}
-    {% url "accounts:standing_entry_add" as standing_entry_url %}
-{% endif %}
 <div class="row">
     <div class="col-md-6 offset-md-3">
-        {% if request.path == standing_entry_url %}
-            {% if account %}
-                {% url "accounts:account_standing_entry_add" account.slug as form_url %}
-            {% else %}
-                {% url "accounts:standing_entry_add" as form_url %}
-            {% endif %}
-        {% else %}
-            {% if account %}
-                {% if entry %}
-                    {% url "accounts:account_entry_edit" account.slug entry.id as form_url %}
-                {% else %}
-                    {% url "accounts:account_entry_add" account.slug as form_url %}
-                {% endif %}
-            {% else %}
-                {% if entry %}
-                    {% url "accounts:entry_edit" entry.id as form_url %}
-                {% else %}
-                    {% url "accounts:entry_add" as form_url %}
-                {% endif %}
-            {% endif %}
-        {% endif %}
         {% trans "Save" as save_trans %}
-        {% bootstrap_form form=form url=form_url glyphicon="glyphicon glyphicon-floppy-save" btn_title=save_trans %}
+        {% bootstrap_form form=form btn_title=save_trans %}
     </div>
 </div>
 {% endblock%}
