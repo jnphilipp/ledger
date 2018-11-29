@@ -13,8 +13,10 @@ urlpatterns = [
          name='index'),
     path('profile/', UpdateView.as_view(), name='profile'),
 
-    path('budget/', budget.budget, name='budget'),
-    path('budget/edit/', budget.edit, name='budget_edit'),
+    path('budget/', budget.DetailView.as_view(), name='budget_detail'),
+    path('budget/<int:year>/', budget.DetailView.as_view(),
+         name='budget_detail'),
+    path('budget/edit/', budget.UpdateView.as_view(), name='budget_edit'),
     path('statistics/', statistics.detail, name='statistics'),
     path('statistics/charts/categories/', statistics.charts.categories,
          name='statistics_chart_categories'),

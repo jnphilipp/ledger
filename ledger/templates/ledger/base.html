@@ -57,10 +57,10 @@
                             {% trans "Tags" %}
                             {% if request.path|startswith:tag_list_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>
-                        {% url "users:budget" as budget_url %}
-                        <a class="nav-link{% if request.path|startswith:budget_url %} active{% endif %}" href="{{ budget_url }}">
+                        {% url "users:budget_detail" as budget_detail_url %}
+                        <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
                             {% trans "Budget" %}
-                            {% if request.path|startswith:budget_url %}<span class="sr-only">(current)</span>{% endif %}
+                            {% if request.path|startswith:budget_detail_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>
                         {% url "users:statistics" as statistics_url %}
                         <a class="nav-link{% if request.path|startswith:statistics_url %} active{% endif %}" href="{{ statistics_url }}">
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col">
                     {% block content %}{% endblock %}
                 </div>
             </div>
