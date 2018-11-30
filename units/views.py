@@ -4,6 +4,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Count
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -71,7 +72,8 @@ def autocomplete(request):
     if 'application/json' == request.META.get('CONTENT_TYPE'):
         params.update(json.loads(request.body.decode('utf-8')))
 
-    units = Unit.objects.filter(accounts__ledger__user=request.user).distinct()
+    units = Unit.objects.filter(accounts__ledger__user=request.user). \
+        distinct().annotate(Count('accounts')).order_by('-accounts__count')
     if 'q' in params:
         units = units.filter(name__icontains=params.pop('q')[0])
 

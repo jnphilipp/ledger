@@ -4,7 +4,7 @@ import json
 
 from categories.models import Category
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.utils import timezone
 
@@ -23,7 +23,8 @@ def autocomplete(request):
 
     categories = Category.objects.filter(
         Q(entries__account__ledger__user=request.user) |
-        Q(accounts__ledger__user=request.user)).distinct()
+        Q(accounts__ledger__user=request.user)).distinct(). \
+        annotate(Count('entries')).order_by('-entries__count')
     if 'q' in params:
         categories = categories.filter(name__icontains=params.pop('q')[0])
 

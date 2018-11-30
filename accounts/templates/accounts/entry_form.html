@@ -49,7 +49,7 @@
                     dataType: "json",
                     delay: 250,
                     data: function (params) {
-                        return { q: params.term };
+                        return { q: params.term, closed: false };
                     },
                     processResults: function (data, params) {
                         return { results: data.accounts }

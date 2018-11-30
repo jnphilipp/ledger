@@ -179,34 +179,34 @@ class EntryFilterForm(forms.Form):
     start_date = forms.DateField(
         widget=forms.TextInput(attrs={
             'placeholder': _('Start date'),
-            'style': 'width: 200px;'
+            'style': 'width: 250px;'
         }),
         required=False
     )
     end_date = forms.DateField(
         widget=forms.TextInput(attrs={
             'placeholder': _('End date'),
-            'style': 'width: 200px;'
+            'style': 'width: 250px;'
         }),
         required=False
     )
     accounts = forms.ModelMultipleChoiceField(
         queryset=Account.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
+        widget=forms.SelectMultiple(attrs={'style': 'width: 250px;'})
     )
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
+        widget=forms.SelectMultiple(attrs={'style': 'width: 250px;'})
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
+        widget=forms.SelectMultiple(attrs={'style': 'width: 250px;'})
     )
     units = forms.ModelMultipleChoiceField(
         queryset=Unit.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={'style': 'width: 200px;'})
+        widget=forms.SelectMultiple(attrs={'style': 'width: 250px;'})
     )
