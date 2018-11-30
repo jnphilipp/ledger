@@ -14,7 +14,6 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from units.models import Unit
-from users.functions import budget as fbudget
 from users.forms import BudgetForm
 from users.models import Budget, Ledger
 
