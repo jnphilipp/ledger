@@ -74,14 +74,16 @@ def statistics(request, slug, year=None):
                     })
 
         for unit in units:
-            avg = tag.entries.filter(Q(account__ledgers=ledger) &
-                                     Q(account__unit=unit) &
-                                     Q(day__year=year)). \
-                aggregate(sum=Sum('amount'))['sum'] / len(months)
+            amount_sum = tag.entries.filter(Q(account__ledgers=ledger) &
+                                            Q(account__unit=unit) &
+                                            Q(day__year=year)). \
+                aggregate(sum=Sum('amount'))['sum']
+            if amount_sum is None:
+                continue
             series.append({
                 'name': _('Average %(unit)s') % {'unit': unit.name},
                 'type': 'spline',
-                'data': [avg for m in months],
+                'data': [amount_sum / months.count() for m in months],
                 'tooltip': {
                     'valueSuffix': unit.symbol
                 }
