@@ -35,7 +35,7 @@ class ListView(generic.ListView):
             self.account = None
             entries = Entry.objects. \
                 filter(account__ledger__user=self.request.user). \
-                order_by('-day', '-id')
+                order_by('-day', 'account__name', '-serial_number')
 
         filtered = False
         self.start_date = None
