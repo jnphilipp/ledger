@@ -42,13 +42,13 @@
                     <dt class="col-md-3">{% trans "Amount" %}</dt>
                     <dd class="col-md-9">{{ entry.amount|colorfy:entry.account.unit }}</dd>
                     <dt class="col-md-3">{% trans "Category" %}</dt>
-                    <dd class="col-md-9"><a href="{% url "categories:category" entry.category.slug %}">{{ entry.category.name }}</a></dd>
+                    <dd class="col-md-9"><a href="{% url "categories:category_detail" entry.category.slug %}">{{ entry.category.name }}</a></dd>
                     <dt class="col-md-3">{% trans "Additional" %}</dt>
                     <dd class="col-md-9">{{ entry.additional|default_if_none:"" }}</dd>
                     <dt class="col-md-3">{% trans "Tags" %}</dt>
                     <dd class="col-md-9">
                         {% for tag in entry.tags.all %}
-                            <a href="{% url "categories:tag" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                            <a href="{% url "categories:tag_detail" tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </dd>
                 </dl>
