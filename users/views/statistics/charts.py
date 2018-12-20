@@ -12,12 +12,9 @@ from users.models import Ledger
 
 
 @login_required
-def categories(request):
-    month = request.GET.get('month')
-    year = request.GET.get('year')
-
+def categories(request, unit, year=None, month=None):
     ledger = get_object_or_404(Ledger, user=request.user)
-    unit = get_object_or_404(Unit, slug=request.GET.get('unit'))
+    unit = get_object_or_404(Unit, slug=unit)
     accounts = ledger.accounts.filter(unit=unit)
 
     data = None
@@ -159,12 +156,9 @@ def categories(request):
 
 
 @login_required
-def tags(request):
-    month = request.GET.get('month')
-    year = request.GET.get('year')
-
+def tags(request, unit, year=None, month=None):
     ledger = get_object_or_404(Ledger, user=request.user)
-    unit = get_object_or_404(Unit, slug=request.GET.get('unit'))
+    unit = get_object_or_404(Unit, slug=unit)
     accounts = ledger.accounts.filter(unit=unit)
 
     data = None

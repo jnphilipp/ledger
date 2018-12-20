@@ -62,10 +62,10 @@
                             {% trans "Budget" %}
                             {% if request.path|startswith:budget_detail_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>
-                        {% url "users:statistics" as statistics_url %}
-                        <a class="nav-link{% if request.path|startswith:statistics_url %} active{% endif %}" href="{{ statistics_url }}">
+                        {% url "users:statistics_detail" as statistics_detail_url %}
+                        <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" href="{{ statistics_detail_url }}">
                             {% trans "Statistics" %}
-                            {% if request.path|startswith:statistics_url %}<span class="sr-only">(current)</span>{% endif %}
+                            {% if request.path|startswith:statistics_detail_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>
                     </ul>
                 {% endif %}
