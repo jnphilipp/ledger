@@ -5,7 +5,7 @@
 {% block breadcrumbs %}
 <li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
 <li class="breadcrumb-item">{% trans "Files" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "files:file" file.slug %}">{{ file.name }}</a></li>
+<li class="breadcrumb-item"><a href="{% url "files:detail" file.slug %}">{{ file.name }}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Delete" %}</li>
 {% endblock %}
 
