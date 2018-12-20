@@ -30,8 +30,9 @@ class AccountForm(forms.ModelForm):
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') % (reverse('categories:category_create_another'),
-                                  _('Add new category')))
+                       '</a>') %
+                      (reverse('categories:category_create_another'),
+                       _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
@@ -43,7 +44,6 @@ class AccountForm(forms.ModelForm):
 
     def clean_name(self):
         return self.cleaned_data['name'] or None
-
 
 
 class EntryForm(forms.ModelForm):
@@ -72,8 +72,11 @@ class EntryForm(forms.ModelForm):
         if not show_account:
             self.fields['account'].widget = forms.HiddenInput()
         else:
-            self.fields['account'].queryset = \
-                ledger.accounts.filter(closed=False)
+            if 'initial' in kwargs:
+                self.fields['account'].queryset = ledger.accounts.all()
+            else:
+                self.fields['account'].queryset = \
+                    ledger.accounts.filter(closed=False)
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
@@ -83,8 +86,9 @@ class EntryForm(forms.ModelForm):
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') % (reverse('categories:category_create_another'),
-                                  _('Add category')))
+                       '</a>') %
+                      (reverse('categories:category_create_another'),
+                       _('Add category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
@@ -141,8 +145,9 @@ class StandingEntryForm(forms.ModelForm):
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') % (reverse('categories:category_create_another'),
-                                 _('Add new category')))
+                       '</a>') %
+                      (reverse('categories:category_create_another'),
+                       _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
 
