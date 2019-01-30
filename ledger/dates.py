@@ -23,7 +23,7 @@ def daterange(start, end, execution=1):
     dates = []
     for i in count(step=step):
         c = start + relativedelta(months=+i)
-        if c >= end:
+        if c > end:
             break
         dates.append(c)
     return dates
