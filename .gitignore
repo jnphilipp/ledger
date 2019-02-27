@@ -1,6 +1,8 @@
 *.pyc
 db.sqlite3
 local.py
+ledger.sublime-project
+ledger.sublime-workspace
 media/*
 static/*
 .venv/*
