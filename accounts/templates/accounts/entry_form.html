@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load bootstrap i18n ledger %}
+{% load bootstrap i18n l10n ledger %}
 
 
 {% block extrahead %}
@@ -35,7 +35,7 @@
                 selectOtherMonths: true
             });
             $("#date_today").click(function() {
-                $("#id_day").val("{% timestamp "%Y-%m-%d" %}");
+                $("#id_day").val("{% timestamp "SHORT_DATE_FORMAT" %}");
                 $("#id_amount").focus();
                 return false;
             });
