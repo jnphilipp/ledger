@@ -19,7 +19,7 @@
             </tr>
         </thead>
         <tbody>
-            {% timestamp "%Y-%m-%d" as today %}
+            {% timestamp "Y-m-d" as today %}
             {% for entry in entries %}
                 {% url "accounts:account_entry_list" entry.account.slug as account_entry_list_url %}
                 <tr {% if entry.day|date:"Y-m-d" == today %}class="table-info"{% endif %}>
