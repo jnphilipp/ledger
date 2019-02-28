@@ -25,7 +25,7 @@
                 <tr {% if entry.day|date:"Y-m-d" == today %}class="table-info"{% endif %}>
                     {% if not account %}
                         <th>
-                            <a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?accounts={{ entry.account.pk }}{% else %}{% url "accounts:account_detail" entry.account.slug %}{% endif %}">{{ entry.account.name }}</a>
+                            <a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}{% else %}{% url "accounts:account_detail" entry.account.slug %}{% endif %}">{{ entry.account.name }}</a>
                             <a href="{% url "accounts:entry_detail" entry.pk %}">#{{ entry.serial_number }}</a>
                         </th>
                     {% else %}
@@ -34,7 +34,7 @@
                     <td>{{ entry.day|date:"d.m.Y" }}</td>
                     <td>{{ entry.day|date:"D" }}</td>
                     <td class="text-right">{{ entry.amount|colorfy:entry.account.unit }}</td>
-                    <td><a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?categories={{ entry.category.pk }}{% elif request.path|startswith:account_entry_list_url %}{{ account_entry_list_url }}?categories={{ entry.category.pk }}{% else %}{% url "categories:category_detail" entry.category.slug %}{% endif %}">{{ entry.category }}</a></td>
+                    <td><a href="{% if request.path|startswith:entry_list_url %}{{ entry_list_url }}?categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}{% elif request.path|startswith:account_entry_list_url %}{{ account_entry_list_url }}?categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:'Y-m-d' }}{% endif %}{% else %}{% url "categories:category_detail" entry.category.slug %}{% endif %}">{{ entry.category }}</a></td>
                     <td>{{ entry.additional|default_if_none:'' }}</td>
                     <td>
                         {% for tag in entry.tags.all %}

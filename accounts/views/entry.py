@@ -75,7 +75,9 @@ class ListView(generic.ListView):
                 entries = entries.filter(account__unit__in=self.units)
 
         if not filtered:
-            entries = entries.filter(day__lte=get_last_date_current_month())
+            self.end_date = get_last_date_current_month()
+            self.form = EntryFilterForm(initial={'end_date': self.end_date})
+            entries = entries.filter(day__lte=self.end_date)
 
         return entries.distinct()
 
