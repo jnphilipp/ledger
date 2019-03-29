@@ -150,11 +150,25 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         return self.success_message % {'entry': entry}
 
     def get_success_url(self):
+        query_string = '?'
+        if 'start_date' in self.request.GET:
+            query_string += f'&start_date={self.request.GET.get("start_date")}'
+        if 'end_date' in self.request.GET:
+            query_string += f'&end_date={self.request.GET.get("end_date")}'
+        if 'accounts' in self.request.GET:
+            query_string += f'&accounts={self.request.GET.get("accounts")}'
+        if 'categories' in self.request.GET:
+            query_string += f'&categories={self.request.GET.get("categories")}'
+        if 'tags' in self.request.GET:
+            query_string += f'&tags={self.request.GET.get("tags")}'
+        if 'units' in self.request.GET:
+            query_string += f'&units={self.request.GET.get("units")}'
+
         if 'slug' in self.kwargs:
             return reverse_lazy('accounts:account_entry_list',
-                                args=[self.kwargs['slug']])
+                                args=[self.kwargs['slug']]) + query_string
         else:
-            return reverse_lazy('accounts:entry_list')
+            return reverse_lazy('accounts:entry_list') + query_string
 
 
 @method_decorator(login_required, name='dispatch')
@@ -199,11 +213,25 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
                      ' moved to "%(no)s".') % {'entry': entry, 'no': no}
 
     def get_success_url(self):
+        query_string = '?'
+        if 'start_date' in self.request.GET:
+            query_string += f'&start_date={self.request.GET.get("start_date")}'
+        if 'end_date' in self.request.GET:
+            query_string += f'&end_date={self.request.GET.get("end_date")}'
+        if 'accounts' in self.request.GET:
+            query_string += f'&accounts={self.request.GET.get("accounts")}'
+        if 'categories' in self.request.GET:
+            query_string += f'&categories={self.request.GET.get("categories")}'
+        if 'tags' in self.request.GET:
+            query_string += f'&tags={self.request.GET.get("tags")}'
+        if 'units' in self.request.GET:
+            query_string += f'&units={self.request.GET.get("units")}'
+
         if 'slug' in self.kwargs:
             return reverse_lazy('accounts:account_entry_list',
-                                args=[self.kwargs['slug']])
+                                args=[self.kwargs['slug']]) + query_string
         else:
-            return reverse_lazy('accounts:entry_list')
+            return reverse_lazy('accounts:entry_list') + query_string
 
 
 @method_decorator(login_required, name='dispatch')

@@ -113,7 +113,7 @@
     </div>
    <div class="col-md-3 text-right">
         {% if show_options %}
-            <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_entry_create" account.slug %}{% else %}{% url "accounts:entry_create" %}{% endif %}">{% trans "Add entry" %}</a>
+            <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_entry_create" account.slug %}{% else %}{% url "accounts:entry_create" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}{% endif %}">{% trans "Add entry" %}</a>
             <a class="btn btn-outline-primary" href="{% if account %}{% url "accounts:account_standing_entry_create" account.slug %}{% else %}{% url "accounts:standing_entry_create" %}{% endif %}">{% trans "Add standing entry" %}</a>
         {% endif %}
     </div>
