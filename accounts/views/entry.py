@@ -157,16 +157,16 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             query_string += f'&end_date={self.request.GET.get("end_date")}'
         if 'accounts' in self.request.GET:
             query_string += '&accounts=' + \
-                f'{"&accounts=".join(self.request.GET.list("accounts"))}'
+                f'{"&accounts=".join(self.request.GET.getlist("accounts"))}'
         if 'categories' in self.request.GET:
             query_string += '&categories=' + \
-                f'{"&categories=".join(self.request.GET.list("categories"))}'
+                f'{"&categories=".join(self.request.GET.getlist("categories"))}'
         if 'tags' in self.request.GET:
             query_string += '&tags=' + \
-                f'{"&tags=".join(self.request.GET.list("tags"))}'
+                f'{"&tags=".join(self.request.GET.getlist("tags"))}'
         if 'units' in self.request.GET:
             query_string += '&units=' + \
-                f'{"&units=".join(self.request.GET.list("units"))}'
+                f'{"&units=".join(self.request.GET.getlist("units"))}'
 
         if 'slug' in self.kwargs:
             return reverse_lazy('accounts:account_entry_list',
@@ -224,16 +224,16 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
             query_string += f'&end_date={self.request.GET.get("end_date")}'
         if 'accounts' in self.request.GET:
             query_string += '&accounts=' + \
-                f'{"&accounts=".join(self.request.GET.list("accounts"))}'
+                f'{"&accounts=".join(self.request.GET.getlist("accounts"))}'
         if 'categories' in self.request.GET:
             query_string += '&categories=' + \
-                f'{"&categories=".join(self.request.GET.list("categories"))}'
+                f'{"&categories=".join(self.request.GET.getlist("categories"))}'
         if 'tags' in self.request.GET:
             query_string += '&tags=' + \
-                f'{"&tags=".join(self.request.GET.list("tags"))}'
+                f'{"&tags=".join(self.request.GET.getlist("tags"))}'
         if 'units' in self.request.GET:
             query_string += '&units=' + \
-                f'{"&units=".join(self.request.GET.list("units"))}'
+                f'{"&units=".join(self.request.GET.getlist("units"))}'
 
         if 'slug' in self.kwargs:
             return reverse_lazy('accounts:account_entry_list',
