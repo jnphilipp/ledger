@@ -159,6 +159,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
+SINGLE_USER = False
+
+
 # Load local settings
 
 try:

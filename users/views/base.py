@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import login_required
@@ -17,6 +18,9 @@ from ..models import Budget, Ledger
 @csrf_protect
 def signin(request):
     gnext = request.GET.get('next')
+
+    if not request.user.is_authenticated and settings.SINGLE_USER:
+        login(request, get_user_model().objects.first())
 
     if request.user.is_authenticated:
         return redirect(gnext) if gnext else redirect('dashboard')
