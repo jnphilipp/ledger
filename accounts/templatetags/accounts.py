@@ -4,7 +4,7 @@ from accounts.models import Account, Entry
 from datetime import date
 from django.db.models import Sum
 from django.template import Library
-from django.utils.numberformat import format
+from django.template.defaultfilters import floatformat
 from django.utils.safestring import mark_safe
 from ledger.dates import get_last_date_current_month
 from units.models import Unit
@@ -14,23 +14,14 @@ register = Library()
 
 
 @register.filter
-def floatdot(value, precision=2):
-    if not value:
-        return format(0, ',', precision)
-    else:
-        return format(round(value, precision), ',', precision)
-
-
-@register.filter
 def colorfy(amount, unit=None):
+    precision = unit.precision if unit else 2
+    symbol = unit.symbol if unit else ''
     if amount:
-        color = 'green' if amount >= 0 else 'red'
-        return mark_safe('<span class="%s">%s %s</span>' % (color,
-                         floatdot(amount, unit.precision if unit else 2),
-                         unit.symbol if unit else ''))
+        return mark_safe(f'<span class="{"green" if amount >= 0 else "red"}"' +
+                         f'>{floatformat(amount, precision)} {symbol}</span>')
     else:
-        return '%s %s'.strip() % (floatdot(0, unit.precision if unit else 2),
-                                  unit.symbol if unit else '')
+        return f'{floatformat(0, precision)} {symbol}'.strip()
 
 
 @register.filter
