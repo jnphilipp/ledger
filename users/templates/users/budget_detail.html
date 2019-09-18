@@ -16,16 +16,25 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-11">
-        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar">
+    <div class="col">
+        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar">
             <div class="btn-group mr-2" role="group" aria-label="Years">
-                {% for y in years %}
-                    <a class="btn btn-outline-secondary{% if year == y %} active{% endif %}" href="{% url "users:budget_detail" y %}" role="button">{{ y }}</a>
-                {% endfor %}
+                <a class="btn btn-outline-secondary{% if year|add:"-1" < years|first %} disabled{% endif %}" href="{% url "users:budget_detail" year|add:"-1" %}" role="button">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans "Previous" %}</span>
+                </a>
+                <a class="btn btn-outline-secondary active" href="{% url "users:budget_detail" year %}" role="button">{{ year }}</a>
+                <a class="btn btn-outline-secondary{% if year|add:"1" > years|last %} disabled{% endif %}" href="{% url "users:budget_detail" year|add:"1" %}" role="button">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% trans "Next" %}</span>
+                </a>
             </div>
             <div class="btn-group btn-toggle mr-2" role="group" aria-label="Chart/Table toggle">
                 <a class="btn btn btn-outline-primary active" data-target="#toggleView" role="button">{% trans "Chart" %}</a>
                 <a class="btn btn btn-outline-secondary" data-target="#toggleView" role="button">{% trans "Table" %}</a>
+            </div>
+            <div class="btn-group">
+                <a href="{% url "users:budget_edit" %}" class="btn btn-primary" role="button">{% trans "Edit budget" %}</a>
             </div>
         </div>
         <script type="text/javascript">
@@ -35,9 +44,6 @@
                 $("#chart_container").toggle();
             });
         </script>
-    </div>
-    <div class="col-md-1 text-right">
-        <a href="{% url "users:budget_edit" %}" class="btn btn-primary" role="button">{% trans "Edit budget" %}</a>
     </div>
 </div>
 <div class="row mt-md-2">
