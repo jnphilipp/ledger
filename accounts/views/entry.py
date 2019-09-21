@@ -79,6 +79,10 @@ class ListView(generic.ListView):
             self.form = EntryFilterForm(initial={'end_date': self.end_date})
             entries = entries.filter(day__lte=self.end_date)
 
+            if 'slug' in self.kwargs:
+                del self.form.fields['accounts']
+                del self.form.fields['units']
+
         return entries.distinct()
 
     def get_context_data(self, *args, **kwargs):
