@@ -79,10 +79,10 @@ def balance(context, account=None):
                     aggregate(sum=Sum('amount'))['sum']
                 accounts.append({
                     'name': a.name,
-                    'balance': '%s %s' % (floatdot(b, unit.precision),
-                                          unit.symbol),
-                    'outstanding': '%s %s' % (floatdot(o, unit.precision),
-                                              unit.symbol)
+                    'balance': f'{floatformat(b, unit.precision)} ' +
+                               f'{unit.symbol}',
+                    'outstanding': f'{floatformat(o, unit.precision)} ' +
+                                   f'{unit.symbol}',
                 })
 
             values.append({
