@@ -6,6 +6,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import F
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -83,6 +84,7 @@ class ListView(generic.ListView):
                 del self.form.fields['accounts']
                 del self.form.fields['units']
 
+        entries = entries.annotate(total=F('amount') + F('fees'))
         return entries.distinct()
 
     def get_context_data(self, *args, **kwargs):
@@ -293,7 +295,7 @@ class DuplicateView(generic.base.RedirectView):
             entry = get_object_or_404(Entry, pk=kwargs['pk'])
 
         new = Entry.objects.create(account=entry.account, day=date.today(),
-                                   amount=entry.amount,
+                                   amount=entry.amount, fees=entry.fees,
                                    category=entry.category,
                                    additional=entry.additional)
         for tag in entry.tags.all():

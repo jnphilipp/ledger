@@ -22,7 +22,10 @@ class SingleLineTextField(Field):
 
     def formfield(self, **kwargs):
         defaults = {'max_length': self.max_length}
-        if self.null and not connection.features.interprets_empty_strings_as_nulls:
+        if self.null and \
+                not connection.features.interprets_empty_strings_as_nulls:
             defaults['empty_value'] = None
         defaults.update(kwargs)
-        return super().formfield(**defaults)
+        field = super().formfield(**defaults)
+        field.widget.attrs.update({'style': 'width: 80%;'})
+        return field

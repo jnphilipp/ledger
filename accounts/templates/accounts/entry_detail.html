@@ -41,6 +41,8 @@
                     <dd class="col-md-9">{{ entry.day|date:"D, d.m.Y"  }}</dd>
                     <dt class="col-md-3">{% trans "Amount" %}</dt>
                     <dd class="col-md-9">{{ entry.amount|colorfy:entry.account.unit }}</dd>
+                    <dt class="col-md-3">{% trans "Fees" %}</dt>
+                    <dd class="col-md-9">{{ entry.fees|colorfy:entry.account.unit }}</dd>
                     <dt class="col-md-3">{% trans "Category" %}</dt>
                     <dd class="col-md-9"><a href="{% url "categories:category_detail" entry.category.slug %}">{{ entry.category.name }}</a></dd>
                     <dt class="col-md-3">{% trans "Additional" %}</dt>

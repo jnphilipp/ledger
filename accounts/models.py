@@ -96,53 +96,27 @@ class Account(models.Model):
 
 
 class Entry(models.Model):
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_('Created at')
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_('Updated at')
-    )
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name=_('Updated at'))
 
-    account = models.ForeignKey(
-        Account,
-        models.CASCADE,
-        related_name='entries',
-        verbose_name=_('Account')
-    )
-    serial_number = models.IntegerField(
-        verbose_name=_('Serial number')
-    )
-    day = models.DateField(
-        verbose_name=_('Day')
-    )
-    amount = models.FloatField(
-        default=0,
-        verbose_name=_('Amount')
-    )
-    category = models.ForeignKey(
-        Category,
-        models.CASCADE,
-        related_name='entries',
-        verbose_name=_('Category')
-    )
-    additional = SingleLineTextField(
-        blank=True,
-        null=True,
-        verbose_name=_('Additional')
-    )
-    tags = models.ManyToManyField(
-        Tag,
-        blank=True,
-        related_name='entries',
-        verbose_name=_('Tags')
-    )
-    files = GenericRelation(
-        'files.File',
-        related_query_name='entries',
-        verbose_name=_('Files')
-    )
+    account = models.ForeignKey(Account, models.CASCADE,
+                                related_name='entries',
+                                verbose_name=_('Account'))
+    serial_number = models.IntegerField(verbose_name=_('Serial number'))
+    day = models.DateField(verbose_name=_('Day'))
+    amount = models.FloatField(default=0, verbose_name=_('Amount'))
+    fees = models.FloatField(default=0, verbose_name=_('Fees'))
+    category = models.ForeignKey(Category, models.CASCADE,
+                                 related_name='entries',
+                                 verbose_name=_('Category'))
+    additional = SingleLineTextField(blank=True, null=True,
+                                     verbose_name=_('Additional'))
+    tags = models.ManyToManyField(Tag, blank=True, related_name='entries',
+                                  verbose_name=_('Tags'))
+    files = GenericRelation('files.File', related_query_name='entries',
+                            verbose_name=_('Files'))
 
     def delete(self, *args, **kwargs):
         for file in self.files.all():

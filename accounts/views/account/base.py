@@ -7,7 +7,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -49,7 +49,8 @@ class DetailView(generic.DetailView):
                 order_by(context['o'])
         else:
             context['entries'] = context['account'].entries. \
-                filter(day__lte=get_last_date_current_month()).reverse()[:20]
+                filter(day__lte=get_last_date_current_month()). \
+                annotate(total=F('amount') + F('fees')).reverse()[:20]
             context['statements'] = context['account'].statements. \
                 order_by(context['o'])[:20]
         return context

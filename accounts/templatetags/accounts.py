@@ -2,7 +2,7 @@
 
 from accounts.models import Account, Entry
 from datetime import date
-from django.db.models import Sum
+from django.db.models import F, Sum
 from django.template import Library
 from django.template.defaultfilters import floatformat
 from django.utils.safestring import mark_safe
@@ -58,10 +58,10 @@ def balance(context, account=None):
     for unit in Unit.objects.filter(id__in=ids):
         e = entries.filter(account__unit=unit)
         balance = e.filter(day__lte=date.today()). \
-            aggregate(sum=Sum('amount'))['sum']
+            aggregate(sum=Sum(F('amount') + F('fees')))['sum']
         outstanding = e.filter(day__gt=date.today()). \
             filter(day__lte=get_last_date_current_month()). \
-            aggregate(sum=Sum('amount'))['sum']
+            aggregate(sum=Sum(F('amount') + F('fees')))['sum']
 
         if account:
             values.append({
@@ -73,10 +73,12 @@ def balance(context, account=None):
             for a in unit.accounts.filter(closed=False). \
                     filter(ledger__user=context['user']):
                 b = a.entries.filter(day__lte=date.today()). \
-                    aggregate(sum=Sum('amount'))['sum']
+                    aggregate(sum=Sum(F('amount') + F('fees')))['sum']
                 o = a.entries.filter(day__gt=date.today()). \
                     filter(day__lte=get_last_date_current_month()). \
-                    aggregate(sum=Sum('amount'))['sum']
+                    aggregate(sum=Sum(F('amount') + F('fees')))['sum']
+                if not o:
+                    o = 0.
                 accounts.append({
                     'name': a.name,
                     'balance': f'{floatformat(b, unit.precision)} ' +

@@ -80,6 +80,7 @@ class EntryForm(forms.ModelForm):
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
+        self.fields['fees'].widget = forms.TextInput(attrs={'step': 'any'})
         self.fields['day'].help_text = \
             mark_safe('<a id="date_today" href="">%s</a> (%s: yyyy-mm-dd)' %
                       (_('Today'), _('Date format')))
@@ -120,7 +121,7 @@ class StandingEntryForm(forms.ModelForm):
         model = Entry
         exclude = ['serial_number', 'day']
         fields = ['account', 'start_date', 'end_date', 'execution', 'amount',
-                  'category', 'additional', 'tags']
+                  'fees', 'category', 'additional', 'tags']
 
     def __init__(self, *args, **kwargs):
         super(StandingEntryForm, self).__init__(*args, **kwargs)
@@ -142,6 +143,7 @@ class StandingEntryForm(forms.ModelForm):
             self.fields['account'].widget.attrs['style'] = 'width: 100%;'
 
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
+        self.fields['fees'].widget = forms.TextInput(attrs={'step': 'any'})
 
         self.fields['category'].help_text = \
             mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
@@ -169,6 +171,7 @@ class StandingEntryForm(forms.ModelForm):
             entry, created = Entry.objects.update_or_create(
                 day=date,
                 amount=instance.amount,
+                fees=instance.fees,
                 category=instance.category,
                 additional=instance.additional,
                 account=instance.account
