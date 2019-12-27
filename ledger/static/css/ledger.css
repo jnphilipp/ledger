@@ -1,8 +1,7 @@
 header, footer, nav, article, aside {display: block;}
 body {font-family: monospace;
     font-size: 10pt;
-    font-weight: normal;
-    padding-top: 70px;}
+    font-weight: normal;}
 
 .table tfoot {border-top: double black;}
 

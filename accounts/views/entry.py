@@ -102,6 +102,7 @@ class ListView(generic.ListView):
             context['show_options'] = not context['account'].closed
         else:
             context['show_options'] = True
+
         return context
 
 
@@ -165,8 +166,9 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             query_string += '&accounts=' + \
                 f'{"&accounts=".join(self.request.GET.getlist("accounts"))}'
         if 'categories' in self.request.GET:
+            categories = self.request.GET.getlist("categories")
             query_string += '&categories=' + \
-                f'{"&categories=".join(self.request.GET.getlist("categories"))}'
+                f'{"&categories=".join(categories)}'
         if 'tags' in self.request.GET:
             query_string += '&tags=' + \
                 f'{"&tags=".join(self.request.GET.getlist("tags"))}'
@@ -232,8 +234,9 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
             query_string += '&accounts=' + \
                 f'{"&accounts=".join(self.request.GET.getlist("accounts"))}'
         if 'categories' in self.request.GET:
+            categories = self.request.GET.getlist("categories")
             query_string += '&categories=' + \
-                f'{"&categories=".join(self.request.GET.getlist("categories"))}'
+                f'{"&categories=".join(categories)}'
         if 'tags' in self.request.GET:
             query_string += '&tags=' + \
                 f'{"&tags=".join(self.request.GET.getlist("tags"))}'
