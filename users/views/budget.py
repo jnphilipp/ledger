@@ -55,13 +55,14 @@ class DetailView(generic.DetailView):
             amounts = {}
             for e in Entry.objects.filter(
                     Q(account__ledger__user=self.request.user) &
-                    Q(day__year=year) & Q(tags__pk=tag.pk)):
+                    Q(day__year=year) & Q(tags__pk=tag.pk)). \
+                    annotate(total=F('amount') + F('fees')):
                 if e.pk not in entry_ids:
                     entry_ids.add(e.pk)
                     if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.amount
+                        amounts[e.account.unit] += e.total
                     else:
-                        amounts[e.account.unit] = e.amount
+                        amounts[e.account.unit] = e.total
 
             unit = None
             for i, (unit, v) in enumerate(amounts.items()):
@@ -97,21 +98,21 @@ class DetailView(generic.DetailView):
                 drilldown[1][unit][tag.pk] = \
                     self.drilldown(tag.name, 'income_%s' % tag.pk, unit)
                 categories = [{}, {}]
-                for entry in Entry.objects.filter(
+                for e in Entry.objects.filter(
                         Q(account__ledger__user=self.request.user) &
                         Q(day__year=year) & Q(account__unit=unit) &
-                        Q(tags=tag)):
-                    if entry.category.pk in categories[0]:
-                        categories[0][entry.category.pk]['v'] += entry.amount
-                        categories[1][entry.category.pk]['v'] += entry.amount
+                        Q(tags=tag)).annotate(total=F('amount') + F('fees')):
+                    if e.category.pk in categories[0]:
+                        categories[0][e.category.pk]['v'] += e.total
+                        categories[1][e.category.pk]['v'] += e.total
                     else:
-                        categories[0][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[0][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
-                        categories[1][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[1][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
                 for k in categories[0].keys():
                     categories[0][k]['y'] = abs(categories[0][k]['v']) / 12
@@ -160,13 +161,14 @@ class DetailView(generic.DetailView):
             amounts = {}
             for e in Entry.objects.filter(
                     Q(account__ledger__user=self.request.user) &
-                    Q(day__year=year) & Q(tags__pk=tag.pk)):
+                    Q(day__year=year) & Q(tags__pk=tag.pk)). \
+                    annotate(total=F('amount') + F('fees')):
                 if e.pk not in entry_ids:
                     entry_ids.add(e.pk)
                     if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.amount
+                        amounts[e.account.unit] += e.total
                     else:
-                        amounts[e.account.unit] = e.amount
+                        amounts[e.account.unit] = e.total
 
             unit = None
             for i, (unit, v) in enumerate(amounts.items()):
@@ -202,21 +204,21 @@ class DetailView(generic.DetailView):
                 drilldown[1][unit][tag.pk] = \
                     self.drilldown(tag.name, 'consumption_%s' % tag.pk, unit)
                 categories = [{}, {}]
-                for entry in Entry.objects.filter(
+                for e in Entry.objects.filter(
                         Q(account__ledger__user=self.request.user) &
                         Q(day__year=year) & Q(account__unit=unit) &
-                        Q(tags=tag)):
-                    if entry.category.pk in categories[0]:
-                        categories[0][entry.category.pk]['v'] += entry.amount
-                        categories[1][entry.category.pk]['v'] += entry.amount
+                        Q(tags=tag)).annotate(total=F('amount') + F('fees')):
+                    if e.category.pk in categories[0]:
+                        categories[0][e.category.pk]['v'] += e.total
+                        categories[1][e.category.pk]['v'] += e.total
                     else:
-                        categories[0][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[0][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
-                        categories[1][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[1][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
                 for k in categories[0].keys():
                     categories[0][k]['y'] = abs(categories[0][k]['v']) / 12
@@ -261,13 +263,14 @@ class DetailView(generic.DetailView):
             amounts = {}
             for e in Entry.objects.filter(
                     Q(account__ledger__user=self.request.user) &
-                    Q(day__year=year) & Q(tags__pk=tag.pk)):
+                    Q(day__year=year) & Q(tags__pk=tag.pk)). \
+                    annotate(total=F('amount') + F('fees')):
                 if e.pk not in entry_ids:
                     entry_ids.add(e.pk)
                     if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.amount
+                        amounts[e.account.unit] += e.total
                     else:
-                        amounts[e.account.unit] = e.amount
+                        amounts[e.account.unit] = e.total
 
             unit = None
             for i, (unit, v) in enumerate(amounts.items()):
@@ -303,21 +306,21 @@ class DetailView(generic.DetailView):
                 drilldown[1][unit][tag.pk] = \
                     self.drilldown(tag.name, 'insurance_%s' % tag.pk, unit)
                 categories = [{}, {}]
-                for entry in Entry.objects.filter(
+                for e in Entry.objects.filter(
                         Q(account__ledger__user=self.request.user) &
                         Q(day__year=year) & Q(account__unit=unit) &
-                        Q(tags=tag)):
-                    if entry.category.pk in categories[0]:
-                        categories[0][entry.category.pk]['v'] += entry.amount
-                        categories[1][entry.category.pk]['v'] += entry.amount
+                        Q(tags=tag)).annotate(total=F('amount') + F('fees')):
+                    if e.category.pk in categories[0]:
+                        categories[0][e.category.pk]['v'] += e.total
+                        categories[1][e.category.pk]['v'] += e.total
                     else:
-                        categories[0][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[0][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
-                        categories[1][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[1][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
                 for k in categories[0].keys():
                     categories[0][k]['y'] = abs(categories[0][k]['v']) / 12
@@ -362,13 +365,14 @@ class DetailView(generic.DetailView):
             amounts = {}
             for e in Entry.objects.filter(
                     Q(account__ledger__user=self.request.user) &
-                    Q(day__year=year) & Q(tags__pk=tag.pk)):
+                    Q(day__year=year) & Q(tags__pk=tag.pk)). \
+                    annotate(total=F('amount') + F('fees')):
                 if e.pk not in entry_ids:
                     entry_ids.add(e.pk)
                     if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.amount
+                        amounts[e.account.unit] += e.total
                     else:
-                        amounts[e.account.unit] = e.amount
+                        amounts[e.account.unit] = e.total
 
             unit = None
             for i, (unit, v) in enumerate(amounts.items()):
@@ -404,21 +408,21 @@ class DetailView(generic.DetailView):
                 drilldown[1][unit][tag.pk] = \
                     self.drilldown(tag.name, 'savings_%s' % tag.pk, unit)
                 categories = [{}, {}]
-                for entry in Entry.objects.filter(
+                for e in Entry.objects.filter(
                         Q(account__ledger__user=self.request.user) &
                         Q(day__year=year) & Q(account__unit=unit) &
-                        Q(tags=tag)):
-                    if entry.category.pk in categories[0]:
-                        categories[0][entry.category.pk]['v'] += entry.amount
-                        categories[1][entry.category.pk]['v'] += entry.amount
+                        Q(tags=tag)).annotate(total=F('amount') + F('fees')):
+                    if e.category.pk in categories[0]:
+                        categories[0][e.category.pk]['v'] += e.total
+                        categories[1][e.category.pk]['v'] += e.total
                     else:
-                        categories[0][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[0][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
-                        categories[1][entry.category.pk] = {
-                            'name': entry.category.name,
-                            'v': entry.amount
+                        categories[1][e.category.pk] = {
+                            'name': e.category.name,
+                            'v': e.total
                         }
                 for k in categories[0].keys():
                     categories[0][k]['y'] = abs(categories[0][k]['v']) / 12
@@ -458,7 +462,8 @@ class DetailView(generic.DetailView):
                 exclude(category__accounts__ledger__user=self.request.user). \
                 filter(Q(account__ledger__user=self.request.user) &
                        Q(day__year=year) & Q(account__unit=unit)). \
-                aggregate(Sum('amount'))['amount__sum']
+                annotate(total=F('amount') + F('fees')). \
+                aggregate(Sum('total'))['total__sum']
             if unit in series[0] and msum:
                 series[0][unit]['data'].append({
                     'name': str(_('Rest')),
@@ -487,7 +492,8 @@ class DetailView(generic.DetailView):
             entries = Entry.objects.exclude(pk__in=entry_ids). \
                 exclude(category__accounts__ledger__user=self.request.user). \
                 filter(Q(account__ledger__user=self.request.user) &
-                       Q(day__year=year) & Q(account__unit=unit))
+                       Q(day__year=year) & Q(account__unit=unit)). \
+                annotate(total=F('amount') + F('fees'))
             for e in entries:
                 if e.pk not in entry_ids:
                     t = e.tags.first()
@@ -495,7 +501,7 @@ class DetailView(generic.DetailView):
                         if t.pk not in rest:
                             rest[t.pk] = {'name': t.name, 'amount': 0,
                                           'categories': {}}
-                        rest[t.pk]['amount'] += e.amount
+                        rest[t.pk]['amount'] += e.total
 
                         if e.category.pk not in rest[t.pk]['categories']:
                             rest[t.pk]['categories'][e.category.pk] = \
@@ -507,9 +513,9 @@ class DetailView(generic.DetailView):
                             drilldown[1][unit][id] = \
                                 self.drilldown(e.category.name, id, unit)
                         rest[t.pk]['categories'][e.category.pk]['amount'] += \
-                            e.amount
+                            e.total
                     else:
-                        rest['r2']['amount'] += e.amount
+                        rest['r2']['amount'] += e.total
                         if e.category.pk not in rest['r2']['categories']:
                             rest['r2']['categories'][e.category.pk] = \
                                 {'name': e.category.name, 'amount': 0}
@@ -518,7 +524,7 @@ class DetailView(generic.DetailView):
                             drilldown[1][unit]['r_r2'] = \
                                 self.drilldown(e.category.name, 'r_r2', unit)
                         rest['r2']['categories'][e.category.pk]['amount'] += \
-                            e.amount
+                            e.total
                     entry_ids.add(e.pk)
 
             for k, v in rest.items():
