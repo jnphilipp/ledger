@@ -1,0 +1,123 @@
+{% extends "ledger/base.html" %}
+{% load accounts bootstrap i18n l10n ledger static %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $("#id_accounts").select2({
+            placeholder: "{% trans "Accounts" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "accounts:account_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.accounts }
+                }
+            }
+        });
+        $("a.iframeFormModal").modal({
+            show: false
+        });
+        $('#iframeFormModal').on('show.bs.modal', function (event) {
+            $("#iframeFormModalLabel").html(event.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+            if ( event.relatedTarget.href.includes("/delete/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-danger");
+                $("#iframeFormModalSubmit").removeClass("btn-primary");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+            }
+            else {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-upload\"></span> {% trans "Save" %}");
+            }
+        });
+        $("#iframeFormModalIframe").on("load", function() {
+            $("#iframeFormModalIframe").width(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+            $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+            $("#iframeFormModal").modal("handleUpdate");
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 text-center">
+        {% trans "Filter" as filter_trans %}
+        {% bootstrap_form csrf=False method="get" form=form type="inline" labels=False submit_icon="fas fa-search" submit_title=filter_trans %}
+    </div>
+   <div class="col-md-2 text-right">
+        <a class="btn btn-outline-primary iframeFormModal" href="{% url "files:statement_create" %}?reload=True{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}" title="{% trans "Add statement" %}" data-toggle="modal" data-target="#iframeFormModal"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-sm">
+                <thead>
+                    <tr>
+                        {% trans "Name" as name_trans %}
+                        {% sortable_th column_name=name_trans o=o get_name='o' get_value='name' %}
+                        {% trans "Account" as account_trans %}
+                        {% sortable_th column_name=account_trans o=o get_name='o' get_value='account__name' %}
+                        {% trans "Uploader" as uploader_trans %}
+                        {% sortable_th column_name=uploader_trans o=o get_name='o' get_value='uploader' %}
+                        {% trans "Uploaded at" as uploaded_at_trans %}
+                        {% sortable_th column_name=uploaded_at_trans o=o get_name='o' get_value='updated_at' %}
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for statement in statements %}
+                        <tr>
+                            <th scope="row"><a href="{% url "files:statement_detail" statement.slug %}">{{ statement.name }}</a></th>
+                            <td><a href="?accounts={{ statement.account.pk }}">{{ statement.account.name }}</a></td>
+                            <td>{{ statement.uploader }}</td>
+                            <td>{{ statement.updated_at|date:"l, d. F Y" }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{statement.id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
+                                    <div class="dropdown-menu" aria-labelledby="options-{statement.id}">
+                                        <a class="dropdown-item iframeFormModal" href="{% url "files:statement_edit" statement.slug %}?reload=True" title="{% trans "Edit statement" %}" data-toggle="modal" data-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                                        <a class="dropdown-item iframeFormModal" href="{% url "files:statement_delete" statement.slug %}?reload=True" title="{% trans "Delete statement" %}" data-toggle="modal" data-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% url "files:statement_list" as base_path %}
+        {% trans "Statements" as pagination_title %}
+        {% pagination paginator page_obj base_path pagination_title accounts=accounts|join:"&accounts=" %}
+    </div>
+</div>
+<div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="iframeFormModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Cancel" %}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

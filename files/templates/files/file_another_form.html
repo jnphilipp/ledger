@@ -1,8 +1,0 @@
-{% extends "ledger/popup.html" %}
-{% load bootstrap i18n %}
-
-
-{% block content %}
-{% trans "Save" as save_trans %}
-{% bootstrap_form form=form form_id="fileModalForm" enctype="multipart/form-data" btn_title=save_trans btn_submit=False %}
-{% endblock%}

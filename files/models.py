@@ -15,19 +15,87 @@ from ledger.fields import SingleLineTextField
 
 def get_file_path(instance, filename):
     name = slugify(instance.name) + os.path.splitext(filename)[1]
-    if instance.content_type == ContentType.objects.get_for_model(Account):
-        return os.path.join('files', 'account', str(instance.object_id),
+    if isinstance(instance, Statement):
+        return os.path.join('files', 'account', str(instance.account.pk),
                             'statements', name)
-    elif instance.content_type == ContentType.objects.get_for_model(Entry):
-        return os.path.join('files', 'account',
-                            str(instance.content_object.account.pk), 'entries',
-                            str(instance.object_id), name)
-    else:
-        return os.path.join('files', str(instance.content_type.pk),
-                            str(instance.object_id), name)
+    elif isinstance(instance, Invoice):
+        return os.path.join('files', 'account', str(instance.entry.account.pk),
+                            'entries', str(instance.entry.pk), name)
 
 
 class File(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name=_('Updated at'))
+
+    slug = models.SlugField(max_length=1024, unique=True,
+                            verbose_name=_('Slug'))
+    name = SingleLineTextField(verbose_name=_('Name'))
+    file = models.FileField(upload_to=get_file_path, max_length=4096,
+                            verbose_name=_('File'))
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE,
+                                 verbose_name=_('User'))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+        ordering = ('name',)
+        verbose_name = _('File')
+        verbose_name_plural = _('Files')
+
+
+class Invoice(File):
+    entry = models.ForeignKey(Entry, models.CASCADE,
+                              related_name='invoices',
+                              verbose_name=_('Entry'))
+
+    def get_absolute_url(self):
+        return reverse_lazy('files:invoice_detail', args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.slug = slugify(f'{self.entry.account.pk} {self.entry.pk}' +
+                                f' {self.name}')
+        else:
+            orig = Invoice.objects.get(pk=self.pk)
+            if orig.name != self.name or orig.entry != self.entry:
+                self.slug = slugify(f'{self.entry.account.pk} ' +
+                                    f'{self.entry.pk} {self.name}')
+        super(Invoice, self).save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ('entry', 'name')
+        verbose_name = _('Invoice')
+        verbose_name_plural = _('Invoices')
+
+
+class Statement(File):
+    account = models.ForeignKey(Account, models.CASCADE,
+                                related_name='statements',
+                                verbose_name=_('Account'))
+
+    def get_absolute_url(self):
+        return reverse_lazy('files:statement_detail', args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.slug = slugify(f'{self.account.pk} {self.name}')
+        else:
+            orig = Statement.objects.get(pk=self.pk)
+            if orig.name != self.name or orig.account != self.account:
+                self.slug = slugify(f'{self.account.pk} {self.name}')
+        super(Statement, self).save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ('account', 'name')
+        verbose_name = _('Statement')
+        verbose_name_plural = _('Statements')
+
+
+class OldFile(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_('Created at')
@@ -50,6 +118,7 @@ class File(models.Model):
         max_length=4096,
         verbose_name=_('File')
     )
+
     uploader = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         models.CASCADE,
@@ -65,22 +134,6 @@ class File(models.Model):
         'content_type',
         'object_id'
     )
-
-    def get_absolute_url(self):
-        return reverse_lazy('files:detail', args=[self.slug])
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.slug = slugify('%s %s %s' % (self.content_type.pk,
-                                              self.object_id, self.name))
-        else:
-            orig = File.objects.get(pk=self.pk)
-            if orig.name != self.name or \
-                    orig.content_type != self.content_type or \
-                    orig.object_id != self.object_id:
-                self.slug = slugify('%s %s %s' % (self.content_type.pk,
-                                                  self.object_id, self.name))
-        super(File, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
