@@ -2,13 +2,6 @@
 {% load bootstrap i18n %}
 
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Sign in" %}</li>
-{% endblock %}
-
-
 {% block content %}
 <div class="row mt-md-5">
     <div class="col-md-4 offset-md-4">
@@ -18,7 +11,7 @@
 <div class="row mt-md-5">
     <div class="col-md-2 offset-md-5">
         {% trans "Sign in" as sign_in_trans %}
-        {% bootstrap_form form=form type="vertical" url="?next="|add:gnext btn_title=sign_in_trans %}
+        {% bootstrap_form form=form type="vertical" url="?next="|add:gnext submit_title=sign_in_trans %}
         <script type="text/javascript">
             $("#id_username").focus();
         </script>

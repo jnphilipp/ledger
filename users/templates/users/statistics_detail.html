@@ -32,36 +32,10 @@
 {% endblock %}
 
 
-users:{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-{% if unit %}
-    <li class="breadcrumb-item"><a href="{% url "users:statistics_detail" %}">{% trans "Statistics" %}</a></li>
-    {% if chart %}
-        <li class="breadcrumb-item"><a href="{% url "users:statistics_detail" unit.slug %}">{{ unit.name }}</a></li>
-        {% if year %}
-            <li class="breadcrumb-item"><a href="{% url "users:statistics_detail" unit.slug chart %}">{{ chart_name }}</a></li>
-            {% if month %}
-                <li class="breadcrumb-item"><a href="{% url "users:statistics_detail" unit.slug chart year %}">{{ year }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{% trans month_name %}</li>
-            {% else %}
-                <li class="breadcrumb-item active" aria-current="page">{{ year }}</li>
-            {% endif %}
-        {% else %}
-            <li class="breadcrumb-item active" aria-current="page">{{ chart_name }}</li>
-        {% endif %}
-    {% else %}
-        <li class="breadcrumb-item active" aria-current="page">{{ unit.name }}</li>
-    {% endif %}
-{% else %}
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Statistics" %}</li>
-{% endif %}
-{% endblock %}
-
-
 {% block content %}
 {% if options %}
     <div class="row">
-        <div class="col-md-2">
+        <div class="col text-center">
             <div class="dropdown show">
                 <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownOptions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ option_msg }}
@@ -87,7 +61,7 @@ users:{% block breadcrumbs %}
 {% else %}
     <div class="row">
 {% endif %}
-    <div class="col-md-12">
+    <div class="col">
         {% if chart %}<div id="chart" style="min-width: 310px; height: 800px;"></div>{% endif %}
     </div>
 </div>

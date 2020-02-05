@@ -1,16 +1,16 @@
 # German translation.
-# Copyright (C) 2017 Nathanael Philipp
-# This file is distributed under the same license as the gedenkseite package.
-# Nathanael Philipp <mail@jnphilipp.org>, 2017.
+# Copyright (C) 2017-2020 J. Nathanael Philipp (jnphilipp)
+# This file is distributed under the same license as the ledger package.
+# J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>, 2017-2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: users\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-09 12:03+0200\n"
-"PO-Revision-Date: 2017-08-09 12:03+0200\n"
-"Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
+"POT-Creation-Date: 2020-02-05 15:13+0100\n"
+"PO-Revision-Date: 2020-02-05 15:13+0100\n"
+"Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: admin.py:32
+#: admin.py:39
 msgid "Number of Accounts"
 msgstr "Anzahl an Konten"
 
-#: apps.py:9 models.py:12 models.py:28
+#: apps.py:9 models.py:22 models.py:52
 msgid "User"
 msgstr "Benutzer"
 
@@ -30,81 +30,65 @@ msgstr "Benutzer"
 msgid "Users"
 msgstr "Benutzer"
 
-#: models.py:13
+#: forms.py:18
+msgid "Forgot your password?"
+msgstr "Passwort vergessen?"
+
+#: models.py:12 models.py:42
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: models.py:16 models.py:46
+msgid "Updated at"
+msgstr "Aktualisiert am"
+
+#: models.py:27
 msgid "Accounts"
 msgstr "Konten"
 
-#: models.py:20
+#: models.py:35
 msgid "Ledger"
 msgstr "Kassenbuch"
 
-#: models.py:21
+#: models.py:36
 msgid "Ledgers"
 msgstr "Kassenbücher"
 
-#: models.py:29
+#: models.py:58
 msgid "Income tags"
 msgstr "Einkommentags"
 
-#: models.py:30
+#: models.py:64
 msgid "Consumption tags"
 msgstr "Konsumtags"
 
-#: models.py:31
+#: models.py:70
 msgid "Insurance tags"
 msgstr "Versicherungstags"
 
-#: models.py:32
+#: models.py:76
 msgid "Savings tags"
 msgstr "Sparentags"
 
-#: models.py:39 templates/users/budget/budget.html:14
-#: templates/users/budget/budget.html:21 templates/users/budget/edit.html:71
-#: views/budget.py:101 views/budget.py:102
+#: models.py:87 views/budget.py:138
 msgid "Budget"
 msgstr "Budget"
 
-#: models.py:40
+#: models.py:88
 msgid "Budgets"
 msgstr "Budgets"
 
-#: templates/registration/password_change_done.html:6
-#: templates/registration/password_change_form.html:6
-#: templates/registration/password_reset_complete.html:6
-#: templates/registration/password_reset_confirm.html:6
-#: templates/registration/password_reset_done.html:6
-#: templates/registration/password_reset_form.html:6
-#: templates/registration/signin.html:6 templates/registration/signout.html:6
-#: templates/registration/signup.html:6 templates/users/budget/budget.html:13
-#: templates/users/budget/edit.html:70 templates/users/profile.html:6
-#: templates/users/statistics.html:20
-msgid "Dashboard"
-msgstr "Dashboard"
-
-#: templates/registration/password_change_done.html:7
-#: templates/registration/password_change_form.html:7
-#: templates/registration/password_reset_complete.html:7
-#: templates/registration/password_reset_confirm.html:7
-#: templates/registration/password_reset_done.html:7
-#: templates/registration/password_reset_form.html:7
-#: templates/registration/signin.html:7 templates/registration/signout.html:7
-#: templates/registration/signup.html:7 templates/users/profile.html:7
-#: templates/users/profile.html:16
-msgid "Profile"
-msgstr "Profile"
+#: templates/auth/user_form.html:8
+#: templates/registration/password_change_form.html:9
+#: templates/users/budget_detail.html:221
+msgid "Save"
+msgstr "Speichern"
 
 #: templates/registration/password_change_done.html:8
-#: templates/registration/password_change_done.html:17
-#: templates/registration/password_change_form.html:8
-#: templates/registration/password_change_form.html:17
-msgid "Change password"
-msgstr "Passwort ändern"
-
-#: templates/registration/password_change_done.html:20
-msgid "Your password was successfully changed."
+msgid "Your password was changed successfully."
 msgstr "Ihr Passwort wurde erfolgreich aktualisiert."
 
-#: templates/registration/password_change_form.html:20
+#: templates/registration/password_change_form.html:8
 msgid ""
 "Please enter your old password, for security's sake, and then enter your new "
 "password twice so we can verify you typed it in correctly."
@@ -114,35 +98,32 @@ msgstr ""
 "neue Passwort ein."
 
 #: templates/registration/password_reset_complete.html:8
-#: templates/registration/password_reset_confirm.html:8
-#: templates/registration/password_reset_confirm.html:17
-#: templates/registration/password_reset_done.html:8
-#: templates/registration/password_reset_form.html:8
-#: templates/registration/password_reset_form.html:17
-msgid "Reset password"
-msgstr "Passwort zurücksetzen"
-
-#: templates/registration/password_reset_complete.html:15
 msgid ""
 "Your password has been set successfully. You may go ahead and log in now."
 msgstr ""
 "Ihr Passwort wurde erfolgreich gespeichert. Sie können sich nun damit "
 "anmelden."
 
-#: templates/registration/password_reset_complete.html:15
-#: templates/registration/signin.html:8 templates/registration/signin.html:39
+#: templates/registration/password_reset_complete.html:8
+#: templates/registration/signin.html:13
 msgid "Sign in"
 msgstr "Anmelden"
 
-#: templates/registration/password_reset_confirm.html:20
-msgid "Please enter a new password and confirme it."
-msgstr "Bitte geben Sie ein neues Passwort ein und bestätigen Sie es."
+#: templates/registration/password_reset_confirm.html:9
+msgid "Save new password"
+msgstr "Neues Passwort speichern"
 
-#: templates/registration/password_reset_confirm.html:21
-msgid "Confirm new password"
-msgstr "Neues Passwort bestätigen"
+#: templates/registration/password_reset_confirm.html:12
+msgid "Password reset unsuccessful"
+msgstr "Passwort zurücksetzen nicht erfolgreich"
 
-#: templates/registration/password_reset_done.html:15
+#: templates/registration/password_reset_confirm.html:14
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used. Please request a new password reset link."
+msgstr ""
+
+#: templates/registration/password_reset_done.html:9
 msgid ""
 "We've e-mailed you instructions for setting your new password to the e-mail "
 "address you submitted. You should be receiving it shortly."
@@ -182,7 +163,7 @@ msgstr ""
 "\n"
 "Das ledger team."
 
-#: templates/registration/password_reset_form.html:20
+#: templates/registration/password_reset_form.html:8
 msgid ""
 "Please enter your email address, so we can send you a link to type in your "
 "new password."
@@ -190,199 +171,192 @@ msgstr ""
 "Bitte geben sie eine E-Mail-Adresse ein, so dass wir Ihnen einen Link senden "
 "können, wo Sie ihr neues Passwort eingeben können."
 
-#: templates/registration/password_reset_form.html:21
-msgid "Request new password"
-msgstr "Neues Passwort anfordern"
+#: templates/registration/password_reset_form.html:9
+msgid "Request password"
+msgstr "Passwort anfordern"
 
-#: templates/registration/signin.html:35
-msgid "Forgot your password?"
-msgstr "Passwort vergessen?"
-
-#: templates/registration/signout.html:8 templates/registration/signout.html:17
-msgid "Signed out"
-msgstr "Abmelden"
-
-#: templates/registration/signout.html:20
+#: templates/registration/signout.html:8
 msgid "Thanks for spending some quality time with ledger today."
 msgstr "Danke das sie heute etwas Zeit mit ledger verbracht haben."
 
-#: templates/registration/signout.html:21
+#: templates/registration/signout.html:9
 msgid "Sign in again"
 msgstr "Wieder anmelden"
 
-#: templates/registration/signup.html:8 templates/registration/signup.html:20
+#: templates/registration/signup.html:8
 msgid "Sign up"
 msgstr "Registrieren"
 
-#: templates/registration/signup.html:17
-msgid "Register for ledger"
-msgstr "Für ledger registrieren"
+#: templates/users/budget_detail.html:34
+msgid "Previous"
+msgstr "Vorheriges"
 
-#: templates/users/budget/budget.html:35 templates/users/budget/edit.html:81
-msgid "Edit budget"
-msgstr "Budget bearbeiten"
+#: templates/users/budget_detail.html:39
+msgid "Next"
+msgstr "Nächstes"
 
-#: templates/users/budget/budget.html:41
+#: templates/users/budget_detail.html:43
 msgid "Chart"
 msgstr "Chart"
 
-#: templates/users/budget/budget.html:42
+#: templates/users/budget_detail.html:44
 msgid "Table"
 msgstr "Tabelle"
 
-#: templates/users/budget/budget.html:71 templates/users/budget/budget.html:93
-#: templates/users/budget/budget.html:121
-#: templates/users/budget/budget.html:150
-#: templates/users/budget/budget.html:153
-#: templates/users/budget/budget.html:156
-#: templates/users/budget/budget.html:159
-msgid "Monthly"
-msgstr "Monatlich"
+#: templates/users/budget_detail.html:47
+msgid "Edit budget"
+msgstr "Budget bearbeiten"
 
-#: templates/users/budget/budget.html:72 templates/users/budget/budget.html:94
-#: templates/users/budget/budget.html:131
-#: templates/users/budget/budget.html:151
-#: templates/users/budget/budget.html:154
-#: templates/users/budget/budget.html:157
-#: templates/users/budget/budget.html:160
-msgid "Yearly"
-msgstr "Jährlich"
-
-#: templates/users/budget/budget.html:143 views/budget.py:62 views/budget.py:63
-#: views/budget.py:104 views/budget.py:109
-msgid "Income"
-msgstr "Einkommen"
-
-#: templates/users/budget/budget.html:144 views/budget.py:138
-#: views/budget.py:139 views/budget.py:182 views/budget.py:187
-msgid "Consumption"
-msgstr "Konsum"
-
-#: templates/users/budget/budget.html:145 views/budget.py:216
-#: views/budget.py:217 views/budget.py:260 views/budget.py:265
-msgid "Insurance"
-msgstr "Versicherung"
-
-#: templates/users/budget/budget.html:146 views/budget.py:294
-#: views/budget.py:295 views/budget.py:338 views/budget.py:343
-msgid "Savings"
-msgstr "Sparen"
-
-#: templates/users/budget/budget.html:149
-#: templates/users/budget/budget.html:152
-#: templates/users/budget/budget.html:155
-#: templates/users/budget/budget.html:158
-msgid "Name"
-msgstr "Name"
-
-#: templates/users/budget/edit.html:9 templates/users/budget/edit.html:23
-#: templates/users/budget/edit.html:37 templates/users/budget/edit.html:51
-msgid "Select a tag"
-msgstr "Wählen Sie einen Tag"
-
-#: templates/users/budget/edit.html:72
+#: templates/users/budget_detail.html:47
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: templates/users/statistics.html:22 templates/users/statistics.html:40
-#: templates/users/statistics.html:49
-msgid "Statistics"
-msgstr "Statistik"
+#: templates/users/budget_detail.html:77 templates/users/budget_detail.html:99
+#: templates/users/budget_detail.html:133
+#: templates/users/budget_detail.html:164
+#: templates/users/budget_detail.html:167
+#: templates/users/budget_detail.html:170
+#: templates/users/budget_detail.html:173
+msgid "Monthly"
+msgstr "Monatlich"
 
-#: views/api/statistics.py:30 views/api/statistics.py:123
-msgid "Days"
-msgstr "Tage"
+#: templates/users/budget_detail.html:78 templates/users/budget_detail.html:100
+#: templates/users/budget_detail.html:143
+#: templates/users/budget_detail.html:165
+#: templates/users/budget_detail.html:168
+#: templates/users/budget_detail.html:171
+#: templates/users/budget_detail.html:174
+msgid "Yearly"
+msgstr "Jährlich"
 
-#: views/api/statistics.py:41 views/api/statistics.py:69
-#: views/api/statistics.py:93 views/api/statistics.py:130
-#: views/api/statistics.py:155 views/api/statistics.py:180
-msgid "Loss and Profit"
-msgstr "Verlust und Gewinn"
+#: templates/users/budget_detail.html:157 views/budget.py:80 views/budget.py:82
+#: views/budget.py:142 views/budget.py:148
+msgid "Income"
+msgstr "Einkommen"
 
-#: views/api/statistics.py:58 views/api/statistics.py:148
-msgid "Months"
-msgstr "Monate"
+#: templates/users/budget_detail.html:158 views/budget.py:186
+#: views/budget.py:188 views/budget.py:244 views/budget.py:250
+msgid "Consumption"
+msgstr "Konsum"
 
-#: views/api/statistics.py:86 views/api/statistics.py:173
-msgid "Years"
-msgstr "Jahre"
+#: templates/users/budget_detail.html:159 views/budget.py:288
+#: views/budget.py:290 views/budget.py:346 views/budget.py:352
+msgid "Insurance"
+msgstr "Versicherung"
 
-#: views/base.py:23
+#: templates/users/budget_detail.html:160 views/budget.py:390
+#: views/budget.py:392 views/budget.py:448 views/budget.py:454
+msgid "Savings"
+msgstr "Sparen"
+
+#: templates/users/budget_detail.html:163
+#: templates/users/budget_detail.html:166
+#: templates/users/budget_detail.html:169
+#: templates/users/budget_detail.html:172
+msgid "Name"
+msgstr "Name"
+
+#: templates/users/budget_detail.html:212
+#: templates/users/budget_detail.html:220
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: templates/users/budget_form.html:10 templates/users/budget_form.html:25
+#: templates/users/budget_form.html:40 templates/users/budget_form.html:55
+msgid "Select a tag"
+msgstr "Wählen Sie einen Tag"
+
+#: views/base.py:37
 msgid "You have successfully signed in."
 msgstr "Sie haben sich erfolgreich angemeldet."
 
-#: views/base.py:27
+#: views/base.py:42
 msgid "Your account is disabled."
 msgstr "Ihr Benutzerkonto ist deaktiviert."
 
-#: views/base.py:29
+#: views/base.py:45
 msgid ""
-"Please enter a correct username and password to sign in. Note that both "
-"fields may be case-sensitive."
+"Please enter a correct email and password to sign in. Note that both fields "
+"may be case-sensitive."
 msgstr ""
-"Bitte geben Sie einen richtigen Benutzernamen und Passwort zum anmelden ein. "
+"Bitte geben Sie eine richtige E-mail-Addresse und Passwort zum anmelden ein. "
 "Bitte beachten Sie auf Groß- und Kleinschreibung."
 
-#: views/base.py:45
+#: views/base.py:60
 msgid "Thanks for signing up. You are now logged in."
 msgstr "Danke fürs registrieren. Die sind nun angemeldet."
 
-#: views/budget.py:37 views/budget.py:114 views/budget.py:192
-#: views/budget.py:270
+#: views/base.py:74
+msgid "Your profile was successfully updated."
+msgstr "Ihr Profil wurde erfolgreich aktualisiert."
+
+#: views/budget.py:47 views/budget.py:154 views/budget.py:256
+#: views/budget.py:358
 msgid "Sum"
 msgstr "Summe"
 
-#: views/budget.py:101 views/budget.py:102 views/budget.py:178
-#: views/budget.py:179 views/budget.py:256 views/budget.py:257
-#: views/budget.py:334 views/budget.py:335
+#: views/budget.py:136 views/budget.py:239 views/budget.py:341
+#: views/budget.py:443
 #, python-format
 msgid "Budget %(unit)s"
 msgstr "Budget %(unit)s"
 
-#: views/budget.py:352 views/budget.py:357 views/budget.py:362
-#: views/budget.py:363 views/budget.py:364 views/budget.py:365
-#: views/budget.py:366
+#: views/budget.py:469 views/budget.py:475 views/budget.py:481
+#: views/budget.py:482 views/budget.py:483 views/budget.py:484
+#: views/budget.py:487
 msgid "Rest"
 msgstr "Rest"
 
-#: views/budget.py:415
+#: views/budget.py:563
 msgid "Total"
 msgstr "Gesamt"
 
-#: views/budget.py:432
+#: views/budget.py:601
 msgid "Real"
 msgstr "Real"
 
-#: views/budget.py:492
+#: views/budget.py:726
 msgid "Your budget was successfully updated."
 msgstr "Ihr Budget wurde erfolgreich aktualisiert."
 
-#: views/profile.py:18
-msgid "Your profile has been successfully updated."
-msgstr "Ihr Profil wurde erfolgreich aktualisiert."
+#: views/statistics/charts.py:30 views/statistics/charts.py:175
+msgid "Days"
+msgstr "Tage"
 
-#: views/statistics.py:25
+#: views/statistics/charts.py:41 views/statistics/charts.py:90
+#: views/statistics/charts.py:131 views/statistics/charts.py:182
+#: views/statistics/charts.py:225 views/statistics/charts.py:265
+msgid "Loss and Profit"
+msgstr "Verlust und Gewinn"
+
+#: views/statistics/charts.py:79 views/statistics/charts.py:218
+msgid "Months"
+msgstr "Monate"
+
+#: views/statistics/charts.py:124 views/statistics/charts.py:258
+msgid "Years"
+msgstr "Jahre"
+
+#: views/statistics/detail.py:32
 msgid "Select a unit"
 msgstr "Wählen Sie eine Einheit"
 
-#: views/statistics.py:34
-msgid "Select a chart"
-msgstr "Wählen sie ein Chart"
-
-#: views/statistics.py:38 views/statistics.py:50 views/statistics.py:63
-#: views/statistics.py:73
-msgid "Categories"
-msgstr "Kategorien"
-
-#: views/statistics.py:42 views/statistics.py:47 views/statistics.py:60
-#: views/statistics.py:73
+#: views/statistics/detail.py:45 views/statistics/detail.py:59
 msgid "Tags"
 msgstr "Tags"
 
-#: views/statistics.py:52
+#: views/statistics/detail.py:47 views/statistics/detail.py:55
+msgid "Categories"
+msgstr "Kategorien"
+
+#: views/statistics/detail.py:51
+msgid "Select a chart"
+msgstr "Wählen sie ein Chart"
+
+#: views/statistics/detail.py:72
 msgid "Select a year"
 msgstr "Wählen Sie ein Jahr"
 
-#: views/statistics.py:65
+#: views/statistics/detail.py:92
 msgid "Select a month"
 msgstr "Wählen Sie einen Monat"

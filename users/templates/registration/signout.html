@@ -2,17 +2,10 @@
 {% load i18n %}
 
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "users:profile" %}">{% trans "Profile" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Signed out" %}</li>
-{% endblock %}
-
-
 {% block content %}
 <div class="row">
     <div class="col-md-6 offset-md-3">
-        <h3>{% trans "Thanks for spending some quality time with StockAnalyzer today." %}</h3>
+        <h3>{% trans "Thanks for spending some quality time with ledger today." %}</h3>
         <p><a href="{% url "users:signin" %}">{% trans "Sign in again" %}</a></p>
     </div>
 </div>

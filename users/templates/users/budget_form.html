@@ -1,5 +1,6 @@
-{% extends "ledger/base.html" %}
-{% load bootstrap i18n %}
+{% extends "ledger/popup.html" %}
+{% load bootstrap i18n l10n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 
 {% block extrahead %}
@@ -7,6 +8,7 @@
     $(document).ready(function() {
         $("#id_income_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:tag_autocomplete" %}",
                 dataType: "json",
@@ -21,6 +23,7 @@
         });
         $("#id_consumption_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:tag_autocomplete" %}",
                 dataType: "json",
@@ -35,6 +38,7 @@
         });
         $("#id_insurance_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:tag_autocomplete" %}",
                 dataType: "json",
@@ -49,6 +53,7 @@
         });
         $("#id_savings_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:tag_autocomplete" %}",
                 dataType: "json",
@@ -66,18 +71,6 @@
 {% endblock %}
 
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "users:budget_detail" %}">{% trans "Budget" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
-{% endblock %}
-
-
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        {% trans "Save" as save_trans %}
-        {% bootstrap_form form=form btn_title=save_trans %}
-    </div>
-</div>
+{% bootstrap_form form=form submit=False %}
 {% endblock%}
