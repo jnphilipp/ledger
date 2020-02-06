@@ -22,25 +22,18 @@ class AccountForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ('name', 'category', 'unit')
+        fields = ('name', 'category', 'unit', 'closed')
 
     def __init__(self, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields['name'].validators = [validate_account_name]
-
-        self.fields['category'].help_text = \
-            mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') %
-                      (reverse('categories:category_create_another'),
-                       _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
-
         self.fields['unit'].queryset = Unit.objects.all()
         self.fields['unit'].widget.attrs['style'] = 'width: 100%;'
-        self.fields['unit'].help_text = \
-            mark_safe('<a href="%s?target_id=id_unit" class="mpopup">%s</a>' %
-                      (reverse('units:create_another'), _('Add new unit')))
+
+        if 'instance' not in kwargs or kwargs['instance'] is None:
+            self.fields['closed'].widget = forms.HiddenInput()
 
     def clean_name(self):
         return self.cleaned_data['name'] or None
@@ -64,40 +57,38 @@ class EntryForm(forms.ModelForm):
             ledger = kwargs['ledger']
         elif 'initial' in kwargs and 'ledger' in kwargs['initial']:
             ledger = kwargs['initial']['ledger']
-        if 'show_account' in kwargs:
-            show_account = kwargs['show_account']
-        elif 'initial' in kwargs and 'show_account' in kwargs['initial']:
-            show_account = kwargs['initial']['show_account']
 
-        if not show_account:
-            self.fields['account'].widget = forms.HiddenInput()
-        else:
-            if 'initial' in kwargs:
-                self.fields['account'].queryset = ledger.accounts.all()
-            else:
-                self.fields['account'].queryset = \
-                    ledger.accounts.filter(closed=False)
-            self.fields['account'].widget.attrs['style'] = 'width: 100%;'
-
+        self.fields['account'].queryset = ledger.accounts.filter(closed=False)
+        self.fields['account'].widget.attrs['style'] = 'width: 100%;'
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
         self.fields['fees'].widget = forms.TextInput(attrs={'step': 'any'})
         self.fields['day'].help_text = \
             mark_safe('<a id="date_today" href="">%s</a> (%s: yyyy-mm-dd)' %
                       (_('Today'), _('Date format')))
-
-        self.fields['category'].help_text = \
-            mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') %
-                      (reverse('categories:category_create_another'),
-                       _('Add category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
-
-        self.fields['tags'].help_text = \
-            mark_safe('<a href="%s?target_id=id_tags" class="mpopup">%s</a>' %
-                      (reverse('categories:tag_create_another'), _('Add tag')))
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if self.data['category'] and 'category' not in cleaned_data:
+            category, created = Category.objects.get_or_create(
+                name=self.data['category'])
+            cleaned_data['category'] = category
+            del self.errors['category']
+
+        if self.data['tags'] and 'tags' not in cleaned_data:
+            tags = []
+            for tag in self.data.getlist('tags'):
+                if tag.isdigit():
+                    tag = Tag.objects.get(pk=tag)
+                else:
+                    tag, created = Tag.objects.get_or_create(name=tag)
+                tags.append(tag.pk)
+            cleaned_data['tags'] = Tag.objects.filter(pk__in=tags)
+            del self.errors['tags']
 
 
 class StandingEntryForm(forms.ModelForm):
@@ -130,35 +121,35 @@ class StandingEntryForm(forms.ModelForm):
             ledger = kwargs['ledger']
         elif 'initial' in kwargs and 'ledger' in kwargs['initial']:
             ledger = kwargs['initial']['ledger']
-        if 'show_account' in kwargs:
-            show_account = kwargs['show_account']
-        elif 'initial' in kwargs and 'show_account' in kwargs['initial']:
-            show_account = kwargs['initial']['show_account']
 
-        if not show_account:
-            self.fields['account'].widget = forms.HiddenInput()
-        else:
-            self.fields['account'].queryset = \
-                ledger.accounts.filter(closed=False)
-            self.fields['account'].widget.attrs['style'] = 'width: 100%;'
-
+        self.fields['account'].queryset = ledger.accounts.filter(closed=False)
+        self.fields['account'].widget.attrs['style'] = 'width: 100%;'
         self.fields['amount'].widget = forms.TextInput(attrs={'step': 'any'})
         self.fields['fees'].widget = forms.TextInput(attrs={'step': 'any'})
-
-        self.fields['category'].help_text = \
-            mark_safe(('<a href="%s?target_id=id_category" class="mpopup">%s' +
-                       '</a>') %
-                      (reverse('categories:category_create_another'),
-                       _('Add new category')))
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].widget.attrs['style'] = 'width: 100%;'
-
-        self.fields['tags'].help_text = \
-            mark_safe('<a href="%s?target_id=id_tags" class="mpopup">%s</a>' %
-                      (reverse('categories:tag_create_another'),
-                       _('Add new tag')))
         self.fields['tags'].queryset = Tag.objects.all()
         self.fields['tags'].widget.attrs['style'] = 'width: 100%;'
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if self.data['category'] and 'category' not in cleaned_data:
+            category, created = Category.objects.get_or_create(
+                name=self.data['category'])
+            cleaned_data['category'] = category
+            del self.errors['category']
+
+        if self.data['tags'] and 'tags' not in cleaned_data:
+            tags = []
+            for tag in self.data.getlist('tags'):
+                if tag.isdigit():
+                    tag = Tag.objects.get(pk=tag)
+                else:
+                    tag, created = Tag.objects.get_or_create(name=tag)
+                tags.append(tag.pk)
+            cleaned_data['tags'] = Tag.objects.filter(pk__in=tags)
+            del self.errors['tags']
 
     def save(self, commit=True):
         instance = super(StandingEntryForm, self).save(commit=False)

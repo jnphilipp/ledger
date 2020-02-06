@@ -29,7 +29,7 @@ class AccountAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
     search_fields = ('name', 'unit__name')
     show_entry_count.admin_order_field = 'entry_count'
-    show_entry_count.short_description = _('Number of Entries')
+    show_entry_count.short_description = _('Number of entries')
 
 
 @admin.register(Entry)

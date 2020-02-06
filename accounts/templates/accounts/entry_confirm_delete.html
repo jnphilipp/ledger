@@ -1,46 +1,23 @@
-{% extends "ledger/base.html" %}
-{% load accounts i18n %}
-
-
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-{% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_list" account.slug %}">{% trans "Entries" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_detail" account.slug entry.pk %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
-{% else %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:entry_list" %}">{% trans "Entries" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:entry_detail" entry.pk %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
-{% endif %}
-<li class="breadcrumb-item active" aria-current="page">{% trans "Delete" %}</li>
-{% endblock %}
+{% extends "ledger/popup.html" %}
+{% load i18n %}
 
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <div class="alert alert-danger" role="alert">
-            <h5><b>{% trans "Confirm deletion" %}</b></h5>
-            <p>{% blocktrans %}Are you sure you want to delete this entry? All of the following objects and their related items will be deleted:{% endblocktrans %}</p>
-            <ul>
-                <li>
-                    {% trans "Entry" %}: <a href="{% if account %}{% url "accounts:account_entry_detail" account.slug entry.pk %}{% else %}{% url "accounts:entry_detail" entry.pk %}{% endif %}">{% blocktrans with no=entry.serial_number %}Entry #{{ no }}{% endblocktrans %}</a>
-                    {% if entry.files %}
-                        <ul>
-                            {% for file in entry.files.all %}
-                                <li>{% trans "File" %}: <a href="{% url "files:file" file.slug %}">{{ file.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </li>
-            </ul>
-            <hr/>
-            <form action="" method="post">
-                {% csrf_token %}
-                <input type="submit" value="{% trans "Yes, I'm sure" %}" class="btn btn-danger"/>
-            </form>
-        </div>
-    </div>
+<div class="alert alert-danger" role="alert">
+    <h5><b>{% trans "Confirm deletion" %}</b></h5>
+    <p>{% blocktrans %}Are you sure you want to delete this entry? All of the following objects and their related items will be deleted:{% endblocktrans %}</p>
+    <ul>
+        <li>
+            {% trans "Entry" %}: <a href="{% url "accounts:entry_detail" entry.pk %}">{% blocktrans with no=entry.serial_number %}Entry #{{ no }}{% endblocktrans %}</a>
+            {% if entry.invoices %}
+                <ul>
+                    {% for invoice in entry.invoices.all %}
+                        <li>{% trans "Invoice" %}: <a href="{% url "files:invoice_detail" invoice.slug %}">{{ invoice.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+    </ul>
+    <form action="" method="post">{% csrf_token %}</form>
 </div>
 {% endblock%}

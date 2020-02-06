@@ -13,48 +13,21 @@ from users.models import Ledger
 
 
 class Account(models.Model):
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_('Created at')
-    )
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_('Updated at')
-    )
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name=_('Updated at'))
 
-    slug = models.SlugField(
-        unique=True,
-        verbose_name=_('Slug')
-    )
-    name = SingleLineTextField(
-        verbose_name=_('Name')
-    )
-    unit = models.ForeignKey(
-        Unit,
-        models.CASCADE,
-        related_name='accounts',
-        verbose_name=_('Unit')
-    )
-    category = models.ForeignKey(
-        Category,
-        models.CASCADE,
-        related_name='accounts',
-        verbose_name=_('Category')
-    )
-    ledgers = models.ManyToManyField(
-        Ledger,
-        through=Ledger.accounts.through,
-        verbose_name=_('Ledgers')
-    )
-    closed = models.BooleanField(
-        default=False,
-        verbose_name=_('Closed')
-    )
-    statements = GenericRelation(
-        'files.File',
-        related_query_name='accounts',
-        verbose_name=_('Statements')
-    )
+    slug = models.SlugField(unique=True, verbose_name=_('Slug'))
+    name = SingleLineTextField(verbose_name=_('Name'))
+    unit = models.ForeignKey(Unit, models.CASCADE, related_name='accounts',
+                             verbose_name=_('Unit'))
+    category = models.ForeignKey(Category, models.CASCADE,
+                                 related_name='accounts',
+                                 verbose_name=_('Category'))
+    ledgers = models.ManyToManyField(Ledger, through=Ledger.accounts.through,
+                                     verbose_name=_('Ledgers'))
+    closed = models.BooleanField(default=False, verbose_name=_('Closed'))
 
     def delete(self, *args, **kwargs):
         for file in self.statements.all():
@@ -115,12 +88,10 @@ class Entry(models.Model):
                                      verbose_name=_('Additional'))
     tags = models.ManyToManyField(Tag, blank=True, related_name='entries',
                                   verbose_name=_('Tags'))
-    files = GenericRelation('files.File', related_query_name='entries',
-                            verbose_name=_('Files'))
 
     def delete(self, *args, **kwargs):
-        for file in self.files.all():
-            file.delete()
+        for invoice in self.invoices.all():
+            invoice.delete()
         super(Entry, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):

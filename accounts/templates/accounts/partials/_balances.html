@@ -1,8 +1,8 @@
 {% load i18n ledger %}
 
 <ul class="list-inline">
-    <li class="list-inline-item align-top"><b>{% trans "Balance" %}:</b></li>
     <li class="list-inline-item">
+        <b>{% trans "Balance" %}</b>
         {% if values|length == 1 %}
             {{ values|get_item:0|get_item:"balance" }}
         {% else %}
@@ -17,8 +17,8 @@
             </ul>
         {% endif %}
     </li>
-    <li class="list-inline-item align-top"><b>{% trans "Outstanding" %}:</b></li>
-    <li class="list-inline-item">
+    <li class="list-inline-item ml-5">
+        <b>{% trans "Outstanding" %}</b>
         {% if values|length == 1 %}
             {{ values|get_item:0|get_item:"outstanding" }}
         {% else %}

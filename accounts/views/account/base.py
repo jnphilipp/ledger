@@ -33,121 +33,38 @@ class DetailView(generic.DetailView):
     def get_queryset(self):
         return Account.objects.filter(ledger__user=self.request.user)
 
-    def get_template_names(self):
-        if 'statements' in self.request.path:
-            return 'accounts/account_statement_list.html'
-        return 'accounts/account_detail.html'
-
     def get_context_data(self, *args, **kwargs):
         context = super(DetailView, self).get_context_data(*args, **kwargs)
-        context['o'] = '-updated_at'
-        if 'o' in self.request.GET:
-            context['o'] = self.request.GET.get('o')
 
-        if 'statements' in self.request.path:
-            context['statements'] = context['account'].statements. \
-                order_by(context['o'])
-        else:
-            context['entries'] = context['account'].entries. \
-                filter(day__lte=get_last_date_current_month()). \
-                annotate(total=F('amount') + F('fees')).reverse()[:20]
-            context['statements'] = context['account'].statements. \
-                order_by(context['o'])[:20]
-        return context
-
-
-@method_decorator(login_required, name='dispatch')
-class StatisticsView(generic.DetailView):
-    model = Account
-    template_name = 'accounts/account_statistics.html'
-
-    def get_queryset(self):
-        return Account.objects.filter(ledger__user=self.request.user)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(StatisticsView, self).get_context_data(*args, **kwargs)
-
-        if 'chart' in self.kwargs and (self.kwargs['chart'] == 'tags' or \
-                self.kwargs['chart'] == 'categories'):
-            context['chart'] = self.kwargs['chart']
-            if context['chart'] == 'tags':
-                context['chart_name'] = _('Tags')
-            else:
-                context['chart_name'] = _('Categories')
-        else:
-            context['option_msg'] = _('Select a chart')
-            context['options'] = [{
-                'id': 'categories',
-                'key': 'chart',
-                'value': _('Categories')
-            }, {
-                'id': 'tags',
-                'key': 'chart',
-                'value': _('Tags')
-            }]
-            return context
-
-        if 'year' in self.kwargs:
-            context['year'] = self.kwargs['year']
-        else:
+        if 'categories_year' not in self.kwargs:
             years = context['account'].entries.dates('day', 'year')
-            if context['chart'] == 'tags':
-                years = years.filter(tags__isnull=False)
-
-            context['option_msg'] = _('Select a year')
-            context['options'] = [{
-                'id': year.strftime('%Y'),
-                'key': 'year',
-                'value': year.strftime('%Y')
-            } for year in years]
-            return context
-
-        if 'month' in self.kwargs:
-            context['month'] = self.kwargs['month']
-            context['month_name'] = date(year=context['year'],
-                                         month=context['month'],
-                                         day=1).strftime('%B')
+            context['categories_years'] = [y.strftime('%Y') for y in years]
         else:
-            months = context['account'].entries. \
-                filter(day__year=context['year']).dates('day', 'month')
-            if context['chart'] == 'tags':
-                months = months.filter(tags__isnull=False)
+            context['categories_year'] = self.kwargs['categories_year']
 
-            context['option_msg'] = _('Select a month')
-            context['options'] = [{
-                'id': month.strftime('%m'),
-                'key': 'month',
-                'value': _(month.strftime('%B'))
-            } for month in months]
-            return context
+        if 'categories_month' not in self.kwargs and \
+                'categories_year' in self.kwargs:
+            months = context['account'].entries.filter(
+                day__year=context['categories_year']).dates('day', 'month')
+            context['categories_months'] = [
+                (m.strftime('%m'), m.strftime('%B')) for m in months]
+        elif 'categories_month' in self.kwargs:
+            context['categories_month'] = self.kwargs['categories_month']
 
-        if 'obj' in self.kwargs:
-            obj = self.kwargs['obj']
-            if context['chart'] == 'categories':
-                context['category'] = get_object_or_404(Category, slug=obj)
-            elif context['chart'] == 'tags':
-                context['tag'] = get_object_or_404(Tag, slug=obj)
+        if 'tags_year' not in self.kwargs:
+            years = context['account'].entries.filter(tags__isnull=False). \
+                dates('day', 'year')
+            context['tags_years'] = [y.strftime('%Y') for y in years]
         else:
-            if context['chart'] == 'categories':
-                context['option_msg'] = _('Select a category')
-                context['options'] = [{
-                    'id': category.slug,
-                    'key': 'category',
-                    'value': category.name
-                } for category in Category.objects.filter(
-                    Q(entries__account=context['account']) &
-                    Q(entries__day__year=context['year']) &
-                    Q(entries__day__month=context['month'])).distinct()]
-            elif context['chart'] == 'tags':
-                context['option_msg'] = _('Select a tag')
-                context['options'] = [{
-                    'id': tag.slug,
-                    'key': 'tag',
-                    'value': tag.name
-                } for tag in Tag.objects.filter(
-                    Q(entries__account=context['account']) &
-                    Q(entries__day__year=context['year']) &
-                    Q(entries__day__month=context['month'])).distinct()]
+            context['tags_year'] = self.kwargs['tags_year']
+
+        if 'tags_month' not in self.kwargs and 'tags_year' in self.kwargs:
+            months = context['account'].entries.filter(tags__isnull=False). \
+                filter(day__year=context['tags_year']).dates('day', 'month')
+            context['tags_months'] = [
+                (m.strftime('%m'), m.strftime('%B')) for m in months]
+        elif 'tags_month' in self.kwargs:
+            context['tags_month'] = self.kwargs['tags_month']
 
         return context
 

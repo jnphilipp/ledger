@@ -17,32 +17,23 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     model = Entry
     success_message = _('The entries %(entries)s were successfully created.')
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(CreateView, self).get_context_data(*args, **kwargs)
-        context['account'] = self.account
-        return context
-
     def get_initial(self):
-        self.account = None
+        initial = {'ledger': self.request.user.ledger}
         if 'slug' in self.kwargs:
-            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
-            return {'ledger': self.request.user.ledger, 'show_account': False,
-                    'account': self.account}
-        else:
-            return {'ledger': self.request.user.ledger, 'show_account': True}
+            initial['account'] = get_object_or_404(Account,
+                                                   slug=self.kwargs['slug'])
+        return initial
 
     def get_success_message(self, cleaned_data):
-        if 'slug' in self.kwargs:
-            entries = ', '.join('"#%s"' % e.serial_number for e in self.object)
-        else:
-            entries = '%s - %s' % (self.object[0].account.name,
-                                   ', '.join('"#%s"' % e.serial_number
-                                             for e in self.object))
-        return self.success_message % {'entries': entries}
+        entry = '%s - #%s' % (self.object.account.name,
+                              self.object.serial_number)
+        return self.success_message % {'entry': entry}
 
     def get_success_url(self):
-        if 'slug' in self.kwargs:
-            return reverse_lazy('accounts:account_entry_list',
-                                args=[self.kwargs['slug']])
-        else:
-            return reverse_lazy('accounts:entry_list')
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}'
+        elif 'target_id' in self.request.GET:
+            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
+                f'value={self.object.pk}&name={self.object.name}'
+        return url

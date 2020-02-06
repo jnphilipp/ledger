@@ -117,16 +117,6 @@ class DetailView(generic.DetailView):
         else:
             return Entry.objects.get(pk=self.kwargs['pk'])
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(DetailView, self).get_context_data(*args, **kwargs)
-        context['o'] = 'name'
-        if 'o' in self.request.GET:
-            context['o'] = self.request.GET.get('o')
-        context['files'] = context['entry'].files.all().order_by(context['o'])
-        if 'slug' in self.kwargs:
-            context['account'] = context['entry'].account
-        return context
-
 
 @method_decorator(login_required, name='dispatch')
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
@@ -134,53 +124,26 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     model = Entry
     success_message = _('The entry "%(entry)s" was successfully created.')
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(CreateView, self).get_context_data(*args, **kwargs)
-        context['account'] = self.account
-        return context
-
     def get_initial(self):
-        self.account = None
+        initial = {'ledger': self.request.user.ledger}
         if 'slug' in self.kwargs:
-            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
-            return {'ledger': self.request.user.ledger, 'show_account': False,
-                    'account': self.account}
-        else:
-            return {'ledger': self.request.user.ledger, 'show_account': True}
+            initial['account'] = get_object_or_404(Account,
+                                                   slug=self.kwargs['slug'])
+        return initial
 
     def get_success_message(self, cleaned_data):
-        if 'slug' in self.kwargs:
-            entry = '#%s' % self.object.serial_number
-        else:
-            entry = '%s - #%s' % (self.object.account.name,
-                                  self.object.serial_number)
+        entry = '%s - #%s' % (self.object.account.name,
+                              self.object.serial_number)
         return self.success_message % {'entry': entry}
 
     def get_success_url(self):
-        query_string = '?'
-        if 'start_date' in self.request.GET:
-            query_string += f'&start_date={self.request.GET.get("start_date")}'
-        if 'end_date' in self.request.GET:
-            query_string += f'&end_date={self.request.GET.get("end_date")}'
-        if 'accounts' in self.request.GET:
-            query_string += '&accounts=' + \
-                f'{"&accounts=".join(self.request.GET.getlist("accounts"))}'
-        if 'categories' in self.request.GET:
-            categories = self.request.GET.getlist("categories")
-            query_string += '&categories=' + \
-                f'{"&categories=".join(categories)}'
-        if 'tags' in self.request.GET:
-            query_string += '&tags=' + \
-                f'{"&tags=".join(self.request.GET.getlist("tags"))}'
-        if 'units' in self.request.GET:
-            query_string += '&units=' + \
-                f'{"&units=".join(self.request.GET.getlist("units"))}'
-
-        if 'slug' in self.kwargs:
-            return reverse_lazy('accounts:account_entry_list',
-                                args=[self.kwargs['slug']]) + query_string
-        else:
-            return reverse_lazy('accounts:entry_list') + query_string
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}'
+        elif 'target_id' in self.request.GET:
+            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
+                f'value={self.object.pk}&name={self.object.name}'
+        return url
 
 
 @method_decorator(login_required, name='dispatch')
@@ -192,15 +155,7 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
         self.orig_serial_number = self.object.serial_number
         return super(UpdateView, self).form_valid(form)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(UpdateView, self).get_context_data(*args, **kwargs)
-        context['account'] = self.account
-        return context
-
     def get_initial(self):
-        self.account = None
-        if 'slug' in self.kwargs:
-            self.account = get_object_or_404(Account, slug=self.kwargs['slug'])
         return {'ledger': self.request.user.ledger,
                 'show_account': 'slug' not in self.kwargs}
 
@@ -208,14 +163,10 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
         return Entry.objects.filter(account__ledger__user=self.request.user)
 
     def get_success_message(self, cleaned_data):
-        if 'slug' in self.kwargs:
-            entry = '#%s' % self.orig_serial_number
-            no = '#%s' % self.object.serial_number
-        else:
-            entry = '%s - #%s' % (self.object.account.name,
-                                  self.orig_serial_number)
-            no = '%s - #%s' % (self.object.account.name,
-                               self.object.serial_number)
+        entry = '%s - #%s' % (self.object.account.name,
+                              self.orig_serial_number)
+        no = '%s - #%s' % (self.object.account.name,
+                           self.object.serial_number)
 
         if self.orig_serial_number == self.object.serial_number:
             return _('The entry "%(entry)s" was successfully updated.') % \
@@ -225,30 +176,13 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
                      ' moved to "%(no)s".') % {'entry': entry, 'no': no}
 
     def get_success_url(self):
-        query_string = '?'
-        if 'start_date' in self.request.GET:
-            query_string += f'&start_date={self.request.GET.get("start_date")}'
-        if 'end_date' in self.request.GET:
-            query_string += f'&end_date={self.request.GET.get("end_date")}'
-        if 'accounts' in self.request.GET:
-            query_string += '&accounts=' + \
-                f'{"&accounts=".join(self.request.GET.getlist("accounts"))}'
-        if 'categories' in self.request.GET:
-            categories = self.request.GET.getlist("categories")
-            query_string += '&categories=' + \
-                f'{"&categories=".join(categories)}'
-        if 'tags' in self.request.GET:
-            query_string += '&tags=' + \
-                f'{"&tags=".join(self.request.GET.getlist("tags"))}'
-        if 'units' in self.request.GET:
-            query_string += '&units=' + \
-                f'{"&units=".join(self.request.GET.getlist("units"))}'
-
-        if 'slug' in self.kwargs:
-            return reverse_lazy('accounts:account_entry_list',
-                                args=[self.kwargs['slug']]) + query_string
-        else:
-            return reverse_lazy('accounts:entry_list') + query_string
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}'
+        elif 'target_id' in self.request.GET:
+            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
+                f'value={self.object.pk}&name={self.object.name}'
+        return url
 
 
 @method_decorator(login_required, name='dispatch')
@@ -269,16 +203,17 @@ class DeleteView(generic.edit.DeleteView):
 
     def get_success_url(self):
         msg = _('The entry "%(entry)s" was successfully deleted.')
-        if 'slug' in self.kwargs:
-            msg %= {'entry': '#%s' % self.object.serial_number}
-            messages.add_message(self.request, messages.SUCCESS, msg)
-            return reverse_lazy('accounts:account_entry_list',
-                                args=[self.kwargs['slug']])
-        else:
-            msg %= {'entry': '%s - #%s' % (self.object.account.name,
-                                           self.object.serial_number)}
-            messages.add_message(self.request, messages.SUCCESS, msg)
-            return reverse_lazy('accounts:entry_list')
+        msg %= {'entry': '%s - #%s' % (self.object.account.name,
+                                       self.object.serial_number)}
+        messages.add_message(self.request, messages.SUCCESS, msg)
+
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}'
+        elif 'target_id' in self.request.GET:
+            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
+                f'value={self.object.pk}&name={self.object.name}'
+        return url
 
 
 @method_decorator(login_required, name='dispatch')

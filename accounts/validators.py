@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def validate_account_name(value):
-    if value in ['add', 'entries']:
+    if value in ['autocomplete', 'create', 'entries']:
         raise ValidationError(_('"%(value)s" is not a valid account name.'),
                               code='invalid',
                               params={'value': value})

@@ -1,13 +1,10 @@
-{% extends "ledger/base.html" %}
+{% extends "ledger/popup.html" %}
 {% load bootstrap i18n l10n ledger %}
+{% get_current_language as LANGUAGE_CODE %}
 
 
 {% block extrahead %}
-{% if account %}
-    {% url "accounts:account_standing_entry_create" account.slug as standing_entry_url %}
-{% else %}
-    {% url "accounts:standing_entry_create" as standing_entry_url %}
-{% endif %}
+{% url "accounts:standing_entry_create" as standing_entry_url %}
 <script type="text/javascript">
     $(function() {
         {% if request.path == standing_entry_url %}
@@ -40,26 +37,26 @@
                 return false;
             });
         {% endif %}
-        {% if not account %}
-            $("#id_account").select2({
-                placeholder: "{% trans "Select a accounts" %}",
-                allowClear: true,
-                ajax: {
-                    url: "{% url "accounts:account_autocomplete" %}",
-                    dataType: "json",
-                    delay: 250,
-                    data: function (params) {
-                        return { q: params.term, closed: false };
-                    },
-                    processResults: function (data, params) {
-                        return { results: data.accounts }
-                    }
+        $("#id_account").select2({
+            placeholder: "{% trans "Select a account" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "accounts:account_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term, closed: false };
+                },
+                processResults: function (data, params) {
+                    return { results: data.accounts }
                 }
-            });
-        {% endif %}
+            }
+        });
         $("#id_category").select2({
             placeholder: "{% trans "Select a category" %}",
             allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:category_autocomplete" %}",
                 dataType: "json",
@@ -74,6 +71,7 @@
         });
         $("#id_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:tag_autocomplete" %}",
                 dataType: "json",
@@ -86,52 +84,12 @@
                 }
             }
         });
-        $("#id_execution").select2();
-        $(".mpopup").magnificPopup({
-            type: "iframe"
-        });
+        $("#id_execution").select2({language: "{{ LANGUAGE_CODE }}"});
     });
 </script>
 {% endblock %}
 
 
-{% block breadcrumbs %}
-{% if account %}
-    {% url "accounts:account_standing_entry_add" account.slug as standing_entry_url %}
-{% else %}
-    {% url "accounts:standing_entry_add" as standing_entry_url %}
-{% endif %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-{% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_list" account.slug %}">{% trans "Entries" %}</a></li>
-    {% if entry %}
-        <li class="breadcrumb-item"><a href="{% url "accounts:account_entry_detail" account.slug entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
-    {% endif %}
-{% else %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:entry_list" %}">{% trans "Entries" %}</a></li>
-    {% if entry %}
-        <li class="breadcrumb-item"><a href="{% url "accounts:entry_detail" entry.id %}">{% blocktrans with id=entry.serial_number %}Entry #{{ id }}{% endblocktrans %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
-    {% endif %}
-{% endif %}
-{% if not entry %}
-    {% if request.path == standing_entry_url %}
-        <li class="breadcrumb-item active" aria-current="page">{% trans "Add standing entry" %}</li>
-    {% else %}
-        <li class="breadcrumb-item active" aria-current="page">{% trans "Add entry" %}</li>
-    {% endif %}
-{% endif %}
-{% endblock %}
-
-
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        {% trans "Save" as save_trans %}
-        {% bootstrap_form form=form btn_title=save_trans %}
-    </div>
-</div>
+{% bootstrap_form form=form enctype="multipart/form-data" submit=False %}
 {% endblock%}

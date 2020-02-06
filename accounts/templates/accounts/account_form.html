@@ -1,5 +1,6 @@
-{% extends "ledger/base.html" %}
-{% load accounts bootstrap i18n %}
+{% extends "ledger/popup.html" %}
+{% load accounts bootstrap i18n l10n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 
 {% block extrahead %}
@@ -8,6 +9,7 @@
         $("#id_category").select2({
             placeholder: "{% trans "Select a category" %}",
             allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "categories:category_autocomplete" %}",
                 dataType: "json",
@@ -23,6 +25,7 @@
         $("#id_unit").select2({
             placeholder: "{% trans "Select a unit" %}",
             allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "units:unit_autocomplete" %}",
                 dataType: "json",
@@ -35,36 +38,11 @@
                 }
             }
         });
-        $(".mpopup").magnificPopup({
-            type: "iframe"
-        });
     });
 </script>
 {% endblock %}
 
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "accounts:account_list" %}">{% trans "Accounts" %}</a></li>
-{% if account %}
-    <li class="breadcrumb-item"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
-{% else %}
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Add" %}</li>
-{% endif %}
-{% endblock %}
-
-
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        {% if account %}
-            {% url "accounts:account_edit" account.slug as form_url %}
-        {% else %}
-            {% url "accounts:account_add" as form_url %}
-        {% endif %}
-        {% trans "Save" as save_trans %}
-        {% bootstrap_form form=form url=form_url btn_title=save_trans %}
-    </div>
-</div>
+{% bootstrap_form form=form submit=False %}
 {% endblock%}

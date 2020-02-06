@@ -35,6 +35,11 @@ def balance(account):
 
 
 @register.filter
+def has_tags(account):
+    return account.entries.filter(tags__isnull=False).count() > 0
+
+
+@register.filter
 def outstanding(account):
     if account.closed:
         outstanding = 0
