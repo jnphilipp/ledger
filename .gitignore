@@ -6,3 +6,4 @@ ledger.sublime-workspace
 media/*
 static/*
 .venv/*
+.mypy_cache/*
