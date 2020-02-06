@@ -1,24 +1,7 @@
-{% extends "ledger/base.html" %}
+{% extends "ledger/popup.html" %}
 {% load bootstrap i18n %}
 
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "categories:tag_list" %}">{% trans "Tags" %}</a></li>
-{% if tag %}
-    <li class="breadcrumb-item"><a href="{% url "categories:tag_detail" tag.slug %}">{{ tag.name }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
-{% else  %}
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Add" %}</li>
-{% endif %}
-{% endblock %}
-
-
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        {% trans "Save" as save_trans %}
-        {% bootstrap_form form=form btn_title=save_trans %}
-    </div>
-</div>
+{% bootstrap_form form=form submit=False %}
 {% endblock%}

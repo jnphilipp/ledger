@@ -1,17 +1,38 @@
 {% extends "ledger/base.html" %}
-{% load categories i18n static %}
+{% load categories i18n ledger static %}
 
 
 {% block extrahead %}
 <script src="{% static "js/highcharts.js" %}"></script>
 <script src="{% static "js/categories/tags.js" %}"></script>
-{% endblock %}
+<script type="text/javascript">
+    $(function() {
+        $("a.iframeFormModal").modal({
+            show: false
+        });
+        $('#iframeFormModal').on('show.bs.modal', function (event) {
+            $("#iframeFormModalLabel").html(event.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
 
+            if ( event.relatedTarget.href.includes("/categories/tag/") && event.relatedTarget.href.includes("/edit/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+            }
+            else if ( event.relatedTarget.href.includes("/categories/tag/") && event.relatedTarget.href.includes("/delete/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-danger");
+                $("#iframeFormModalSubmit").removeClass("btn-primary");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+            }
+        });
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item"><a href="{% url "categories:tag_list" %}">{% trans "Tags" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{ tag.name }}</li>
+        $("#iframeFormModalIframe").on("load", function() {
+            $("#iframeFormModalIframe").width(Math.max(400, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+            $("#iframeFormModalIframe").height(Math.max(200, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+            $("#iframeFormModal").modal("handleUpdate");
+        });
+    });
+</script>
 {% endblock %}
 
 
@@ -19,18 +40,17 @@
 <div class="row">
     <div class="col-md-8">
         <div class="btn-group" role="group">
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="{% if year %}false{% else %}true{% endif%}" aria-controls="collapseDetails">{% trans "Details" %}</button>
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="{% if year %}true{% else %}false{% endif%}" aria-controls="collapseStatistics">{% trans "Statistics" %}</button>
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseEntries" aria-expanded="false" aria-controls="collapseEntries">{% trans "Entries" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="{% if year or request.get_full_path|endswith:"?statistics=" %}false{% else %}true{% endif%}" aria-controls="collapseDetails" id="details">{% trans "Details" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="{% if year or request.get_full_path|endswith:"?statistics=" %}true{% else %}false{% endif%}" aria-controls="collapseStatistics" id="statistics">{% trans "Statistics" %}</button>
         </div>
     </div>
     <div class="col-md-4 text-right">
-        <a href="{% url "categories:tag_edit" tag.slug  %}" class="btn btn-outline-primary" role="button">{% trans "Edit tag" %}</a>
-        <a href="{% url "categories:tag_delete" tag.slug  %}" class="btn btn-outline-danger" role="button">{% trans "Delete tag" %}</a>
+        <a href="{% url "categories:tag_edit" tag.slug  %}?reload=True" class="btn btn-outline-primary iframeFormModal" data-toggle="modal" data-target="#iframeFormModal" role="button" title="{% trans "Edit tag" %}">{% trans "Edit" %}</a>
+        <a href="{% url "categories:tag_delete" tag.slug  %}?reload=True" class="btn btn-outline-danger iframeFormModal" data-toggle="modal" data-target="#iframeFormModal" role="button" title="{% trans "Delete tag" %}">{% trans "Delete" %}</a>
     </div>
 </div>
 <div id="tag">
-    <div class="collapse{% if not year %} show{% endif%}" id="collapseDetails" aria-labelledby="collapseDetails" data-parent="#tag">
+    <div class="collapse{% if not year and not request.get_full_path|endswith:"?statistics=" %} show{% endif%}" id="collapseDetails" aria-labelledby="details" data-parent="#tag">
         <div class="row mt-2">
             <div class="col">
                 <div class="card card-body">
@@ -39,24 +59,26 @@
                         <dd class="col-md-9">{{ tag.created_at|date:"r" }}</dd>
                         <dt class="col-md-3">{% trans "Last updated at" %}</dt>
                         <dd class="col-md-9">{{ tag.updated_at|date:"r" }}</dd>
-                        <dt class="col-md-3">{% trans "#Entries" %}</dt>
+                        <dt class="col-md-3">{% trans "Number of entries" %}</dt>
                         <dd class="col-md-9">{{ tag|entry_count:user }}</dd>
                     </dl>
                 </div>
             </div>
         </div>
     </div>
-    <div class="collapse{% if year %}show{% endif%}" id="collapseStatistics" aria-labelledby="collapseStatistics" data-parent="#tag">
+    <div class="collapse{% if year or request.get_full_path|endswith:"?statistics=" %} show{% endif%}" id="collapseStatistics" aria-labelledby="statistics" data-parent="#tag">
         <div class="row mt-2">
-            <div class="col">
-                {% if years %}
+            <div class="offset-md-5 col-md-2 text-center">
+                {% if year %}
+                    <a class="btn btn-secondary" href="{% url "categories:tag_detail" tag.slug %}?statistics=">{% trans "Reset" %}</a>
+                {% else %}
                     <div class="dropdown show">
                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownYears" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% trans "Select a year" %}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownYears">
                             {% for year in years %}
-                                <a class="dropdown-item" href="{% url "categories:tag_detail" tag.slug year %}">{{ year }}</a>
+                            <a class="dropdown-item" href="{% url "categories:tag_detail" tag.slug year %}">{{ year }}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -75,10 +97,22 @@
             </div>
         </div>
     </div>
-    <div class="collapse" id="collapseEntries" aria-labelledby="collapseEntries" data-parent="#tag">
-        <div class="row mt-2">
-            <div class="col">
-                {% include "accounts/partials/_entry_table.html" with entries=entry_list options=False %}
+</div>
+<div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="iframeFormModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Cancel" %}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
             </div>
         </div>
     </div>

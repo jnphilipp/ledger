@@ -50,32 +50,6 @@ class DetailView(generic.DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateView(SuccessMessageMixin, generic.edit.CreateView):
-    form_class = CategoryForm
-    model = Category
-    success_message = _('The category "%(name)s" was successfully created.')
-
-    def get_template_names(self):
-        if 'another' in self.request.path:
-            return 'categories/category_another_form.html'
-        return 'categories/category_form.html'
-
-    def get_success_url(self):
-        if 'another' in self.request.path:
-            url = reverse_lazy('create_another_success')
-            if 'reload' in self.request.GET:
-                url = '%s?reload=%s' % (url, self.request.GET.get('reload'))
-            elif 'target_id' in self.request.GET:
-                url = '%s?target_id=%s&value=%s&name=%s' % (
-                    url, self.request.GET.get('target_id'), self.object.pk,
-                    self.object.name)
-            return url
-        else:
-            return reverse_lazy('categories:category_detail',
-                                args=[self.object.slug])
-
-
-@method_decorator(login_required, name='dispatch')
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = CategoryForm
     model = Category
@@ -85,6 +59,15 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
         return Category.objects.filter(
             Q(entries__account__ledger__user=self.request.user) |
             Q(accounts__ledger__user=self.request.user)).distinct()
+
+    def get_success_url(self):
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}'
+        elif 'target_id' in self.request.GET:
+            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
+                f'value={self.object.pk}&name={self.object.name}'
+        return url
 
 
 @method_decorator(login_required, name='dispatch')
@@ -100,4 +83,12 @@ class DeleteView(generic.edit.DeleteView):
         msg = _('The category "%(name)s" was successfully deleted.')
         messages.add_message(self.request, messages.SUCCESS,
                              msg % {'name': self.object.name})
-        return reverse_lazy('categories:category_list')
+
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}&next=' + \
+                f'{reverse_lazy("categories:category_list")}'
+        elif 'target_id' in self.request.GET:
+            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
+                f'value={self.object.pk}&name={self.object.name}'
+        return url

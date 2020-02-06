@@ -2,17 +2,11 @@
 {% load bootstrap categories i18n %}
 
 
-{% block breadcrumbs %}
-<li class="breadcrumb-item"><a href="{% url "dashboard" %}">{% trans "Dashboard" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Tags" %}</li>
-{% endblock %}
-
-
 {% block content %}
 <div class="row">
     <div class="col">
         <div class="table-responsive">
-            <table class="table table-striped table-hover table-bordered table-sm">
+            <table class="table table-striped table-hover table-sm">
                 <thead>
                     <tr>
                         <th>{% trans "Tag" %}</th>

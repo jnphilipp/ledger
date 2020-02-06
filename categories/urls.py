@@ -8,10 +8,6 @@ from .views import category, tag
 app_name = 'categories'
 urlpatterns = [
     path('category/', category.ListView.as_view(), name='category_list'),
-    path('category/add/', category.CreateView.as_view(),
-         name='category_create'),
-    path('category/add/another/', category.CreateView.as_view(),
-         name='category_create_another'),
     path('category/autocomplete/', category.autocomplete,
          name='category_autocomplete'),
     path('category/<slug:slug>/', category.DetailView.as_view(),
@@ -28,19 +24,14 @@ urlpatterns = [
          name='category_edit'),
 
     path('tag/', tag.ListView.as_view(), name='tag_list'),
-    path('tag/add/', tag.CreateView.as_view(), name='tag_create'),
-    path('tag/add/another/', tag.CreateView.as_view(),
-         name='tag_create_another'),
     path('tag/autocomplete/', tag.autocomplete, name='tag_autocomplete'),
     path('tag/<slug:slug>/', tag.DetailView.as_view(), name='tag_detail'),
     path('tag/<slug:slug>/<int:year>/', tag.DetailView.as_view(),
          name='tag_detail'),
-
     path('tag/<slug:slug>/charts/statistics/', tag.charts.statistics,
          name='tag_chart_statistics'),
     path('tag/<slug:slug>/charts/statistics/<int:year>/',
          tag.charts.statistics, name='tag_chart_statistics'),
-
     path('tag/<slug:slug>/edit/', tag.UpdateView.as_view(), name='tag_edit'),
     path('tag/<slug:slug>/delete/', tag.DeleteView.as_view(),
          name='tag_delete'),

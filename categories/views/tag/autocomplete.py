@@ -24,11 +24,15 @@ def autocomplete(request):
     tags = Tag.objects.filter(
         entries__account__ledger__user=request.user).distinct(). \
         annotate(Count('entries')).order_by('-entries__count')
+    q = []
     if 'q' in params:
-        tags = tags.filter(name__icontains=params.pop('q')[0])
+        q = params.pop('q')[0]
+        tags = tags.filter(name__icontains=q)
+        q = [{'id': q, 'text': q}]
+
     data = {
         'response_date': timezone.now().strftime('%Y-%m-%dT%H:%M:%S:%f%z'),
-        'tags': [{
+        'tags': q + [{
             'id': tag.id,
             'text': tag.name
         } for tag in tags]
