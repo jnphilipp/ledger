@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block extrahead %}
-<script type="text/javascript" src="{% static "js/jquery.magnific-popup.min.js" %}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         parent.$("#messages").append($("#messages").html());
@@ -13,8 +12,9 @@
                 .text("{{ name }}"));
             parent.$("#{{ target_id }}").val("{{ value }}").trigger("change");
         {% endif %}
-        {% if reload %}parent.location.reload();{% endif %}
-        parent.$.magnificPopup.close();
+        parent.$("#iframeFormModal").modal("hide");
+        {% if reload and not next %}parent.location.href = parent.location.href;
+        {% elif reload and next %}parent.location.href = "{{ next }}";{% endif %}
     });
 </script>
 {% endblock %}

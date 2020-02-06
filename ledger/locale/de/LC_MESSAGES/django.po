@@ -1,16 +1,16 @@
 # German translation.
-# Copyright (C) 2017 Nathanael Philipp
+# Copyright (C) 2017-2020 J. Nathanael Philipp (jnphilipp)
 # This file is distributed under the same license as the gedenkseite package.
-# Nathanael Philipp <mail@jnphilipp.org>, 2017.
+# J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>, 2017.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: ledger\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-28 22:55+0200\n"
-"PO-Revision-Date: 2017-06-28 22:55+0200\n"
-"Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
+"POT-Creation-Date: 2020-02-06 11:41+0100\n"
+"PO-Revision-Date: 2020-02-06 11:41+0100\n"
+"Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:9
+#: apps.py:9 templates/ledger/base.html:14 templates/ledger/base.html:20
 msgid "Ledger"
 msgstr "Kassenbuch"
 
@@ -26,95 +26,76 @@ msgstr "Kassenbuch"
 msgid "Ledgers"
 msgstr "Kassenbücher"
 
-#: templates/ledger/base.html:29
-msgid "Toggle navigation"
-msgstr "Navigation umschalten"
+#: fields.py:9
+msgid "Text"
+msgstr "Text"
 
-#: templates/ledger/base.html:45 templates/ledger/dashboard.html:45
-msgid "Accounts"
-msgstr "Konten"
+#: templates/404.html:9
+msgid "Page not Found (404)"
+msgstr "Seite nicht gefunden (404)"
 
-#: templates/ledger/base.html:59
-msgid "Add account"
-msgstr "Konto hinzufügen"
+#: templates/404.html:10
+#, python-format
+msgid ""
+"The page <code>%(request_path)s</code> you are looking for was not found."
+msgstr ""
+"Die Seite <code>%(request_path)s</code> nach der Sie suchen, wurde nicht "
+"gefunden."
 
-#: templates/ledger/base.html:63
-msgid "Categories"
-msgstr "Kategorien"
+#: templates/500.html:9
+msgid "Server Error (500)"
+msgstr "Server Error (500)"
 
-#: templates/ledger/base.html:65
-msgid "Tags"
-msgstr "Tags"
+#: templates/500.html:10
+msgid ""
+"There's been an error. It's been reported to the site administrators via "
+"email and should be fixed shortly. Thanks for your patience."
+msgstr ""
 
-#: templates/ledger/base.html:67
+#: templates/ledger/base.html:31
 msgid "Budget"
 msgstr "Budget"
 
-#: templates/ledger/base.html:69
+#: templates/ledger/base.html:36
+msgid "Accounts"
+msgstr "Konten"
+
+#: templates/ledger/base.html:41
+msgid "Statements"
+msgstr "Kontoauszüge"
+
+#: templates/ledger/base.html:46
+msgid "Categories"
+msgstr "Kategorien"
+
+#: templates/ledger/base.html:51
+msgid "Tags"
+msgstr "Tags"
+
+#: templates/ledger/base.html:56
 msgid "Statistics"
 msgstr "Statistik"
 
-#: templates/ledger/base.html:86
+#: templates/ledger/base.html:73
 msgid "Profile"
 msgstr "Profil"
 
-#: templates/ledger/base.html:91
+#: templates/ledger/base.html:78
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/ledger/base.html:94
+#: templates/ledger/base.html:81
 msgid "Sign out"
 msgstr "Abmelden"
 
-#: templates/ledger/base.html:100
+#: templates/ledger/base.html:88
 msgid "Sign up"
 msgstr "Registrieren"
 
-#: templates/ledger/base.html:101
+#: templates/ledger/base.html:89
 msgid "Sign in"
 msgstr "Anmelden"
 
-#: templates/ledger/dashboard.html:6
-msgid "Dashboard"
-msgstr "Dashboard"
-
-#: templates/ledger/dashboard.html:15
-msgid "Balance"
-msgstr "Bilanz"
-
-#: templates/ledger/dashboard.html:24
-msgid "Unit"
-msgstr "Einheit"
-
-#: templates/ledger/dashboard.html:25
-msgid "Total balance"
-msgstr "Gesamtbilanz"
-
-#: templates/ledger/dashboard.html:26
-msgid "Total outstanding"
-msgstr "Gesamt ausstehend"
-
-#: templates/ledger/dashboard.html:56
-msgid "Entries"
-msgstr "Einträge"
-
-#: templates/ledger/dashboard.html:65
-msgid "There are no accounts available."
-msgstr "Es sind keine Konten verfügbar."
-
-#: templates/ledger/partials/_balances.html:5
-#: templates/ledger/partials/_balances.html:10
-msgid "Outstanding"
-msgstr "Ausstehend"
-
-#: templates/ledger/partials/_form.html:23
-msgid "Save"
-msgstr "Speichern"
-
-#: templates/ledger/partials/_form_inline.html:16
-msgid "Filter"
-msgstr "Filtern"
-
-#: urls.py:24
+#: urls.py:29
 msgid "ledger administration"
-msgstr "ledger administration"
+msgstr "Kassenbuch administration"

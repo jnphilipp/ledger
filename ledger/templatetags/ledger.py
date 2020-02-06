@@ -23,6 +23,11 @@ def startswith(value, start):
 
 
 @register.filter
+def endswith(value, start):
+    return value.endswith(start)
+
+
+@register.filter
 def previous(value, arg):
     try:
         return value[int(arg) - 1] if int(arg) - 1 != -1 else None
@@ -36,6 +41,11 @@ def next(value, arg):
         return value[int(arg) + 1]
     except IndexError:
         return None
+
+
+@register.filter
+def mod(num, val):
+    return num % val
 
 
 @register.filter

@@ -16,6 +16,8 @@ class AnotherSuccessView(generic.base.TemplateView):
             context['reload'] = bool(self.request.GET.get('reload'))
         else:
             context['reload'] = False
+        if 'next' in self.request.GET:
+            context['next'] = self.request.GET.get('next')
         if 'target_id' in self.request.GET:
             context['target_id'] = self.request.GET.get('target_id')
         if 'value' in self.request.GET:

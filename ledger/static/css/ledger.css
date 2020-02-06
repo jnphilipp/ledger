@@ -15,3 +15,7 @@ body {font-family: monospace;
 
 .red {color: red;}
 .green {color: green;}
+
+.menu-dropdown-toggle::after {
+    content: none;
+}

@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 
+from accounts.views.entry import ListView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -29,8 +30,10 @@ admin.site.site_header = _('ledger administration')
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name='accounts:entry_list'),
-         name='dashboard'),
+    path('', ListView.as_view(), name='dashboard'),
+    path('', ListView.as_view(), name='entry_list'),
+    path('<int:page>/', ListView.as_view()),
+
     path('add/another/success/', views.AnotherSuccessView.as_view(),
          name='create_another_success'),
 
