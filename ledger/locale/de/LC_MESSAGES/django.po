@@ -20,11 +20,11 @@ msgstr ""
 
 #: apps.py:9 templates/ledger/base.html:14 templates/ledger/base.html:20
 msgid "Ledger"
-msgstr "Kassenbuch"
+msgstr "Haushaltsbuch"
 
 #: apps.py:10
 msgid "Ledgers"
-msgstr "Kassenbücher"
+msgstr "Haushaltsbücher"
 
 #: fields.py:9
 msgid "Text"
@@ -98,4 +98,4 @@ msgstr "Anmelden"
 
 #: urls.py:29
 msgid "ledger administration"
-msgstr "Kassenbuch administration"
+msgstr "Haushaltsbuch administration"
