@@ -161,6 +161,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SINGLE_USER = False
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 
 # Load local settings
 

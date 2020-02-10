@@ -15,12 +15,14 @@ from ledger.fields import SingleLineTextField
 
 def get_file_path(instance, filename):
     name = slugify(instance.name) + os.path.splitext(filename)[1]
-    if isinstance(instance, Statement):
-        return os.path.join('files', 'account', str(instance.account.pk),
-                            'statements', name)
-    elif isinstance(instance, Invoice):
-        return os.path.join('files', 'account', str(instance.entry.account.pk),
-                            'entries', str(instance.entry.pk), name)
+    if isinstance(instance, Statement) or \
+            type(instance).__name__ == Statement.__name__:
+        return os.path.join('accounts', instance.account.slug, 'statements',
+                            name)
+    elif isinstance(instance, Invoice) or \
+            type(instance).__name__ == Invoice.__name__:
+        return os.path.join('accounts', instance.entry.account.slug, 'entries',
+                            str(instance.entry.pk), name)
 
 
 class File(models.Model):
@@ -57,12 +59,12 @@ class Invoice(File):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.slug = slugify(f'{self.entry.account.pk} {self.entry.pk}' +
+            self.slug = slugify(f'{self.entry.account.slug} {self.entry.pk}' +
                                 f' {self.name}')
         else:
             orig = Invoice.objects.get(pk=self.pk)
             if orig.name != self.name or orig.entry != self.entry:
-                self.slug = slugify(f'{self.entry.account.pk} ' +
+                self.slug = slugify(f'{self.entry.account.slug} ' +
                                     f'{self.entry.pk} {self.name}')
         super(Invoice, self).save(*args, **kwargs)
 
@@ -82,11 +84,11 @@ class Statement(File):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.slug = slugify(f'{self.account.pk} {self.name}')
+            self.slug = slugify(f'{self.account.slug} {self.name}')
         else:
             orig = Statement.objects.get(pk=self.pk)
             if orig.name != self.name or orig.account != self.account:
-                self.slug = slugify(f'{self.account.pk} {self.name}')
+                self.slug = slugify(f'{self.account.slug} {self.name}')
         super(Statement, self).save(*args, **kwargs)
 
     class Meta:
