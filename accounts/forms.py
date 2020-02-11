@@ -79,7 +79,8 @@ class EntryForm(forms.ModelForm):
             cleaned_data['category'] = category
             del self.errors['category']
 
-        if self.data['tags'] and 'tags' not in cleaned_data:
+        if 'tags' in self.data and self.data['tags'] and \
+                'tags' not in cleaned_data:
             tags = []
             for tag in self.data.getlist('tags'):
                 if tag.isdigit():
@@ -140,7 +141,8 @@ class StandingEntryForm(forms.ModelForm):
             cleaned_data['category'] = category
             del self.errors['category']
 
-        if self.data['tags'] and 'tags' not in cleaned_data:
+        if 'tags' in self.data and self.data['tags'] and \
+                'tags' not in cleaned_data:
             tags = []
             for tag in self.data.getlist('tags'):
                 if tag.isdigit():
