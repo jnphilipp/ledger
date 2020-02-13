@@ -16,7 +16,7 @@ class InvoiceForm(forms.ModelForm):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         entry = cleaned_data.get('entry')
-        if Invoice.objects.filter(name=name).filter(invoice=invoice).exists():
+        if Invoice.objects.filter(name=name).filter(entry=entry).exists():
             print('ValidationError')
             msg = _('An invoice with this name already exists for this entry.')
             self.add_error('name', forms.ValidationError(msg, code='invalid'))
