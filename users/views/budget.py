@@ -727,3 +727,9 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     def get_object(self, queryset=None):
         return Budget.objects.get(user=self.request.user)
+
+    def get_success_url(self):
+        url = reverse_lazy('create_another_success')
+        if 'reload' in self.request.GET:
+            url = f'{url}?reload={self.request.GET.get("reload")}'
+        return url

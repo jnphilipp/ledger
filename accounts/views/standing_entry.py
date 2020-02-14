@@ -25,15 +25,12 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         return initial
 
     def get_success_message(self, cleaned_data):
-        entry = '%s - #%s' % (self.object.account.name,
-                              self.object.serial_number)
-        return self.success_message % {'entry': entry}
+        entries = f'{self.object[0].account.name} - ' + \
+            f'#{", #".join(str(e.serial_number) for e in self.object)}'
+        return self.success_message % {'entries': entries}
 
     def get_success_url(self):
         url = reverse_lazy('create_another_success')
         if 'reload' in self.request.GET:
             url = f'{url}?reload={self.request.GET.get("reload")}'
-        elif 'target_id' in self.request.GET:
-            url = f'{url}?target_id={self.request.GET.get("target_id")}&' + \
-                f'value={self.object.pk}&name={self.object.name}'
         return url
