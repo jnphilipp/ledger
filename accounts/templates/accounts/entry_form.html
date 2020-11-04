@@ -32,7 +32,7 @@
                 selectOtherMonths: true
             });
             $("#date_today").click(function() {
-                $("#id_day").val("{% timestamp "SHORT_DATE_FORMAT" %}");
+                $("#id_day").val("{% now "Y-m-d" %}");
                 $("#id_amount").focus();
                 return false;
             });

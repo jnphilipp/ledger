@@ -2,8 +2,6 @@
 
 from django.contrib.contenttypes.models import ContentType
 from django.template import Library
-from django.utils import timezone
-from django.utils.formats import date_format
 
 
 register = Library()
@@ -51,8 +49,3 @@ def mod(num, val):
 @register.filter
 def content_type_pk(model):
     return ContentType.objects.get_for_model(model).pk
-
-
-@register.simple_tag
-def timestamp(format_str):
-    return date_format(timezone.now(), format=format_str, use_l10n=True)
