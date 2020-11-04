@@ -180,6 +180,49 @@ class StandingEntryForm(forms.ModelForm):
         return entries
 
 
+class TransferForm(forms.Form):
+    from_account = forms.ModelChoiceField(
+        queryset=Account.objects.filter(closed=False),
+        label=_('From')
+    )
+    from_date = forms.DateField(label=_('Date'))
+    to_account = forms.ModelChoiceField(
+        queryset=Account.objects.filter(closed=False),
+        label=_('To')
+    )
+    to_date = forms.DateField(label=_('Date'))
+    amount = forms.DecimalField(min_value=0., label=_('Amount'))
+
+    def __init__(self, *args, **kwargs):
+        super(TransferForm, self).__init__(*args, **kwargs)
+
+        if 'ledger' in kwargs:
+            ledger = kwargs['ledger']
+        elif 'initial' in kwargs and 'ledger' in kwargs['initial']:
+            ledger = kwargs['initial']['ledger']
+
+        self.fields['from_account'].queryset = \
+            ledger.accounts.filter(closed=False)
+        self.fields['from_account'].widget.attrs['style'] = \
+            'width: 100%;'
+        self.fields['from_date'].help_text = mark_safe(
+            '<a id="from_date_today" href="">%s</a> (%s: yyyy-mm-dd)' % (
+                _('Today'), _('Date format')))
+        self.fields['from_date'].widget.attrs['style'] = \
+            'width: 100%;'
+        self.fields['to_account'].queryset = \
+            ledger.accounts.filter(closed=False)
+        self.fields['to_account'].widget.attrs['style'] = \
+            'width: 100%;'
+        self.fields['to_date'].help_text = mark_safe(
+            '<a id="to_date_today" href="">%s</a> (%s: yyyy-mm-dd)' % (
+                _('Today'), _('Date format')))
+        self.fields['to_date'].widget.attrs['style'] = \
+            'width: 100%;'
+        self.fields['amount'].widget.attrs['style'] = \
+            'width: 100%;'
+
+
 class EntryFilterForm(forms.Form):
     start_date = forms.DateField(
         widget=forms.TextInput(attrs={

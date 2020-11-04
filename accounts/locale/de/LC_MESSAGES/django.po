@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: accounts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-06 11:35+0100\n"
-"PO-Revision-Date: 2020-02-06 11:35+0100\n"
+"POT-Creation-Date: 2020-11-04 19:35+0100\n"
+"PO-Revision-Date: 2020-11-04 19:35+0100\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -31,7 +31,7 @@ msgstr "Anzahl an Einträgen"
 #: templates/accounts/account_confirm_delete.html:11
 #: templates/accounts/account_list.html:57
 #: templates/accounts/entry_detail.html:17
-#: templates/accounts/entry_list.html:149
+#: templates/accounts/entry_list.html:150
 msgid "Account"
 msgstr "Konto"
 
@@ -39,37 +39,59 @@ msgstr "Konto"
 msgid "Accounts"
 msgstr "Konten"
 
-#: forms.py:67
+#: forms.py:67 forms.py:210 forms.py:219
 msgid "Today"
 msgstr "Heute"
 
-#: forms.py:67 forms.py:96 forms.py:98
+#: forms.py:67 forms.py:210 forms.py:219
 msgid "Date format"
 msgstr "Datumsformat"
 
-#: forms.py:100
-msgid "Monthly"
-msgstr "Monatlich"
-
-#: forms.py:100
-msgid "Quarterly"
-msgstr "Vierteljährlich"
-
-#: forms.py:100
-msgid "Half-yearly"
-msgstr "Halbjährlich"
-
-#: forms.py:101
-msgid "Yearly"
-msgstr "Jährlich"
-
-#: forms.py:180
+#: forms.py:96 forms.py:229
 msgid "Start date"
 msgstr "Startdatum"
 
-#: forms.py:187
+#: forms.py:97 forms.py:236
 msgid "End date"
 msgstr "Enddatum"
+
+#: forms.py:99
+msgid "Monthly"
+msgstr "Monatlich"
+
+#: forms.py:99
+msgid "Quarterly"
+msgstr "Vierteljährlich"
+
+#: forms.py:99
+msgid "Half-yearly"
+msgstr "Halbjährlich"
+
+#: forms.py:100
+msgid "Yearly"
+msgstr "Jährlich"
+
+#: forms.py:102
+msgid "Execution"
+msgstr "Ausführung"
+
+#: forms.py:186
+msgid "From"
+msgstr "Von"
+
+#: forms.py:188 forms.py:193
+msgid "Date"
+msgstr "Datum"
+
+#: forms.py:191
+msgid "To"
+msgstr "Nach"
+
+#: forms.py:194 models.py:82 templates/accounts/entry_detail.html:29
+#: templates/accounts/entry_list.html:152
+#: templates/accounts/entry_list.html:170
+msgid "Amount"
+msgstr "Betrag"
 
 #: models.py:17 models.py:73 templates/accounts/account_detail.html:73
 #: templates/accounts/entry_detail.html:9
@@ -94,7 +116,7 @@ msgstr "Einheit"
 
 #: models.py:27 models.py:86 templates/accounts/account_detail.html:83
 #: templates/accounts/entry_detail.html:37
-#: templates/accounts/entry_list.html:152
+#: templates/accounts/entry_list.html:153
 msgid "Category"
 msgstr "Kategorie"
 
@@ -107,30 +129,24 @@ msgid "Serial number"
 msgstr "Laufende Nummer"
 
 #: models.py:81 templates/accounts/entry_detail.html:25
-#: templates/accounts/entry_list.html:150
+#: templates/accounts/entry_list.html:151
 msgid "Day"
 msgstr "Tag"
 
-#: models.py:82 templates/accounts/entry_detail.html:29
-#: templates/accounts/entry_list.html:151
-#: templates/accounts/entry_list.html:169
-msgid "Amount"
-msgstr "Betrag"
-
 #: models.py:83 templates/accounts/entry_detail.html:33
-#: templates/accounts/entry_list.html:169
+#: templates/accounts/entry_list.html:170
 msgid "Fees"
 msgstr "Gebühren"
 
 #: models.py:88 templates/accounts/entry_detail.html:41
-#: templates/accounts/entry_list.html:153
+#: templates/accounts/entry_list.html:154
 msgid "Additional"
 msgstr "Zusätzlich"
 
 #: models.py:90 templates/accounts/account_detail.html:52
 #: templates/accounts/account_detail.html:57
 #: templates/accounts/entry_detail.html:45
-#: templates/accounts/entry_list.html:52 templates/accounts/entry_list.html:154
+#: templates/accounts/entry_list.html:52 templates/accounts/entry_list.html:155
 #: views/account/charts/tags.py:21
 msgid "Tags"
 msgstr "Tags"
@@ -141,7 +157,7 @@ msgstr "Tags"
 msgid "Entry"
 msgstr "Eintrag"
 
-#: models.py:137 templates/accounts/entry_list.html:201
+#: models.py:137 templates/accounts/entry_list.html:202
 msgid "Entries"
 msgstr "Einträge"
 
@@ -193,7 +209,7 @@ msgstr "Konto bearbeiten"
 
 #: templates/accounts/account_detail.html:62
 #: templates/accounts/account_list.html:87
-#: templates/accounts/entry_list.html:186
+#: templates/accounts/entry_list.html:187
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -204,7 +220,7 @@ msgstr "Konto löschen"
 
 #: templates/accounts/account_detail.html:63
 #: templates/accounts/account_list.html:89
-#: templates/accounts/entry_list.html:190
+#: templates/accounts/entry_list.html:191
 msgid "Delete"
 msgstr "Löschen"
 
@@ -246,8 +262,8 @@ msgstr "Wählen Sie ein Jahr"
 #: templates/accounts/account_detail.html:218
 #: templates/accounts/account_list.html:109
 #: templates/accounts/account_list.html:117
-#: templates/accounts/entry_list.html:210
-#: templates/accounts/entry_list.html:218
+#: templates/accounts/entry_list.html:211
+#: templates/accounts/entry_list.html:219
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -299,7 +315,7 @@ msgid "Close"
 msgstr "Schließen"
 
 #: templates/accounts/account_list.html:90
-#: templates/accounts/entry_list.html:137
+#: templates/accounts/entry_list.html:138
 msgid "Add statement"
 msgstr "Kontoauszug hinzufügen"
 
@@ -325,11 +341,13 @@ msgid "Invoice"
 msgstr "Rechnung"
 
 #: templates/accounts/entry_detail.html:53
-#: templates/accounts/entry_list.html:155
+#: templates/accounts/entry_list.html:156
 msgid "Invoices"
 msgstr "Rechnungen"
 
 #: templates/accounts/entry_form.html:41
+#: templates/accounts/transfer_form.html:33
+#: templates/accounts/transfer_form.html:49
 msgid "Select a account"
 msgstr "Wählen Sie ein Konto"
 
@@ -350,42 +368,46 @@ msgid "Add entry"
 msgstr "Eintrag hinzufügen"
 
 #: templates/accounts/entry_list.html:136
+msgid "Transfer"
+msgstr "Umbuchen"
+
+#: templates/accounts/entry_list.html:137
 msgid "Add standing entry"
 msgstr "Wiederholender Eintrag hinzufügen"
 
-#: templates/accounts/entry_list.html:136
+#: templates/accounts/entry_list.html:137
 msgid "Standing entry"
 msgstr "Wiederholender Eintrag"
 
-#: templates/accounts/entry_list.html:137
+#: templates/accounts/entry_list.html:138
 msgid "Statement"
 msgstr "Kontoauszug"
 
-#: templates/accounts/entry_list.html:186
+#: templates/accounts/entry_list.html:187
 msgid "Edit entry"
 msgstr "Eintrag bearbeiten"
 
-#: templates/accounts/entry_list.html:187
+#: templates/accounts/entry_list.html:188
 msgid "Duplicate entry"
 msgstr "Eintrag duplizieren"
 
-#: templates/accounts/entry_list.html:187
+#: templates/accounts/entry_list.html:188
 msgid "Duplicate"
 msgstr "Duplizieren"
 
-#: templates/accounts/entry_list.html:188
+#: templates/accounts/entry_list.html:189
 msgid "Move down"
 msgstr "Nach unten schieben"
 
-#: templates/accounts/entry_list.html:189
+#: templates/accounts/entry_list.html:190
 msgid "Move up"
 msgstr "Nach oben schieben"
 
-#: templates/accounts/entry_list.html:190
+#: templates/accounts/entry_list.html:191
 msgid "Delete entry"
 msgstr "Eintrag löschen"
 
-#: templates/accounts/entry_list.html:191
+#: templates/accounts/entry_list.html:192
 msgid "Add invoice"
 msgstr "Rechnung hinzufügen"
 
@@ -484,7 +506,7 @@ msgstr ""
 msgid "The entries \"#%(e1)s\" and \"#%(e2)s\" were successfully swaped."
 msgstr "Die Einträge \"#%(e1)s\" und \"#%(e2)s\" wurden erfolgreich getauscht."
 
-#: views/standing_entry.py:18
+#: views/standing_entry.py:18 views/transfer.py:17
 #, python-format
 msgid "The entries %(entries)s were successfully created."
 msgstr "Die Einträge \"%(entries)s\" wurden erfolgreich erstellt."

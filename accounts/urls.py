@@ -2,7 +2,7 @@
 
 from django.urls import path
 
-from .views import account, entry, standing_entry
+from .views import account, entry, standing_entry, transfer
 
 
 app_name = 'accounts'
@@ -55,6 +55,8 @@ urlpatterns = [
     path('entry/create/', entry.CreateView.as_view(), name='entry_create'),
     path('entry/standing/create/', standing_entry.CreateView.as_view(),
          name='standing_entry_create'),
+    path('entry/transfer/create/', transfer.CreateView.as_view(),
+         name='transfer_create'),
     path('entry/<int:pk>/', entry.DetailView.as_view(),
          name='entry_detail'),
     path('entry/<int:pk>/edit/', entry.UpdateView.as_view(),

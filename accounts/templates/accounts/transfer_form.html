@@ -1,0 +1,71 @@
+{% extends "ledger/popup.html" %}
+{% load bootstrap i18n l10n ledger %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extrahead %}
+{% url "accounts:standing_entry_create" as standing_entry_url %}
+<script type="text/javascript">
+    $(function() {
+        $("#id_from_date").datepicker({
+            dateFormat:"yy-mm-dd",
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $("#from_date_today").click(function() {
+            $("#id_from_date").val("{% now "Y-m-d" %}");
+            $("#id_to_date").focus();
+            return false;
+        });
+        $("#id_to_date").datepicker({
+            dateFormat:"yy-mm-dd",
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $("#to_date_today").click(function() {
+            $("#id_to_date").val("{% now "Y-m-d" %}");
+            $("#id_amount").focus();
+            return false;
+        });
+        $("#id_from_account").select2({
+            placeholder: "{% trans "Select a account" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "accounts:account_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term, closed: false };
+                },
+                processResults: function (data, params) {
+                    return { results: data.accounts }
+                }
+            }
+        });
+        $("#id_to_account").select2({
+            placeholder: "{% trans "Select a account" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "accounts:account_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term, closed: false };
+                },
+                processResults: function (data, params) {
+                    return { results: data.accounts }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+{% bootstrap_form form=form enctype="multipart/form-data" submit=False %}
+{% endblock%}

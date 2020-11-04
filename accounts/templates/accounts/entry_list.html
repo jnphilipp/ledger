@@ -133,6 +133,7 @@
                 <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
                 <div class="dropdown-menu" aria-labelledby="add_dropdown">
                     <a class="dropdown-item iframeFormModal" href="{% url "accounts:entry_create" %}?reload=True" title="{% trans "Add entry" %}" data-toggle="modal" data-target="#iframeFormModal">{% trans "Entry" %}</a>
+                    <a class="dropdown-item iframeFormModal" href="{% url "accounts:transfer_create" %}?reload=True" title="{% trans "Transfer" %}" data-toggle="modal" data-target="#iframeFormModal">{% trans "Transfer" %}</a>
                     <a class="dropdown-item iframeFormModal" href="{% url "accounts:standing_entry_create" %}?reload=True" title="{% trans "Add standing entry" %}" data-toggle="modal" data-target="#iframeFormModal">{% trans "Standing entry" %}</a>
                     <a class="dropdown-item iframeFormModal" href="{% url "files:statement_create" %}?reload=True" title="{% trans "Add statement" %}" data-toggle="modal" data-target="#iframeFormModal">{% trans "Statement" %}</a>
                 </div>
