@@ -93,14 +93,13 @@ class EntryForm(forms.ModelForm):
 
 
 class StandingEntryForm(forms.ModelForm):
-    start_date = forms.CharField(
-        help_text=mark_safe('%s: yyyy-mm-dd' % _('Date format')))
-    end_date = forms.CharField(
-        help_text=mark_safe('%s: yyyy-mm-dd' % _('Date format')))
+    start_date = forms.DateField(label=_('Start date'))
+    end_date = forms.DateField(label=_('End date'))
     execution = forms.ChoiceField(
         choices=((1, _('Monthly')), (2, _('Quarterly')), (3, _('Half-yearly')),
                  (4, _('Yearly'))),
-        widget=forms.Select(attrs={'style': 'width: 100%;'})
+        widget=forms.Select(attrs={'style': 'width: 100%;'}),
+        label=_('Execution')
     )
 
     class Media:
@@ -122,6 +121,11 @@ class StandingEntryForm(forms.ModelForm):
             ledger = kwargs['ledger']
         elif 'initial' in kwargs and 'ledger' in kwargs['initial']:
             ledger = kwargs['initial']['ledger']
+
+        self.fields['start_date'].help_text = mark_safe(
+            f'{_("Date format")}: yyyy-mm-dd')
+        self.fields['end_date'].help_text = mark_safe(
+            f'{_("Date format")}: yyyy-mm-dd')
 
         self.fields['account'].queryset = ledger.accounts.filter(closed=False)
         self.fields['account'].widget.attrs['style'] = 'width: 100%;'
