@@ -160,10 +160,8 @@ class StandingEntryForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super(StandingEntryForm, self).save(commit=False)
         entries = []
-        start = datetime.strptime(self.cleaned_data['start_date'],
-                                  '%Y-%m-%d').date()
-        end = datetime.strptime(self.cleaned_data['end_date'],
-                                '%Y-%m-%d').date()
+        start = self.cleaned_data['start_date']
+        end = self.cleaned_data['end_date']
         for date in daterange(start, end, int(self.cleaned_data['execution'])):
             entry, created = Entry.objects.update_or_create(
                 day=date,

@@ -32,4 +32,3 @@ def categories(request, slug):
         }]
     }
     return JsonResponse(data)
-
