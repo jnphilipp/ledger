@@ -18,11 +18,13 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 """Portfolio Django app models."""
 
-from units.models import Unit
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from units.models import Unit
 
 
 class Stock(models.Model):
@@ -74,3 +76,36 @@ class Stock(models.Model):
         ordering = ("name",)
         verbose_name = _("Stock")
         verbose_name_plural = _("Stocks")
+
+
+class Closing(models.Model):
+    """Closing ORM Model."""
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
+    day = models.DateField(verbose_name=_("Day"))
+    price = models.FloatField(verbose_name=_("Price"))
+    high = models.FloatField(default=0, verbose_name=_("High"))
+    low = models.FloatField(default=0, verbose_name=_("Low"))
+    change_previous = models.FloatField(default=0, verbose_name=_("Absolute change"))
+    change_previous_percent = models.FloatField(
+        default=0, verbose_name=_("Relative change")
+    )
+    content_type = models.ForeignKey(
+        ContentType, models.CASCADE, related_name="closings"
+    )
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    def __str__(self) -> str:
+        """Name."""
+        return f"{self.content_type} {self.object_id} [{self.day}]"
+
+    class Meta:
+        """Meta."""
+
+        ordering = ("content_type", "object_id", "-day")
+        unique_together = ("day", "content_type", "object_id")
+        verbose_name = _("Closing")
+        verbose_name_plural = _("Closings")
