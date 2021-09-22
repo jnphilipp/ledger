@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "django_bootstrap4",
     "files",
     "ledger",
+    "portfolio",
     "units",
     "users",
     "django.contrib.admin",
