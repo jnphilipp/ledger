@@ -109,3 +109,41 @@ class Closing(models.Model):
         unique_together = ("day", "content_type", "object_id")
         verbose_name = _("Closing")
         verbose_name_plural = _("Closings")
+
+
+class Trade(models.Model):
+    """Trade ORM Model."""
+
+    class TradeType(models.IntegerChoices):
+        """Trade type interger choices."""
+
+        BUY = 0, _("Buy")
+        SELL = 1, _("Sell")
+        DIVIDEND = 2, _("Dividend")
+
+        __empty__ = _("(Unknown)")
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
+    day = models.DateField(verbose_name=_("Day"))
+    units = models.FloatField(verbose_name=_("Units"))
+    unit_price = models.FloatField(verbose_name=_("Unit price"))
+    extra = models.FloatField(verbose_name=_("Extra"))
+    type = models.IntegerField(choices=TradeType.choices, verbose_name=_("Type"))
+    content_type = models.ForeignKey(
+        ContentType, models.CASCADE, related_name="portfolios_trade_content_type"
+    )
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    def __str__(self) -> str:
+        """Name."""
+        return f"{self.content_object} {self.type} {self.day}"
+
+    class Meta:
+        """Meta."""
+
+        ordering = ("day", "type")
+        verbose_name = _("Trade")
+        verbose_name_plural = _("Trades")
