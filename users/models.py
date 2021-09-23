@@ -16,6 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Users Django app models."""
 
 from django.conf import settings
 from django.db import models
@@ -24,6 +25,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Ledger(models.Model):
+    """Ledger ORM Model."""
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
@@ -34,16 +37,21 @@ class Ledger(models.Model):
         "accounts.Account", blank=True, verbose_name=_("Accounts")
     )
 
-    def __str__(self):
-        return "Ledger-%s" % self.user
+    def __str__(self) -> str:
+        """Name."""
+        return f"ledger-{self.user}"
 
     class Meta:
+        """Meta."""
+
         ordering = ("user",)
         verbose_name = _("Ledger")
         verbose_name_plural = _("Ledgers")
 
 
 class Budget(models.Model):
+    """Budget ORM Model."""
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
@@ -76,12 +84,41 @@ class Budget(models.Model):
     )
 
     def get_absolute_url(self):
+        """Get absolute URL."""
         return reverse_lazy("users:budget_detail")
 
-    def __str__(self):
-        return "Budget-%s" % self.user
+    def __str__(self) -> str:
+        """Name."""
+        return f"budget-{self.user}"
 
     class Meta:
+        """Meta."""
+
         ordering = ("user",)
         verbose_name = _("Budget")
         verbose_name_plural = _("Budgets")
+
+
+class Portfolio(models.Model):
+    """Portfolio ORM Model."""
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, models.CASCADE, verbose_name=_("User")
+    )
+    positions = models.ManyToManyField(
+        "portfolio.Position", blank=True, verbose_name=_("Positions")
+    )
+
+    def __str__(self) -> str:
+        """Name."""
+        return f"portfolio-{self.user}"
+
+    class Meta:
+        """Meta."""
+
+        ordering = ("user",)
+        verbose_name = _("Portfolio")
+        verbose_name_plural = _("Portfolios")
