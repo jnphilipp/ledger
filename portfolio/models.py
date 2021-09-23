@@ -23,6 +23,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from units.models import Unit
 
@@ -111,39 +112,66 @@ class Closing(models.Model):
         verbose_name_plural = _("Closings")
 
 
-class Trade(models.Model):
-    """Trade ORM Model."""
-
-    class TradeType(models.IntegerChoices):
-        """Trade type interger choices."""
-
-        BUY = 0, _("Buy")
-        SELL = 1, _("Sell")
-        DIVIDEND = 2, _("Dividend")
-
-        __empty__ = _("(Unknown)")
+class Position(models.Model):
+    """Position ORM Model."""
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
-    day = models.DateField(verbose_name=_("Day"))
-    units = models.FloatField(verbose_name=_("Units"))
-    unit_price = models.FloatField(verbose_name=_("Unit price"))
-    extra = models.FloatField(verbose_name=_("Extra"))
-    type = models.IntegerField(choices=TradeType.choices, verbose_name=_("Type"))
+    slug = models.SlugField(max_length=1024, unique=True, verbose_name=_("Slug"))
     content_type = models.ForeignKey(
-        ContentType, models.CASCADE, related_name="portfolios_trade_content_type"
+        ContentType, models.CASCADE, related_name="posiitions"
     )
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    closed = models.BooleanField(default=False, verbose_name=_("Closed"))
+    trailing_stop_atr_factor = models.FloatField(
+        default=3, verbose_name=_("Trailing-stop ATR factor")
+    )
+
+    def get_absolute_url(self):
+        """Get absolute URL."""
+        return reverse_lazy("portfolio:position", args=[str(self.slug)])
+
+    def start_date(self):
+        """Get start date of this position."""
+        return (
+            self.trades.aggregate(models.Min("day"))["day__min"]
+            if self.trades.exists()
+            else timezone.now().date()
+        )
+
+    def end_date(self):
+        """Get end date of this position."""
+        if self.stock.closings.count() == 0:
+            return timezone.now().date()
+        else:
+            return (
+                self.trades.aggregate(models.Max("day"))["day__max"]
+                if self.closed
+                else self.stock.closings.first().day
+            )
+
+    def save(self, *args, **kwargs):
+        """Save."""
+        if not self.slug:
+            self.slug = slugify(
+                "%s-%s-%s"
+                % (
+                    self.portfolio.profile.user.id,
+                    self.content_object.name,
+                    timezone.now().date().strftime("%Y%m%d"),
+                )
+            )
+        super(Position, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Name."""
-        return f"{self.content_object} {self.type} {self.day}"
+        return self.slug
 
     class Meta:
         """Meta."""
 
-        ordering = ("day", "type")
-        verbose_name = _("Trade")
-        verbose_name_plural = _("Trades")
+        ordering = ("content_type", "object_id", "updated_at")
+        verbose_name = _("Position")
+        verbose_name_plural = _("Positions")
