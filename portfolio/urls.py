@@ -16,19 +16,20 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Portfolio Django app urls."""
 
-from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
+from django.urls import path
 
-from .models import Stock
+from .views import fund, position, stock
 
 
-@admin.register(Stock)
-class StockAdmin(admin.ModelAdmin):
-    fieldsets = [
-        (None, {"fields": ["created_at", "updated_at", "slug", "name", "isin", "wkn", "symbol", "currency", "traded"]}),
-    ]
-    list_display = ("name", "isin", "wkn", "symbol", "currency")
-    list_filter = ("currency", )
-    readonly_fields = ("created_at", "updated_at", "slug")
-    search_fields = ("name", "unit__name")
+app_name = "portfolio"
+urlpatterns = [
+    path("", position.ListView.as_view(), name="position_list"),
+    path("<int:page>/", position.ListView.as_view()),
+    path("position/create/", position.CreateView.as_view(), name="position_create"),
+    path("position/<slug:slug>/", position.DetailView.as_view(), name="position_detail"),
+
+    path("tradeable/fund/autocomplete/", fund.autocomplete, name="fund_autocomplete"),
+    path("tradeable/stock/autocomplete/", stock.autocomplete, name="stock_autocomplete"),
+]

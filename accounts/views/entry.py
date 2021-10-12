@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 
+import csv
+
 from accounts.forms import EntryForm, EntryFilterForm
 from accounts.models import Account, Entry
 from datetime import date
@@ -24,7 +26,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import F
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.template.defaultfilters import floatformat
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -134,6 +138,32 @@ class DetailView(generic.DetailView):
             )
         else:
             return Entry.objects.get(pk=self.kwargs["pk"])
+
+
+@method_decorator(login_required, name='dispatch')
+class CSVExportView(ListView):
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={'Content-Disposition': 'attachment; filename="entries.csv"'},
+        )
+
+        writer = csv.writer(response, dialect="unix")
+        writer.writerow([_("Account"), _("Day"), _("Amount"), _("Category"), _("Additional"), _("Tags")])
+        for entry in self.get_queryset():
+            precision = entry.account.unit.precision if entry.account.unit else 2
+            symbol = entry.account.unit.symbol if entry.account.unit else ""
+
+            writer.writerow([
+                f"{entry.account.name} #{entry.serial_number}",
+                entry.day,
+                f"{floatformat(entry.total, precision)} {symbol}".strip() if entry.total else f'{floatformat(0, precision)} {symbol}'.strip(),
+                entry.category.name,
+                entry.additional if entry.additional else "",
+                ", ".join([tag.name for tag in entry.tags.all()])
+            ])
+
+        return response
 
 
 @method_decorator(login_required, name="dispatch")

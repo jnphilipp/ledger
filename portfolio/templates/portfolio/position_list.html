@@ -1,0 +1,103 @@
+{% extends "ledger/base.html" %}
+{% load bootstrap i18n %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $("a.iframeFormModal").modal({
+            show: false
+        });
+        $('#iframeFormModal').on('show.bs.modal', function (event) {
+            $("#iframeFormModalLabel").html(event.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+
+            if ( event.relatedTarget.href.includes("/portfolio/") && (event.relatedTarget.href.includes("/create/") || event.relatedTarget.href.includes("/edit/")) ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+            }
+        });
+
+        $("#iframeFormModalIframe").on("load", function() {
+            $("#iframeFormModalIframe").width(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+            $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+            $("#iframeFormModal").modal("handleUpdate");
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="float-right">
+            <a class="btn btn-outline-primary iframeFormModal" href="{% url "portfolio:position_create" %}?reload=True" title="{% trans "Add position" %}" data-toggle="modal" data-target="#iframeFormModal" role="button"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+        </div>
+    </div>
+</div>
+<div class="row mt-md-2">
+    <div class="col-md-12">
+        {% if positions %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans "Name" %}</th>
+                            {% trans "Closed" as closed_trans %}
+                            {% sortable_th column_name=closed_trans o=o get_name="o" get_value="closed" %}
+                            <th>{% trans "Invested" %}</th>
+                            <th>{% trans "Return" %}</th>
+                            <th>{% trans "Return with bonus" %}</th>
+                            <th>{% trans "Win/Loss" %}</th>
+                            <th>{% trans "Win/Loss with bonus" %}</th>
+                            <th>{% trans "Bonus" %}</th>
+                            <th>{% trans "Annual return" %}</th>
+                            <th>{% trans "Yield" %}</th>
+                            <th>{% trans "First trade" %}</th>
+                            <th>{% trans "Last trade" %}</th>
+                            <th>{% trans "Duration" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for position in positions %}
+                            <tr>
+                                <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}">{{ position.content_object.name }}</a></th>
+                                <td scope="col" class="text-center">
+                                    {% if account.closed %}
+                                        {% trans "yes" %}
+                                    {% else %}
+                                        {% trans "no" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>{% trans "There are no positions available." %}</p>
+        {% endif %}
+    </div>
+</div>
+<div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="iframeFormModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Cancel" %}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

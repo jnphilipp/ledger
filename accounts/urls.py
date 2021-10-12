@@ -103,6 +103,7 @@ urlpatterns = [
     ),
     path("", entry.ListView.as_view(), name="entry_list"),
     path("<int:page>/", entry.ListView.as_view()),
+    path('export/', entry.CSVExportView.as_view(), name='entry_list_export'),
     path("entry/create/", entry.CreateView.as_view(), name="entry_create"),
     path(
         "entry/standing/create/",

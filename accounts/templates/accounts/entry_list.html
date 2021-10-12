@@ -129,6 +129,7 @@
     </div>
    <div class="col-md-2 text-right">
         {% if show_options %}
+            <a class="btn btn-outline-primary" href="{% url "accounts:entry_list_export" %}?{% if start_date %}start_date={{ start_date|date:"Y-m-d" }}&{% endif %}{% if end_date %}end_date={{ end_date|date:"Y-m-d" }}&{% endif %}{% if accounts %}accounts={{ accounts|join:"&accounts=" }}&{% endif %}{% if categories %}categories={{ categories|join:"&categories=" }}&{% endif %}{% if tags %}tags={{ tags|join:"&tags=" }}&{% endif %}{% if units %}units={{ units|join:"&units=" }}{% endif %}" role="button">{% trans "Export" %}</a>
             <div class="dropdown">
                 <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
                 <div class="dropdown-menu" aria-labelledby="add_dropdown">

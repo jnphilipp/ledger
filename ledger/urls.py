@@ -58,6 +58,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("categories/", include("categories.urls")),
     path("files/", include("files.urls")),
+    path("portfolio/", include("portfolio.urls")),
     path("units/", include("units.urls")),
     path("users/", include("users.urls")),
     path("admin/", admin.site.urls),

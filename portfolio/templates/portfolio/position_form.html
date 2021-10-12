@@ -1,0 +1,48 @@
+{% extends "ledger/popup.html" %}
+{% load accounts bootstrap i18n l10n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#id_stock").select2({
+            placeholder: "{% trans "Select a stock" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "portfolio:stock_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.stocks }
+                }
+            }
+        });
+        $("#id_fund").select2({
+            placeholder: "{% trans "Select a fund" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "portfolio:fund_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.funds }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+{% bootstrap_form form=form submit=False %}
+{% endblock%}

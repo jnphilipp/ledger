@@ -29,6 +29,7 @@ from django.views import generic
 from django.views.decorators.csrf import csrf_protect
 
 from ..forms import AuthenticationForm, UserChangeForm, UserCreationForm
+from ..models import Budget, Ledger, Portfolio
 
 
 @csrf_protect
@@ -39,6 +40,12 @@ def signin(request):
         login(request, get_user_model().objects.first())
 
     if request.user.is_authenticated:
+        if not Budget.objects.filter(user=request.user).exists():
+            Budget.objects.create(user=request.user)
+        if not Ledger.objects.filter(user=request.user).exists():
+            Ledger.objects.create(user=request.user)
+        if not Portfolio.objects.filter(user=request.user).exists():
+            Portfolio.objects.create(user=request.user)
         return redirect(gnext) if gnext else redirect("dashboard")
 
     if request.method == "POST":

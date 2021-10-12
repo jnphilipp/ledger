@@ -28,15 +28,15 @@ from django.utils.translation import gettext_lazy as _
 from units.models import Unit
 
 
-class Stock(models.Model):
-    """Stock ORM Model."""
+class Tradeable(models.Model):
+    """Abstract Tradeable ORM Model."""
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     slug = models.SlugField(unique=True, verbose_name=_("Slug"))
     name = models.CharField(max_length=1024, unique=True, verbose_name=_("Name"))
-    isin = models.CharField(max_length=12, unique=True, verbose_name=_("ISIN"))
+    isin = models.CharField(max_length=12, unique=True, blank=True, null=True, verbose_name=_("ISIN"))
     wkn = models.CharField(
         max_length=6, unique=True, blank=True, null=True, verbose_name=_("WKN")
     )
@@ -46,37 +46,63 @@ class Stock(models.Model):
     currency = models.ForeignKey(
         Unit,
         models.SET_NULL,
-        related_name="stocks",
+        related_name="%(class)ss",
+        related_query_name="%(app_label)s_%(class)ss",
         blank=True,
         null=True,
         verbose_name=_("Currency"),
     )
     traded = models.BooleanField(default=True, verbose_name=_("Traded"))
 
-    def get_absolute_url(self):
-        """Get absolute URL."""
-        return reverse_lazy("portfolio:stock_detail", args=[self.stock.slug])
-
     def save(self, *args, **kwargs):
         """Save."""
         if not self.slug:
             self.slug = slugify(f"{self.name} {self.isin}")
         else:
-            orig = Stock.objects.get(pk=self.id)
+            orig = self.__class__.objects.get(pk=self.id)
             if orig.name != self.name:
                 self.slug = slugify(f"{self.name} {self.isin}")
-        super(Stock, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Name."""
-        return f"{self.name} [{self.symbol}]"
+        return f"{self.name} [{self.symbol}]" if self.symbol else self.name
 
     class Meta:
         """Meta."""
 
+        abstract = True
         ordering = ("name",)
+        verbose_name = _("Tradeable")
+        verbose_name_plural = _("Tradeables")
+
+
+class Stock(Tradeable):
+    """Stock ORM Model."""
+
+    # def get_absolute_url(self):
+    #     """Get absolute URL."""
+    #     return reverse_lazy("portfolio:stock_detail", args=[self.stock.slug])
+
+    class Meta(Tradeable.Meta):
+        """Meta."""
+
         verbose_name = _("Stock")
         verbose_name_plural = _("Stocks")
+
+
+class Fund(Tradeable):
+    """Fund ORM Model."""
+
+    # def get_absolute_url(self):
+    #     """Get absolute URL."""
+    #     return reverse_lazy("portfolio:stock_detail", args=[self.stock.slug])
+
+    class Meta(Tradeable.Meta):
+        """Meta."""
+
+        verbose_name = _("Fund")
+        verbose_name_plural = _("Funds")
 
 
 class Closing(models.Model):
@@ -120,7 +146,7 @@ class Position(models.Model):
 
     slug = models.SlugField(max_length=1024, unique=True, verbose_name=_("Slug"))
     content_type = models.ForeignKey(
-        ContentType, models.CASCADE, related_name="posiitions"
+        ContentType, models.CASCADE, related_name="positions"
     )
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -156,9 +182,8 @@ class Position(models.Model):
         """Save."""
         if not self.slug:
             self.slug = slugify(
-                "%s-%s-%s"
+                "%s-%s"
                 % (
-                    self.portfolio.profile.user.id,
                     self.content_object.name,
                     timezone.now().date().strftime("%Y%m%d"),
                 )
@@ -197,7 +222,13 @@ class Trade(models.Model):
     unit_price = models.FloatField(verbose_name=_("Unit price"))
     extra = models.FloatField(verbose_name=_("Extra"))
     type = models.IntegerField(choices=TradeType.choices, verbose_name=_("Type"))
-    portfolio = models.ForeignKey(
+    unit = models.ForeignKey(
+        Unit,
+        models.CASCADE,
+        related_name="trades",
+        verbose_name=_("Unit"),
+    )
+    position = models.ForeignKey(
         Position, models.CASCADE, related_name="trades", verbose_name=_("Position")
     )
 

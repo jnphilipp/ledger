@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('portfolio', '0003_position'),
+        ('portfolio', '0004_position'),
         ('users', '0002_budget'),
     ]
 

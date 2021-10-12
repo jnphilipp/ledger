@@ -17,6 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.shortcuts import render
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
-# Create your views here.
+
+def validate_account_name(value):
+    if value in ["autocomplete", "create", "position"]:
+        raise ValidationError(
+            _('"%(value)s" is not a valid account name.'),
+            code="invalid",
+            params={"value": value},
+        )

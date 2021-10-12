@@ -28,6 +28,16 @@
                     <ul class="navbar-nav">
                         {% url "users:budget_detail" as budget_detail_url %}
                         <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
+                            {% trans "Ledger" %}
+                            {% if request.path|startswith:budget_detail_url %}<span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                        {% url "portfolio:position_list" as position_list_url %}
+                        <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" href="{{ position_list_url }}">
+                            {% trans "Portfolio" %}
+                            {% if request.path|startswith:position_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                        {% url "users:budget_detail" as budget_detail_url %}
+                        <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
                             {% trans "Budget" %}
                             {% if request.path|startswith:budget_detail_url %}<span class="sr-only">(current)</span>{% endif %}
                         </a>

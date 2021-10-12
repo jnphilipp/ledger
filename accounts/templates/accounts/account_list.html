@@ -54,7 +54,7 @@
                 <table class="table table-hover table-striped table-sm">
                     <thead>
                         <tr>
-                            <th scope="col">{% trans "Account" %}</th>
+                            <th scope="col">{% trans "Name" %}</th>
                             <th scope="col">{% trans "Closed" %}</th>
                             <th scope="col">{% trans "Balance" %}</th>
                             <th scope="col">{% trans "Outstanding" %}</th>
@@ -68,19 +68,19 @@
                         {% for account in accounts %}
                             <tr>
                                 <th scope="row"><a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a></th>
-                                <td class="text-center">
+                                <td scope="col" class="text-center">
                                     {% if account.closed %}
                                         {% trans "yes" %}
                                     {% else %}
                                         {% trans "no" %}
                                     {% endif %}
                                 </td>
-                                <td class="text-right">{{ account|balance }}</td>
-                                <td class="text-right">{{ account|outstanding }}</td>
-                                <td class="text-right">{{ account.statements.count }}</td>
-                                <td class="text-right">{{ account.entries.count }}</td>
-                                <td>{{ account.entries.last.day|date:"l, d. F Y" }}</td>
-                                <td>
+                                <td scope="col" class="text-right">{{ account|balance }}</td>
+                                <td scope="col" class="text-right">{{ account|outstanding }}</td>
+                                <td scope="col" class="text-right">{{ account.statements.count }}</td>
+                                <td scope="col" class="text-right">{{ account.entries.count }}</td>
+                                <td scope="col">{{ account.entries.last.day|date:"l, d. F Y" }}</td>
+                                <td scope="col">
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
                             <div class="dropdown-menu" aria-labelledby="options-{entry.id}">

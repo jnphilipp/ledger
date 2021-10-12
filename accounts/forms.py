@@ -45,7 +45,9 @@ class AccountForm(forms.ModelForm):
         self.fields["unit"].widget.attrs["style"] = "width: 100%;"
 
         if "instance" not in kwargs or kwargs["instance"] is None:
-            self.fields["closed"].widget = forms.HiddenInput()
+            widgets = {
+                'closed': forms.HiddenInput()
+            }
 
     def clean_name(self):
         return self.cleaned_data["name"] or None
