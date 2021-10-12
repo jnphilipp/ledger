@@ -21,19 +21,19 @@ from accounts.forms import EntryForm, EntryFilterForm
 from accounts.models import Account, Entry
 from datetime import date
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
+# from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 from ledger.dates import get_last_date_current_month
-from users.models import Ledger
+# from users.models import Ledger
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class ListView(generic.ListView):
     context_object_name = "entries"
     model = Entry
@@ -46,15 +46,13 @@ class ListView(generic.ListView):
             del self.form.fields["accounts"]
             del self.form.fields["units"]
             entries = (
-                Entry.objects.filter(account__ledger__user=self.request.user)
+                Entry.objects
                 .filter(account__slug=self.kwargs["slug"])
                 .order_by("-serial_number")
             )
         else:
             self.account = None
-            entries = Entry.objects.filter(
-                account__ledger__user=self.request.user
-            ).order_by("-day", "account__name", "-serial_number")
+            entries = Entry.objects.order_by("-day", "account__name", "-serial_number")
 
         filtered = False
         self.start_date = None
@@ -123,7 +121,7 @@ class ListView(generic.ListView):
         return context
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class DetailView(generic.DetailView):
     model = Entry
 
@@ -136,7 +134,7 @@ class DetailView(generic.DetailView):
             return Entry.objects.get(pk=self.kwargs["pk"])
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = EntryForm
     model = Entry
@@ -164,7 +162,7 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         return url
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = EntryForm
     model = Entry
@@ -208,7 +206,7 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
         return url
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class DeleteView(generic.edit.DeleteView):
     model = Entry
 
@@ -243,16 +241,16 @@ class DeleteView(generic.edit.DeleteView):
         return url
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class DuplicateView(generic.base.RedirectView):
     permanent = False
     query_string = True
 
     def get_redirect_url(self, *args, **kwargs):
-        ledger = get_object_or_404(Ledger, user=self.request.user)
+        # ledger = get_object_or_404(Ledger, user=self.request.user)
 
         if "slug" in kwargs:
-            account = get_object_or_404(Account, slug=kwargs["slug"], ledger=ledger)
+            account = get_object_or_404(Account, slug=kwargs["slug"])
             entry = get_object_or_404(Entry, pk=kwargs["pk"], account=account)
         else:
             account = None
@@ -290,18 +288,17 @@ class DuplicateView(generic.base.RedirectView):
         return super().get_redirect_url(*args, **kwargs)
 
 
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(login_required, name="dispatch")
 class SwapView(generic.base.RedirectView):
     permanent = False
     query_string = True
 
     def get_redirect_url(self, *args, **kwargs):
-        ledger = get_object_or_404(Ledger, user=self.request.user)
         if "slug" in kwargs:
-            account = get_object_or_404(Account, slug=kwargs["slug"], ledger=ledger)
+            account = get_object_or_404(Account, slug=kwargs["slug"])
             e1 = get_object_or_404(Entry, id=kwargs["pk"], account=account)
         else:
-            e1 = get_object_or_404(Entry, id=kwargs["pk"], account__ledger=ledger)
+            e1 = get_object_or_404(Entry, id=kwargs["pk"])
 
         if kwargs["direction"] == "down":
             e2 = (

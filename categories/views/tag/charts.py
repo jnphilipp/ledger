@@ -23,17 +23,15 @@ from django.db.models import Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
-from users.models import Ledger
 from units.models import Unit
 
 
 @login_required
 def statistics(request, slug, year=None):
     tag = get_object_or_404(Tag, slug=slug)
-    ledger = get_object_or_404(Ledger, user=request.user)
 
     units = set(
-        tag.entries.filter(account__ledgers=ledger).values_list(
+        tag.entries.values_list(
             "account__unit", flat=True
         )
     )
@@ -41,9 +39,7 @@ def statistics(request, slug, year=None):
     symbol = units[0].symbol if units.count() == 1 else ""
 
     if year:
-        months = tag.entries.filter(
-            Q(account__ledger=ledger) & Q(day__year=year)
-        ).dates("day", "month")
+        months = tag.entries.filter(day__year=year).dates("day", "month")
 
         data = {
             "xAxis": {
@@ -61,7 +57,6 @@ def statistics(request, slug, year=None):
         series = []
         categories = Category.objects.filter(
             Q(entries__tags=tag)
-            & Q(entries__account__ledgers=ledger)
             & Q(entries__day__year=year)
         ).distinct()
         for category in categories:
@@ -88,7 +83,7 @@ def statistics(request, slug, year=None):
 
         for unit in units:
             amount_sum = tag.entries.filter(
-                Q(account__ledgers=ledger) & Q(account__unit=unit) & Q(day__year=year)
+                Q(account__unit=unit) & Q(day__year=year)
             ).aggregate(sum=Sum("amount"))["sum"]
             if amount_sum is None:
                 continue
@@ -102,7 +97,7 @@ def statistics(request, slug, year=None):
             )
         data["series"] = series
     else:
-        years = tag.entries.filter(account__ledger=ledger).dates("day", "year")
+        years = tag.entries.dates("day", "year")
 
         data = {
             "xAxis": {
@@ -118,9 +113,7 @@ def statistics(request, slug, year=None):
         }
 
         series = []
-        categories = Category.objects.filter(
-            Q(entries__tags=tag) & Q(entries__account__ledgers=ledger)
-        ).distinct()
+        categories = Category.objects.filter(entries__tags=tag).distinct()
         for category in categories:
             for unit in units:
                 entries = tag.entries.filter(
@@ -144,9 +137,7 @@ def statistics(request, slug, year=None):
                     )
 
         for unit in units:
-            avg = tag.entries.filter(
-                Q(account__ledgers=ledger) & Q(account__unit=unit)
-            ).aggregate(sum=Sum("amount"))["sum"] / len(years)
+            avg = tag.entries.filter(account__unit=unit).aggregate(sum=Sum("amount"))["sum"] / len(years)
             series.append(
                 {
                     "name": _("Average %(unit)s") % {"unit": unit.name},

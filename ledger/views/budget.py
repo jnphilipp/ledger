@@ -21,26 +21,24 @@ import json
 
 from accounts.models import Entry
 from accounts.templatetags.accounts import colorfy
-from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import F, Func, Q, Sum
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
-from users.forms import BudgetForm
-from users.models import Budget
+
+from ..forms import BudgetForm
+from ..models import Budget
 
 
-@method_decorator(login_required, name="dispatch")
 class DetailView(generic.DetailView):
     model = Budget
 
     def get_context_data(self, *args, **kwargs):
         context = super(DetailView, self).get_context_data(*args, **kwargs)
 
-        years = Entry.objects.filter(account__ledger__user=self.request.user).dates(
+        years = Entry.objects.dates(
             "day", "year"
         )
         context["years"] = [y.year for y in years]
@@ -70,8 +68,7 @@ class DetailView(generic.DetailView):
         ).order_by("name_lower"):
             amounts = {}
             for e in Entry.objects.filter(
-                Q(account__ledger__user=self.request.user)
-                & Q(day__year=year)
+                Q(day__year=year)
                 & Q(tags__pk=tag.pk)
             ).annotate(total=F("amount") + F("fees")):
                 if e.pk not in entry_ids:
@@ -126,8 +123,7 @@ class DetailView(generic.DetailView):
                 )
                 categories = [{}, {}]
                 for e in Entry.objects.filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(day__year=year)
+                    Q(day__year=year)
                     & Q(account__unit=unit)
                     & Q(tags=tag)
                 ).annotate(total=F("amount") + F("fees")):
@@ -195,8 +191,7 @@ class DetailView(generic.DetailView):
         ).order_by("name_lower"):
             amounts = {}
             for e in Entry.objects.filter(
-                Q(account__ledger__user=self.request.user)
-                & Q(day__year=year)
+                Q(day__year=year)
                 & Q(tags__pk=tag.pk)
             ).annotate(total=F("amount") + F("fees")):
                 if e.pk not in entry_ids:
@@ -251,8 +246,7 @@ class DetailView(generic.DetailView):
                 )
                 categories = [{}, {}]
                 for e in Entry.objects.filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(day__year=year)
+                    Q(day__year=year)
                     & Q(account__unit=unit)
                     & Q(tags=tag)
                 ).annotate(total=F("amount") + F("fees")):
@@ -316,8 +310,7 @@ class DetailView(generic.DetailView):
         ).order_by("name_lower"):
             amounts = {}
             for e in Entry.objects.filter(
-                Q(account__ledger__user=self.request.user)
-                & Q(day__year=year)
+                Q(day__year=year)
                 & Q(tags__pk=tag.pk)
             ).annotate(total=F("amount") + F("fees")):
                 if e.pk not in entry_ids:
@@ -372,8 +365,7 @@ class DetailView(generic.DetailView):
                 )
                 categories = [{}, {}]
                 for e in Entry.objects.filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(day__year=year)
+                    Q(day__year=year)
                     & Q(account__unit=unit)
                     & Q(tags=tag)
                 ).annotate(total=F("amount") + F("fees")):
@@ -437,8 +429,7 @@ class DetailView(generic.DetailView):
         ).order_by("name_lower"):
             amounts = {}
             for e in Entry.objects.filter(
-                Q(account__ledger__user=self.request.user)
-                & Q(day__year=year)
+                Q(day__year=year)
                 & Q(tags__pk=tag.pk)
             ).annotate(total=F("amount") + F("fees")):
                 if e.pk not in entry_ids:
@@ -493,8 +484,7 @@ class DetailView(generic.DetailView):
                 )
                 categories = [{}, {}]
                 for e in Entry.objects.filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(day__year=year)
+                    Q(day__year=year)
                     & Q(account__unit=unit)
                     & Q(tags=tag)
                 ).annotate(total=F("amount") + F("fees")):
@@ -554,8 +544,7 @@ class DetailView(generic.DetailView):
                 Entry.objects.exclude(pk__in=entry_ids)
                 .exclude(category__accounts__ledger__user=self.request.user)
                 .filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(day__year=year)
+                    Q(day__year=year)
                     & Q(account__unit=unit)
                 )
                 .annotate(total=F("amount") + F("fees"))
@@ -588,8 +577,7 @@ class DetailView(generic.DetailView):
                 Entry.objects.exclude(pk__in=entry_ids)
                 .exclude(category__accounts__ledger__user=self.request.user)
                 .filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(day__year=year)
+                    Q(day__year=year)
                     & Q(account__unit=unit)
                 )
                 .annotate(total=F("amount") + F("fees"))
@@ -721,8 +709,7 @@ class DetailView(generic.DetailView):
                     category__accounts__ledger__user=self.request.user
                 )
                 .filter(
-                    Q(account__ledger__user=self.request.user)
-                    & Q(account__unit=unit)
+                    Q(account__unit=unit)
                     & Q(day__year=year)
                 )
                 .aggregate(sum=Sum("amount"))["sum"]
@@ -828,7 +815,7 @@ class DetailView(generic.DetailView):
         return context
 
     def get_object(self, queryset=None):
-        return Budget.objects.get(user=self.request.user)
+        return Budget.objects.first()
 
     def series(self, name, unit):
         return {
@@ -875,14 +862,13 @@ class DetailView(generic.DetailView):
         }
 
 
-@method_decorator(login_required, name="dispatch")
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = BudgetForm
     model = Budget
     success_message = _("Your budget was successfully updated.")
 
     def get_object(self, queryset=None):
-        return Budget.objects.get(user=self.request.user)
+        return Budget.objects.first()
 
     def get_success_url(self):
         url = reverse_lazy("create_another_success")

@@ -40,10 +40,10 @@ from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import RedirectView
 
-from . import views
+from .views import AnotherSuccessView, budget
 
 
-admin.site.site_header = _("ledger administration")
+# admin.site.site_header = _("ledger administration")
 
 
 urlpatterns = [
@@ -52,15 +52,17 @@ urlpatterns = [
     path("<int:page>/", ListView.as_view()),
     path(
         "add/another/success/",
-        views.AnotherSuccessView.as_view(),
+        AnotherSuccessView.as_view(),
         name="create_another_success",
     ),
+    path("budget/", budget.DetailView.as_view(), name="budget_detail"),
+    path("budget/<int:year>/", budget.DetailView.as_view(), name="budget_detail"),
+    path("budget/edit/", budget.UpdateView.as_view(), name="budget_edit"),
     path("accounts/", include("accounts.urls")),
     path("categories/", include("categories.urls")),
     path("files/", include("files.urls")),
     path("units/", include("units.urls")),
-    path("users/", include("users.urls")),
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
     path("favicon.ico", RedirectView.as_view(url="/static/images/logo.png")),
 ]
 

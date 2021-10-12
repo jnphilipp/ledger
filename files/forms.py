@@ -26,7 +26,7 @@ from django.utils.translation import gettext_lazy as _
 class InvoiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(InvoiceForm, self).__init__(*args, **kwargs)
-        self.fields["uploader"].widget = forms.HiddenInput()
+        # self.fields["uploader"].widget = forms.HiddenInput()
         self.fields["entry"].widget = forms.HiddenInput()
 
     def clean(self):
@@ -40,13 +40,12 @@ class InvoiceForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ("name", "file", "uploader", "entry")
+        fields = ("name", "file", "entry")
 
 
 class StatementForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(StatementForm, self).__init__(*args, **kwargs)
-        self.fields["uploader"].widget = forms.HiddenInput()
+    # def __init__(self, *args, **kwargs):
+    #     super(StatementForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -59,7 +58,7 @@ class StatementForm(forms.ModelForm):
 
     class Meta:
         model = Statement
-        fields = ("name", "file", "uploader", "account")
+        fields = ("name", "file", "account")
 
 
 class StatementFilterForm(forms.Form):

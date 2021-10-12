@@ -17,79 +17,50 @@
     <body style="padding-top: 70px;">
         <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="{% url "dashboard" %}">
-                <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/> {% trans "Ledger" %}
+                <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
-                {% if user.is_authenticated %}
-                    <ul class="navbar-nav">
-                        {% url "users:budget_detail" as budget_detail_url %}
-                        <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
-                            {% trans "Budget" %}
-                            {% if request.path|startswith:budget_detail_url %}<span class="sr-only">(current)</span>{% endif %}
-                        </a>
-                        {% url "accounts:account_list" as account_list_url %}
-                        <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" href="{{ account_list_url }}">
-                            {% trans "Accounts" %}
-                            {% if request.path|startswith:account_list_url %}<span class="sr-only">(current)</span>{% endif %}
-                        </a>
-                        {% url "files:statement_list" as statement_list_url %}
-                        <a class="nav-link{% if request.path|startswith:statement_list_url %} active{% endif %}" href="{{ statement_list_url }}">
-                            {% trans "Statements" %}
-                            {% if request.path|startswith:statement_list_url %}<span class="sr-only">(current)</span>{% endif %}
-                        </a>
-                        {% url "categories:category_list" as category_list_url %}
-                        <a class="nav-link{% if request.path|startswith:category_list_url %} active{% endif %}" href="{{ category_list_url }}">
-                            {% trans "Categories" %}
-                            {% if request.path|startswith:category_list_url %}<span class="sr-only">(current)</span>{% endif %}
-                        </a>
-                        {% url "categories:tag_list" as tag_list_url %}
-                        <a class="nav-link{% if request.path|startswith:tag_list_url %} active{% endif %}" href="{{ tag_list_url }}">
-                            {% trans "Tags" %}
-                            {% if request.path|startswith:tag_list_url %}<span class="sr-only">(current)</span>{% endif %}
-                        </a>
-                        {% url "users:statistics_detail" as statistics_detail_url %}
-                        <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" href="{{ statistics_detail_url }}">
-                            {% trans "Statistics" %}
-                            {% if request.path|startswith:statistics_detail_url %}<span class="sr-only">(current)</span>{% endif %}
-                        </a>
-                    </ul>
-                {% endif %}
-
-                {% if user.is_authenticated %}
-                    <ul class="navbar-nav ml-auto">
-                        {% url "users:users" as users_url %}
-                        <li class="nav-item dropdown{% if request.path|startswith:users_url %} active{% endif %}">
-                            <a class="nav-link dropdown-toggle" href="#" id="profilesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <b>{{ user.get_short_name|default:user.get_username }}</b>
-                                {% if request.path|startswith:users_url %}<span class="sr-only">(current)</span>{% endif %}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="profilesDropdown">
-                                {% url "users:profile" as profile_url %}
-                                <a class="dropdown-item{% if request.path|startswith:profile_url %} active{% endif %}" href="{{ profile_url }}">
-                                    {% trans "Profile" %}
-                                    {% if request.path|startswith:profile_url %}<span class="sr-only">(current)</span>{% endif %}
-                                </a>
-                                {% if user.is_staff %}
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{% url "admin:index" %}">{% trans "Admin" %}</a>
-                                {% endif %}
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url "users:signout" %}">{% trans "Sign out" %}</a>
-                            </ul>
-                        </li>
-                    </ul>
-                {% else %}
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="btn btn-outline-success" href="{% url "users:signup" %}" role="button">{% trans "Sign up" %}</a>
-                            <a class="btn btn-outline-primary" href="{% url "users:signin" %}" role="button">{% trans "Sign in" %}</a>
-                        </li>
-                    </ul>
-                {% endif %}
+                <ul class="navbar-nav">
+                    {% url "accounts:entry_list" as entry_list_url %}
+                    <a class="nav-link{% if request.path|startswith:entry_list_url %} active{% endif %}" href="{{ entry_list_url }}">
+                        {% trans "Ledger" %}
+                        {% if request.path|startswith:entry_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                    {% url "budget_detail" as budget_detail_url %}
+                    <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
+                        {% trans "Budget" %}
+                        {% if request.path|startswith:budget_detail_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                    {% url "accounts:account_list" as account_list_url %}
+                    <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" href="{{ account_list_url }}">
+                        {% trans "Accounts" %}
+                        {% if request.path|startswith:account_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                    {% url "files:statement_list" as statement_list_url %}
+                    <a class="nav-link{% if request.path|startswith:statement_list_url %} active{% endif %}" href="{{ statement_list_url }}">
+                        {% trans "Statements" %}
+                        {% if request.path|startswith:statement_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                    {% url "categories:category_list" as category_list_url %}
+                    <a class="nav-link{% if request.path|startswith:category_list_url %} active{% endif %}" href="{{ category_list_url }}">
+                        {% trans "Categories" %}
+                        {% if request.path|startswith:category_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                    {% url "categories:tag_list" as tag_list_url %}
+                    <a class="nav-link{% if request.path|startswith:tag_list_url %} active{% endif %}" href="{{ tag_list_url }}">
+                        {% trans "Tags" %}
+                        {% if request.path|startswith:tag_list_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                    {% url "users:statistics_detail" as statistics_detail_url %}
+                    <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" href="{{ statistics_detail_url }}">
+                        {% trans "Statistics" %}
+                        {% if request.path|startswith:statistics_detail_url %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                </ul>
             </div>
         </nav>
 

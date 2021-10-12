@@ -28,7 +28,7 @@ import ledger.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        # migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('accounts', '0004_entry_fees'),
         ('files', '0002_rename_file_oldfile'),
     ]
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('name', ledger.fields.SingleLineTextField(verbose_name='Name')),
                 ('file', models.FileField(max_length=4096, upload_to=files.models.get_file_path, verbose_name='File')),
                 ('entry', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invoices', to='accounts.Entry', verbose_name='Entry')),
-                ('uploader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                # ('uploader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='User')),
             ],
             options={
                 'verbose_name': 'Invoice',

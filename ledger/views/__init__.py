@@ -17,12 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.views import generic
 
+from . import budget
 
-@method_decorator(login_required, name="dispatch")
+
 class AnotherSuccessView(generic.base.TemplateView):
     template_name = "ledger/another_success.html"
 
@@ -42,3 +41,6 @@ class AnotherSuccessView(generic.base.TemplateView):
             context["name"] = self.request.GET.get("name")
 
         return context
+
+
+__all__ = ("AnotherSuccessView", "budget")

@@ -27,7 +27,6 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
-from users.models import Ledger
 
 
 @method_decorator(login_required, name="dispatch")
@@ -140,8 +139,7 @@ class CloseView(generic.base.RedirectView):
     pattern_name = "accounts:account_detail"
 
     def get_redirect_url(self, *args, **kwargs):
-        ledger = get_object_or_404(Ledger, user=self.request.user)
-        account = get_object_or_404(Account, slug=kwargs["slug"], ledger=ledger)
+        account = get_object_or_404(Account, slug=kwargs["slug"])
         account.closed = not account.closed
         account.save()
 

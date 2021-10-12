@@ -25,16 +25,14 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from units.models import Unit
-from users.models import Ledger
 
 
 @login_required
 def statistics(request, slug, year=None):
     category = get_object_or_404(Category, slug=slug)
-    ledger = get_object_or_404(Ledger, user=request.user)
 
     units = set(
-        category.entries.filter(account__ledgers=ledger).values_list(
+        category.entries.values_list(
             "account__unit", flat=True
         )
     )
@@ -42,9 +40,7 @@ def statistics(request, slug, year=None):
     symbol = units[0].symbol if units.count() == 1 else ""
 
     if year:
-        months = category.entries.filter(
-            Q(account__ledger=ledger) & Q(day__year=year)
-        ).dates("day", "month")
+        months = category.entries.filter(day__year=year).dates("day", "month")
         data = {
             "xAxis": {
                 "categories": [m.strftime("%B") for m in months],
@@ -62,7 +58,6 @@ def statistics(request, slug, year=None):
         accounts = Account.objects.filter(
             Q(entries__category=category)
             & Q(entries__day__year=year)
-            & Q(ledgers=ledger)
         ).distinct()
         for account in accounts:
             entries = category.entries.filter(Q(account=account) & Q(day__year=year))
@@ -84,7 +79,7 @@ def statistics(request, slug, year=None):
 
         for unit in units:
             amount = category.entries.filter(
-                Q(account__ledgers=ledger) & Q(account__unit=unit) & Q(day__year=year)
+                Q(account__unit=unit) & Q(day__year=year)
             ).aggregate(sum=Sum("amount"))
             if amount["sum"]:
                 avg = amount["sum"] / len(months)
@@ -98,7 +93,7 @@ def statistics(request, slug, year=None):
                 )
         data["series"] = series
     else:
-        years = category.entries.filter(account__ledger=ledger).dates("day", "year")
+        years = category.entries.dates("day", "year")
         data = {
             "xAxis": {
                 "categories": [y.strftime("%Y") for y in years],
@@ -113,9 +108,7 @@ def statistics(request, slug, year=None):
         }
 
         series = []
-        accounts = Account.objects.filter(
-            Q(entries__category=category) & Q(ledgers=ledger)
-        ).distinct()
+        accounts = Account.objects.filter(entries__category=category).distinct()
         for account in accounts:
             entries = category.entries.filter(account=account)
             sdata = []
@@ -135,9 +128,7 @@ def statistics(request, slug, year=None):
             )
 
         for unit in units:
-            avg = category.entries.filter(
-                Q(account__ledgers=ledger) & Q(account__unit=unit)
-            ).aggregate(sum=Sum("amount"))["sum"] / len(years)
+            avg = category.entries.filter(account__unit=unit).aggregate(sum=Sum("amount"))["sum"] / len(years)
             series.append(
                 {
                     "name": _("Average %(unit)s") % {"unit": unit.name},

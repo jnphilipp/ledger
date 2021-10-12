@@ -79,7 +79,7 @@ def balance(context, account=None):
     if account:
         entries = account.entries.all()
     else:
-        entries = Entry.objects.filter(account__ledger__user=context["user"])
+        entries = Entry.objects.all()
 
     ids = set(entries.values_list("account__unit", flat=True))
     for unit in Unit.objects.filter(id__in=ids):
@@ -102,9 +102,7 @@ def balance(context, account=None):
             )
         else:
             accounts = []
-            for a in unit.accounts.filter(closed=False).filter(
-                ledger__user=context["user"]
-            ):
+            for a in unit.accounts.filter(closed=False):
                 b = a.entries.filter(day__lte=date.today()).aggregate(
                     sum=Sum(F("amount") + F("fees"))
                 )["sum"]

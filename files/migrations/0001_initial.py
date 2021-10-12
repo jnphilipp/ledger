@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        # migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('contenttypes', '0002_remove_content_type_name'),
     ]
 
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(max_length=4096, upload_to=files.models.get_file_path, verbose_name='File')),
                 ('object_id', models.PositiveIntegerField()),
                 ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.ContentType')),
-                ('uploader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                # ('uploader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='User')),
             ],
             options={
                 'verbose_name': 'File',

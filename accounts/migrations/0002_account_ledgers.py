@@ -25,14 +25,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        # ('users', '0001_initial'),
         ('accounts', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='account',
-            name='ledgers',
-            field=models.ManyToManyField(to='users.Ledger', verbose_name='Ledgers'),
-        ),
+        # migrations.AddField(
+        #     model_name='account',
+        #     name='ledgers',
+        #     field=models.ManyToManyField(to='users.Ledger', verbose_name='Ledgers'),
+        # ),
     ]

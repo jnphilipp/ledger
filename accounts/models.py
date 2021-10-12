@@ -25,7 +25,7 @@ from django.utils.translation import gettext_lazy as _
 from ledger.fields import SingleLineTextField
 from time import time
 from units.models import Unit
-from users.models import Ledger
+# from users.models import Ledger
 
 
 class Account(models.Model):
@@ -40,9 +40,9 @@ class Account(models.Model):
     category = models.ForeignKey(
         Category, models.CASCADE, related_name="accounts", verbose_name=_("Category")
     )
-    ledgers = models.ManyToManyField(
-        Ledger, through=Ledger.accounts.through, verbose_name=_("Ledgers")
-    )
+    # ledgers = models.ManyToManyField(
+    #     Ledger, through=Ledger.accounts.through, verbose_name=_("Ledgers")
+    # )
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
 
     def delete(self, *args, **kwargs):

@@ -63,9 +63,9 @@ INSTALLED_APPS = [
     "files",
     "ledger",
     "units",
-    "users",
-    "django.contrib.admin",
-    "django.contrib.auth",
+    # "users",
+    # "django.contrib.admin",
+    # "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -78,7 +78,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -95,7 +95,7 @@ TEMPLATES = [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
+                # "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -119,21 +119,21 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation."
-        + "UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation." + "MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation." + "CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation." + "NumericPasswordValidator",
-    },
-]
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         "NAME": "django.contrib.auth.password_validation."
+#         + "UserAttributeSimilarityValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation." + "MinimumLengthValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation." + "CommonPasswordValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation." + "NumericPasswordValidator",
+#     },
+# ]
 
 
 # Internationalization
@@ -152,8 +152,8 @@ USE_TZ = True
 
 # Login
 
-LOGIN_REDIRECT_URL = "/"
-LOGIN_URL = "/users/signin/"
+# LOGIN_REDIRECT_URL = "/"
+# LOGIN_URL = "/users/signin/"
 
 
 # Static files (CSS, JavaScript, Images)
@@ -173,7 +173,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-SINGLE_USER = False
+# SINGLE_USER = False
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
