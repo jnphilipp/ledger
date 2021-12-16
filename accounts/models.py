@@ -25,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
 from ledger.fields import SingleLineTextField
 from time import time
 from units.models import Unit
+
 # from users.models import Ledger
 
 
@@ -90,7 +91,7 @@ class Entry(models.Model):
         Account, models.CASCADE, related_name="entries", verbose_name=_("Account")
     )
     serial_number = models.IntegerField(verbose_name=_("Serial number"))
-    day = models.DateField(verbose_name=_("Day"))
+    date = models.DateField(verbose_name=_("Date"))
     amount = models.FloatField(default=0, verbose_name=_("Amount"))
     fees = models.FloatField(default=0, verbose_name=_("Fees"))
     category = models.ForeignKey(

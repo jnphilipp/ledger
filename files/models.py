@@ -20,9 +20,6 @@
 import os
 
 from accounts.models import Account, Entry
-from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
@@ -115,30 +112,3 @@ class Statement(File):
         unique_together = ("account", "name")
         verbose_name = _("Statement")
         verbose_name_plural = _("Statements")
-
-
-class OldFile(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
-
-    slug = models.SlugField(max_length=1024, unique=True, verbose_name=_("Slug"))
-    name = SingleLineTextField(verbose_name=_("Name"))
-    file = models.FileField(
-        upload_to=get_file_path, max_length=4096, verbose_name=_("File")
-    )
-
-    # uploader = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL, models.CASCADE, verbose_name=_("User")
-    # )
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ("name",)
-        verbose_name = _("File")
-        verbose_name_plural = _("Files")
