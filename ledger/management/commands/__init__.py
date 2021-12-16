@@ -16,19 +16,4 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
-"""
-ASGI config for ledger project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.0/howto/deployment/asgi/
-"""
-
-import os
-
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ledger.settings")
-
-application = get_asgi_application()
+"""Ledger Django app management.commands module."""
