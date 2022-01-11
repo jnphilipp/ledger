@@ -1,3 +1,3 @@
-[submodule "django_bootstrap4"]
-	path = django_bootstrap4
-	url = https://github.com/jnphilipp/django_bootstrap4.git
+[submodule "django_bootstrap5"]
+	path = django_bootstrap5
+	url = https://github.com/jnphilipp/django_bootstrap5
