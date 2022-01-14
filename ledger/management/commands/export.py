@@ -27,7 +27,7 @@ from users.models import Budget, Ledger
 
 
 class Command(BaseCommand):
-    """Export commando."""
+    """Export command."""
 
     help = "Export everything to json."
 
@@ -50,10 +50,12 @@ class Command(BaseCommand):
             data["accounts"].append(
                 {
                     "name": account.name,
+                    "short_name": account.short_name,
                     "category": account.category.name,
                     "closed": account.closed,
                     "unit": {
                         "name": account.unit.name,
+                        "code": account.unit.code,
                         "symbol": account.unit.symbol,
                         "precision": account.unit.precision,
                     },

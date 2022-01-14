@@ -49,5 +49,4 @@ class SingleLineTextField(Field):
             defaults["empty_value"] = None
         defaults.update(kwargs)
         field = super().formfield(**defaults)
-        field.widget.attrs.update({"style": "width: 80%;"})
         return field

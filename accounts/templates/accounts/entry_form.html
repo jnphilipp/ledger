@@ -25,14 +25,14 @@
                 allowClear: true
             });
         {% else %}
-            $("#id_day").datepicker({
+            $("#id_date").datepicker({
                 dateFormat:"yy-mm-dd",
                 firstDay: 1,
                 showOtherMonths: true,
                 selectOtherMonths: true
             });
             $("#date_today").click(function() {
-                $("#id_day").val("{% now "Y-m-d" %}");
+                $("#id_date").val("{% now "Y-m-d" %}");
                 $("#id_amount").focus();
                 return false;
             });
@@ -58,7 +58,7 @@
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             ajax: {
-                url: "{% url "categories:category_autocomplete" %}",
+                url: "{% url "categories:category_autocomplete" %}?append",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {
@@ -73,7 +73,7 @@
             placeholder: "{% trans "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
             ajax: {
-                url: "{% url "categories:tag_autocomplete" %}",
+                url: "{% url "categories:tag_autocomplete" %}?append",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {

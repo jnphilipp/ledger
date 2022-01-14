@@ -9,9 +9,6 @@
 <script src="{% static "js/accounts/tags.js" %}"></script>
 <script type="text/javascript">
     $(function() {
-        $("a.iframeFormModal").modal({
-            show: false
-        });
         $('#iframeFormModal').on('show.bs.modal', function (event) {
             $("#iframeFormModalLabel").html(event.relatedTarget.title);
             $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
@@ -27,11 +24,6 @@
                 $("#iframeFormModalSubmit").html("{% trans "Yes, I'm sure" %}");
             }
         });
-        $("#iframeFormModalIframe").on("load", function() {
-            $("#iframeFormModalIframe").width(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
-            $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
-            $("#iframeFormModal").modal("handleUpdate");
-        });
     });
 </script>
 {% endblock %}
@@ -39,66 +31,65 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-10">
         <div class="btn-group" role="group">
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseDetails" aria-expanded="{% if not categories_year and not categories_month and not tags_year and not tags_month and not request.get_full_path|endswith:"?categories=" and not request.get_full_path|endswith:"?tags=" %}true{% else %}false{% endif %}" aria-controls="collapseDetails">{% trans "Details" %}</button>
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatisticsCategories" aria-expanded="false" aria-controls="collapseStatisticsCategories" id="statisticsCategories">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetails" aria-expanded="{% if not categories_year and not categories_month and not tags_year and not tags_month and not request.get_full_path|endswith:"?categories=" and not request.get_full_path|endswith:"?tags=" %}true{% else %}false{% endif %}" aria-controls="collapseDetails">{% trans "Details" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatisticsCategories" aria-expanded="false" aria-controls="collapseStatisticsCategories" id="statisticsCategories">
                 {% trans "Statistics" %}
                 <small>{% trans "Categories" %}</small>
             </button>
             {% if account|has_tags %}
-                <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseStatisticsTags" aria-expanded="{% if tags_year or tags_month or request.get_full_path|endswith:"?tags=" %}true{% else %}false{% endif %}" aria-controls="collapseStatisticsTags" id="statisticsTags">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatisticsTags" aria-expanded="{% if tags_year or tags_month or request.get_full_path|endswith:"?tags=" %}true{% else %}false{% endif %}" aria-controls="collapseStatisticsTags" id="statisticsTags">
                     {% trans "Statistics" %}
                     <small>{% trans "Tags" %}</small>
                 </button>
             {% endif %}
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">{% trans "Categories" %}</button>
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">{% trans "Categories" %}</button>
             {% if account|has_tags %}
-                <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">{% trans "Tags" %}</button>
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">{% trans "Tags" %}</button>
             {% endif %}
         </div>
     </div>
-    <div class="col-md-2 text-right">
-        <a class="btn btn-outline-primary iframeFormModal" href="{% url "accounts:account_edit" account.slug %}?reload=True" title="{% trans "Edit account" %}" data-toggle="modal" data-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
-        <a class="btn btn-outline-danger iframeFormModal" href="{% url "accounts:account_delete" account.slug %}?reload=True" title="{% trans "Delete account" %}" data-toggle="modal" data-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+    <div class="col-2 text-end">
+        <a class="btn btn-outline-primary iframeFormModal" href="{% url "accounts:account_edit" account.slug %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+        <a class="btn btn-outline-danger iframeFormModal" href="{% url "accounts:account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
     </div>
 </div>
 <div id="account">
-    <div class="collapse{% if not categories_year and not categories_month and not tags_year and not tags_month and not request.get_full_path|endswith:"?categories=" and not request.get_full_path|endswith:"?tags=" %} show{% endif%}" id="collapseDetails" aria-labelledby="collapseDetails" data-parent="#account">
+    <div class="collapse{% if not categories_year and not categories_month and not tags_year and not tags_month and not request.get_full_path|endswith:"?categories=" and not request.get_full_path|endswith:"?tags=" %} show{% endif%}" id="collapseDetails" aria-labelledby="collapseDetails" data-bs-parent="#account">
         <div class="row mt-2">
             <div class="col">
                 <div class="card card-body">
                     {% if account.closed %}<div class="alert alert-danger" role="alert">{% trans "This account is currently closed." %}</div>{% endif %}
                     <dl class="row">
-                        <dt class="col-md-2">{% trans "Created at" %}</dt>
-                        <dd class="col-md-10">{{ account.created_at|date:"r" }}</dd>
-                        <dt class="col-md-2">{% trans "Last updated at" %}</dt>
-                        <dd class="col-md-10">{{ account.updated_at|date:"r" }}</dd>
-                        <dt class="col-md-2">{% trans "Users" %}</dt>
-                        <dd class="col-md-10">
-                            {% for l in account.ledgers.all %}
-                                {{ l.user.username }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </dd>
-                        <dt class="col-md-2">{% trans "Category" %}</dt>
-                        <dd class="col-md-10"><a href="{% url "categories:category_detail" account.category.slug %}">{{ account.category.name }}</a></dd>
-                        <dt class="col-md-2">{% trans "Unit" %}</dt>
-                        <dd class="col-md-10"><a href="{% url "units:detail" account.unit.slug %}">{{ account.unit.name }}</a></dd>
-                        <dt class="col-md-2">{% trans "Balance" %}</dt>
-                        <dd class="col-md-10">{% balance account %}</dd>
+                        <dt class="col-2">{% trans "Name" %}</dt>
+                        <dd class="col-10">{{ account.name }}</dd>
+                        <dt class="col-2">{% trans "Short name" %}</dt>
+                        <dd class="col-10">{{ account.short_name|default_if_none:"" }}</dd>
+
+                        <dt class="col-2">{% trans "Created at" %}</dt>
+                        <dd class="col-10">{{ account.created_at|date:"r" }}</dd>
+                        <dt class="col-2">{% trans "Last updated at" %}</dt>
+                        <dd class="col-10">{{ account.updated_at|date:"r" }}</dd>
+                        <dt class="col-2">{% trans "Category" %}</dt>
+                        <dd class="col-10"><a href="{% url "categories:category_detail" account.category.slug %}">{{ account.category.name }}</a></dd>
+                        <dt class="col-2">{% trans "Unit" %}</dt>
+                        <dd class="col-10"><a href="{% url "units:detail" account.unit.slug %}">{{ account.unit.name }}</a></dd>
+                        <dt class="col-2">{% trans "Balance" %}</dt>
+                        <dd class="col-10">{% balance account %}</dd>
                     </dl>
                 </div>
             </div>
         </div>
     </div>
-    <div class="collapse{% if categories_year or categories_month or request.get_full_path|endswith:"?categories=" %} show{% endif%}" id="collapseStatisticsCategories" aria-labelledby="statisticsCategories" data-parent="#account">
+    <div class="collapse{% if categories_year or categories_month or request.get_full_path|endswith:"?categories=" %} show{% endif%}" id="collapseStatisticsCategories" aria-labelledby="statisticsCategories" data-bs-parent="#account">
         <div class="row mt-2">
-            <div class="offset-md-5 col-md-2 text-center">
+            <div class="offset-5 col-2 text-center">
                 {% if categories_year and categories_month %}
                     <a class="btn btn-secondary" href="{% url "accounts:account_detail" account.slug %}?categories=">{% trans "Reset" %}</a>
                 {% else %}
                     <div class="dropdown show">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownCategories" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownCategories" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if categories_year %}
                                 {% trans "Select a month" %}
                             {% else %}
@@ -133,14 +124,14 @@
         </div>
     </div>
     {% if account|has_tags %}
-        <div class="collapse{% if tags_year or tags_month or request.get_full_path|endswith:"?tags=" %} show{% endif%}" id="collapseStatisticsTags" aria-labelledby="statisticsTags" data-parent="#account">
+        <div class="collapse{% if tags_year or tags_month or request.get_full_path|endswith:"?tags=" %} show{% endif%}" id="collapseStatisticsTags" aria-labelledby="statisticsTags" data-bs-parent="#account">
             <div class="row mt-2">
                 <div class="offset-md-5 col-md-2 text-center">
                     {% if tags_year and tags_month %}
                         <a class="btn btn-secondary" href="{% url "accounts:account_detail" account.slug %}?tags=">{% trans "Reset" %}</a>
                     {% else %}
                         <div class="dropdown show">
-                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownTags" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownTags" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {% if tags_year %}
                                     {% trans "Select a month" %}
                                 {% else %}
@@ -175,7 +166,7 @@
             </div>
         </div>
     {% endif %}
-    <div class="collapse" id="collapseCategories" aria-labelledby="collapseCategories" data-parent="#account">
+    <div class="collapse" id="collapseCategories" aria-labelledby="collapseCategories" data-bs-parent="#account">
         <div class="row mt-2">
             <div class="col">
                 <div id="cchart" style="min-width: 310px; height: 750px;"></div>
@@ -188,7 +179,7 @@
             </div>
         </div>
     </div>
-    <div class="collapse" id="collapseTags" aria-labelledby="collapseTags" data-parent="#account">
+    <div class="collapse" id="collapseTags" aria-labelledby="collapseTags" data-bs-parent="#account">
         <div class="row mt-2">
             <div class="col">
                 <div id="tchart" style="min-width: 310px; height: 750px;"></div>
@@ -198,25 +189,6 @@
                         tags(tchart_url, "tchart");
                     });
                 </script>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="iframeFormModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Cancel" %}">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
-                <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
             </div>
         </div>
     </div>

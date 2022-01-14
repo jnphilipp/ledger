@@ -17,6 +17,15 @@
                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                     return new bootstrap.Tooltip(tooltipTriggerEl)
                 });
+
+                $("a.iframeFormModal").modal({
+                    show: false
+                });
+                $("#iframeFormModalIframe").on("load", function() {
+                    $("#iframeFormModalIframe").width(Math.max(800, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+                    $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+                    $("#iframeFormModal").modal("handleUpdate");
+                });
             });
         </script>
         <title>{% block title %}{% trans "Ledger" %}{% endblock %}</title>
@@ -96,6 +105,23 @@
             <div class="row">
                 <div class="col">
                     {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="iframeFormModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Cancel" %}"></button>
+                    </div>
+                    <div class="modal-body" style="padding-left: 0; padding-right: 0;">
+                        <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -17,11 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 
-from accounts.models import Entry
+from accounts.models import Account, Entry
 from datetime import date
 from django.db.models import F, Sum
 from django.template import Library
 from django.template.defaultfilters import floatformat
+from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 from ledger.dates import get_last_date_current_month
 from units.models import Unit
@@ -44,14 +45,25 @@ def colorfy(amount, unit=None):
 
 
 @register.filter
-def balance(account):
-    if account.closed:
-        balance = 0
+def balance(obj):
+    if isinstance(obj, Account):
+        if obj.closed:
+            balance = 0
+        else:
+            balance = obj.entries.filter(date__lte=date.today()).aggregate(
+                Sum("amount")
+            )["amount__sum"]
+        unit = obj.unit
+    elif isinstance(obj, Unit):
+        balance = Entry.objects.filter(account__unit=obj).filter(date__lte=date.today()).aggregate(
+            sum=Sum(F("amount") + F("fees"))
+        )["sum"]
+        unit = obj
     else:
-        balance = account.entries.filter(day__lte=date.today()).aggregate(
-            Sum("amount")
-        )["amount__sum"]
-    return colorfy(balance, account.unit)
+        balance = 0
+        unit = None
+
+    return colorfy(balance, unit)
 
 
 @register.filter
@@ -65,8 +77,8 @@ def outstanding(account):
         outstanding = 0
     else:
         outstanding = (
-            account.entries.filter(day__gt=date.today())
-            .filter(day__lte=get_last_date_current_month())
+            account.entries.filter(date__gt=date.today())
+            .filter(date__lte=get_last_date_current_month())
             .aggregate(Sum("amount"))["amount__sum"]
         )
     return colorfy(outstanding, account.unit)
@@ -84,12 +96,12 @@ def balance(context, account=None):
     ids = set(entries.values_list("account__unit", flat=True))
     for unit in Unit.objects.filter(id__in=ids):
         e = entries.filter(account__unit=unit)
-        balance = e.filter(day__lte=date.today()).aggregate(
+        balance = e.filter(date__lte=date.today()).aggregate(
             sum=Sum(F("amount") + F("fees"))
         )["sum"]
         outstanding = (
-            e.filter(day__gt=date.today())
-            .filter(day__lte=get_last_date_current_month())
+            e.filter(date__gt=date.today())
+            .filter(date__lte=get_last_date_current_month())
             .aggregate(sum=Sum(F("amount") + F("fees")))["sum"]
         )
 
@@ -103,12 +115,12 @@ def balance(context, account=None):
         else:
             accounts = []
             for a in unit.accounts.filter(closed=False):
-                b = a.entries.filter(day__lte=date.today()).aggregate(
+                b = a.entries.filter(date__lte=date.today()).aggregate(
                     sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 o = (
-                    a.entries.filter(day__gt=date.today())
-                    .filter(day__lte=get_last_date_current_month())
+                    a.entries.filter(date__gt=date.today())
+                    .filter(date__lte=get_last_date_current_month())
                     .aggregate(sum=Sum(F("amount") + F("fees")))["sum"]
                 )
                 if not o:

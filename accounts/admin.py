@@ -35,7 +35,7 @@ class AccountAdmin(admin.ModelAdmin):
         return ", ".join([str(ledger) for ledger in obj.ledgers.all()])
 
     fieldsets = [
-        (None, {"fields": ["ledgers", "slug", "name", "category", "unit"]}),
+        (None, {"fields": ["ledgers", "slug", "name", "short_name", "category", "unit"]}),
     ]
     filter_horizontal = ("ledgers",)
     get_ledgers.short_description = _("Ledgers")

@@ -26,20 +26,19 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 
 
-@login_required
 def categories(request, slug, year=None, month=None, category=None):
-    account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
+    account = get_object_or_404(Account, slug=slug)
 
     data = None
     if category and month and year:
         c = get_object_or_404(Category, slug=category)
-        days = account.entries.filter(
-            Q(day__year=year) & Q(day__month=month) & Q(category=c)
-        ).dates("day", "day")
+        dates = account.entries.filter(
+            Q(date__year=year) & Q(date__month=month) & Q(category=c)
+        ).dates("date", "day")
         data = {
             "xAxis": {
                 "categories": [
-                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in days
+                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in dates
                 ],
                 "title": {"text": str(_("Days"))},
             },
@@ -57,24 +56,24 @@ def categories(request, slug, year=None, month=None, category=None):
                             "%s. %s" % (d.strftime("%d"), d.strftime("%B")),
                             account.entries.filter(
                                 Q(category=c)
-                                & Q(day__year=year)
-                                & Q(day__month=month)
-                                & Q(day__day=d.strftime("%d"))
+                                & Q(date__year=year)
+                                & Q(date__month=month)
+                                & Q(date__day=d.strftime("%d"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
-                        for d in days
+                        for d in dates
                     ],
                 }
             ],
         }
     elif month and year:
-        days = account.entries.filter(Q(day__year=year) & Q(day__month=month)).dates(
-            "day", "day"
+        dates = account.entries.filter(Q(date__year=year) & Q(date__month=month)).dates(
+            "date", "day"
         )
         data = {
             "xAxis": {
                 "categories": [
-                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in days
+                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in dates
                 ],
                 "title": {"text": str(_("Days"))},
             },
@@ -92,23 +91,23 @@ def categories(request, slug, year=None, month=None, category=None):
                             "%s. %s" % (d.strftime("%d"), d.strftime("%B")),
                             account.entries.filter(
                                 Q(category=c)
-                                & Q(day__year=year)
-                                & Q(day__month=month)
-                                & Q(day__day=d.strftime("%d"))
+                                & Q(date__year=year)
+                                & Q(date__month=month)
+                                & Q(date__day=d.strftime("%d"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
-                        for d in days
+                        for d in dates
                     ],
                 }
                 for c in Category.objects.filter(
                     Q(entries__account=account)
-                    & Q(entries__day__year=year)
-                    & Q(entries__day__month=month)
+                    & Q(entries__date__year=year)
+                    & Q(entries__date__month=month)
                 ).distinct()
             ],
         }
     elif year:
-        months = account.entries.filter(day__year=year).dates("day", "month")
+        months = account.entries.filter(date__year=year).dates("date", "month")
         data = {
             "xAxis": {
                 "categories": [m.strftime("%B") for m in months],
@@ -128,20 +127,20 @@ def categories(request, slug, year=None, month=None, category=None):
                             m.strftime("%B"),
                             account.entries.filter(
                                 Q(category=c)
-                                & Q(day__year=year)
-                                & Q(day__month=m.strftime("%m"))
+                                & Q(date__year=year)
+                                & Q(date__month=m.strftime("%m"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
                         for m in months
                     ],
                 }
                 for c in Category.objects.filter(
-                    Q(entries__account=account) & Q(entries__day__year=year)
+                    Q(entries__account=account) & Q(entries__date__year=year)
                 ).distinct()
             ],
         }
     else:
-        years = account.entries.dates("day", "year")
+        years = account.entries.dates("date", "year")
         data = {
             "xAxis": {
                 "categories": [y.strftime("%Y") for y in years],
@@ -160,7 +159,7 @@ def categories(request, slug, year=None, month=None, category=None):
                         [
                             y.strftime("%Y"),
                             account.entries.filter(
-                                Q(category=c) & Q(day__year=y.strftime("%Y"))
+                                Q(category=c) & Q(date__year=y.strftime("%Y"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
                         for y in years
@@ -172,20 +171,19 @@ def categories(request, slug, year=None, month=None, category=None):
     return JsonResponse(data)
 
 
-@login_required
 def tags(request, slug, year=None, month=None, tag=None):
-    account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
+    account = get_object_or_404(Account, slug=slug)
 
     data = None
     if tag and month and year:
         t = get_object_or_404(Tag, slug=tag)
-        days = account.entries.filter(
-            Q(day__year=year) & Q(day__month=month) & Q(tags=t)
-        ).dates("day", "day")
+        dates = account.entries.filter(
+            Q(date__year=year) & Q(date__month=month) & Q(tags=t)
+        ).dates("date", "day")
         data = {
             "xAxis": {
                 "categories": [
-                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in days
+                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in dates
                 ],
                 "title": {"text": str(_("Days"))},
             },
@@ -203,24 +201,24 @@ def tags(request, slug, year=None, month=None, tag=None):
                             "%s. %s" % (d.strftime("%d"), d.strftime("%B")),
                             account.entries.filter(
                                 Q(tags=t)
-                                & Q(day__year=year)
-                                & Q(day__month=month)
-                                & Q(day__day=d.strftime("%d"))
+                                & Q(date__year=year)
+                                & Q(date__month=month)
+                                & Q(date__day=d.strftime("%d"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
-                        for d in days
+                        for d in dates
                     ],
                 }
             ],
         }
     elif month and year:
-        days = account.entries.filter(Q(day__year=year) & Q(day__month=month)).dates(
-            "day", "day"
+        dates = account.entries.filter(Q(date__year=year) & Q(date__month=month)).dates(
+            "date", "day"
         )
         data = {
             "xAxis": {
                 "categories": [
-                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in days
+                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in dates
                 ],
                 "title": {"text": str(_("Days"))},
             },
@@ -238,23 +236,23 @@ def tags(request, slug, year=None, month=None, tag=None):
                             "%s. %s" % (d.strftime("%d"), d.strftime("%B")),
                             account.entries.filter(
                                 Q(tags=tag)
-                                & Q(day__year=year)
-                                & Q(day__month=month)
-                                & Q(day__day=d.strftime("%d"))
+                                & Q(date__year=year)
+                                & Q(date__month=month)
+                                & Q(date__day=d.strftime("%d"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
-                        for d in days
+                        for d in dates
                     ],
                 }
                 for tag in Tag.objects.filter(
                     Q(entries__account=account)
-                    & Q(entries__day__year=year)
-                    & Q(entries__day__month=month)
+                    & Q(entries__date__year=year)
+                    & Q(entries__date__month=month)
                 ).distinct()
             ],
         }
     elif year:
-        months = account.entries.filter(day__year=year).dates("day", "month")
+        months = account.entries.filter(date__year=year).dates("date", "month")
         data = {
             "xAxis": {
                 "categories": [m.strftime("%B") for m in months],
@@ -274,20 +272,20 @@ def tags(request, slug, year=None, month=None, tag=None):
                             m.strftime("%B"),
                             account.entries.filter(
                                 Q(tags=tag)
-                                & Q(day__year=year)
-                                & Q(day__month=m.strftime("%m"))
+                                & Q(date__year=year)
+                                & Q(date__month=m.strftime("%m"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
                         for m in months
                     ],
                 }
                 for tag in Tag.objects.filter(
-                    Q(entries__account=account) & Q(entries__day__year=year)
+                    Q(entries__account=account) & Q(entries__date__year=year)
                 ).distinct()
             ],
         }
     else:
-        years = account.entries.dates("day", "year")
+        years = account.entries.dates("date", "year")
         data = {
             "xAxis": {
                 "categories": [y.strftime("%Y") for y in years],
@@ -306,7 +304,7 @@ def tags(request, slug, year=None, month=None, tag=None):
                         [
                             y.strftime("%Y"),
                             account.entries.filter(
-                                Q(tags=t) & Q(day__year=y.strftime("%Y"))
+                                Q(tags=t) & Q(date__year=y.strftime("%Y"))
                             ).aggregate(sum=Sum("amount"))["sum"],
                         ]
                         for y in years

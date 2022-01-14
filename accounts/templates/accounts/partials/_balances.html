@@ -9,7 +9,7 @@
             <ul class="list-unstyled">
                 {% for value in values %}
                     {% if "accounts" in value  %}
-                        <li data-toggle="tooltip" data-placement="right" data-html="true" title="{% for account in value|get_item:"accounts" %}{{ account|get_item:"name" }}: {{ account|get_item:"balance" }}{% if not forloop.last %}<br>{% endif %}{% endfor %}">{{ value|get_item:"balance" }}</li>
+                        <li data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% for account in value|get_item:"accounts" %}{{ account|get_item:"name" }}: {{ account|get_item:"balance" }}{% if not forloop.last %}<br>{% endif %}{% endfor %}">{{ value|get_item:"balance" }}</li>
                     {% else %}
                         <li>{{ value|get_item:"balance" }}</li>
                     {% endif %}
@@ -25,7 +25,7 @@
             <ul class="list-unstyled">
                 {% for value in values %}
                     {% if "accounts" in value  %}
-                        <li data-toggle="tooltip" data-placement="right" data-html="true" title="{% for account in value|get_item:"accounts" %}{{ account|get_item:"name" }}: {{ account|get_item:"outstanding" }}{% if not forloop.last %}<br>{% endif %}{% endfor %}">{{ value|get_item:"outstanding" }}</li>
+                        <li data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% for account in value|get_item:"accounts" %}{{ account|get_item:"name" }}: {{ account|get_item:"outstanding" }}{% if not forloop.last %}<br>{% endif %}{% endfor %}">{{ value|get_item:"outstanding" }}</li>
                     {% else %}
                         <li>{{ value|get_item:"outstanding" }}</li>
                     {% endif %}

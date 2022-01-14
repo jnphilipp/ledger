@@ -20,13 +20,11 @@
 import json
 
 from accounts.models import Account
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.utils import timezone
 
 
-@login_required
 def autocomplete(request):
     """Handels GET/POST request to autocomplete accounts.
 
@@ -38,13 +36,10 @@ def autocomplete(request):
     if "application/json" == request.META.get("CONTENT_TYPE"):
         params.update(json.loads(request.body.decode("utf-8")))
 
-    accounts = (
-        Account.objects.filter(ledger__user=request.user)
-        .annotate(Count("entries"))
-        .order_by("-entries__count")
-    )
+    accounts = Account.objects.annotate(Count("entries")).order_by("-entries__count")
     if "q" in params:
-        accounts = accounts.filter(name__icontains=params.pop("q")[0])
+        q = params.pop("q")[0]
+        accounts = accounts.filter(Q(name__icontains=q) | Q(short_name__icontains=q))
     if "closed" in params:
         closed = True if params.pop("closed")[0].lower() == "true" else False
         accounts = accounts.filter(closed=closed)

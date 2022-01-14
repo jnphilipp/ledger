@@ -19,15 +19,13 @@
 
 from accounts.models import Account
 from categories.models import Category
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 
 
-@login_required
 def categories(request, slug):
-    account = get_object_or_404(Account, slug=slug, ledgers__user=request.user)
+    account = get_object_or_404(Account, slug=slug)
 
     data = {
         "xAxis": {

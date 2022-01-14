@@ -27,7 +27,6 @@ from django.utils.translation import gettext_lazy as _
 from units.models import Unit
 
 
-@login_required
 def statistics(request, slug, year=None):
     category = get_object_or_404(Category, slug=slug)
 
@@ -40,7 +39,7 @@ def statistics(request, slug, year=None):
     symbol = units[0].symbol if units.count() == 1 else ""
 
     if year:
-        months = category.entries.filter(day__year=year).dates("day", "month")
+        months = category.entries.filter(date__year=year).dates("date", "month")
         data = {
             "xAxis": {
                 "categories": [m.strftime("%B") for m in months],
@@ -57,13 +56,13 @@ def statistics(request, slug, year=None):
         series = []
         accounts = Account.objects.filter(
             Q(entries__category=category)
-            & Q(entries__day__year=year)
+            & Q(entries__date__year=year)
         ).distinct()
         for account in accounts:
-            entries = category.entries.filter(Q(account=account) & Q(day__year=year))
+            entries = category.entries.filter(Q(account=account) & Q(date__year=year))
             sdata = []
             for m in months:
-                y = entries.filter(day__month=m.strftime("%m")).aggregate(
+                y = entries.filter(date__month=m.strftime("%m")).aggregate(
                     sum=Sum("amount")
                 )["sum"]
                 sdata.append((m.strftime("%B"), y))
@@ -79,7 +78,7 @@ def statistics(request, slug, year=None):
 
         for unit in units:
             amount = category.entries.filter(
-                Q(account__unit=unit) & Q(day__year=year)
+                Q(account__unit=unit) & Q(date__year=year)
             ).aggregate(sum=Sum("amount"))
             if amount["sum"]:
                 avg = amount["sum"] / len(months)
@@ -93,7 +92,7 @@ def statistics(request, slug, year=None):
                 )
         data["series"] = series
     else:
-        years = category.entries.dates("day", "year")
+        years = category.entries.dates("date", "year")
         data = {
             "xAxis": {
                 "categories": [y.strftime("%Y") for y in years],
@@ -113,7 +112,7 @@ def statistics(request, slug, year=None):
             entries = category.entries.filter(account=account)
             sdata = []
             for y in years:
-                v = entries.filter(day__year=y.strftime("%Y")).aggregate(
+                v = entries.filter(date__year=y.strftime("%Y")).aggregate(
                     sum=Sum("amount")
                 )["sum"]
                 sdata.append((y.strftime("%Y"), v))

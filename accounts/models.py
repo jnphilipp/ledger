@@ -35,15 +35,13 @@ class Account(models.Model):
 
     slug = models.SlugField(unique=True, verbose_name=_("Slug"))
     name = SingleLineTextField(verbose_name=_("Name"))
+    short_name = SingleLineTextField(blank=True, null=True, verbose_name=_("Short name"))
     unit = models.ForeignKey(
         Unit, models.CASCADE, related_name="accounts", verbose_name=_("Unit")
     )
     category = models.ForeignKey(
         Category, models.CASCADE, related_name="accounts", verbose_name=_("Category")
     )
-    # ledgers = models.ManyToManyField(
-    #     Ledger, through=Ledger.accounts.through, verbose_name=_("Ledgers")
-    # )
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
 
     def delete(self, *args, **kwargs):
@@ -119,11 +117,11 @@ class Entry(models.Model):
             orig = Entry.objects.get(id=self.id)
             entry = (
                 Entry.objects.filter(account=self.account)
-                .filter(day__lte=self.day)
+                .filter(date__lte=self.date)
                 .last()
             )
             next_snr = entry.serial_number + 1 if entry else 1
-            if orig.day != self.day and (orig.serial_number + 1) != next_snr:
+            if orig.date != self.date and (orig.serial_number + 1) != next_snr:
                 move = True
             if orig.account != self.account:
                 move = True
@@ -131,7 +129,7 @@ class Entry(models.Model):
                 old_account = orig.account
         if not self.id or move:
             entries = Entry.objects.filter(account=self.account).filter(
-                day__lte=self.day
+                date__lte=self.date
             )
             if entries.exists():
                 next_snr = entries.last().serial_number + 1

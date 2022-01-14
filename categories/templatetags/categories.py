@@ -27,26 +27,10 @@ register = Library()
 
 
 @register.filter
-def accounts(obj, user):
+def entry_count(obj):
     if isinstance(obj, Category):
-        return Account.objects.filter(
-            Q(ledger__user=user) & (Q(category=obj) | Q(entries__category=obj))
-        ).distinct()
+        return Entry.objects.filter(category=obj).count()
     elif isinstance(obj, Tag):
-        return Account.objects.filter(
-            Q(ledger__user=user) & Q(entries__tags=obj)
-        ).distinct()
-    else:
-        return None
-
-
-@register.filter
-def entry_count(obj, user):
-    if isinstance(obj, Category):
-        return Entry.objects.filter(
-            Q(account__ledger__user=user) & Q(category=obj)
-        ).count()
-    elif isinstance(obj, Tag):
-        return Entry.objects.filter(Q(account__ledger__user=user) & Q(tags=obj)).count()
+        return Entry.objects.filter(tags=obj).count()
     else:
         return None

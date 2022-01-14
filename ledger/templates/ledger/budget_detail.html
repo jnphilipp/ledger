@@ -15,7 +15,7 @@
             $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
         });
         $("#iframeFormModalIframe").on("load", function() {
-            $("#iframeFormModalIframe").width(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+            $("#iframeFormModalIframe").width(Math.max(800, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
             $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
             $("#iframeFormModal").modal("handleUpdate");
         });
@@ -40,15 +40,15 @@
                 </a>
             </div>
             <div class="btn-group btn-toggle mr-2" role="group" aria-label="Chart/Table toggle">
-                <a class="btn btn btn-outline-primary active" data-target="#toggleView" role="button">{% trans "Chart" %}</a>
-                <a class="btn btn btn-outline-secondary" data-target="#toggleView" role="button">{% trans "Table" %}</a>
+                <a class="btn btn btn-outline-primary active" data-bs-target="#toggleView" role="button">{% trans "Chart" %}</a>
+                <a class="btn btn btn-outline-secondary" data-bs-target="#toggleView" role="button">{% trans "Table" %}</a>
             </div>
             <div class="btn-group">
-                <a href="{% url "budget_edit" %}" class="btn btn-outline-primary iframeFormModal" role="button" data-toggle="modal" data-target="#iframeFormModal" title="{% trans "Edit budget" %}"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% trans "Edit budget" %}"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
             </div>
         </div>
         <script type="text/javascript">
-            $("a[data-target='#toggleView']").click(function(e) {
+            $("a[data-bs-target='#toggleView']").click(function(e) {
                 e.preventDefault();
                 $("#table").toggle();
                 $("#chart_container").toggle();
@@ -64,11 +64,11 @@
                     <div class="col-md-2 offset-md-5">
                         <div class="btn-group btn-toggle" role="group">
                             {% for unit in units %}
-                                <a class="btn {% if forloop.counter == 1 %}btn-primary active{% else %}btn-secondary{% endif %}" data-target="#toggleChart" role="button">{{ unit.name }}</a>
+                                <a class="btn {% if forloop.counter == 1 %}btn-primary active{% else %}btn-secondary{% endif %}" data-bs-target="#toggleChart" role="button">{{ unit.name }}</a>
                             {% endfor %}
                         </div>
                         <script type="text/javascript">
-                            $("a[data-target='#toggleChart']").click(function(e) {
+                            $("a[data-bs-target='#toggleChart']").click(function(e) {
                                 e.preventDefault();
                                 {% for unit in units %}
                                     $("#container_monthly_{{ unit.id }}").toggle();
@@ -205,19 +205,17 @@
     </div>
 </div>
 <div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="iframeFormModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Cancel" %}">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Cancel" %}"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding-left: 0; padding-right: 0;">
                 <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-secondary" data-bt-dismiss="modal">{% trans "Cancel" %}</button>
                 <button id="iframeFormModalSubmit" type="submit" class="btn btn-primary" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"><span class="fas fa-save"></span> {% trans "Save" %}</button>
             </div>
         </div>

@@ -37,8 +37,9 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
                 ('slug', models.SlugField(max_length=2048, unique=True, verbose_name='Slug')),
-                ('name', ledger.fields.SingleLineTextField(unique=True, verbose_name='Name')),
-                ('symbol', ledger.fields.SingleLineTextField(unique=True, verbose_name='Symbol')),
+                ('name', ledger.fields.SingleLineTextField(verbose_name='Name')),
+                ('code', models.TextField(max_length=3, unique=True, verbose_name="Currency code (ISO 4217)")),
+                ('symbol', ledger.fields.SingleLineTextField(verbose_name='Symbol')),
                 ('precision', models.PositiveIntegerField(default=2, verbose_name='Precision')),
             ],
             options={

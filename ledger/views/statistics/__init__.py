@@ -17,9 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import budget
-from . import statistics
-from .base import AnotherSuccessView, DashboardView
+from . import charts
+from .detail import StatisticsView
 
 
-__all__ = ("AnotherSuccessView", "DashboardView", "budget", "statistics")
+__all__ = ("charts", "StatisticsView")

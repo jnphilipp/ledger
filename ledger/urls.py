@@ -40,16 +40,14 @@ from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import RedirectView
 
-from .views import AnotherSuccessView, budget
+from .views import AnotherSuccessView, budget, DashboardView, statistics
 
 
 # admin.site.site_header = _("ledger administration")
 
 
 urlpatterns = [
-    path("", ListView.as_view(), name="dashboard"),
-    path("", ListView.as_view(), name="entry_list"),
-    path("<int:page>/", ListView.as_view()),
+    path("", RedirectView.as_view(url="/accounts/"), name="dashboard"),
     path(
         "add/another/success/",
         AnotherSuccessView.as_view(),
@@ -58,6 +56,58 @@ urlpatterns = [
     path("budget/", budget.DetailView.as_view(), name="budget_detail"),
     path("budget/<int:year>/", budget.DetailView.as_view(), name="budget_detail"),
     path("budget/edit/", budget.UpdateView.as_view(), name="budget_edit"),
+    path("statistics/", statistics.StatisticsView.as_view(), name="statistics_detail"),
+    path(
+        "statistics/<slug:unit>/",
+        statistics.StatisticsView.as_view(),
+        name="statistics_detail",
+    ),
+    path(
+        "statistics/<slug:unit>/<str:chart>/",
+        statistics.StatisticsView.as_view(),
+        name="statistics_detail",
+    ),
+    path(
+        "statistics/<slug:unit>/<str:chart>/<int:year>/",
+        statistics.StatisticsView.as_view(),
+        name="statistics_detail",
+    ),
+    path(
+        "statistics/<slug:unit>/<str:chart>/<int:year>/<int:month>/",
+        statistics.StatisticsView.as_view(),
+        name="statistics_detail",
+    ),
+    path(
+        "statistics/charts/categories/<slug:unit>/",
+        statistics.charts.categories,
+        name="statistics_chart_categories",
+    ),
+    path(
+        "statistics/charts/categories/<slug:unit>/<int:year>/",
+        statistics.charts.categories,
+        name="statistics_chart_categories",
+    ),
+    path(
+        "statistics/charts/categories/<slug:unit>/<int:year>/<int:month>/",
+        statistics.charts.categories,
+        name="statistics_chart_categories",
+    ),
+    path(
+        "statistics/charts/tags/<slug:unit>/",
+        statistics.charts.tags,
+        name="statistics_chart_tags",
+    ),
+    path(
+        "statistics/charts/tags/<slug:unit>/<int:year>/",
+        statistics.charts.tags,
+        name="statistics_chart_tags",
+    ),
+    path(
+        "statistics/charts/tags/<slug:unit>/<int:year>/<int:month>/",
+        statistics.charts.tags,
+        name="statistics_chart_tags",
+    ),
+
     path("accounts/", include("accounts.urls")),
     path("categories/", include("categories.urls")),
     path("files/", include("files.urls")),

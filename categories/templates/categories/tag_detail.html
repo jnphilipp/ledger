@@ -60,7 +60,7 @@
                         <dt class="col-md-3">{% trans "Last updated at" %}</dt>
                         <dd class="col-md-9">{{ tag.updated_at|date:"r" }}</dd>
                         <dt class="col-md-3">{% trans "Number of entries" %}</dt>
-                        <dd class="col-md-9">{{ tag|entry_count:user }}</dd>
+                        <dd class="col-md-9">{{ tag|entry_count }}</dd>
                     </dl>
                 </div>
             </div>

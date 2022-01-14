@@ -19,13 +19,11 @@
 
 import json
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
@@ -33,18 +31,15 @@ from .forms import UnitForm
 from .models import Unit
 
 
-@method_decorator(login_required, name="dispatch")
 class ListView(generic.ListView):
     context_object_name = "units"
     model = Unit
 
 
-@method_decorator(login_required, name="dispatch")
 class DetailView(generic.DetailView):
     model = Unit
 
 
-@method_decorator(login_required, name="dispatch")
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = UnitForm
     model = Unit
@@ -72,14 +67,12 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             return reverse_lazy("units:detail", args=[self.object.slug])
 
 
-@method_decorator(login_required, name="dispatch")
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = UnitForm
     model = Unit
     success_message = _("The unit %(name)s was successfully updated.")
 
 
-@login_required
 def autocomplete(request):
     """Handels GET/POST request to autocomplete units.
 
@@ -92,13 +85,12 @@ def autocomplete(request):
         params.update(json.loads(request.body.decode("utf-8")))
 
     units = (
-        Unit.objects.filter(accounts__ledger__user=request.user)
-        .distinct()
-        .annotate(Count("accounts"))
+        Unit.objects.annotate(Count("accounts"))
         .order_by("-accounts__count")
     )
     if "q" in params:
-        units = units.filter(name__icontains=params.pop("q")[0])
+        q = params.pop("q")[0]
+        units = units.filter(Q(name__icontains=q) | Q(code__icontains=q))
 
     data = {
         "response_date": timezone.now().strftime("%Y-%m-%dT%H:%M:%S:%f%z"),

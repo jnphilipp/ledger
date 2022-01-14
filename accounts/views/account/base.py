@@ -20,36 +20,27 @@
 from accounts.forms import AccountForm
 from accounts.models import Account
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
 
-@method_decorator(login_required, name="dispatch")
 class ListView(generic.ListView):
     context_object_name = "accounts"
     model = Account
-
-    def get_queryset(self):
-        return Account.objects.filter(ledger__user=self.request.user)
+    ordering = ["unit__name", "closed", "name"]
 
 
-@method_decorator(login_required, name="dispatch")
 class DetailView(generic.DetailView):
     model = Account
-
-    def get_queryset(self):
-        return Account.objects.filter(ledger__user=self.request.user)
 
     def get_context_data(self, *args, **kwargs):
         context = super(DetailView, self).get_context_data(*args, **kwargs)
 
         if "categories_year" not in self.kwargs:
-            years = context["account"].entries.dates("day", "year")
+            years = context["account"].entries.dates("date", "year")
             context["categories_years"] = [y.strftime("%Y") for y in years]
         else:
             context["categories_year"] = self.kwargs["categories_year"]
@@ -57,8 +48,8 @@ class DetailView(generic.DetailView):
         if "categories_month" not in self.kwargs and "categories_year" in self.kwargs:
             months = (
                 context["account"]
-                .entries.filter(day__year=context["categories_year"])
-                .dates("day", "month")
+                .entries.filter(date__year=context["categories_year"])
+                .dates("date", "month")
             )
             context["categories_months"] = [
                 (m.strftime("%m"), m.strftime("%B")) for m in months
@@ -70,7 +61,7 @@ class DetailView(generic.DetailView):
             years = (
                 context["account"]
                 .entries.filter(tags__isnull=False)
-                .dates("day", "year")
+                .dates("date", "year")
             )
             context["tags_years"] = [y.strftime("%Y") for y in years]
         else:
@@ -80,8 +71,8 @@ class DetailView(generic.DetailView):
             months = (
                 context["account"]
                 .entries.filter(tags__isnull=False)
-                .filter(day__year=context["tags_year"])
-                .dates("day", "month")
+                .filter(date__year=context["tags_year"])
+                .dates("date", "month")
             )
             context["tags_months"] = [
                 (m.strftime("%m"), m.strftime("%B")) for m in months
@@ -92,52 +83,53 @@ class DetailView(generic.DetailView):
         return context
 
 
-@method_decorator(login_required, name="dispatch")
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = AccountForm
     model = Account
-    success_message = _("The account %(name)s was successfully created.")
+    success_message = _('The account "%(name)s" was successfully created.')
 
-    def get_initial(self):
-        return {"ledger": self.request.user.ledger}
+    def get_success_message(self, cleaned_data):
+        return self.success_message % {"name": self.object.name}
 
-    def form_valid(self, form):
-        r = super(CreateView, self).form_valid(form)
-        self.request.user.ledger.accounts.add(self.object)
-        self.request.user.ledger.save()
-        return r
+    def get_success_url(self):
+        if "next" in self.request.GET:
+            redirect = self.request.GET.get("next")
+        else:
+            redirect = reverse_lazy("accounts:account_detail", args=[self.object.slug])
+
+        return f'{reverse_lazy("create_another_success")}?next={redirect}'
 
 
-@method_decorator(login_required, name="dispatch")
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = AccountForm
     model = Account
-    success_message = _("The account %(name)s was successfully updated.")
+    success_message = _('The account "%(name)s" was successfully updated.')
 
-    def get_queryset(self):
-        return Account.objects.filter(ledger__user=self.request.user)
-
-
-@method_decorator(login_required, name="dispatch")
-class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
-    model = Account
-
-    def get_queryset(self):
-        return Account.objects.filter(ledger__user=self.request.user)
+    def get_success_message(self, cleaned_data):
+        return self.success_message % {"name": self.object.name}
 
     def get_success_url(self):
-        msg = _("The account %(name)s was successfully deleted.")
-        msg %= {"name": self.object.name}
-        messages.add_message(self.request, messages.SUCCESS, msg)
-        return reverse_lazy("accounts:account_list")
+        if "next" in self.request.GET:
+            redirect = self.request.GET.get("next")
+        else:
+            redirect = reverse_lazy("accounts:account_detail", args=[self.object.slug])
+
+        return f'{reverse_lazy("create_another_success")}?next={redirect}'
 
 
-@method_decorator(login_required, name="dispatch")
+class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
+    model = Account
+    success_message = _('The account "%(name)s" was successfully deleted.')
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % {"name": self.object.name}
+
+    def get_success_url(self):
+        return f"{reverse_lazy('create_another_success')}?next=" + \
+            f"{reverse_lazy('accounts:account_list')}"
+
+
 class CloseView(generic.base.RedirectView):
-    permanent = False
-    query_string = True
-    pattern_name = "accounts:account_detail"
-
     def get_redirect_url(self, *args, **kwargs):
         account = get_object_or_404(Account, slug=kwargs["slug"])
         account.closed = not account.closed
@@ -150,4 +142,4 @@ class CloseView(generic.base.RedirectView):
 
         msg %= {"name": account.name}
         messages.add_message(self.request, messages.SUCCESS, msg)
-        return super().get_redirect_url(*args, **kwargs)
+        return reverse_lazy("accounts:account_list")

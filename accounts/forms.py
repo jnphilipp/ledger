@@ -28,20 +28,14 @@ from units.models import Unit
 
 
 class AccountForm(forms.ModelForm):
-    class Media:
-        css = {"all": ("css/magnific-popup.css",)}
-        js = ("js/jquery.magnific-popup.min.js",)
-
     class Meta:
         model = Account
-        fields = ("name", "category", "unit", "closed")
+        fields = ("name", "short_name", "category", "unit", "closed")
 
     def __init__(self, *args, **kwargs):
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields["name"].validators = [validate_account_name]
-        self.fields["category"].queryset = Category.objects.all()
         self.fields["category"].widget.attrs["style"] = "width: 100%;"
-        self.fields["unit"].queryset = Unit.objects.all()
         self.fields["unit"].widget.attrs["style"] = "width: 100%;"
 
         if "instance" not in kwargs or kwargs["instance"] is None:
@@ -50,12 +44,18 @@ class AccountForm(forms.ModelForm):
     def clean_name(self):
         return self.cleaned_data["name"] or None
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if self.data["category"] and "category" not in cleaned_data:
+            category, created = Category.objects.get_or_create(
+                name=self.data["category"]
+            )
+            cleaned_data["category"] = category
+            del self.errors["category"]
+
 
 class EntryForm(forms.ModelForm):
-    class Media:
-        css = {"all": ("css/magnific-popup.css",)}
-        js = ("js/jquery.magnific-popup.min.js",)
-
     class Meta:
         model = Entry
         exclude = ["serial_number"]
@@ -63,23 +63,17 @@ class EntryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EntryForm, self).__init__(*args, **kwargs)
 
-        if "ledger" in kwargs:
-            ledger = kwargs["ledger"]
-        elif "initial" in kwargs and "ledger" in kwargs["initial"]:
-            ledger = kwargs["initial"]["ledger"]
-
-        self.fields["account"].queryset = ledger.accounts.filter(closed=False)
         self.fields["account"].widget.attrs["style"] = "width: 100%;"
+        self.fields["category"].widget.attrs["style"] = "width: 100%;"
+        self.fields["tags"].widget.attrs["style"] = "width: 100%;"
+
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
         self.fields["fees"].widget = forms.TextInput(attrs={"step": "any"})
-        self.fields["day"].help_text = mark_safe(
+
+        self.fields["date"].help_text = mark_safe(
             '<a id="date_today" href="">%s</a> (%s: yyyy-mm-dd)'
             % (_("Today"), _("Date format"))
         )
-        self.fields["category"].queryset = Category.objects.all()
-        self.fields["category"].widget.attrs["style"] = "width: 100%;"
-        self.fields["tags"].queryset = Tag.objects.all()
-        self.fields["tags"].widget.attrs["style"] = "width: 100%;"
 
     def clean(self):
         cleaned_data = super().clean()
@@ -117,13 +111,9 @@ class StandingEntryForm(forms.ModelForm):
         label=_("Execution"),
     )
 
-    class Media:
-        css = {"all": ("css/magnific-popup.css",)}
-        js = ("js/jquery.magnific-popup.min.js",)
-
     class Meta:
         model = Entry
-        exclude = ["serial_number", "day"]
+        exclude = ["serial_number", "date"]
         fields = [
             "account",
             "start_date",
@@ -139,24 +129,17 @@ class StandingEntryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StandingEntryForm, self).__init__(*args, **kwargs)
 
-        if "ledger" in kwargs:
-            ledger = kwargs["ledger"]
-        elif "initial" in kwargs and "ledger" in kwargs["initial"]:
-            ledger = kwargs["initial"]["ledger"]
-
         self.fields["start_date"].help_text = mark_safe(
             f'{_("Date format")}: yyyy-mm-dd'
         )
         self.fields["end_date"].help_text = mark_safe(f'{_("Date format")}: yyyy-mm-dd')
 
-        self.fields["account"].queryset = ledger.accounts.filter(closed=False)
         self.fields["account"].widget.attrs["style"] = "width: 100%;"
+        self.fields["category"].widget.attrs["style"] = "width: 100%;"
+        self.fields["tags"].widget.attrs["style"] = "width: 100%;"
+
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
         self.fields["fees"].widget = forms.TextInput(attrs={"step": "any"})
-        self.fields["category"].queryset = Category.objects.all()
-        self.fields["category"].widget.attrs["style"] = "width: 100%;"
-        self.fields["tags"].queryset = Tag.objects.all()
-        self.fields["tags"].widget.attrs["style"] = "width: 100%;"
 
     def clean(self):
         cleaned_data = super().clean()
@@ -186,7 +169,7 @@ class StandingEntryForm(forms.ModelForm):
         end = self.cleaned_data["end_date"]
         for date in daterange(start, end, int(self.cleaned_data["execution"])):
             entry, created = Entry.objects.update_or_create(
-                day=date,
+                date=date,
                 amount=instance.amount,
                 fees=instance.fees,
                 category=instance.category,
@@ -214,58 +197,46 @@ class TransferForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(TransferForm, self).__init__(*args, **kwargs)
 
-        if "ledger" in kwargs:
-            ledger = kwargs["ledger"]
-        elif "initial" in kwargs and "ledger" in kwargs["initial"]:
-            ledger = kwargs["initial"]["ledger"]
-
-        self.fields["from_account"].queryset = ledger.accounts.filter(closed=False)
         self.fields["from_account"].widget.attrs["style"] = "width: 100%;"
+        self.fields["to_account"].widget.attrs["style"] = "width: 100%;"
+
         self.fields["from_date"].help_text = mark_safe(
             '<a id="from_date_today" href="">%s</a> (%s: yyyy-mm-dd)'
             % (_("Today"), _("Date format"))
         )
-        self.fields["from_date"].widget.attrs["style"] = "width: 100%;"
-        self.fields["to_account"].queryset = ledger.accounts.filter(closed=False)
-        self.fields["to_account"].widget.attrs["style"] = "width: 100%;"
+
         self.fields["to_date"].help_text = mark_safe(
             '<a id="to_date_today" href="">%s</a> (%s: yyyy-mm-dd)'
             % (_("Today"), _("Date format"))
         )
-        self.fields["to_date"].widget.attrs["style"] = "width: 100%;"
-        self.fields["amount"].widget.attrs["style"] = "width: 100%;"
 
 
 class EntryFilterForm(forms.Form):
     start_date = forms.DateField(
         widget=forms.TextInput(
-            attrs={"placeholder": _("Start date"), "style": "width: 250px;"}
+            attrs={"placeholder": _("Start date"), }
         ),
         required=False,
     )
     end_date = forms.DateField(
         widget=forms.TextInput(
-            attrs={"placeholder": _("End date"), "style": "width: 250px;"}
+            attrs={"placeholder": _("End date"), }
         ),
         required=False,
     )
     accounts = forms.ModelMultipleChoiceField(
         queryset=Account.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"style": "width: 250px;"}),
     )
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"style": "width: 250px;"}),
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"style": "width: 250px;"}),
     )
     units = forms.ModelMultipleChoiceField(
         queryset=Unit.objects.all(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"style": "width: 250px;"}),
     )

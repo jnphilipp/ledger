@@ -19,11 +19,11 @@
                         <tr>
                             <th><a href="{% url "categories:tag_detail" tag.slug %}">{{ tag.name }}</a></th>
                             <td>
-                                {% for account in tag|accounts:user %}
+                                {% for account in tag.accounts.all %}
                                     <a href="{% url "accounts:account_detail" account.slug %}">{{ account.name }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
-                            <td class="text-right">{{ tag|entry_count:user }}</td>
+                            <td class="text-right">{{ tag|entry_count }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

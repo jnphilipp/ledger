@@ -50,9 +50,6 @@ class File(models.Model):
     file = models.FileField(
         upload_to=get_file_path, max_length=4096, verbose_name=_("File")
     )
-    # uploader = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL, models.CASCADE, verbose_name=_("User")
-    # )
 
     def __str__(self):
         return self.name

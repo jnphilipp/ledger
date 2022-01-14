@@ -32,12 +32,31 @@ import importlib
 import os
 import sys
 
+from gi.repository import GLib
 from pathlib import Path
-from typing import List
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# General app info
+APP_IDENTIFIER = "ledgr"
+
+
+# XDG config
+XDG_CONFIG_DIR = Path(GLib.get_user_config_dir())
+APP_CONFIG_DIR = XDG_CONFIG_DIR / APP_IDENTIFIER
+
+
+# XDG cache
+XDG_CACHE_DIR = Path(GLib.get_user_cache_dir())
+APP_CACHE_DIR = XDG_CACHE_DIR / APP_IDENTIFIER
+
+
+# XDG data
+XDG_DATA_DIR = Path(GLib.get_user_data_dir())
+APP_DATA_DIR = XDG_DATA_DIR / APP_IDENTIFIER
 
 
 # Quick-start development settings - unsuitable for production
@@ -49,7 +68,7 @@ SECRET_KEY = "".join(["%02x" % h for h in os.urandom(4096)])
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: List[str] = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Email settings
@@ -62,7 +81,7 @@ EMAIL_SUBJECT_PREFIX = "[ledger] "
 INSTALLED_APPS = [
     "accounts",
     "categories",
-    "django_bootstrap4",
+    "django_bootstrap5",
     "files",
     "ledger",
     "units",
@@ -114,7 +133,7 @@ WSGI_APPLICATION = "ledger.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3" if DEBUG else APP_DATA_DIR / "db.sqlite3",
     }
 }
 
@@ -165,7 +184,7 @@ STATICFILES_FINDERS = (
 # Media files
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = (BASE_DIR if DEBUG else APP_DATA_DIR) / "media"
 
 
 # Default primary key field type
@@ -174,24 +193,16 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# # Login
-
-# LOGIN_REDIRECT_URL = "/"
-# LOGIN_URL = "/users/signin/"
-
-
-# SINGLE_USER = False
-
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 
 # Load local settings
 
+LOCAL_SETTINGS_PATHS = BASE_DIR / "local.py" if DEBUG else APP_DATA_DIR / "settings.py"
+
 try:
-    if (BASE_DIR / "local.py").exists():
-        spec = importlib.util.spec_from_file_location(
-            "local_settings", BASE_DIR / "local.py"
-        )
+    if LOCAL_SETTINGS_PATHS.exists():
+        spec = importlib.util.spec_from_file_location("local_settings", LOCAL_SETTINGS_PATHS)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         sys.modules["local_settings"] = module

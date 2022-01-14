@@ -21,19 +21,15 @@ from accounts.forms import EntryForm, EntryFilterForm
 from accounts.models import Account, Entry
 from datetime import date
 from django.contrib import messages
-# from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-# from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 from ledger.dates import get_last_date_current_month
-# from users.models import Ledger
 
 
-# @method_decorator(login_required, name="dispatch")
 class ListView(generic.ListView):
     context_object_name = "entries"
     model = Entry
@@ -41,18 +37,7 @@ class ListView(generic.ListView):
 
     def get_queryset(self):
         self.form = EntryFilterForm(self.request.GET)
-        if "slug" in self.kwargs:
-            self.account = get_object_or_404(Account, slug=self.kwargs["slug"])
-            del self.form.fields["accounts"]
-            del self.form.fields["units"]
-            entries = (
-                Entry.objects
-                .filter(account__slug=self.kwargs["slug"])
-                .order_by("-serial_number")
-            )
-        else:
-            self.account = None
-            entries = Entry.objects.order_by("-day", "account__name", "-serial_number")
+        entries = Entry.objects.order_by("-date", "account__name", "-serial_number")
 
         filtered = False
         self.start_date = None
@@ -65,11 +50,11 @@ class ListView(generic.ListView):
             if self.form.cleaned_data["start_date"]:
                 filtered = True
                 self.start_date = self.form.cleaned_data["start_date"]
-                entries = entries.filter(day__gte=self.start_date)
+                entries = entries.filter(date__gte=self.start_date)
             if self.form.cleaned_data["end_date"]:
                 filtered = True
                 self.end_date = self.form.cleaned_data["end_date"]
-                entries = entries.filter(day__lte=self.end_date)
+                entries = entries.filter(date__lte=self.end_date)
             if (
                 "accounts" in self.form.cleaned_data
                 and self.form.cleaned_data["accounts"]
@@ -93,14 +78,9 @@ class ListView(generic.ListView):
         if not filtered:
             self.end_date = get_last_date_current_month()
             self.form = EntryFilterForm(initial={"end_date": self.end_date})
-            entries = entries.filter(day__lte=self.end_date)
+            entries = entries.filter(date__lte=self.end_date)
 
-            if "slug" in self.kwargs:
-                del self.form.fields["accounts"]
-                del self.form.fields["units"]
-
-        entries = entries.annotate(total=F("amount") + F("fees"))
-        return entries.distinct()
+        return entries.annotate(total=F("amount") + F("fees")).distinct()
 
     def get_context_data(self, *args, **kwargs):
         context = super(ListView, self).get_context_data(*args, **kwargs)
@@ -112,16 +92,10 @@ class ListView(generic.ListView):
         context["categories"] = self.categories
         context["tags"] = self.tags
         context["units"] = self.units
-        if "slug" in self.kwargs:
-            context["account"] = self.account
-            context["show_options"] = not context["account"].closed
-        else:
-            context["show_options"] = True
 
         return context
 
 
-# @method_decorator(login_required, name="dispatch")
 class DetailView(generic.DetailView):
     model = Entry
 
@@ -134,38 +108,25 @@ class DetailView(generic.DetailView):
             return Entry.objects.get(pk=self.kwargs["pk"])
 
 
-# @method_decorator(login_required, name="dispatch")
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = EntryForm
     model = Entry
-    success_message = _('The entry "%(entry)s" was successfully created.')
+    success_url = reverse_lazy("create_another_success")
 
     def get_initial(self):
-        initial = {"ledger": self.request.user.ledger}
+        initial = {}
         if "slug" in self.kwargs:
             initial["account"] = get_object_or_404(Account, slug=self.kwargs["slug"])
         return initial
 
     def get_success_message(self, cleaned_data):
-        entry = "%s - #%s" % (self.object.account.name, self.object.serial_number)
-        return self.success_message % {"entry": entry}
-
-    def get_success_url(self):
-        url = reverse_lazy("create_another_success")
-        if "reload" in self.request.GET:
-            url = f'{url}?reload={self.request.GET.get("reload")}'
-        elif "target_id" in self.request.GET:
-            url = (
-                f'{url}?target_id={self.request.GET.get("target_id")}&'
-                + f"value={self.object.pk}&name={self.object.name}"
-            )
-        return url
+        return _('The entry "%(entry)s" was successfully created.') % {"entry": f"{self.object.account.name} - #{self.object.serial_number}"}
 
 
-# @method_decorator(login_required, name="dispatch")
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     form_class = EntryForm
     model = Entry
+    success_url = reverse_lazy("create_another_success")
 
     def form_valid(self, form):
         self.orig_serial_number = self.object.serial_number
@@ -173,12 +134,8 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     def get_initial(self):
         return {
-            "ledger": self.request.user.ledger,
             "show_account": "slug" not in self.kwargs,
         }
-
-    def get_queryset(self):
-        return Entry.objects.filter(account__ledger__user=self.request.user)
 
     def get_success_message(self, cleaned_data):
         entry = "%s - #%s" % (self.object.account.name, self.orig_serial_number)
@@ -194,21 +151,10 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
                 + ' moved to "%(no)s".'
             ) % {"entry": entry, "no": no}
 
-    def get_success_url(self):
-        url = reverse_lazy("create_another_success")
-        if "reload" in self.request.GET:
-            url = f'{url}?reload={self.request.GET.get("reload")}'
-        elif "target_id" in self.request.GET:
-            url = (
-                f'{url}?target_id={self.request.GET.get("target_id")}&'
-                + f"value={self.object.pk}&name={self.object.name}"
-            )
-        return url
 
-
-# @method_decorator(login_required, name="dispatch")
-class DeleteView(generic.edit.DeleteView):
+class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
     model = Entry
+    success_url = reverse_lazy("create_another_success")
 
     def delete(self, request, *args, **kwargs):
         v = super(DeleteView, self).delete(request, *args, **kwargs)
@@ -220,45 +166,22 @@ class DeleteView(generic.edit.DeleteView):
         self.object.account.save()
         return v
 
-    def get_queryset(self):
-        return Entry.objects.filter(account__ledger__user=self.request.user)
-
-    def get_success_url(self):
-        msg = _('The entry "%(entry)s" was successfully deleted.')
-        msg %= {
-            "entry": "%s - #%s" % (self.object.account.name, self.object.serial_number)
+    def get_success_message(self, cleaned_data):
+        return _('The entry "%(entry)s" was successfully deleted.') % {
+            "entry": f"{self.object.account.name} - #{self.object.serial_number}"
         }
-        messages.add_message(self.request, messages.SUCCESS, msg)
-
-        url = reverse_lazy("create_another_success")
-        if "reload" in self.request.GET:
-            url = f'{url}?reload={self.request.GET.get("reload")}'
-        elif "target_id" in self.request.GET:
-            url = (
-                f'{url}?target_id={self.request.GET.get("target_id")}&'
-                + f"value={self.object.pk}&name={self.object.name}"
-            )
-        return url
 
 
-# @method_decorator(login_required, name="dispatch")
 class DuplicateView(generic.base.RedirectView):
     permanent = False
     query_string = True
 
     def get_redirect_url(self, *args, **kwargs):
-        # ledger = get_object_or_404(Ledger, user=self.request.user)
-
-        if "slug" in kwargs:
-            account = get_object_or_404(Account, slug=kwargs["slug"])
-            entry = get_object_or_404(Entry, pk=kwargs["pk"], account=account)
-        else:
-            account = None
-            entry = get_object_or_404(Entry, pk=kwargs["pk"])
+        entry = get_object_or_404(Entry, pk=kwargs["pk"])
 
         new = Entry.objects.create(
             account=entry.account,
-            day=date.today(),
+            date=date.today(),
             amount=entry.amount,
             fees=entry.fees,
             category=entry.category,
@@ -272,33 +195,20 @@ class DuplicateView(generic.base.RedirectView):
             'The entry "%(old_entry)s" has been successfully duplicated '
             + 'as entry "%(new_entry)s".'
         )
-        if account:
-            old_entry = "#%s" % entry.serial_number
-            new_entry = "#%s" % new.serial_number
-            msg %= {"old_entry": old_entry, "new_entry": new_entry}
-            self.url = reverse_lazy(
-                "accounts:account_entry_list", args=[kwargs["slug"]]
-            )
-        else:
-            old_entry = "%s - #%s" % (entry.account.name, entry.serial_number)
-            new_entry = "%s - #%s" % (new.account.name, new.serial_number)
-            msg %= {"old_entry": old_entry, "new_entry": new_entry}
-            self.url = reverse_lazy("accounts:entry_list")
-        messages.add_message(self.request, messages.SUCCESS, msg)
+        old_entry = f"{entry.account.name} - #{entry.serial_number}"
+        new_entry = f"{new.account.name} - #{new.serial_number}"
+        messages.add_message(self.request, messages.SUCCESS, msg % {"old_entry": old_entry, "new_entry": new_entry})
+
+        self.url = reverse_lazy("accounts:entry_list")
         return super().get_redirect_url(*args, **kwargs)
 
 
-# @method_decorator(login_required, name="dispatch")
 class SwapView(generic.base.RedirectView):
     permanent = False
     query_string = True
 
     def get_redirect_url(self, *args, **kwargs):
-        if "slug" in kwargs:
-            account = get_object_or_404(Account, slug=kwargs["slug"])
-            e1 = get_object_or_404(Entry, id=kwargs["pk"], account=account)
-        else:
-            e1 = get_object_or_404(Entry, id=kwargs["pk"])
+        e1 = get_object_or_404(Entry, id=kwargs["pk"])
 
         if kwargs["direction"] == "down":
             e2 = (
@@ -328,13 +238,7 @@ class SwapView(generic.base.RedirectView):
             msg = _(
                 'The entries "#%(e1)s" and "#%(e2)s" were successfully ' + "swaped."
             )
-            msg %= {"e1": e1.serial_number, "e2": e2.serial_number}
-            messages.add_message(self.request, messages.SUCCESS, msg)
+            messages.add_message(self.request, messages.SUCCESS, msg % {"e1": e1.serial_number, "e2": e2.serial_number})
 
-        if "slug" in kwargs:
-            self.url = reverse_lazy(
-                "accounts:account_entry_list", args=[kwargs["slug"]]
-            )
-        else:
-            self.url = reverse_lazy("accounts:entry_list")
+        self.url = reverse_lazy("accounts:entry_list")
         return super().get_redirect_url(*args, **kwargs)

@@ -29,8 +29,13 @@ class Unit(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     slug = models.SlugField(max_length=2048, unique=True, verbose_name=_("Slug"))
-    name = SingleLineTextField(unique=True, verbose_name=_("Name"))
-    symbol = SingleLineTextField(unique=True, verbose_name=_("Symbol"))
+    name = SingleLineTextField(verbose_name=_("Name"))
+    code = models.TextField(
+        max_length=3,
+        unique=True,
+        verbose_name=_("Currency code (ISO 4217)")
+    )
+    symbol = SingleLineTextField(verbose_name=_("Symbol"))
     precision = models.PositiveIntegerField(default=2, verbose_name=_("Precision"))
 
     def get_absolute_url(self):
@@ -38,11 +43,11 @@ class Unit(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(self.code)
         else:
             orig = Unit.objects.get(pk=self.id)
-            if orig.name != self.name:
-                self.slug = slugify(self.name)
+            if orig.code != self.code:
+                self.slug = slugify(self.code)
         super(Unit, self).save(*args, **kwargs)
 
     def __str__(self):
