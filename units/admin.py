@@ -16,6 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Units Django app admin."""
 
 from django.contrib import admin
 
@@ -24,9 +25,23 @@ from .models import Unit
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
+    """Unit Django admin."""
+
     fieldsets = [
-        (None, {"fields": ["slug", "name", "symbol", "precision"]}),
+        (
+            None,
+            {
+                "fields": [
+                    "created_at",
+                    "updated_at",
+                    "name",
+                    "code",
+                    "symbol",
+                    "precision",
+                ]
+            },
+        ),
     ]
-    list_display = ("name", "symbol", "precision")
-    readonly_fields = ("slug",)
-    search_fields = ("name", "symbol")
+    list_display = ("name", "code", "symbol", "precision")
+    readonly_fields = ("created_at", "updated_at")
+    search_fields = ("name", "code", "symbol")

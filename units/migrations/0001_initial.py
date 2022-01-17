@@ -36,7 +36,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('slug', models.SlugField(max_length=2048, unique=True, verbose_name='Slug')),
                 ('name', ledger.fields.SingleLineTextField(verbose_name='Name')),
                 ('code', models.TextField(max_length=3, unique=True, verbose_name="Currency code (ISO 4217)")),
                 ('symbol', ledger.fields.SingleLineTextField(verbose_name='Symbol')),

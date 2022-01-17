@@ -1,16 +1,16 @@
 # German translation.
-# Copyright (C) 2017 Nathanael Philipp
-# This file is distributed under the same license as the gedenkseite package.
-# Nathanael Philipp <mail@jnphilipp.org>, 2017.
+# Copyright (C) 2014-2021 J. Nathanael Philipp
+# This file is distributed under the same license as the ledger package.
+# J. Nathanael Philipp <nathanael@philipp.land>, 2014-2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: unit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-25 17:21+0200\n"
-"PO-Revision-Date: 2018-04-25 17:21+0200\n"
-"Last-Translator: Nathanael Philipp <mail@jnphilipp.org>\n"
+"POT-Creation-Date: 2022-01-14 14:50+0100\n"
+"PO-Revision-Date: 2022-01-14 14:50+0100\n"
+"Last-Translator: J. Nathanael Philipp <nathanael@philipp.land>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -18,68 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:9 models.py:51
+#: apps.py:27 models.py:43
 msgid "Unit"
 msgstr "Einheit"
 
-#: apps.py:10 models.py:52 templates/units/unit/detail.html:7
-#: templates/units/unit/form.html:7 templates/units/unit/list.html:7
+#: apps.py:28 models.py:44
 msgid "Units"
 msgstr "Einheiten"
 
-#: models.py:12 templates/units/unit/detail.html:16
+#: models.py:26
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: models.py:16
+#: models.py:27
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: models.py:22
-msgid "Slug"
-msgstr "Slug"
-
-#: models.py:26 templates/units/unit/list.html:16
+#: models.py:29
 msgid "Name"
 msgstr "Name"
 
-#: models.py:30 templates/units/unit/detail.html:20
-#: templates/units/unit/list.html:17
+#: models.py:33
+msgid "Currency code (ISO 4217)"
+msgstr "Währungscode (ISO 4217)"
+
+#: models.py:35
 msgid "Symbol"
 msgstr "Symbol"
 
-#: models.py:34 templates/units/unit/detail.html:22
-#: templates/units/unit/list.html:18
+#: models.py:36
 msgid "Precision"
 msgstr "Genauigkeit"
-
-#: templates/units/unit/add_another.html:25 templates/units/unit/form.html:12
-msgid "Add unit"
-msgstr "Einheit hinzufügen"
-
-#: templates/units/unit/add_another.html:31 templates/units/unit/form.html:25
-msgid "Save"
-msgstr "Speichern"
-
-#: templates/units/unit/detail.html:6 templates/units/unit/form.html:6
-#: templates/units/unit/list.html:6
-msgid "Dashboard"
-msgstr "Dashboard"
-
-#: templates/units/unit/detail.html:18
-msgid "Last updated at"
-msgstr "Zuletzt aktualisiert am"
-
-#: templates/units/unit/form.html:10
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: views.py:46
-#, python-format
-msgid "The unit %(name)s was successfully created."
-msgstr "Die Einheit %(name)s wurde erfolgreich erstellt."
-
-#: views.py:64
-#, python-format
-msgid "The unit %(name)s was successfully updated."
-msgstr "Die Einheit %(name)s wurde erfolgreich aktualisiert."

@@ -17,4 +17,4 @@ repos:
     -   id: flake8
         exclude: (migrations/|tests)
         additional_dependencies: [pep8-naming, flake8-docstrings]
-        args: [--max-line-length=88, "--extend-ignore=E203"]
+        args: [--max-line-length=88, "--extend-ignore=E203,D202"]
