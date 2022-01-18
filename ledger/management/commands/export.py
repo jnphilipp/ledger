@@ -23,7 +23,8 @@ import sys
 
 from argparse import FileType
 from django.core.management.base import BaseCommand
-from users.models import Budget, Ledger
+
+from ...models import Account, Budget
 
 
 class Command(BaseCommand):
@@ -33,7 +34,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         """Add arguments for parser."""
-        parser.add_argument("-u", "--username", required=True)
         parser.add_argument("-r", "--renumber-entries", action="store_true")
         parser.add_argument(
             "output", nargs="?", type=FileType("w", encoding="utf8"), default=sys.stdout
@@ -42,15 +42,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Handle command."""
         data = {"accounts": []}
-        for account in Ledger.objects.get(
-            user__username=options["username"]
-        ).accounts.all():
+        for account in Account.objects.all():
             if options["renumber_entries"]:
                 account.renumber_entries()
             data["accounts"].append(
                 {
                     "name": account.name,
-                    "short_name": account.short_name,
                     "category": account.category.name,
                     "closed": account.closed,
                     "unit": {
@@ -59,22 +56,22 @@ class Command(BaseCommand):
                         "symbol": account.unit.symbol,
                         "precision": account.unit.precision,
                     },
-                    "statements": [
-                        {"name": statement.name, "file": statement.file.path}
-                        for statement in account.statements.all()
+                    "files": [
+                        {"name": file.name, "file": file.file.path}
+                        for file in account.files.all()
                     ],
                     "entries": [
                         {
                             "serial_number": entry.serial_number,
-                            "date": entry.day.strftime("%Y-%m-%d"),
+                            "date": entry.date.strftime("%Y-%m-%d"),
                             "amount": entry.amount,
                             "fees": entry.fees,
                             "category": entry.category.name,
-                            "text": entry.additional if entry.additional else None,
+                            "text": entry.text if entry.text else None,
                             "tags": [tag.name for tag in entry.tags.all()],
-                            "invoices": [
-                                {"name": invoice.name, "file": invoice.file.path}
-                                for invoice in entry.invoices.all()
+                            "files": [
+                                {"name": file.name, "file": file.file.path}
+                                for file in entry.files.all()
                             ],
                         }
                         for entry in account.entries.all()
@@ -82,7 +79,7 @@ class Command(BaseCommand):
                 }
             )
 
-        budget = Budget.objects.get(user__username=options["username"])
+        budget = Budget.objects.first()
         data["budget"] = {
             "income_tags": [tag.name for tag in budget.income_tags.all()],
             "consumption_tags": [tag.name for tag in budget.consumption_tags.all()],

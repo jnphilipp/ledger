@@ -10,19 +10,19 @@
         $(document).ready(function() {
             {% if chart == "categories" %}
                 {% if year and month %}
-                    {% url "statistics_chart_categories" unit.slug year month as chart_url %}
+                    {% url "statistics_chart_categories" unit.code year month as chart_url %}
                 {% elif year %}
-                    {% url "statistics_chart_categories" unit.slug year as chart_url %}
+                    {% url "statistics_chart_categories" unit.code year as chart_url %}
                 {% else %}
-                    {% url "statistics_chart_categories" unit.slug as chart_url %}
+                    {% url "statistics_chart_categories" unit.code as chart_url %}
                 {% endif %}
             {% elif chart == "tags" %}
                 {% if year and month %}
-                    {% url "statistics_chart_tags" unit.slug year month as chart_url %}
+                    {% url "statistics_chart_tags" unit.code year month as chart_url %}
                 {% elif year %}
-                    {% url "statistics_chart_tags" unit.slug year as chart_url %}
+                    {% url "statistics_chart_tags" unit.code year as chart_url %}
                 {% else %}
-                    {% url "statistics_chart_tags" unit.slug as chart_url %}
+                    {% url "statistics_chart_tags" unit.code as chart_url %}
                 {% endif %}
             {% endif %}
             statistics("{{ chart_url }}", chart);
@@ -33,34 +33,54 @@
 
 
 {% block content %}
-{% if options %}
-    <div class="row">
-        <div class="col text-center">
-            <div class="dropdown show">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownOptions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ option_msg }}
+<div class="row">
+    <div class="col text-center">
+        <div class="btn-group" role="group">
+            {% if unit %}
+                <a class="btn btn-outline-secondary" href="{% url "statistics_detail" %}" role="button">
+                    {{ unit.name }}
                 </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownOptions">
-                    {% for option in options %}
-                        {% if unit and chart and year and not month %}
-                            {% url "statistics_detail" unit.slug chart year option|get_item:"id" as statistics_detail_url %}
-                        {% elif unit and chart and not year %}
-                            {% url "statistics_detail" unit.slug chart option|get_item:"id" as statistics_detail_url %}
-                        {% elif unit and not chart %}
-                            {% url "statistics_detail" unit.slug option|get_item:"id" as statistics_detail_url %}
-                        {% else %}
-                            {% url "statistics_detail" option|get_item:"id" as statistics_detail_url %}
-                        {% endif %}
-                        <a class="dropdown-item" href="{{ statistics_detail_url }}">{{ option|get_item:"value" }}</a>
-                    {% endfor %}
+            {% endif %}
+            {% if chart %}
+                <a class="btn btn-outline-secondary" href="{% url "statistics_detail" unit.code %}" role="button">
+                    {% if chart == "categories" %}{% translate "Categories" %}{% else %}{% translate "Tags" %}{% endif %}
+                </a>
+            {% endif %}
+            {% if year %}
+                <a class="btn btn-outline-secondary" href="{% url "statistics_detail" unit.code chart %}" role="button">
+                    {{ year }}
+                </a>
+            {% endif %}
+            {% if month %}
+                <a class="btn btn-outline-secondary" href="{% url "statistics_detail" unit.code chart year %}" role="button">
+                    {% translate month_name %}
+                </a>
+            {% endif %}
+            {% if options %}
+                <div class="btn-group" role="group">
+                    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownOptions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ option_msg }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownOptions">
+                        {% for option in options %}
+                            {% if unit and chart and year and not month %}
+                                {% url "statistics_detail" unit.code chart year option|get_item:"id" as statistics_detail_url %}
+                            {% elif unit and chart and not year %}
+                                {% url "statistics_detail" unit.code chart option|get_item:"id" as statistics_detail_url %}
+                            {% elif unit and not chart %}
+                                {% url "statistics_detail" unit.code option|get_item:"id" as statistics_detail_url %}
+                            {% else %}
+                                {% url "statistics_detail" option|get_item:"id" as statistics_detail_url %}
+                            {% endif %}
+                            <a class="dropdown-item" href="{{ statistics_detail_url }}">{{ option|get_item:"value" }}</a>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>
-    <div class="row mt-md-2">
-{% else %}
-    <div class="row">
-{% endif %}
+</div>
+<div class="row mt-md-2">
     <div class="col">
         {% if chart %}<div id="chart" style="min-width: 310px; height: 800px;"></div>{% endif %}
     </div>

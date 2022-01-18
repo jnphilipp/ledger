@@ -16,19 +16,105 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django ledger statistics views."""
 
-from accounts.models import Account, Entry
-from categories.models import Category, Tag
-from django.contrib.auth.decorators import login_required
+from datetime import date
 from django.db.models import Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from django.views import generic
 from units.models import Unit
+
+from ..models import Account, Entry
+from ..models import Category, Tag
+
+
+class StatisticsView(generic.base.TemplateView):
+    """Statistics view."""
+
+    template_name = "ledger/statistics.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """Get context data."""
+        context = super(StatisticsView, self).get_context_data(*args, **kwargs)
+
+        if "unit" in self.kwargs:
+            context["unit"] = get_object_or_404(Unit, code=self.kwargs["unit"])
+            accounts = Account.objects.filter(unit=context["unit"])
+        else:
+            units = Unit.objects.filter(accounts__isnull=False).distinct()
+
+            context["option_msg"] = _("Select a unit")
+            context["options"] = [
+                {"id": unit.code, "key": "unit", "value": unit.name} for unit in units
+            ]
+
+            return context
+
+        if "chart" in self.kwargs:
+            context["chart"] = self.kwargs["chart"]
+
+            if context["chart"] == "tags":
+                context["chart_name"] = _("Tags")
+            elif context["chart"] == "categories":
+                context["chart_name"] = _("Categories")
+            else:
+                return context
+        else:
+            context["option_msg"] = _("Select a chart")
+            context["options"] = [
+                {"id": "categories", "key": "chart", "value": _("Categories")},
+                {"id": "tags", "key": "chart", "value": _("Tags")},
+            ]
+
+            return context
+
+        if "year" in self.kwargs:
+            context["year"] = self.kwargs["year"]
+        else:
+            years = Entry.objects.filter(account__in=accounts).dates("date", "year")
+            if context["chart"] == "tags":
+                years = years.filter(tags__isnull=False)
+
+            context["option_msg"] = _("Select a year")
+            context["options"] = [
+                {"id": year.strftime("%Y"), "key": "year", "value": year.strftime("%Y")}
+                for year in years
+            ]
+
+            return context
+
+        if "month" in self.kwargs:
+            context["month"] = self.kwargs["month"]
+            context["month_name"] = date(
+                year=context["year"], month=context["month"], day=1
+            ).strftime("%B")
+        else:
+            months = (
+                Entry.objects.filter(account__in=accounts)
+                .filter(date__year=context["year"])
+                .dates("date", "month")
+            )
+            if context["chart"] == "tags":
+                months = months.filter(tags__isnull=False)
+
+            context["option_msg"] = _("Select a month")
+            context["options"] = [
+                {
+                    "id": month.strftime("%m"),
+                    "key": "month",
+                    "value": _(month.strftime("%B")),
+                }
+                for month in months
+            ]
+
+        return context
 
 
 def categories(request, unit, year=None, month=None):
-    unit = get_object_or_404(Unit, slug=unit)
+    """Statistics categories chart."""
+    unit = get_object_or_404(Unit, code=unit)
     accounts = Account.objects.filter(unit=unit)
 
     data = None
@@ -38,15 +124,13 @@ def categories(request, unit, year=None, month=None):
         ).dates("date", "day")
         data = {
             "xAxis": {
-                "categories": [
-                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in dates
-                ],
-                "title": {"text": str(_("Days"))},
+                "categories": [f"{d.strftime('%d')}." for d in dates],
+                "title": {"text": _("Days")},
             },
             "yAxis": {
-                "stackLabels": {"format": "{total:,.2f}%s" % unit.symbol},
-                "labels": {"format": "{value}%s" % unit.symbol},
-                "title": {"text": str(_("Loss and Profit"))},
+                "stackLabels": {"format": f"{{total:,.2f}} {unit.symbol}"},
+                "labels": {"format": f"{{value}} {unit.symbol}"},
+                "title": {"text": _("Loss and Profit")},
             },
             "tooltip": {"valueSuffix": unit.symbol},
         }
@@ -75,7 +159,7 @@ def categories(request, unit, year=None, month=None):
                 v = entries.filter(date__day=d.strftime("%d")).aggregate(
                     sum=Sum("amount")
                 )["sum"]
-                sdata.append(("%s. %s" % (d.strftime("%d"), d.strftime("%B")), v))
+                sdata.append((f"{d.strftime('%d')}.", v))
             series.append({"name": category.name, "data": sdata})
         data["series"] = series
     elif year:
@@ -84,13 +168,13 @@ def categories(request, unit, year=None, month=None):
         ).dates("date", "month")
         data = {
             "xAxis": {
-                "categories": [m.strftime("%B") for m in months],
-                "title": {"text": str(_("Months"))},
+                "categories": [_(m.strftime("%B")) for m in months],
+                "title": {"text": _("Months")},
             },
             "yAxis": {
-                "stackLabels": {"format": "{total:,.2f}%s" % unit.symbol},
-                "labels": {"format": "{value}%s" % unit.symbol},
-                "title": {"text": str(_("Loss and Profit"))},
+                "stackLabels": {"format": f"{{total:,.2f}} {unit.symbol}"},
+                "labels": {"format": f"{{value}} {unit.symbol}"},
+                "title": {"text": _("Loss and Profit")},
             },
             "tooltip": {"valueSuffix": unit.symbol},
         }
@@ -115,7 +199,7 @@ def categories(request, unit, year=None, month=None):
                 v = entries.filter(date__month=m.strftime("%m")).aggregate(
                     sum=Sum("amount")
                 )["sum"]
-                sdata.append((m.strftime("%B"), v))
+                sdata.append((_(m.strftime("%B")), v))
             series.append({"name": category.name, "data": sdata})
         data["series"] = series
     else:
@@ -123,12 +207,12 @@ def categories(request, unit, year=None, month=None):
         data = {
             "xAxis": {
                 "categories": [y.strftime("%Y") for y in years],
-                "title": {"text": str(_("Years"))},
+                "title": {"text": _("Years")},
             },
             "yAxis": {
-                "stackLabels": {"format": "{total:,.2f}%s" % unit.symbol},
-                "labels": {"format": "{value}%s" % unit.symbol},
-                "title": {"text": str(_("Loss and Profit"))},
+                "stackLabels": {"format": f"{{total:,.2f}} {unit.symbol}"},
+                "labels": {"format": f"{{value}} {unit.symbol}"},
+                "title": {"text": _("Loss and Profit")},
             },
             "tooltip": {"valueSuffix": unit.symbol},
         }
@@ -156,7 +240,8 @@ def categories(request, unit, year=None, month=None):
 
 
 def tags(request, unit, year=None, month=None):
-    unit = get_object_or_404(Unit, slug=unit)
+    """Statistics tag chart."""
+    unit = get_object_or_404(Unit, code=unit)
     accounts = Account.objects.filter(unit=unit)
 
     data = None
@@ -169,15 +254,13 @@ def tags(request, unit, year=None, month=None):
         ).dates("date", "day")
         data = {
             "xAxis": {
-                "categories": [
-                    "%s. %s" % (d.strftime("%d"), d.strftime("%B")) for d in dates
-                ],
-                "title": {"text": str(_("Days"))},
+                "categories": [f"{d.strftime('%d')}." for d in dates],
+                "title": {"text": _("Days")},
             },
             "yAxis": {
-                "stackLabels": {"format": "{total:,.2f}%s" % unit.symbol},
-                "labels": {"format": "{value}%s" % unit.symbol},
-                "title": {"text": str(_("Loss and Profit"))},
+                "stackLabels": {"format": f"{{total:,.2f}} {unit.symbol}"},
+                "labels": {"format": f"{{value}} {unit.symbol}"},
+                "title": {"text": _("Loss and Profit")},
             },
             "tooltip": {"valueSuffix": unit.symbol},
         }
@@ -202,7 +285,7 @@ def tags(request, unit, year=None, month=None):
                 v = entries.filter(date__day=d.strftime("%d")).aggregate(
                     sum=Sum("amount")
                 )["sum"]
-                sdata.append(("%s. %s" % (d.strftime("%d"), d.strftime("%B")), v))
+                sdata.append((f"{d.strftime('%d')}", v))
             series.append({"name": tag.name, "data": sdata})
         data["series"] = series
     elif year:
@@ -211,13 +294,13 @@ def tags(request, unit, year=None, month=None):
         ).dates("date", "month")
         data = {
             "xAxis": {
-                "categories": [m.strftime("%B") for m in months],
-                "title": {"text": str(_("Months"))},
+                "categories": [_(m.strftime("%B")) for m in months],
+                "title": {"text": _("Months")},
             },
             "yAxis": {
-                "stackLabels": {"format": "{total:,.2f}%s" % unit.symbol},
-                "labels": {"format": "{value}%s" % unit.symbol},
-                "title": {"text": str(_("Loss and Profit"))},
+                "stackLabels": {"format": f"{{total:,.2f}} {unit.symbol}"},
+                "labels": {"format": f"{{value}} {unit.symbol}"},
+                "title": {"text": _("Loss and Profit")},
             },
             "tooltip": {"valueSuffix": unit.symbol},
         }
@@ -238,7 +321,7 @@ def tags(request, unit, year=None, month=None):
                 v = entries.filter(date__month=m.strftime("%m")).aggregate(
                     sum=Sum("amount")
                 )["sum"]
-                sdata.append((m.strftime("%B"), v))
+                sdata.append((_(m.strftime("%B")), v))
             series.append({"name": tag.name, "data": sdata})
         data["series"] = series
     else:
@@ -248,12 +331,12 @@ def tags(request, unit, year=None, month=None):
         data = {
             "xAxis": {
                 "categories": [y.strftime("%Y") for y in years],
-                "title": {"text": str(_("Years"))},
+                "title": {"text": _("Years")},
             },
             "yAxis": {
-                "stackLabels": {"format": "{total:,.2f}%s" % unit.symbol},
-                "labels": {"format": "{value}%s" % unit.symbol},
-                "title": {"text": str(_("Loss and Profit"))},
+                "stackLabels": {"format": f"{{total:,.2f}} {unit.symbol}"},
+                "labels": {"format": f"{{value}} {unit.symbol}"},
+                "title": {"text": _("Loss and Profit")},
             },
             "tooltip": {"valueSuffix": unit.symbol},
         }

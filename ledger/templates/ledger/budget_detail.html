@@ -14,11 +14,6 @@
             $("#iframeFormModalLabel").html(event.relatedTarget.title);
             $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
         });
-        $("#iframeFormModalIframe").on("load", function() {
-            $("#iframeFormModalIframe").width(Math.max(800, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
-            $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
-            $("#iframeFormModal").modal("handleUpdate");
-        });
     });
 </script>
 {% endblock %}
@@ -28,23 +23,23 @@
 <div class="row">
     <div class="col">
         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar">
-            <div class="btn-group mr-2" role="group" aria-label="Years">
+            <div class="btn-group mr-2" role="group" aria-label="{% translate "Years" %}">
                 <a class="btn btn-outline-secondary{% if year|add:"-1" < years|first %} disabled{% endif %}" href="{% url "budget_detail" year|add:"-1" %}" role="button">
                     <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">{% trans "Previous" %}</span>
+                    <span class="sr-only">{% translate "Previous" %}</span>
                 </a>
                 <a class="btn btn-outline-secondary active" href="{% url "budget_detail" year %}" role="button">{{ year }}</a>
                 <a class="btn btn-outline-secondary{% if year|add:"1" > years|last %} disabled{% endif %}" href="{% url "budget_detail" year|add:"1" %}" role="button">
                     <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">{% trans "Next" %}</span>
+                    <span class="sr-only">{% translate "Next" %}</span>
                 </a>
             </div>
-            <div class="btn-group btn-toggle mr-2" role="group" aria-label="Chart/Table toggle">
-                <a class="btn btn btn-outline-primary active" data-bs-target="#toggleView" role="button">{% trans "Chart" %}</a>
-                <a class="btn btn btn-outline-secondary" data-bs-target="#toggleView" role="button">{% trans "Table" %}</a>
+            <div class="btn-group btn-toggle mr-2" role="group" aria-label="{% translate "Chart/Table toggle" %}">
+                <a class="btn btn btn-outline-primary active" data-bs-target="#toggleView" role="button">{% translate "Chart" %}</a>
+                <a class="btn btn btn-outline-secondary" data-bs-target="#toggleView" role="button">{% translate "Table" %}</a>
             </div>
             <div class="btn-group">
-                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% trans "Edit budget" %}"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
             </div>
         </div>
         <script type="text/javascript">
@@ -74,8 +69,8 @@
                                     $("#container_monthly_{{ unit.id }}").toggle();
                                     $("#container_yearly_{{ unit.id }}").toggle();
                                     if ( $("#container_monthly_{{ unit.id }}").is(":visible") ) {
-                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% trans "Monthly" %}");
-                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% trans "Yearly" %}");
+                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% translate "Monthly" %}");
+                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% translate "Yearly" %}");
                                     }
                                 {% endfor %}
                             });
@@ -96,8 +91,8 @@
                             {% for unit in units %}
                                 $(function() {
                                     {% if forloop.counter == 1 %}
-                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% trans "Monthly" %}");
-                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% trans "Yearly" %}");
+                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% translate "Monthly" %}");
+                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% translate "Yearly" %}");
                                     {% else %}
                                         $("#container_monthly_{{ unit.id }}").toggle();
                                         $("#container_yearly_{{ unit.id }}").toggle();
@@ -130,7 +125,7 @@
                                     type: "pie"
                                 },
                                 title: {
-                                    text: "{% trans "Monthly" %}"
+                                    text: "{% translate "Monthly" %}"
                                 },
                                 series: {{ series_monthly|safe }},
                                 drilldown: {{ drilldown_monthly|safe }}
@@ -140,7 +135,7 @@
                                     type: "pie"
                                 },
                                 title: {
-                                    text: "{% trans "Yearly" %}"
+                                    text: "{% translate "Yearly" %}"
                                 },
                                 series: {{ series_yearly|safe }},
                                 drilldown: {{ drilldown_yearly|safe }}
@@ -154,24 +149,24 @@
             <table class="table table-striped table-hover table-sm">
                 <thead>
                     <tr>
-                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% trans "Income" %}</th>
-                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% trans "Consumption" %}</th>
-                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% trans "Insurance" %}</th>
-                        <th scope="col" colspan="3">{% trans "Savings" %}</th>
+                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Income" %}</th>
+                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Consumption" %}</th>
+                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Insurance" %}</th>
+                        <th scope="col" colspan="3">{% translate "Savings" %}</th>
                     </tr>
                     <tr>
-                        <th scope="col">{% trans "Name" %}</th>
-                        <th scope="col" class="text-right">{% trans "Monthly" %}</th>
-                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% trans "Yearly" %}</th>
-                        <th scope="col">{% trans "Name" %}</th>
-                        <th scope="col" class="text-right">{% trans "Monthly" %}</th>
-                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% trans "Yearly" %}</th>
-                        <th scope="col">{% trans "Name" %}</th>
-                        <th scope="col" class="text-right">{% trans "Monthly" %}</th>
-                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% trans "Yearly" %}</th>
-                        <th scope="col">{% trans "Name" %}</th>
-                        <th scope="col" class="text-right">{% trans "Monthly" %}</th>
-                        <th scope="col" class="text-right">{% trans "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-right">{% translate "Yearly" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -179,7 +174,7 @@
                         <tr>
                             {% for cell in row %}
                                 {% if forloop.counter0|divisibleby:3 %}
-                                    <th scope="row">{% if cell|length == 2 %}<a href="{% url "accounts:entry_list" %}?tags={{ cell|get_item:0 }}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
+                                    <th scope="row">{% if cell|length == 2 %}<a href="{% url "entry_list" %}?tags={{ cell|get_item:0 }}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
                                 {% else %}
                                     <td class="text-right"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
                                 {% endif %}
@@ -201,23 +196,6 @@
                     {% endfor %}
                 </tfoot>
             </table>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="iframeFormModalLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Cancel" %}"></button>
-            </div>
-            <div class="modal-body" style="padding-left: 0; padding-right: 0;">
-                <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bt-dismiss="modal">{% trans "Cancel" %}</button>
-                <button id="iframeFormModalSubmit" type="submit" class="btn btn-primary" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"><span class="fas fa-save"></span> {% trans "Save" %}</button>
-            </div>
         </div>
     </div>
 </div>

@@ -16,9 +16,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django app validators."""
 
-from . import charts
-from .detail import StatisticsView
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
-__all__ = ("charts", "StatisticsView")
+def validate_account_name(value):
+    """Validate account name."""
+    if value in ["add", "autocomplete", "create", "entries"]:
+        raise ValidationError(
+            _('"%(value)s" is not a valid account name.'),
+            code="invalid",
+            params={"value": value},
+        )

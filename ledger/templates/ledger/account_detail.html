@@ -1,0 +1,64 @@
+{% extends "ledger/popup.html" %}
+{% load i18n %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $(".iframeFormModal").click(function(e) {
+            parent.$("#iframeFormModalLabel").html(this.title);
+            parent.$("#iframeFormModalIframe").attr("src", this.href);
+            parent.$("#iframeFormModalSubmit").addClass("btn-danger");
+            parent.$("#iframeFormModalSubmit").removeClass("btn-primary");
+            parent.$("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+            parent.$(".modal-footer").show();
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+{% if account.closed %}<div class="alert alert-danger" role="alert">{% translate "This account is currently closed." %}</div>{% endif %}
+<table class="table table-hover table-borderless">
+    <tbody>
+        <tr>
+            <th scope="row">{% translate "Created at" %}</th>
+            <td>{{ account.created_at|date:"r" }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% translate "Last updated at" %}</th>
+            <td>{{ account.updated_at|date:"r" }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% translate "Name" %}</th>
+            <td>{{ account.name }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% translate "Category" %}</th>
+            <td>{{ account.category.name }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% translate "Unit" %}</th>
+            <td>{{ account.unit.name }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% translate "Number of entries" %}</th>
+            <td>{{ account.entries.count }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% translate "Files" %}</th>
+            <td>
+                <ul class="list-unstyled">
+                    {% for file in account.files.all %}
+                        <li>
+                            <a href="{% url "file_detail" file.slug %}">{{ file.name }}</a>
+                            <a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}"><span class="fas fa-trash"></span></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

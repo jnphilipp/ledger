@@ -66,7 +66,7 @@ APP_DATA_DIR = XDG_DATA_DIR / APP_IDENTIFIER
 SECRET_KEY = "".join(["%02x" % h for h in os.urandom(4096)])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
@@ -79,15 +79,9 @@ EMAIL_SUBJECT_PREFIX = "[ledger] "
 # Application definition
 
 INSTALLED_APPS = [
-    "accounts",
-    "categories",
     "django_bootstrap5",
-    "files",
     "ledger",
     "units",
-    # "users",
-    # "django.contrib.admin",
-    # "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -100,7 +94,6 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    # "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -117,7 +110,6 @@ TEMPLATES = [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.request",
-                # "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -136,26 +128,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3" if DEBUG else APP_DATA_DIR / "db.sqlite3",
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
-
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         "NAME": "django.contrib.auth.password_validation."
-#         + "UserAttributeSimilarityValidator",
-#     },
-#     {
-#         "NAME": "django.contrib.auth.password_validation." + "MinimumLengthValidator",
-#     },
-#     {
-#         "NAME": "django.contrib.auth.password_validation." + "CommonPasswordValidator",
-#     },
-#     {
-#         "NAME": "django.contrib.auth.password_validation." + "NumericPasswordValidator",
-#     },
-# ]
 
 
 # Internationalization
@@ -202,7 +174,9 @@ LOCAL_SETTINGS_PATHS = BASE_DIR / "local.py" if DEBUG else APP_DATA_DIR / "setti
 
 try:
     if LOCAL_SETTINGS_PATHS.exists():
-        spec = importlib.util.spec_from_file_location("local_settings", LOCAL_SETTINGS_PATHS)
+        spec = importlib.util.spec_from_file_location(
+            "local_settings", LOCAL_SETTINGS_PATHS
+        )
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         sys.modules["local_settings"] = module

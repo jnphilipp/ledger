@@ -16,13 +16,20 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django app config."""
 
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
 
 
 class LedgerConfig(AppConfig):
+    """Ledger app config."""
+
     default_auto_field = "django.db.models.BigAutoField"
     name = "ledger"
     verbose_name = _("Ledger")
     verbose_name_plural = _("Ledgers")
+
+    def ready(self):
+        """Ready."""
+        from . import signals

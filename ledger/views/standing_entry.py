@@ -16,20 +16,28 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
-"""Ledger Django app base views."""
+"""Ledger Django app standing entry views."""
 
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
+from ..forms import StandingEntryForm
+from ..models import Entry
 
-class AnotherSuccessView(generic.base.TemplateView):
-    """Another success view."""
 
-    template_name = "ledger/another_success.html"
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
+    """Standing entry create view."""
 
-    def get_context_data(self, *args, **kwargs):
-        """Get context data."""
-        context = super(AnotherSuccessView, self).get_context_data(*args, **kwargs)
-        if "next" in self.request.GET:
-            context["next"] = self.request.GET.get("next")
+    form_class = StandingEntryForm
+    model = Entry
+    success_message = _("The entries %(entries)s were successfully created.")
+    success_url = reverse_lazy("create_another_success")
 
-        return context
+    def get_success_message(self, cleaned_data):
+        """Get success message."""
+        return self.success_message % {
+            "entries": f"{self.object[0].account.name} - "
+            + f'#{", #".join(str(e.serial_number) for e in self.object)}'
+        }

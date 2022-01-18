@@ -22,14 +22,12 @@ import json
 import os
 import sys
 
-from accounts.models import Account, Entry
 from argparse import FileType
-from categories.models import Category, Tag
-from django.core.files import File
+from django.core.files import File as DJFile
 from django.core.management.base import BaseCommand
-from files.models import Invoice, Statement
-from ledger.models import Budget
 from units.models import Unit
+
+from ...models import Account, Budget, Category, Entry, File, Tag
 
 
 class Command(BaseCommand):
@@ -60,21 +58,15 @@ class Command(BaseCommand):
                         )
                     except Unit.DoesNotExist:
                         self.stderr.write(
-                            self.style.ERROR(
-                                f"Unit {a['unit']['name']} not found."
-                            )
+                            self.style.ERROR(f"Unit {a['unit']['name']} not found.")
                         )
                         sys.exit(0)
 
-                category, created = Category.objects.get_or_create(
-                    name=a["category"]
-                )
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Category {category} successfully "
-                        + f"{'created' if created else 'updated'}."
+                category, created = Category.objects.get_or_create(name=a["category"])
+                if created:
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Category {category} successfully created.")
                     )
-                )
 
                 if Account.objects.filter(name=a["name"]).exists():
                     self.stderr.write(
@@ -86,27 +78,24 @@ class Command(BaseCommand):
 
                 account = Account.objects.create(
                     name=a["name"],
-                    short_name=a["short_name"] if "short_name" in a else None,
                     category=category,
                     unit=unit,
                     closed=a["closed"],
                 )
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Account {account} successfully created."
-                    )
+                    self.style.SUCCESS(f"Account {account} successfully created.")
                 )
 
                 for e in a["entries"]:
                     category, created = Category.objects.get_or_create(
                         name=e["category"]
                     )
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Category {category} successfully "
-                            + f"{'created' if created else 'updated'}."
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f"Category {category} successfully created."
+                            )
                         )
-                    )
 
                     entry = Entry.objects.create(
                         serial_number=e["serial_number"],
@@ -114,37 +103,41 @@ class Command(BaseCommand):
                         amount=e["amount"],
                         fees=e["fees"],
                         category=category,
-                        additional=e["text"],
+                        text=e["text"],
                         account=account,
                     )
                     self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Entry {entry} successfully created."
-                        )
+                        self.style.SUCCESS(f"Entry {entry} successfully created.")
                     )
 
                     for t in e["tags"]:
                         tag, created = Tag.objects.get_or_create(name=t)
                         entry.tags.add(tag)
-                        self.stdout.write(
-                            self.style.SUCCESS(
-                                f"Tag {tag} successfully "
-                                + f"{'created' if created else 'updated'}."
+                        if created:
+                            self.stdout.write(
+                                self.style.SUCCESS(f"Tag {tag} successfully created.")
                             )
+                    if "files" in e:
+                        for i in e["files"]:
+                            file = File(name=i["name"], content_object=entry)
+                            file.file.save(
+                                os.path.basename(i["file"]),
+                                DJFile(open(i["file"], "rb")),
+                            )
+                            file.save()
+                            self.stdout.write(
+                                self.style.SUCCESS(f"File {file} successfully created.")
+                            )
+                if "files" in a:
+                    for s in a["files"]:
+                        file = File(name=s["name"], content_object=account)
+                        file.file.save(
+                            os.path.basename(s["file"]), DJFile(open(s["file"], "rb"))
                         )
-                    if "invoices" in a:
-                        for i in a["invoices"]:
-                            invoice = Invoice(name=i["name"], entry=entry)
-                            invoice.file.save(
-                                os.path.basename(i["file"]), File(open(i["file"], "rb"))
-                            )
-                            invoice.save()
-                for s in a["statements"]:
-                    statement = Statement(name=s["name"], account=account)
-                    statement.file.save(
-                        os.path.basename(s["file"]), File(open(s["file"], "rb"))
-                    )
-                    statement.save()
+                        file.save()
+                        self.stdout.write(
+                            self.style.SUCCESS(f"File {file} successfully created.")
+                        )
         else:
             self.stdout.write(
                 self.style.ERROR("No accounts found in data, aborting...")
@@ -153,11 +146,12 @@ class Command(BaseCommand):
 
         if "budget" in data:
             budget, created = Budget.objects.get_or_create()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Budget successfully {'created' if created else 'updated'}."
+            if created:
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Budget successfully {'created' if created else 'updated'}."
+                    )
                 )
-            )
 
             for t in data["budget"]["income_tags"]:
                 budget.income_tags.add(Tag.objects.get(name=t))
@@ -169,52 +163,3 @@ class Command(BaseCommand):
                 budget.savings_tags.add(Tag.objects.get(name=t))
         else:
             self.stdout.write(self.style.ERROR("No budget found in data."))
-        # data = {"accounts": []}
-        # for account in Ledger.objects.get(
-        #     user__username=options["username"]
-        # ).accounts.all():
-        #     if options["renumber_entries"]:
-        #         account.renumber_entries()
-        #     data["accounts"].append(
-        #         {
-        #             "name": account.name,
-        #             "category": account.category.name,
-        #             "closed": account.closed,
-        #             "unit": {
-        #                 "name": account.unit.name,
-        #                 "symbol": account.unit.symbol,
-        #                 "precision": account.unit.precision,
-        #             },
-        #             "statements": [
-        #                 {"name": statement.name, "file": statement.file.path}
-        #                 for statement in account.statements.all()
-        #             ],
-        #             "entries": [
-        #                 {
-        #                     "serial_number": entry.serial_number,
-        #                     "date": entry.day.strftime("%Y-%m-%d"),
-        #                     "amount": entry.amount,
-        #                     "fees": entry.fees,
-        #                     "category": entry.category.name,
-        #                     "text": entry.additional if entry.additional else None,
-        #                     "tags": [tag.name for tag in entry.tags.all()],
-        #                     "invoices": [
-        #                         {"name": invoice.name, "file": invoice.file.path}
-        #                         for invoice in entry.invoices.all()
-        #                     ],
-        #                 }
-        #                 for entry in account.entries.all()
-        #             ],
-        #         }
-        #     )
-
-        # budget = Budget.objects.get(user__username=options["username"])
-        # data["budget"] = {
-        #     "income_tags": [tag.name for tag in budget.income_tags.all()],
-        #     "consumption_tags": [tag.name for tag in budget.consumption_tags.all()],
-        #     "insurance_tags": [tag.name for tag in budget.insurance_tags.all()],
-        #     "savings_tags": [tag.name for tag in budget.savings_tags.all()],
-        # }
-
-        # options["output"].write(json.dumps(data, indent=4, ensure_ascii=False))
-        # options["output"].write("\n")

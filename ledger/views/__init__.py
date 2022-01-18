@@ -16,10 +16,29 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django app views."""
 
+from . import account
 from . import budget
+from . import category
+from . import entry
+from . import file
 from . import statistics
-from .base import AnotherSuccessView, DashboardView
+from . import tag
+from .base import AnotherSuccessView
+from .standing_entry import CreateView as StandingEntryCreateView
+from .transfer import CreateView as TransferCreateView
 
 
-__all__ = ("AnotherSuccessView", "DashboardView", "budget", "statistics")
+__all__ = (
+    "AnotherSuccessView",
+    "StandingEntryCreateView",
+    "TransferCreateView",
+    "account",
+    "budget",
+    "category",
+    "entry",
+    "file",
+    "statistics",
+    "tag",
+)

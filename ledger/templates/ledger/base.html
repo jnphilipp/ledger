@@ -23,7 +23,7 @@
                 });
                 $("#iframeFormModalIframe").on("load", function() {
                     $("#iframeFormModalIframe").width(Math.max(800, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
-                    $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+                    $("#iframeFormModalIframe").height(Math.max(400, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
                     $("#iframeFormModal").modal("handleUpdate");
                 });
             });
@@ -34,7 +34,7 @@
     <body>
         <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url "dashboard" %}">
+                <a class="navbar-brand" href="{% url "entry_list" %}">
                     <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,10 +44,17 @@
                 <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            {% url "accounts:entry_list" as entry_list_url %}
-                            <a class="nav-link{% if request.path|startswith:entry_list_url %} active{% endif %}" href="{{ entry_list_url }}">
+                            {% url "entry_list" as entry_list_url %}
+                            <a class="nav-link{% if request.path == entry_list_url %} active{% endif %}" href="{{ entry_list_url }}">
                                 {% trans "Ledger" %}
-                                {% if request.path|startswith:entry_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                                {% if request.path == entry_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% url "account_list" as account_list_url %}
+                            <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" href="{{ account_list_url }}">
+                                {% trans "Accounts" %}
+                                {% if request.path|startswith:account_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
                             </a>
                         </li>
                         <li class="nav-item">
@@ -55,34 +62,6 @@
                             <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
                                 {% trans "Budget" %}
                                 {% if request.path|startswith:budget_detail_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "accounts:account_list" as account_list_url %}
-                            <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" href="{{ account_list_url }}">
-                                {% trans "Accounts" %}
-                                {% if request.path|startswith:account_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "files:statement_list" as statement_list_url %}
-                            <a class="nav-link{% if request.path|startswith:statement_list_url %} active{% endif %}" href="{{ statement_list_url }}">
-                                {% trans "Statements" %}
-                                {% if request.path|startswith:statement_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "categories:category_list" as category_list_url %}
-                            <a class="nav-link{% if request.path|startswith:category_list_url %} active{% endif %}" href="{{ category_list_url }}">
-                                {% trans "Categories" %}
-                                {% if request.path|startswith:category_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "categories:tag_list" as tag_list_url %}
-                            <a class="nav-link{% if request.path|startswith:tag_list_url %} active{% endif %}" href="{{ tag_list_url }}">
-                                {% trans "Tags" %}
-                                {% if request.path|startswith:tag_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
                             </a>
                         </li>
                         <li class="nav-item">

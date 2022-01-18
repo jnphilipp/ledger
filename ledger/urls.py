@@ -32,22 +32,43 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from accounts.views.entry import ListView
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import include, path
-from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import RedirectView
 
-from .views import AnotherSuccessView, budget, DashboardView, statistics
-
-
-# admin.site.site_header = _("ledger administration")
+from .views import (
+    AnotherSuccessView,
+    StandingEntryCreateView,
+    TransferCreateView,
+    account,
+    budget,
+    category,
+    entry,
+    file,
+    statistics,
+    tag,
+)
 
 
 urlpatterns = [
-    path("", RedirectView.as_view(url="/accounts/"), name="dashboard"),
+    path("", entry.ListView.as_view(), name="entry_list"),
+    path("<int:page>/", entry.ListView.as_view()),
+    path("account/", account.ListView.as_view(), name="account_list"),
+    path("account/create/", account.CreateView.as_view(), name="account_create"),
+    path("account/autocomplete/", account.autocomplete, name="account_autocomplete"),
+    path("account/<slug:slug>/", account.DetailView.as_view(), name="account_detail"),
+    path(
+        "account/<slug:slug>/edit/", account.UpdateView.as_view(), name="account_edit"
+    ),
+    path(
+        "account/<slug:slug>/close/", account.CloseView.as_view(), name="account_close"
+    ),
+    path(
+        "account/<slug:slug>/delete/",
+        account.DeleteView.as_view(),
+        name="account_delete",
+    ),
     path(
         "add/another/success/",
         AnotherSuccessView.as_view(),
@@ -56,6 +77,36 @@ urlpatterns = [
     path("budget/", budget.DetailView.as_view(), name="budget_detail"),
     path("budget/<int:year>/", budget.DetailView.as_view(), name="budget_detail"),
     path("budget/edit/", budget.UpdateView.as_view(), name="budget_edit"),
+    path("category/autocomplete/", category.autocomplete, name="category_autocomplete"),
+    path("entry/create/", entry.CreateView.as_view(), name="entry_create"),
+    path(
+        "entry/standing/create/",
+        StandingEntryCreateView.as_view(),
+        name="standing_entry_create",
+    ),
+    path(
+        "entry/transfer/create/", TransferCreateView.as_view(), name="transfer_create"
+    ),
+    path("entry/<int:pk>/", entry.DetailView.as_view(), name="entry_detail"),
+    path("entry/<int:pk>/edit/", entry.UpdateView.as_view(), name="entry_edit"),
+    path("entry/<int:pk>/delete/", entry.DeleteView.as_view(), name="entry_delete"),
+    path(
+        "entry/<int:pk>/duplicate/",
+        entry.DuplicateView.as_view(),
+        name="entry_duplicate",
+    ),
+    path(
+        "entry/<int:pk>/swap/<str:direction>/",
+        entry.SwapView.as_view(),
+        name="entry_swap",
+    ),
+    path(
+        "file/create/<int:content_type>/<int:object_id>/",
+        file.CreateView.as_view(),
+        name="file_create",
+    ),
+    path("file/<slug:slug>/", file.DetailView.as_view(), name="file_detail"),
+    path("file/<slug:slug>/delete/", file.DeleteView.as_view(), name="file_delete"),
     path("statistics/", statistics.StatisticsView.as_view(), name="statistics_detail"),
     path(
         "statistics/<slug:unit>/",
@@ -79,40 +130,36 @@ urlpatterns = [
     ),
     path(
         "statistics/charts/categories/<slug:unit>/",
-        statistics.charts.categories,
+        statistics.categories,
         name="statistics_chart_categories",
     ),
     path(
         "statistics/charts/categories/<slug:unit>/<int:year>/",
-        statistics.charts.categories,
+        statistics.categories,
         name="statistics_chart_categories",
     ),
     path(
         "statistics/charts/categories/<slug:unit>/<int:year>/<int:month>/",
-        statistics.charts.categories,
+        statistics.categories,
         name="statistics_chart_categories",
     ),
     path(
         "statistics/charts/tags/<slug:unit>/",
-        statistics.charts.tags,
+        statistics.tags,
         name="statistics_chart_tags",
     ),
     path(
         "statistics/charts/tags/<slug:unit>/<int:year>/",
-        statistics.charts.tags,
+        statistics.tags,
         name="statistics_chart_tags",
     ),
     path(
         "statistics/charts/tags/<slug:unit>/<int:year>/<int:month>/",
-        statistics.charts.tags,
+        statistics.tags,
         name="statistics_chart_tags",
     ),
-
-    path("accounts/", include("accounts.urls")),
-    path("categories/", include("categories.urls")),
-    path("files/", include("files.urls")),
+    path("tag/autocomplete/", tag.autocomplete, name="tag_autocomplete"),
     path("units/", include("units.urls")),
-    # path("admin/", admin.site.urls),
     path("favicon.ico", RedirectView.as_view(url="/static/images/logo.png")),
 ]
 

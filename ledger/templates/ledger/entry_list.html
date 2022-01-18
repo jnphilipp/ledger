@@ -1,0 +1,195 @@
+{% extends "ledger/base.html" %}
+{% load bootstrap i18n l10n ledger static %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $("#id_start_date").datepicker({
+            dateFormat: "yy-mm-dd",
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $("#id_end_date").datepicker({
+            dateFormat: "yy-mm-dd",
+            firstDay: 1,
+            showOtherMonths: true,
+            selectOtherMonths: true
+        });
+        $("#id_accounts").select2({
+            placeholder: "{% trans "Accounts" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "account_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.accounts }
+                }
+            }
+        });
+        $("#id_categories").select2({
+            placeholder: "{% trans "Categories" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "category_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.categories }
+                }
+            }
+        });
+        $("#id_tags").select2({
+            placeholder: "{% trans "Tags" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "tag_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.tags }
+                }
+            }
+        });
+        $("#id_units").select2({
+            placeholder: "{% trans "Units" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "units:unit_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.units }
+                }
+            }
+        });
+
+        $("#iframeFormModal").on("show.bs.modal", function(e) {
+            $("#iframeFormModalLabel").html(e.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", e.relatedTarget.href);
+
+            if ( e.relatedTarget.href.includes("/entry/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")) ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+                $(".modal-footer").show();
+            }
+            else if ( e.relatedTarget.href.includes("/file/") && e.relatedTarget.href.includes("/create/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-upload\"></span> {% trans "Save" %}");
+                $(".modal-footer").show();
+            }
+            else if ( (e.relatedTarget.href.includes("/entry/") || e.relatedTarget.href.includes("/file/")) && e.relatedTarget.href.includes("/delete/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-danger");
+                $("#iframeFormModalSubmit").removeClass("btn-primary");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+                $(".modal-footer").show();
+            }
+            else if ( e.relatedTarget.href.includes("/entry/") ) {
+                $(".modal-footer").hide();
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-2">
+        {% balance account %}
+    </div>
+    <div class="col-7 text-center">
+        {% trans "Filter" as filter_trans %}
+        {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
+    </div>
+   <div class="col text-end">
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+            <div class="dropdown-menu" aria-labelledby="add_dropdown">
+                <a class="dropdown-item iframeFormModal" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Entry" %}</a>
+                <a class="dropdown-item iframeFormModal" href="{% url "transfer_create" %}" title="{% trans "Transfer" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Transfer" %}</a>
+                <a class="dropdown-item iframeFormModal" href="{% url "standing_entry_create" %}" title="{% trans "Add standing entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Standing entry" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">{% trans "Account" %}</th>
+                        <th scope="col" colspan="2">{% trans "Date" %}</th>
+                        <th scope="col">{% trans "Amount" %}</th>
+                        <th scope="col">{% trans "Category" %}</th>
+                        <th scope="col">{% trans "Text" %}</th>
+                        <th scope="col">{% trans "Tags" %}</th>
+                        <th scope="col">{% trans "Files" %}</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% now "Y-m-d" as today %}
+                    {% for entry in entries %}
+                        <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
+                            <th scope="row">
+                                <a href="{% url "entry_list" %}?accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.account.name }}</a>
+                                <a class="iframeFormModal" href="{% url "entry_detail" entry.pk %}" title="{{ entry.account.name}} #{{ entry.serial_number }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
+                            </th>
+                            <td>{{ entry.date|date:"d.m.Y" }}</td>
+                            <td>{{ entry.date|date:"D" }}</td>
+                            <td class="text-end"{% if entry.fees != 0 %} data-toggle="tooltip" data-placement="right" data-html="true" title="{% trans "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% trans "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|colorfy:entry.account.unit }}</td>
+                            <td><a href="{% url "entry_list" %}?categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.category }}</a></td>
+                            <td>{{ entry.text|default_if_none:"" }}</td>
+                            <td>
+                                {% for tag in entry.tags.all %}
+                                    <a href="{% url "entry_list" %}?tags={{ tag.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for file in entry.files.all %}
+                                    <a href="{% url "file_detail" file.slug %}">{{ file.name }}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
+                                    <div class="dropdown-menu" aria-labelledby="options-{entry.id}">
+                                        <a class="dropdown-item iframeFormModal" href="{% url "entry_edit" entry.pk %}" title="{% trans "Edit entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_duplicate" entry.pk %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Duplicate entry" %}"><span class="fas fa-clone"></span> {% trans "Duplicate" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Move down" %}"><span class="fas fa-arrow-down"></span> {% trans "Move down" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Move up" %}"><span class="fas fa-arrow-up"></span> {% trans "Move up" %}</a>
+                                        <a class="dropdown-item iframeFormModal" href="{% url "entry_delete" entry.pk %}" title="{% trans "Delete entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                                        <a class="dropdown-item iframeFormModal" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% url "entry_list" as base_path %}
+        {% trans "Entries" as pagination_title %}
+        {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date accounts=accounts|join:"&accounts=" categories=categories|join:"&categories=" tags=tags|join:"&tags=" units=units|join:"&units=" %}
+    </div>
+</div>
+{% endblock %}
