@@ -1,9 +1,18 @@
+# Python
+__pycache__
+.venv
+.mypy_cache
 *.pyc
+
+# Dajgno
+ledger/local.py
+ledger/media
+ledger/static
+
+# Other
+build
 db.sqlite3
-local.py
-ledger.sublime-project
-ledger.sublime-workspace
-media/*
-static/*
-.venv/*
-.mypy_cache/*
+
+# SublimeText
+*.sublime-project
+*.sublime-workspace
