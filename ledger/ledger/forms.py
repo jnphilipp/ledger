@@ -285,6 +285,13 @@ class EntryFilterForm(forms.Form):
         required=False,
     )
 
+    def __init__(self, *args, **kwargs):
+        """Init."""
+        super(EntryFilterForm, self).__init__(*args, **kwargs)
+
+        if Tag.objects.count() == 0:
+            del self.fields["tags"]
+
 
 class FileForm(forms.ModelForm):
     """File form."""

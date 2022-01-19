@@ -11,7 +11,7 @@
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             ajax: {
-                url: "{% url "category_autocomplete" %}",
+                url: "{% url "category_autocomplete" %}?append",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {

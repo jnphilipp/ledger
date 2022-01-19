@@ -41,48 +41,56 @@ class ListView(generic.ListView):
 
     def get_queryset(self):
         """Get queryset."""
-        self.form = EntryFilterForm(self.request.GET)
         entries = Entry.objects.order_by("-date", "account__name", "-serial_number")
 
         filtered = False
+        self.form = None
         self.start_date = None
         self.end_date = None
         self.accounts = []
         self.categories = []
         self.tags = []
         self.units = []
-        if self.form.is_valid():
-            if self.form.cleaned_data["start_date"]:
-                filtered = True
-                self.start_date = self.form.cleaned_data["start_date"]
-                entries = entries.filter(date__gte=self.start_date)
-            if self.form.cleaned_data["end_date"]:
-                filtered = True
-                self.end_date = self.form.cleaned_data["end_date"]
-                entries = entries.filter(date__lte=self.end_date)
-            if (
-                "accounts" in self.form.cleaned_data
-                and self.form.cleaned_data["accounts"]
-            ):
-                filtered = True
-                self.accounts = [a.pk for a in self.form.cleaned_data["accounts"]]
-                entries = entries.filter(account__in=self.accounts)
-            if self.form.cleaned_data["categories"]:
-                filtered = True
-                self.categories = [c.pk for c in self.form.cleaned_data["categories"]]
-                entries = entries.filter(category__in=self.categories)
-            if self.form.cleaned_data["tags"]:
-                filtered = True
-                self.tags = [t.pk for t in self.form.cleaned_data["tags"]]
-                entries = entries.filter(tags__in=self.tags)
-            if "units" in self.form.cleaned_data and self.form.cleaned_data["units"]:
-                filtered = True
-                self.units = [u.pk for u in self.form.cleaned_data["units"]]
-                entries = entries.filter(account__unit__in=self.units)
+        if entries.count() > 0:
+            self.form = EntryFilterForm(self.request.GET)
+            if self.form.is_valid():
+                if self.form.cleaned_data["start_date"]:
+                    filtered = True
+                    self.start_date = self.form.cleaned_data["start_date"]
+                    entries = entries.filter(date__gte=self.start_date)
+                if self.form.cleaned_data["end_date"]:
+                    filtered = True
+                    self.end_date = self.form.cleaned_data["end_date"]
+                    entries = entries.filter(date__lte=self.end_date)
+                if (
+                    "accounts" in self.form.cleaned_data
+                    and self.form.cleaned_data["accounts"]
+                ):
+                    filtered = True
+                    self.accounts = [a.pk for a in self.form.cleaned_data["accounts"]]
+                    entries = entries.filter(account__in=self.accounts)
+                if self.form.cleaned_data["categories"]:
+                    filtered = True
+                    self.categories = [
+                        c.pk for c in self.form.cleaned_data["categories"]
+                    ]
+                    entries = entries.filter(category__in=self.categories)
+                if "tags" in self.form.cleaned_data and self.form.cleaned_data["tags"]:
+                    filtered = True
+                    self.tags = [t.pk for t in self.form.cleaned_data["tags"]]
+                    entries = entries.filter(tags__in=self.tags)
+                if (
+                    "units" in self.form.cleaned_data
+                    and self.form.cleaned_data["units"]
+                ):
+                    filtered = True
+                    self.units = [u.pk for u in self.form.cleaned_data["units"]]
+                    entries = entries.filter(account__unit__in=self.units)
 
         if not filtered:
             self.end_date = get_last_date_current_month()
-            self.form = EntryFilterForm(initial={"end_date": self.end_date})
+            if entries.count() > 0:
+                self.form = EntryFilterForm(initial={"end_date": self.end_date})
             entries = entries.filter(date__lte=self.end_date)
 
         return entries.annotate(total=F("amount") + F("fees")).distinct()

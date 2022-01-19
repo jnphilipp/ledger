@@ -20,6 +20,7 @@
         });
         $("#id_accounts").select2({
             placeholder: "{% trans "Accounts" %}",
+            width: "100%",
             language: "{{ LANGUAGE_CODE }}",
             ajax: {
                 url: "{% url "account_autocomplete" %}",
@@ -36,6 +37,7 @@
         $("#id_categories").select2({
             placeholder: "{% trans "Categories" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "category_autocomplete" %}",
                 dataType: "json",
@@ -66,6 +68,7 @@
         $("#id_units").select2({
             placeholder: "{% trans "Units" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "units:unit_autocomplete" %}",
                 dataType: "json",
@@ -111,13 +114,16 @@
 
 
 {% block content %}
+{% if entries %}
 <div class="row">
     <div class="col-2">
-        {% balance account %}
+        {% balance %}
     </div>
     <div class="col-7 text-center">
-        {% trans "Filter" as filter_trans %}
-        {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
+        {% if form %}
+            {% trans "Filter" as filter_trans %}
+            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
+        {% endif %}
     </div>
    <div class="col text-end">
         <div class="dropdown">
@@ -192,4 +198,11 @@
         {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date accounts=accounts|join:"&accounts=" categories=categories|join:"&categories=" tags=tags|join:"&tags=" units=units|join:"&units=" %}
     </div>
 </div>
+{% else %}
+<div class="row">
+    <div class="col text-center">
+        <h3>{% trans "There is no data available." %}</h3>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -12,6 +12,7 @@ ledger/static
 # Other
 build
 db.sqlite3
+db.sqlite3-journal
 
 # SublimeText
 *.sublime-project

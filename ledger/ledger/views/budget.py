@@ -41,6 +41,9 @@ class DetailView(generic.DetailView):
         """Get context data."""
         context = super(DetailView, self).get_context_data(*args, **kwargs)
 
+        if Entry.objects.count() == 0:
+            return context
+
         years = Entry.objects.dates("date", "year")
         context["years"] = [y.year for y in years]
 

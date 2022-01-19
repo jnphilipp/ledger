@@ -13,6 +13,9 @@
         $('#iframeFormModal').on('show.bs.modal', function (event) {
             $("#iframeFormModalLabel").html(event.relatedTarget.title);
             $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+            $("#iframeFormModalSubmit").addClass("btn-primary");
+            $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+            $(".modal-footer").show();
         });
     });
 </script>
@@ -20,6 +23,7 @@
 
 
 {% block content %}
+{% if year and units and table %}
 <div class="row">
     <div class="col">
         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar">
@@ -156,17 +160,17 @@
                     </tr>
                     <tr>
                         <th scope="col">{% translate "Name" %}</th>
-                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
-                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
                         <th scope="col">{% translate "Name" %}</th>
-                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
-                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
                         <th scope="col">{% translate "Name" %}</th>
-                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
-                        <th scope="col" class="text-right" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
                         <th scope="col">{% translate "Name" %}</th>
-                        <th scope="col" class="text-right">{% translate "Monthly" %}</th>
-                        <th scope="col" class="text-right">{% translate "Yearly" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end">{% translate "Yearly" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,7 +180,7 @@
                                 {% if forloop.counter0|divisibleby:3 %}
                                     <th scope="row">{% if cell|length == 2 %}<a href="{% url "entry_list" %}?tags={{ cell|get_item:0 }}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
                                 {% else %}
-                                    <td class="text-right"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
+                                    <td class="text-end"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
                                 {% endif %}
                             {% endfor %}
                         </tr>
@@ -189,7 +193,7 @@
                                 {% if forloop.counter0|divisibleby:3 %}
                                     <th>{{ cell }}</th>
                                 {% else %}
-                                    <td class="text-right"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
+                                    <td class="text-end"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
                                 {% endif %}
                             {% endfor %}
                         </tr>
@@ -199,4 +203,16 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="row">
+    <div class="text-end">
+        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h3>{% trans "There is no data available." %}</h3>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

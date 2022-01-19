@@ -174,7 +174,7 @@ def balance(context, account=None):
             )
         else:
             accounts = []
-            for a in unit.accounts.filter(closed=False):
+            for a in unit.accounts.all().order_by("entries__date"):
                 b = a.entries.filter(date__lte=date.today()).aggregate(
                     sum=Sum(F("amount") + F("fees"))
                 )["sum"]

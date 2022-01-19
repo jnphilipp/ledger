@@ -33,6 +33,7 @@
 
 
 {% block content %}
+{% if options or unit %}
 <div class="row">
     <div class="col text-center">
         <div class="btn-group" role="group">
@@ -85,4 +86,11 @@
         {% if chart %}<div id="chart" style="min-width: 310px; height: 800px;"></div>{% endif %}
     </div>
 </div>
+{% else %}
+<div class="row">
+    <div class="col text-center">
+        <h3>{% trans "There is no data available." %}</h3>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

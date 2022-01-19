@@ -41,7 +41,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # General app info
-APP_IDENTIFIER = "ledgr"
+APP_IDENTIFIER = "ledger"
 
 
 # XDG config
