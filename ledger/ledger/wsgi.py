@@ -31,4 +31,11 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ledger.settings")
 
+from django.conf import settings
+from django.core.management import execute_from_command_line
+
+if not settings.APP_DATA_DIR.exists():
+    settings.APP_DATA_DIR.mkdir(parents=True, exist_ok=True)
+execute_from_command_line(["", "migrate", "--noinput", "-v0"])
+
 application = get_wsgi_application()
