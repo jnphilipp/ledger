@@ -40,7 +40,6 @@ venv:
 	done
 
 
-
 test: .venv
 	$(Q)( \
 		source .venv/bin/activate; \
