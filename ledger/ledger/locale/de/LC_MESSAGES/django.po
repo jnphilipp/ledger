@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 21:27+0100\n"
-"PO-Revision-Date: 2022-01-18 21:27+0100\n"
+"POT-Creation-Date: 2022-01-21 18:44+0100\n"
+"PO-Revision-Date: 2022-01-21 18:44+0100\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -497,11 +497,11 @@ msgstr "Duplizieren"
 
 #: templates/ledger/entry_list.html:184
 msgid "Move down"
-msgstr "Nach oben verschieben"
+msgstr "Nach unten verschieben"
 
 #: templates/ledger/entry_list.html:185
 msgid "Move up"
-msgstr "Nach unten verschieben"
+msgstr "Nach oben verschieben"
 
 #: templates/ledger/entry_list.html:186
 msgid "Delete entry"
@@ -579,17 +579,17 @@ msgstr "Real"
 msgid "Your budget was successfully updated."
 msgstr "Ihr Budget wurde erfolgreich aktualisiert."
 
-#: views/entry.py:139
+#: views/entry.py:144
 #, python-format
 msgid "The entry \"%(entry)s\" was successfully created."
 msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich erstellt."
 
-#: views/entry.py:168
+#: views/entry.py:173
 #, python-format
 msgid "The entry \"%(entry)s\" was successfully updated."
 msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert."
 
-#: views/entry.py:173
+#: views/entry.py:178
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s\"."
@@ -597,12 +597,12 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und nach \"%(no)s\" "
 "verschoben."
 
-#: views/entry.py:197
+#: views/entry.py:202
 #, python-format
 msgid "The entry \"%(entry)s\" was successfully deleted."
 msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich gelöscht."
 
-#: views/entry.py:225
+#: views/entry.py:230
 #, python-format
 msgid ""
 "The entry \"%(old_entry)s\" has been successfully duplicated as entry "
@@ -611,7 +611,7 @@ msgstr ""
 "Der Eintrag \"%(old_entry)s\" wurde erfolgreich als Eintrag \"%(new_entry)s"
 "\" dupliziert ."
 
-#: views/entry.py:276
+#: views/entry.py:281
 #, python-format
 msgid "The entries \"#%(e1)s\" and \"#%(e2)s\" were successfully swaped."
 msgstr ""
