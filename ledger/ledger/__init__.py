@@ -16,6 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django app."""
 
 __author__ = "J. Nathanael Philipp"
 __copyright__ = "Copyright 2014-2022 J. Nathanael Philipp (jnphilipp)"
@@ -23,6 +24,6 @@ __license__ = "GPLv3+"
 __maintainer__ = __author__
 __email__ = "nathanael@philipp.land"
 __app_name__ = "ledger"
-__version_info__ = (2, 0, 0)
+__version_info__ = (2, 0, 1)
 __version__ = ".".join(str(e) for e in __version_info__)
 __github__ = "https://github.com/jnphilipp/ledger"
