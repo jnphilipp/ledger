@@ -238,7 +238,7 @@ class DuplicateView(generic.base.RedirectView):
             msg % {"old_entry": old_entry, "new_entry": new_entry},
         )
 
-        self.url = reverse_lazy("accounts:entry_list")
+        self.url = reverse_lazy("entry_list")
         return super().get_redirect_url(*args, **kwargs)
 
 
@@ -286,5 +286,5 @@ class SwapView(generic.base.RedirectView):
                 msg % {"e1": e1.serial_number, "e2": e2.serial_number},
             )
 
-        self.url = reverse_lazy("accounts:entry_list")
+        self.url = reverse_lazy("entry_list")
         return super().get_redirect_url(*args, **kwargs)
