@@ -22,7 +22,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -48,7 +48,7 @@ def autocomplete(request):
     accounts = Account.objects.annotate(Count("entries")).order_by("-entries__count")
     if "q" in params:
         q = params.pop("q")[0]
-        accounts = accounts.filter(Q(name__icontains=q) | Q(short_name__icontains=q))
+        accounts = accounts.filter(name__icontains=q)
     if "closed" in params:
         closed = True if params.pop("closed")[0].lower() == "true" else False
         accounts = accounts.filter(closed=closed)
