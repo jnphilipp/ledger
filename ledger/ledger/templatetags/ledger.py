@@ -144,15 +144,11 @@ def outstanding(account):
 
 
 @register.inclusion_tag("ledger/partials/_balances.html", takes_context=True)
-def balance(context, account=None):
-    """Balance inclusion tag."""
+def balances(context):
+    """Balances tag."""
     values = []
 
-    if account:
-        entries = account.entries.all()
-    else:
-        entries = Entry.objects.all()
-
+    entries = Entry.objects.all()
     ids = set(entries.values_list("account__unit", flat=True))
     for unit in Unit.objects.filter(id__in=ids):
         e = entries.filter(account__unit=unit)
@@ -165,41 +161,31 @@ def balance(context, account=None):
             .aggregate(sum=Sum(F("amount") + F("fees")))["sum"]
         )
 
-        if account:
-            values.append(
+        accounts = []
+        for a in set(unit.accounts.filter(closed=False).order_by("entries__date")):
+            b = a.entries.filter(date__lte=date.today()).aggregate(
+                sum=Sum(F("amount") + F("fees"))
+            )["sum"]
+            o = (
+                a.entries.filter(date__gt=date.today())
+                .filter(date__lte=get_last_date_current_month())
+                .aggregate(sum=Sum(F("amount") + F("fees")))["sum"]
+            )
+            if not o:
+                o = 0.0
+            accounts.append(
                 {
-                    "balance": colorfy(balance, unit),
-                    "outstanding": colorfy(outstanding, unit),
+                    "name": a.name,
+                    "balance": f"{floatformat(b, unit.precision)} {unit.symbol}",
+                    "outstanding": f"{floatformat(o, unit.precision)} {unit.symbol}",
                 }
             )
-        else:
-            accounts = []
-            for a in unit.accounts.all().order_by("entries__date"):
-                b = a.entries.filter(date__lte=date.today()).aggregate(
-                    sum=Sum(F("amount") + F("fees"))
-                )["sum"]
-                o = (
-                    a.entries.filter(date__gt=date.today())
-                    .filter(date__lte=get_last_date_current_month())
-                    .aggregate(sum=Sum(F("amount") + F("fees")))["sum"]
-                )
-                if not o:
-                    o = 0.0
-                accounts.append(
-                    {
-                        "name": a.name,
-                        "balance": f"{floatformat(b, unit.precision)} "
-                        + f"{unit.symbol}",
-                        "outstanding": f"{floatformat(o, unit.precision)} "
-                        + f"{unit.symbol}",
-                    }
-                )
 
-            values.append(
-                {
-                    "balance": colorfy(balance, unit),
-                    "outstanding": colorfy(outstanding, unit),
-                    "accounts": accounts,
-                }
-            )
+        values.append(
+            {
+                "balance": colorfy(balance, unit),
+                "outstanding": colorfy(outstanding, unit),
+                "accounts": accounts,
+            }
+        )
     return {"values": values}
