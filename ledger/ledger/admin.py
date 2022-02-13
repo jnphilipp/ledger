@@ -79,7 +79,7 @@ class AccountAdmin(admin.ModelAdmin):
     ]
     filter_horizontal = ("ledgers",)
     list_display = ("name", "show_entry_count", "unit", "updated_at")
-    list_filter = "unit"
+    list_filter = ("unit",)
     readonly_fields = ("created_at", "updated_at", "slug")
     search_fields = ("name", "unit__name")
     show_entry_count.admin_order_field = "entry_count"
