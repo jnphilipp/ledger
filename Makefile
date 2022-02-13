@@ -68,7 +68,7 @@ install: ledger/static build/copyright build/changelog.Debian.gz build/package/D
 		install -Dm 0644 $$f "${DEST_DIR}${SHARE_DIR}"/$$f; \
 	done
 
-	$(Q)install -Dm 0644 uwsgi.ini "${DEST_DIR}${SHARE_DIR}"/ledger/uwsgi.ini;
+	$(Q)install -Dm 0644 uwsgi.ini "${DEST_DIR}${SHARE_DIR}"/ledger/uwsgi.ini
 
 	$(Q)install -Dm 0644 build/changelog.Debian.gz "${DEST_DIR}${DOC_DIR}"/ledger/changelog.Debian.gz
 	$(Q)install -Dm 0644 build/copyright "${DEST_DIR}${DOC_DIR}"/ledger/copyright
@@ -164,6 +164,7 @@ build/package/DEBIAN/control: build/package/DEBIAN/md5sums
 	$(Q)echo "Priority: optional" >> build/package/DEBIAN/control
 	$(Q)echo "Architecture: all" >> build/package/DEBIAN/control
 	$(Q)echo "Depends: python3 (<< 3.11), python3 (>= 3.7), python3:any, python3-django (= 4.0~), python3-dateutil (=2.8~)" >> build/package/DEBIAN/control
+	$(Q)echo "Recommends: systemd" >> build/package/DEBIAN/control
 	$(Q)echo "Installed-Size: `du -sk build/package/usr | grep -oE "[0-9]+"`" >> build/package/DEBIAN/control
 	$(Q)echo "Maintainer: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>" >> build/package/DEBIAN/control
 	$(Q)echo "Homepage: https://github.com/jnphilipp/ledger" >> build/package/DEBIAN/control
