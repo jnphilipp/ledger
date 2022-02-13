@@ -220,7 +220,7 @@ class DuplicateView(generic.base.RedirectView):
             amount=entry.amount,
             fees=entry.fees,
             category=entry.category,
-            additional=entry.additional,
+            text=entry.text,
         )
         for tag in entry.tags.all():
             new.tags.add(tag.id)
