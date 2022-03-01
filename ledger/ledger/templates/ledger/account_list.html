@@ -65,6 +65,10 @@
                     <div class="dropdown">
                         <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
                         <div class="dropdown-menu" aria-labelledby="options-{entry.id}">
+                            <div class="dropdown-item text-muted">
+                                {{ account.name }}
+                            </div>
+                            <div><hr class="dropdown-divider"></div>
                             <a class="dropdown-item iframeFormModal" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
                             <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% trans "Reopen account" %}{% else %}{% trans "Close account" %}{% endif %}"><span class="fas fa-clone"></span> {% if account.closed %}{% trans "Reopen" %}{% else %}{% trans "Close" %}{% endif %}</a>
                             <a class="dropdown-item iframeFormModal" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
