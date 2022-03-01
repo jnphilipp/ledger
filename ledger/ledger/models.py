@@ -281,7 +281,7 @@ class File(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("name",)
+        ordering = ("-updated_at", "name")
         unique_together = ("content_type", "object_id", "name")
         verbose_name = _("File")
         verbose_name_plural = _("Files")
