@@ -20,8 +20,8 @@
         });
         $("#id_accounts").select2({
             placeholder: "{% trans "Accounts" %}",
-            width: "100%",
             language: "{{ LANGUAGE_CODE }}",
+            width: "element",
             ajax: {
                 url: "{% url "account_autocomplete" %}",
                 dataType: "json",
@@ -37,7 +37,7 @@
         $("#id_categories").select2({
             placeholder: "{% trans "Categories" %}",
             language: "{{ LANGUAGE_CODE }}",
-            width: "100%",
+            width: "element",
             ajax: {
                 url: "{% url "category_autocomplete" %}",
                 dataType: "json",
