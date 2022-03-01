@@ -13,6 +13,16 @@
         <link rel="stylesheet" media="all" href="{% static "css/ledger.css" %}"/>
         <title>{% block title %}ledger{% endblock %}</title>
         {% block extrahead %}{% endblock %}
+        <script type="text/javascript">
+            $(document).on('select2:open', () => {
+                let allFound = document.querySelectorAll('.select2-container--open .select2-search__field');
+                $(this).one('mouseup keyup',()=>{
+                    setTimeout(()=>{
+                        allFound[allFound.length - 1].focus();
+                    },0);
+                });
+            });
+        </script>
     </head>
     <body>
         <div class="container-fluid">

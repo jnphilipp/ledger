@@ -26,6 +26,14 @@
                     $("#iframeFormModalIframe").height(Math.max(400, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
                     $("#iframeFormModal").modal("handleUpdate");
                 });
+                $(document).on('select2:open', () => {
+                    let allFound = document.querySelectorAll('.select2-container--open .select2-search__field');
+                    $(this).one('mouseup keyup',()=>{
+                        setTimeout(()=>{
+                            allFound[allFound.length - 1].focus();
+                        },0);
+                    });
+                });
             });
         </script>
         <title>{% block title %}{% trans "Ledger" %}{% endblock %}</title>
