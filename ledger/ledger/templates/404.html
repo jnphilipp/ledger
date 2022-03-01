@@ -1,0 +1,14 @@
+{% extends "ledger/base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col offset-3">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">{% trans "Page not Found (404)" %}</h4>
+            <p>{% blocktrans with request_path=request_path %}The page <code>{{ request_path }}</code> you are looking for was not found.{% endblocktrans %}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

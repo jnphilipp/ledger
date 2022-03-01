@@ -1,0 +1,115 @@
+{% load bootstrap i18n ledger static %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="shortcut icon" href="{% static "images/logo.png" %}"/>
+        {% bootstrap_css %}
+        {% bootstrap_js %}
+        <link rel="stylesheet" media="all" href="{% static "css/fontawesome-all.min.css" %}"/>
+        <link rel="stylesheet" media="all" href="{% static "css/ledger.css" %}"/>
+        <script type="text/javascript">
+            $(function() {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                });
+
+                $("a.iframeFormModal").modal({
+                    show: false
+                });
+                $("#iframeFormModalIframe").on("load", function() {
+                    $("#iframeFormModalIframe").width(Math.max(800, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+                    $("#iframeFormModalIframe").height(Math.max(400, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+                    $("#iframeFormModal").modal("handleUpdate");
+                });
+            });
+        </script>
+        <title>{% block title %}{% trans "Ledger" %}{% endblock %}</title>
+        {% block extrahead %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url "entry_list" %}">
+                    <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            {% url "entry_list" as entry_list_url %}
+                            <a class="nav-link{% if request.path == entry_list_url %} active{% endif %}" href="{{ entry_list_url }}">
+                                {% trans "Ledger" %}
+                                {% if request.path == entry_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% url "account_list" as account_list_url %}
+                            <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" href="{{ account_list_url }}">
+                                {% trans "Accounts" %}
+                                {% if request.path|startswith:account_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% url "budget_detail" as budget_detail_url %}
+                            <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
+                                {% trans "Budget" %}
+                                {% if request.path|startswith:budget_detail_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% url "portfolio:position_list" as position_list_url %}
+                            <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" href="{{ position_list_url }}">
+                                {% trans "Portfolio" %}
+                                {% if request.path|startswith:position_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% url "statistics_detail" as statistics_detail_url %}
+                            <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" href="{{ statistics_detail_url }}">
+                                {% trans "Statistics" %}
+                                {% if request.path|startswith:statistics_detail_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid mt-3">
+            <div class="row">
+                <div class="col-10 offset-1">
+                    <div id="messages">{% messages %}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="iframeFormModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Cancel" %}"></button>
+                    </div>
+                    <div class="modal-body" style="padding-left: 0; padding-right: 0;">
+                        <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

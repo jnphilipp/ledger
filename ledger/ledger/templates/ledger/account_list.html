@@ -1,0 +1,89 @@
+{% extends "ledger/base.html" %}
+{% load i18n ledger %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        $('#iframeFormModal').on('show.bs.modal', function (event) {
+            $("#iframeFormModalLabel").html(event.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+
+            if ( event.relatedTarget.href.includes("/account/") && (event.relatedTarget.href.includes("/create/") || event.relatedTarget.href.includes("/edit/")) ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+            }
+            else if ( event.relatedTarget.href.includes("/file/") && event.relatedTarget.href.includes("/create/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-upload\"></span> {% trans "Save" %}");
+            }
+            else if ( event.relatedTarget.href.includes("/account/") && event.relatedTarget.href.includes("/delete/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-danger");
+                $("#iframeFormModalSubmit").removeClass("btn-primary");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col text-end">
+        <a class="btn btn-outline-primary iframeFormModal" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% trans "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+    </div>
+</div>
+{% if accounts %}
+<div class="row mt-md-2">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">{% trans "Account" %}</th>
+                        <th scope="col">{% trans "Balance" %}</th>
+                        <th scope="col">{% trans "Outstanding" %}</th>
+                        <th scope="col">{% trans "Number of Files" %}</th>
+                        <th scope="col">{% trans "Number of entries" %}</th>
+                        <th scope="col">{% trans "Last entry" %}</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in accounts %}
+                        <tr>
+                            <th scope="row"><a class="iframeFormModal" href="{% url "account_detail" account.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{{ account.name }}">{{ account.name }}{% if account.closed %} [{% translate "closed" %}]{% endif %}</a></th>
+                            <td class="text-end">{{ account|balance }}</td>
+                            <td class="text-end">{{ account|outstanding }}</td>
+                            <td class="text-end">{{ account.files.count }}</td>
+                            <td class="text-end">{{ account.entries.count }}</td>
+                            <td class="text-end">{{ account.entries.last.date|date:"l, d. F Y" }}</td>
+                            <td>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="options-{entry.id}">
+                            <a class="dropdown-item iframeFormModal" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                            <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% trans "Reopen account" %}{% else %}{% trans "Close account" %}{% endif %}"><span class="fas fa-clone"></span> {% if account.closed %}{% trans "Reopen" %}{% else %}{% trans "Close" %}{% endif %}</a>
+                            <a class="dropdown-item iframeFormModal" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                            <a class="dropdown-item iframeFormModal" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% trans "Add file" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
+                        </div>
+                    </div>
+                </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col text-center">
+        <h3>{% trans "There are no accounts available." %}</h3>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

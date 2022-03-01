@@ -1,0 +1,15 @@
+{% extends "ledger/popup.html" %}
+{% load static %}
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(function() {
+        parent.$("#iframeFormModal").modal("hide");
+        {% if next %}
+            parent.location.href = "{{ next }}";
+        {% else %}
+            parent.location.href = parent.location.href;
+        {% endif %}
+    });
+</script>
+{% endblock %}

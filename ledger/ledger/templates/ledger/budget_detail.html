@@ -1,0 +1,218 @@
+{% extends "ledger/base.html" %}
+{% load i18n ledger static %}
+
+{% block extrahead %}
+<script type="text/javascript" src="{% static "js/highcharts.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts/modules/data.js" %}"></script>
+<script type="text/javascript" src="{% static "js/highcharts/modules/drilldown.js" %}"></script>
+<script type="text/javascript">
+    $(function() {
+        $("a.iframeFormModal").modal({
+            show: false
+        });
+        $('#iframeFormModal').on('show.bs.modal', function (event) {
+            $("#iframeFormModalLabel").html(event.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+            $("#iframeFormModalSubmit").addClass("btn-primary");
+            $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+            $(".modal-footer").show();
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+{% if year and units and table %}
+<div class="row">
+    <div class="col">
+        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar">
+            <div class="btn-group mr-2" role="group" aria-label="{% translate "Years" %}">
+                <a class="btn btn-outline-secondary{% if year|add:"-1" < years|first %} disabled{% endif %}" href="{% url "budget_detail" year|add:"-1" %}" role="button">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% translate "Previous" %}</span>
+                </a>
+                <a class="btn btn-outline-secondary active" href="{% url "budget_detail" year %}" role="button">{{ year }}</a>
+                <a class="btn btn-outline-secondary{% if year|add:"1" > years|last %} disabled{% endif %}" href="{% url "budget_detail" year|add:"1" %}" role="button">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% translate "Next" %}</span>
+                </a>
+            </div>
+            <div class="btn-group btn-toggle mr-2" role="group" aria-label="{% translate "Chart/Table toggle" %}">
+                <a class="btn btn btn-outline-primary active" data-bs-target="#toggleView" role="button">{% translate "Chart" %}</a>
+                <a class="btn btn btn-outline-secondary" data-bs-target="#toggleView" role="button">{% translate "Table" %}</a>
+            </div>
+            <div class="btn-group">
+                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $("a[data-bs-target='#toggleView']").click(function(e) {
+                e.preventDefault();
+                $("#table").toggle();
+                $("#chart_container").toggle();
+            });
+        </script>
+    </div>
+</div>
+<div class="row mt-md-2">
+    <div class="col">
+        <div id="chart_container">
+            {% if units|length > 1 %}
+                <div class="row">
+                    <div class="col-md-2 offset-md-5">
+                        <div class="btn-group btn-toggle" role="group">
+                            {% for unit in units %}
+                                <a class="btn {% if forloop.counter == 1 %}btn-primary active{% else %}btn-secondary{% endif %}" data-bs-target="#toggleChart" role="button">{{ unit.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <script type="text/javascript">
+                            $("a[data-bs-target='#toggleChart']").click(function(e) {
+                                e.preventDefault();
+                                {% for unit in units %}
+                                    $("#container_monthly_{{ unit.id }}").toggle();
+                                    $("#container_yearly_{{ unit.id }}").toggle();
+                                    if ( $("#container_monthly_{{ unit.id }}").is(":visible") ) {
+                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% translate "Monthly" %}");
+                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% translate "Yearly" %}");
+                                    }
+                                {% endfor %}
+                            });
+
+                            function pie(id, series, drilldown, title) {
+                                Highcharts.chart(id, {
+                                    chart: {
+                                        type: "pie"
+                                    },
+                                    title: {
+                                        text: title
+                                    },
+                                    series: series,
+                                    drilldown: drilldown
+                                });
+                            }
+
+                            {% for unit in units %}
+                                $(function() {
+                                    {% if forloop.counter == 1 %}
+                                        pie("container_monthly_{{ unit.id }}", {{ series_monthly|get_item:unit.id|safe }}, {{ drilldown_monthly|get_item:unit.id|safe }}, "{% translate "Monthly" %}");
+                                        pie("container_yearly_{{ unit.id }}", {{ series_yearly|get_item:unit.id|safe }}, {{ drilldown_yearly|get_item:unit.id|safe }}, "{% translate "Yearly" %}");
+                                    {% else %}
+                                        $("#container_monthly_{{ unit.id }}").toggle();
+                                        $("#container_yearly_{{ unit.id }}").toggle();
+                                    {% endif %}
+                                });
+                            {% endfor %}
+                        </script>
+                    </div>
+                </div>
+                <div class="row mt-md-2">
+                    <div class="col">
+                        <div class="text-center">
+                            {% for unit in units %}
+                                <div id="container_monthly_{{ unit.id }}" style="display: inline-block; height: 600px;"></div>
+                                <div id="container_yearly_{{ unit.id }}" style="display: inline-block; height: 600px;"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row mt-md-2">
+                    <div class="col">
+                        <div class="text-center">
+                            <div id="container_monthly" style="display: inline-block; height: 600px;"></div>
+                            <div id="container_yearly" style="display: inline-block; height: 600px;"></div>
+                        </div>
+                        <script type="text/javascript">
+                            Highcharts.chart("container_monthly", {
+                                chart: {
+                                    type: "pie"
+                                },
+                                title: {
+                                    text: "{% translate "Monthly" %}"
+                                },
+                                series: {{ series_monthly|safe }},
+                                drilldown: {{ drilldown_monthly|safe }}
+                            });
+                            Highcharts.chart("container_yearly", {
+                                chart: {
+                                    type: "pie"
+                                },
+                                title: {
+                                    text: "{% translate "Yearly" %}"
+                                },
+                                series: {{ series_yearly|safe }},
+                                drilldown: {{ drilldown_yearly|safe }}
+                            });
+                        </script>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div id="table" class="table-responsive" style="display: none;">
+            <table class="table table-striped table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Income" %}</th>
+                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Consumption" %}</th>
+                        <th scope="col" colspan="3" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Insurance" %}</th>
+                        <th scope="col" colspan="3">{% translate "Savings" %}</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end" style="border-right: 2px solid rgb(222, 226, 230);">{% translate "Yearly" %}</th>
+                        <th scope="col">{% translate "Name" %}</th>
+                        <th scope="col" class="text-end">{% translate "Monthly" %}</th>
+                        <th scope="col" class="text-end">{% translate "Yearly" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table %}
+                        <tr>
+                            {% for cell in row %}
+                                {% if forloop.counter0|divisibleby:3 %}
+                                    <th scope="row">{% if cell|length == 2 %}<a href="{% url "entry_list" %}?tags={{ cell|get_item:0 }}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
+                                {% else %}
+                                    <td class="text-end"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    {% for row in footer %}
+                        <tr>
+                            {% for cell in row %}
+                                {% if forloop.counter0|divisibleby:3 %}
+                                    <th>{{ cell }}</th>
+                                {% else %}
+                                    <td class="text-end"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="text-end">
+        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h3>{% trans "There is no data available." %}</h3>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

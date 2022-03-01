@@ -1,0 +1,12 @@
+[Unit]
+Description=ledger uWSGi app
+
+[Service]
+Type=simple
+StandardOutput=journal
+ExecStart=uwsgi --ini /usr/share/ledger/uwsgi.ini
+Restart=on-failure
+KillSignal=SIGQUIT
+
+[Install]
+WantedBy=default.target
