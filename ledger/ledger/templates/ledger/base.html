@@ -22,8 +22,8 @@
                     show: false
                 });
                 $("#iframeFormModalIframe").on("load", function() {
-                    $("#iframeFormModalIframe").width(Math.max(800, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
-                    $("#iframeFormModalIframe").height(Math.max(400, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
+                    $("#iframeFormModalIframe").width(Math.max(1140, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
+                    $("#iframeFormModalIframe").height(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
                     $("#iframeFormModal").modal("handleUpdate");
                 });
                 $(document).on('select2:open', () => {
@@ -96,7 +96,7 @@
             </div>
         </div>
         <div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="iframeFormModalLabel"></h5>
