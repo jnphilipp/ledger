@@ -45,13 +45,13 @@ def get_item(d, key):
 @register.filter
 def startswith(value, start):
     """Startswith template filter."""
-    return value.startswith(start)
+    return value.startswith(start) if value and start else None
 
 
 @register.filter
 def endswith(value, start):
     """Endswith template filter."""
-    return value.endswith(start)
+    return value.endswith(start) if value and start else None
 
 
 @register.filter
