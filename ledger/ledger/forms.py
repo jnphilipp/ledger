@@ -116,9 +116,10 @@ class StandingEntryForm(forms.ModelForm):
     execution = forms.ChoiceField(
         choices=(
             (1, _("Monthly")),
-            (2, _("Quarterly")),
-            (3, _("Half-yearly")),
-            (4, _("Yearly")),
+            (2, _("Bimonthly")),
+            (3, _("Quarterly")),
+            (4, _("Half-yearly")),
+            (5, _("Yearly")),
         ),
         widget=forms.Select(),
         label=_("Execution"),
