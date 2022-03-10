@@ -33,7 +33,6 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = StandingEntryForm
     model = Entry
     success_message = _("The entries %(entries)s were successfully created.")
-    success_url = reverse_lazy("create_another_success")
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
@@ -41,3 +40,7 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             "entries": f"{self.object[0].account.name} - "
             + f'#{", #".join(str(e.serial_number) for e in self.object)}'
         }
+
+    def get_success_url(self):
+        """Get success URL."""
+        return reverse_lazy("create_another_success")
