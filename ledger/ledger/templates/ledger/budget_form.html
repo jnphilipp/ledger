@@ -9,6 +9,7 @@
         $("#id_income_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "tag_autocomplete" %}",
                 dataType: "json",
@@ -24,6 +25,7 @@
         $("#id_consumption_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "tag_autocomplete" %}",
                 dataType: "json",
@@ -39,6 +41,7 @@
         $("#id_insurance_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "tag_autocomplete" %}",
                 dataType: "json",
@@ -54,6 +57,7 @@
         $("#id_savings_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "tag_autocomplete" %}",
                 dataType: "json",

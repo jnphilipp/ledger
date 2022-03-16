@@ -16,6 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django app dates module."""
 
 from calendar import monthrange
 from datetime import date
@@ -24,14 +25,17 @@ from itertools import count
 from math import floor
 
 
-def daterange(start, end, execution=1):
+def daterange(start: date, end: date, execution: int = 1):
+    """Calculate all dates between start and end date, both included."""
     if execution == 1:
         step = 1
     elif execution == 2:
-        step = 3
+        step = 2
     elif execution == 3:
-        step = 6
+        step = 3
     elif execution == 4:
+        step = 6
+    elif execution == 5:
         step = 12
     else:
         step = execution
@@ -46,13 +50,15 @@ def daterange(start, end, execution=1):
     return dates
 
 
-def days_in_month(month):
-    """https://cmcenroe.me/2014/12/05/days-in-month-formula.html"""
+def days_in_month(month: int):
+    """Calculate the days in a month.
+
+    Source: https://cmcenroe.me/2014/12/05/days-in-month-formula.html
+    """
+    assert 1 <= month <= 12
     return 28 + (month + floor(month / 8)) % 2 + 2 % month + 2 * floor(1 / month)
 
 
-def get_last_date_current_month():
-    today = date.today()
-    return date(
-        year=today.year, month=today.month, day=monthrange(today.year, today.month)[1]
-    )
+def get_last_date_current_month(ref: date = date.today()):
+    """Get the last day of in the month of a reference day."""
+    return date(year=ref.year, month=ref.month, day=monthrange(ref.year, ref.month)[1])

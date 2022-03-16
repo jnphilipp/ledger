@@ -38,13 +38,12 @@ def get_file_path(instance, filename):
         isinstance(instance.content_object, Account)
         or type(instance.content_object).__name__ == Account.__name__
     ):
-        return os.path.join("accounts", instance.content_object.slug, "files", name)
+        return os.path.join(instance.content_object.slug, "files", name)
     elif (
         isinstance(instance.content_object, Entry)
         or type(instance.content_object).__name__ == Entry.__name__
     ):
         return os.path.join(
-            "accounts",
             instance.content_object.account.slug,
             "entries",
             str(instance.content_object.pk),
@@ -281,7 +280,7 @@ class File(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("name",)
+        ordering = ("-updated_at", "name")
         unique_together = ("content_type", "object_id", "name")
         verbose_name = _("File")
         verbose_name_plural = _("Files")

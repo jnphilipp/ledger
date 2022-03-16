@@ -10,6 +10,7 @@
             placeholder: "{% trans "Select a category" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "category_autocomplete" %}?append",
                 dataType: "json",
@@ -26,6 +27,7 @@
             placeholder: "{% trans "Select a unit" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "units:unit_autocomplete" %}",
                 dataType: "json",

@@ -41,6 +41,7 @@
             placeholder: "{% trans "Select a account" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "account_autocomplete" %}",
                 dataType: "json",
@@ -57,6 +58,7 @@
             placeholder: "{% trans "Select a category" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "category_autocomplete" %}?append",
                 dataType: "json",
@@ -72,6 +74,7 @@
         $("#id_tags").select2({
             placeholder: "{% trans "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "tag_autocomplete" %}?append",
                 dataType: "json",

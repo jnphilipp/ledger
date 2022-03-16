@@ -5,24 +5,30 @@
 {% block extrahead %}
 <script type="text/javascript">
     $(function() {
-        $('#iframeFormModal').on('show.bs.modal', function (event) {
-            $("#iframeFormModalLabel").html(event.relatedTarget.title);
-            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+        $('#iframeFormModal').on('show.bs.modal', function (e) {
+            $("#iframeFormModalLabel").html(e.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", e.relatedTarget.href);
 
-            if ( event.relatedTarget.href.includes("/account/") && (event.relatedTarget.href.includes("/create/") || event.relatedTarget.href.includes("/edit/")) ) {
+            if ( e.relatedTarget.href.includes("/account/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")) ) {
                 $("#iframeFormModalSubmit").addClass("btn-primary");
                 $("#iframeFormModalSubmit").removeClass("btn-danger");
                 $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+                $(".modal-footer").show();
             }
-            else if ( event.relatedTarget.href.includes("/file/") && event.relatedTarget.href.includes("/create/") ) {
+            else if ( e.relatedTarget.href.includes("/file/") && e.relatedTarget.href.includes("/create/") ) {
                 $("#iframeFormModalSubmit").addClass("btn-primary");
                 $("#iframeFormModalSubmit").removeClass("btn-danger");
                 $("#iframeFormModalSubmit").html("<span class=\"fas fa-upload\"></span> {% trans "Save" %}");
+                $(".modal-footer").show();
             }
-            else if ( event.relatedTarget.href.includes("/account/") && event.relatedTarget.href.includes("/delete/") ) {
+            else if ( e.relatedTarget.href.includes("/account/") && e.relatedTarget.href.includes("/delete/") ) {
                 $("#iframeFormModalSubmit").addClass("btn-danger");
                 $("#iframeFormModalSubmit").removeClass("btn-primary");
                 $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+                $(".modal-footer").show();
+            }
+            else if ( e.relatedTarget.href.includes("/account/") ) {
+                $(".modal-footer").hide();
             }
         });
     });
@@ -40,7 +46,7 @@
 <div class="row mt-md-2">
     <div class="col">
         <div class="table-responsive">
-            <table class="table table-hover table-striped table-sm">
+            <table class="table table-hover table-sm">
                 <thead>
                     <tr>
                         <th scope="col">{% trans "Account" %}</th>
@@ -65,6 +71,10 @@
                     <div class="dropdown">
                         <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
                         <div class="dropdown-menu" aria-labelledby="options-{entry.id}">
+                            <div class="dropdown-item text-muted">
+                                {{ account.name }}
+                            </div>
+                            <div><hr class="dropdown-divider"></div>
                             <a class="dropdown-item iframeFormModal" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
                             <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% trans "Reopen account" %}{% else %}{% trans "Close account" %}{% endif %}"><span class="fas fa-clone"></span> {% if account.closed %}{% trans "Reopen" %}{% else %}{% trans "Close" %}{% endif %}</a>
                             <a class="dropdown-item iframeFormModal" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>

@@ -35,8 +35,6 @@ class AccountForm(forms.ModelForm):
         """Init."""
         super(AccountForm, self).__init__(*args, **kwargs)
         self.fields["name"].validators = [validate_account_name]
-        self.fields["category"].widget.attrs["style"] = "width: 100%;"
-        self.fields["unit"].widget.attrs["style"] = "width: 100%;"
 
         if "instance" not in kwargs or kwargs["instance"] is None:
             widgets = {
@@ -71,10 +69,6 @@ class EntryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Init."""
         super(EntryForm, self).__init__(*args, **kwargs)
-
-        self.fields["account"].widget.attrs["style"] = "width: 100%;"
-        self.fields["category"].widget.attrs["style"] = "width: 100%;"
-        self.fields["tags"].widget.attrs["style"] = "width: 100%;"
 
         self.fields["amount"].localize = True
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
@@ -124,11 +118,12 @@ class StandingEntryForm(forms.ModelForm):
     execution = forms.ChoiceField(
         choices=(
             (1, _("Monthly")),
-            (2, _("Quarterly")),
-            (3, _("Half-yearly")),
-            (4, _("Yearly")),
+            (2, _("Bimonthly")),
+            (3, _("Quarterly")),
+            (4, _("Half-yearly")),
+            (5, _("Yearly")),
         ),
-        widget=forms.Select(attrs={"style": "width: 100%;"}),
+        widget=forms.Select(),
         label=_("Execution"),
     )
 
@@ -140,10 +135,6 @@ class StandingEntryForm(forms.ModelForm):
         self.fields["start_date"].localize = True
         self.fields["end_date"].help_text = mark_safe(_("Date format: yyyy-mm-dd"))
         self.fields["end_date"].localize = True
-
-        self.fields["account"].widget.attrs["style"] = "width: 100%;"
-        self.fields["category"].widget.attrs["style"] = "width: 100%;"
-        self.fields["tags"].widget.attrs["style"] = "width: 100%;"
 
         self.fields["amount"].localize = True
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
@@ -245,9 +236,6 @@ class TransferForm(forms.Form):
         """Init."""
         super(TransferForm, self).__init__(*args, **kwargs)
 
-        self.fields["from_account"].widget.attrs["style"] = "width: 100%;"
-        self.fields["to_account"].widget.attrs["style"] = "width: 100%;"
-
 
 class EntryFilterForm(forms.Form):
     """Entry filter form."""
@@ -290,6 +278,19 @@ class EntryFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         """Init."""
         super(EntryFilterForm, self).__init__(*args, **kwargs)
+
+        self.fields["accounts"].widget.attrs[
+            "style"
+        ] = "min-width: 113px !important; max-width: 352px !important;"
+        self.fields["categories"].widget.attrs[
+            "style"
+        ] = "min-width: 113px !important; max-width: 352px !important;"
+        self.fields["tags"].widget.attrs[
+            "style"
+        ] = "min-width: 113px !important; max-width: 352px !important;"
+        self.fields["units"].widget.attrs[
+            "style"
+        ] = "min-width: 113px !important; max-width: 352px !important;"
 
         if Tag.objects.count() == 0:
             del self.fields["tags"]
@@ -338,19 +339,15 @@ class BudgetForm(forms.ModelForm):
         super(BudgetForm, self).__init__(*args, **kwargs)
         self.fields["income_tags"].empty_label = ""
         self.fields["income_tags"].queryset = Tag.objects.all()
-        self.fields["income_tags"].widget.attrs["style"] = "width: 100%;"
 
         self.fields["consumption_tags"].empty_label = ""
         self.fields["consumption_tags"].queryset = Tag.objects.all()
-        self.fields["consumption_tags"].widget.attrs["style"] = "width: 100%;"
 
         self.fields["insurance_tags"].empty_label = ""
         self.fields["insurance_tags"].queryset = Tag.objects.all()
-        self.fields["insurance_tags"].widget.attrs["style"] = "width: 100%;"
 
         self.fields["savings_tags"].empty_label = ""
         self.fields["savings_tags"].queryset = Tag.objects.all()
-        self.fields["savings_tags"].widget.attrs["style"] = "width: 100%;"
 
     class Meta:
         """Meta."""

@@ -157,7 +157,7 @@ STATICFILES_FINDERS = (
 # Media files
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = (BASE_DIR if DEBUG else APP_DATA_DIR) / "media"
+MEDIA_ROOT = (BASE_DIR / "media") if DEBUG else APP_DATA_DIR
 
 
 # Default primary key field type
