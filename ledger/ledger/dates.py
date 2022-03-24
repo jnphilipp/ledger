@@ -23,10 +23,15 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from itertools import count
 from math import floor
+from typing import Iterable
 
 
-def daterange(start: date, end: date, execution: int = 1):
+def daterange(
+    start: date, end: date, repetition_type: str = "days", execution: int = 1
+) -> Iterable[date]:
     """Calculate all dates between start and end date, both included."""
+    assert repetition_type in ["days", "months", "years"]
+
     if execution == 1:
         step = 1
     elif execution == 2:
@@ -40,14 +45,16 @@ def daterange(start: date, end: date, execution: int = 1):
     else:
         step = execution
 
-    c = start
-    dates = []
     for i in count(step=step):
-        c = start + relativedelta(months=+i)
-        if c > end:
+        if repetition_type == "days":
+            date = start + relativedelta(days=+i)
+        elif repetition_type == "months":
+            date = start + relativedelta(months=+i)
+        elif repetition_type == "years":
+            date = start + relativedelta(years=+i)
+        if date > end:
             break
-        dates.append(c)
-    return dates
+        yield date
 
 
 def days_in_month(month: int):

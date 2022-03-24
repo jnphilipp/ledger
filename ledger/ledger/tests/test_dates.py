@@ -24,7 +24,61 @@ from ledger import dates
 
 
 class DatesTestCase(TestCase):
-    def test_daterange(self):
+    def test_daterange_days(self):
+        self.assertEquals(
+            [
+                date(2022, 1, 10),
+                date(2022, 1, 11),
+                date(2022, 1, 12),
+                date(2022, 1, 13),
+                date(2022, 1, 14),
+                date(2022, 1, 15),
+            ],
+            list(dates.daterange(date(2022, 1, 10), date(2022, 1, 15), "days", 1)),
+        )
+        self.assertEquals(
+            [
+                date(2022, 1, 2),
+                date(2022, 1, 4),
+                date(2022, 1, 6),
+                date(2022, 1, 8),
+                date(2022, 1, 10),
+            ],
+            list(dates.daterange(date(2022, 1, 2), date(2022, 1, 10), "days", 2)),
+        )
+        self.assertEquals(
+            [
+                date(2022, 1, 1),
+                date(2022, 1, 4),
+                date(2022, 1, 7),
+                date(2022, 1, 10),
+                date(2022, 1, 13),
+                date(2022, 1, 16),
+                date(2022, 1, 19),
+                date(2022, 1, 22),
+                date(2022, 1, 25),
+                date(2022, 1, 28),
+                date(2022, 1, 31),
+            ],
+            list(dates.daterange(date(2022, 1, 1), date(2022, 1, 31), "days", 3)),
+        )
+        self.assertEquals(
+            [
+                date(2022, 1, 1),
+                date(2022, 1, 7),
+                date(2022, 1, 13),
+                date(2022, 1, 19),
+                date(2022, 1, 25),
+                date(2022, 1, 31),
+            ],
+            list(dates.daterange(date(2022, 1, 1), date(2022, 1, 31), "days", 4)),
+        )
+        self.assertEquals(
+            [date(2022, 1, 1), date(2022, 1, 13), date(2022, 1, 25)],
+            list(dates.daterange(date(2022, 1, 1), date(2022, 1, 31), "days", 5)),
+        )
+
+    def test_daterange_months(self):
         self.assertEquals(
             [
                 date(2022, 1, 10),
@@ -33,11 +87,11 @@ class DatesTestCase(TestCase):
                 date(2022, 4, 10),
                 date(2022, 5, 10),
             ],
-            dates.daterange(date(2022, 1, 10), date(2022, 5, 10), 1),
+            list(dates.daterange(date(2022, 1, 10), date(2022, 5, 10), "months", 1)),
         )
         self.assertEquals(
             [date(2022, 1, 2), date(2022, 3, 2), date(2022, 5, 2)],
-            dates.daterange(date(2022, 1, 2), date(2022, 5, 2), 2),
+            list(dates.daterange(date(2022, 1, 2), date(2022, 5, 2), "months", 2)),
         )
         self.assertEquals(
             [
@@ -46,15 +100,54 @@ class DatesTestCase(TestCase):
                 date(2022, 7, 23),
                 date(2022, 10, 23),
             ],
-            dates.daterange(date(2022, 1, 23), date(2022, 10, 23), 3),
+            list(dates.daterange(date(2022, 1, 23), date(2022, 10, 23), "months", 3)),
         )
         self.assertEquals(
             [date(2022, 1, 30), date(2022, 7, 30)],
-            dates.daterange(date(2022, 1, 30), date(2022, 10, 30), 4),
+            list(dates.daterange(date(2022, 1, 30), date(2022, 10, 30), "months", 4)),
         )
         self.assertEquals(
             [date(2022, 1, 31), date(2023, 1, 31)],
-            dates.daterange(date(2022, 1, 31), date(2023, 1, 31), 5),
+            list(dates.daterange(date(2022, 1, 31), date(2023, 1, 31), "months", 5)),
+        )
+
+    def test_daterange_years(self):
+        self.assertEquals(
+            [
+                date(2022, 1, 10),
+                date(2023, 1, 10),
+                date(2024, 1, 10),
+                date(2025, 1, 10),
+            ],
+            list(dates.daterange(date(2022, 1, 10), date(2025, 1, 10), "years", 1)),
+        )
+        self.assertEquals(
+            [
+                date(2022, 1, 2),
+                date(2024, 1, 2),
+                date(2026, 1, 2),
+                date(2028, 1, 2),
+                date(2030, 1, 2),
+                date(2032, 1, 2),
+            ],
+            list(dates.daterange(date(2022, 1, 2), date(2032, 5, 2), "years", 2)),
+        )
+        self.assertEquals(
+            [
+                date(2022, 1, 23),
+                date(2025, 1, 23),
+                date(2028, 1, 23),
+                date(2031, 1, 23),
+            ],
+            list(dates.daterange(date(2022, 1, 23), date(2032, 10, 23), "years", 3)),
+        )
+        self.assertEquals(
+            [date(2022, 1, 30), date(2028, 1, 30)],
+            list(dates.daterange(date(2022, 1, 30), date(2032, 10, 30), "years", 4)),
+        )
+        self.assertEquals(
+            [date(2022, 1, 31), date(2034, 1, 31)],
+            list(dates.daterange(date(2022, 1, 31), date(2042, 1, 31), "years", 5)),
         )
 
     def test_days_in_month(self):
