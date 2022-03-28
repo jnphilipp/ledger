@@ -28,7 +28,7 @@ class AnotherSuccessView(generic.base.TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         """Get context data."""
-        context = super(AnotherSuccessView, self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         if "next" in self.request.GET:
             context["next"] = self.request.GET.get("next")
 
