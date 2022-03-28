@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2021 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2022 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -18,25 +18,30 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 """Portfolio Django app models."""
 
-from django.contrib.contenttypes.fields import GenericForeignKey
+from datetime import date
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Q, Sum
+from django.db.models.functions import Coalesce
 from django.template.defaultfilters import slugify
-from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from units.models import Unit
+from typing import Optional
 
 
 class Tradeable(models.Model):
-    """Abstract Tradeable ORM Model."""
+    """Abstract Tradeable Model."""
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     slug = models.SlugField(unique=True, verbose_name=_("Slug"))
     name = models.CharField(max_length=1024, unique=True, verbose_name=_("Name"))
-    isin = models.CharField(max_length=12, unique=True, blank=True, null=True, verbose_name=_("ISIN"))
+    isin = models.CharField(
+        max_length=12, unique=True, blank=True, null=True, verbose_name=_("ISIN")
+    )
     wkn = models.CharField(
         max_length=6, unique=True, blank=True, null=True, verbose_name=_("WKN")
     )
@@ -53,6 +58,16 @@ class Tradeable(models.Model):
         verbose_name=_("Currency"),
     )
     traded = models.BooleanField(default=True, verbose_name=_("Traded"))
+    positions = GenericRelation(
+        "Position",
+        related_query_name="%(app_label)s_%(class)ss",
+        verbose_name=_("Tradeable"),
+    )
+    closings = GenericRelation(
+        "Closing",
+        related_query_name="%(app_label)s_%(class)ss",
+        verbose_name=_("Closing"),
+    )
 
     def save(self, *args, **kwargs):
         """Save."""
@@ -78,11 +93,7 @@ class Tradeable(models.Model):
 
 
 class Stock(Tradeable):
-    """Stock ORM Model."""
-
-    # def get_absolute_url(self):
-    #     """Get absolute URL."""
-    #     return reverse_lazy("portfolio:stock_detail", args=[self.stock.slug])
+    """Stock Model."""
 
     class Meta(Tradeable.Meta):
         """Meta."""
@@ -92,11 +103,7 @@ class Stock(Tradeable):
 
 
 class Fund(Tradeable):
-    """Fund ORM Model."""
-
-    # def get_absolute_url(self):
-    #     """Get absolute URL."""
-    #     return reverse_lazy("portfolio:stock_detail", args=[self.stock.slug])
+    """Fund Model."""
 
     class Meta(Tradeable.Meta):
         """Meta."""
@@ -105,13 +112,23 @@ class Fund(Tradeable):
         verbose_name_plural = _("Funds")
 
 
+class ETF(Tradeable):
+    """ETF Model."""
+
+    class Meta(Tradeable.Meta):
+        """Meta."""
+
+        verbose_name = _("ETF")
+        verbose_name_plural = _("ETFs")
+
+
 class Closing(models.Model):
-    """Closing ORM Model."""
+    """Closing Model."""
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
-    day = models.DateField(verbose_name=_("Day"))
+    date = models.DateField(verbose_name=_("Date"))
     price = models.FloatField(verbose_name=_("Price"))
     high = models.FloatField(default=0, verbose_name=_("High"))
     low = models.FloatField(default=0, verbose_name=_("Low"))
@@ -125,21 +142,35 @@ class Closing(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
 
+    def save(self, *args, **kwargs):
+        """Save."""
+        prev = (
+            self.__class__.objects.filter(content_type=self.content_type)
+            .filter(object_id=self.object_id)
+            .filter(date__lte=self.date)
+            .last()
+        )
+        if prev:
+            print(prev.date, self.date)
+            self.change_previous = prev.price - self.price
+            self.change_previous_percent = self.change_previous / prev.price * 100
+        super().save(*args, **kwargs)
+
     def __str__(self) -> str:
         """Name."""
-        return f"{self.content_type} {self.object_id} [{self.day}]"
+        return f"{self.content_type} {self.object_id} [{self.date}]"
 
     class Meta:
         """Meta."""
 
-        ordering = ("content_type", "object_id", "-day")
-        unique_together = ("day", "content_type", "object_id")
+        ordering = ("content_type", "object_id", "-date")
+        unique_together = ("date", "content_type", "object_id")
         verbose_name = _("Closing")
         verbose_name_plural = _("Closings")
 
 
 class Position(models.Model):
-    """Position ORM Model."""
+    """Position Model."""
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
@@ -154,56 +185,240 @@ class Position(models.Model):
     trailing_stop_atr_factor = models.FloatField(
         default=3, verbose_name=_("Trailing-stop ATR factor")
     )
+    unit = models.ForeignKey(
+        Unit,
+        models.CASCADE,
+        related_name="positions",
+        verbose_name=_("Unit"),
+    )
 
-    def get_absolute_url(self):
-        """Get absolute URL."""
-        return reverse_lazy("portfolio:position", args=[str(self.slug)])
-
-    def start_date(self):
-        """Get start date of this position."""
+    def start_date(self) -> date:
+        """Start date i.e. date of the first trade."""
         return (
-            self.trades.aggregate(models.Min("day"))["day__min"]
+            self.trades.aggregate(models.Min("date"))["date__min"]
             if self.trades.exists()
             else timezone.now().date()
         )
 
-    def end_date(self):
-        """Get end date of this position."""
-        if self.stock.closings.count() == 0:
+    def end_date(self) -> date:
+        """End date, i.e., date of the last trade or current date."""
+        if self.content_object.closings.count() == 0 and not self.closed:
             return timezone.now().date()
         else:
             return (
-                self.trades.aggregate(models.Max("day"))["day__max"]
+                self.trades.aggregate(models.Max("date"))["date__max"]
                 if self.closed
-                else self.stock.closings.first().day
+                else self.content_object.closings.first().date
             )
+
+    def duration(self) -> int:
+        """Position duration in days."""
+        return (self.end_date() - self.start_date()).days
+
+    def dividend(self, date=None) -> float:
+        """Dividend."""
+        trades = self.trades.filter(date__lte=date) if date else self.trades.all()
+        return sum(
+            [trade.total() for trade in trades.filter(type=Trade.TradeType.DIVIDEND)]
+        )
+
+    def invested(self) -> float:
+        """Invested amount."""
+        if self.closed:
+            return 0.0
+        buy = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+        )
+        sell = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
+        )
+        return buy - sell
+
+    def units(self, date=None) -> Optional[float]:
+        """Units."""
+        if self.trades.count() == 0:
+            return None
+
+        trades = self.trades.all()
+        if date is not None:
+            trades = trades.filter(date__lte=date)
+        elif date is None and self.closed:
+            return 0
+
+        bought = trades.filter(type=Trade.TradeType.BUY).aggregate(
+            units=Coalesce(Sum("units"), 0.0)
+        )["units"]
+        sold = trades.filter(type=Trade.TradeType.SELL).aggregate(
+            units=Coalesce(Sum("units"), 0.0)
+        )["units"]
+        return round(bought - sold, 5)
+
+    def preturn(self) -> Optional[float]:
+        """Return."""
+        if self.trades.count() == 0:
+            return None
+
+        preturn = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
+        )
+
+        if self.content_object.closings.count() == 0 and not self.closed:
+            preturn += (
+                self.units()
+                * self.trades.filter(
+                    Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
+                )
+                .last()
+                .unit_price
+            )
+        elif not self.closed:
+            preturn += self.units() * self.content_object.closings.first().price
+
+        return preturn
+
+    def win_loss(self) -> Optional[float]:
+        """Win / loss."""
+        if self.trades.count() == 0:
+            return None
+
+        bought = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+        )
+        sold = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
+        )
+
+        pyield = 0.0
+        if self.content_object.closings.count() == 0 and not self.closed:
+            pyield = (
+                (
+                    self.units()
+                    * self.trades.filter(
+                        Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
+                    )
+                    .last()
+                    .unit_price
+                )
+                + sold
+                - bought
+            )
+        elif not self.closed:
+            pyield = (
+                (self.units() * self.content_object.closings.first().price)
+                + sold
+                - bought
+            )
+        else:
+            pyield = sold - bought
+
+        return pyield
+
+    def annual_return(self) -> Optional[float]:
+        """Annual return."""
+        if self.trades.filter(type=Trade.TradeType.BUY).count() == 0:
+            return None
+
+        costs = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+        )
+        bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
+            units=Coalesce(Sum("units"), 0.0)
+        )["units"]
+        gain = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
+        )
+        sold = self.trades.filter(type=Trade.TradeType.SELL).aggregate(
+            units=Coalesce(Sum("units"), 0.0)
+        )["units"]
+
+        if self.content_object.closings.count() == 0 and not self.closed:
+            gain += self.trades.filter(
+                Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
+            ).last().unit_price * (bought - sold)
+        elif not self.closed:
+            gain += self.content_object.closings.first().price * (bought - sold)
+
+        time = self.duration()
+        return (pow(gain / costs, 365 / time) - 1) * 100 if time > 0 else 0.0
+
+    def pyield(self) -> Optional[float]:
+        """Yield."""
+        if self.trades.filter(type=Trade.TradeType.BUY).count() == 0:
+            return None
+
+        if self.content_object.closings.count() == 0:
+            cur_price = (
+                self.trades.filter(
+                    Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
+                )
+                .last()
+                .unit_price
+            )
+        elif not self.closed:
+            cur_price = self.content_object.closings.first().price
+
+        sum_buy = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+        )
+
+        if self.trades.filter(type=Trade.TradeType.SELL).count() == 0:
+            bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
+                units=Coalesce(Sum("units"), 0.0)
+            )["units"]
+            sum_sell = cur_price * bought
+        else:
+            sum_sell = sum(
+                [
+                    trade.total()
+                    for trade in self.trades.filter(type=Trade.TradeType.SELL)
+                ]
+            )
+            if not self.closed:
+                bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
+                    units=Coalesce(Sum("units"), 0.0)
+                )["units"]
+                sold = self.trades.filter(type=Trade.TradeType.SELL).aggregate(
+                    units=Coalesce(Sum("units"), 0.0)
+                )["units"]
+                sum_sell += cur_price * (bought - sold)
+
+        return (sum_sell * 100 / sum_buy) - 100
+
+    def renumber_trades(self):
+        """Renumber trades."""
+        for i, trade in enumerate(self.trades.order_by("serial_number")):
+            trade.serial_number = i + 1
+            trade.save()
 
     def save(self, *args, **kwargs):
         """Save."""
-        if not self.slug:
-            self.slug = slugify(
-                "%s-%s"
-                % (
-                    self.content_object.name,
-                    timezone.now().date().strftime("%Y%m%d"),
-                )
-            )
-        super(Position, self).save(*args, **kwargs)
+        self.slug = slugify(
+            f"{self.content_object.name}-{self.start_date().strftime('%Y%m%d')}"
+        )
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Name."""
-        return self.slug
+        if self.closed:
+            return (
+                f"{self.content_object.name} "
+                + f"[{self.start_date().strftime('%Y-%m-%d')}, {_('closed')}]"
+            )
+        else:
+            return (
+                f"{self.content_object.name} [{self.start_date().strftime('%Y-%m-%d')}]"
+            )
 
     class Meta:
         """Meta."""
 
-        ordering = ("content_type", "object_id", "updated_at")
+        ordering = ("closed", "slug")
         verbose_name = _("Position")
         verbose_name_plural = _("Positions")
 
 
 class Trade(models.Model):
-    """Trade ORM Model."""
+    """Trade Model."""
 
     class TradeType(models.IntegerChoices):
         """Trade type interger choices."""
@@ -217,10 +432,15 @@ class Trade(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
-    day = models.DateField(verbose_name=_("Day"))
-    units = models.FloatField(verbose_name=_("Units"))
-    unit_price = models.FloatField(verbose_name=_("Unit price"))
-    extra = models.FloatField(verbose_name=_("Extra"))
+    serial_number = models.IntegerField(verbose_name=_("Serial number"))
+    date = models.DateField(verbose_name=_("Date"))
+    units = models.FloatField(default=0.0, verbose_name=_("Units"))
+    unit_price = models.FloatField(default=0.0, verbose_name=_("Unit price"))
+    extra = models.FloatField(default=0.0, verbose_name=_("Extra cost"))
+    extra2 = models.FloatField(default=0.0, verbose_name=_("Extra cost"))
+    exchange_rate = models.FloatField(
+        blank=True, null=True, verbose_name=_("Exchange rate")
+    )
     type = models.IntegerField(choices=TradeType.choices, verbose_name=_("Type"))
     unit = models.ForeignKey(
         Unit,
@@ -232,13 +452,74 @@ class Trade(models.Model):
         Position, models.CASCADE, related_name="trades", verbose_name=_("Position")
     )
 
+    def total(self) -> float:
+        """Total."""
+        total = 0.0
+        if self.type == Trade.TradeType.BUY:
+            total = self.unit_price * self.units + self.extra
+        elif self.type == Trade.TradeType.SELL or self.type == Trade.TradeType.DIVIDEND:
+            total = self.unit_price * self.units - self.extra
+        total = round(total, self.unit.precision)
+        if self.exchange_rate:
+            total = round(total / self.exchange_rate, self.position.unit.precision)
+            if self.type == Trade.TradeType.BUY:
+                total += self.extra2
+            elif (
+                self.type == Trade.TradeType.SELL
+                or self.type == Trade.TradeType.DIVIDEND
+            ):
+                total -= self.extra2
+        return total
+
+    def save(self, *args, **kwargs):
+        """Save."""
+        move = False
+        old_position = None
+        if self.id:
+            orig = Trade.objects.get(id=self.id)
+            trade = (
+                Trade.objects.filter(position=self.position)
+                .filter(date__lte=self.date)
+                .first()
+            )
+            next_snr = trade.serial_number + 1 if trade else 1
+            if orig.date != self.date and (orig.serial_number + 1) != next_snr:
+                move = True
+            if orig.position != self.position:
+                move = True
+                self.serial_number = None
+                old_position = orig.position
+        if not self.id or move:
+            trades = Trade.objects.filter(position=self.position).filter(
+                date__lte=self.date
+            )
+            if trades.exists():
+                next_snr = trades.first().serial_number + 1
+            else:
+                next_snr = 1
+
+            trades = Trade.objects.filter(position=self.position).filter(
+                serial_number__gte=next_snr
+            )
+            for trade in trades:
+                trade.serial_number += 1
+                trade.save()
+            self.serial_number = next_snr
+        super().save()
+        self.position.save()
+
+        if old_position:
+            old_position.renumber_trades()
+            old_position.save()
+
     def __str__(self) -> str:
         """Name."""
-        return f"{self.content_object} {self.type} {self.day}"
+        return f"{self.position} #{self.serial_number}"
 
     class Meta:
         """Meta."""
 
-        ordering = ("day", "type")
+        ordering = ("position", "-serial_number")
+        unique_together = ("position", "serial_number")
         verbose_name = _("Trade")
         verbose_name_plural = _("Trades")

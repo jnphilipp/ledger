@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('portfolio', '0002_fund'),
+        ('portfolio', '0003_etf'),
     ]
 
     operations = [
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('day', models.DateField(verbose_name='Day')),
+                ('date', models.DateField(verbose_name='Date')),
                 ('price', models.FloatField(verbose_name='Price')),
                 ('high', models.FloatField(default=0, verbose_name='High')),
                 ('low', models.FloatField(default=0, verbose_name='Low')),
@@ -48,8 +48,8 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'Closing',
                 'verbose_name_plural': 'Closings',
-                'ordering': ('content_type', 'object_id', '-day'),
-                'unique_together': {('day', 'content_type', 'object_id')},
+                'ordering': ('content_type', 'object_id', '-date'),
+                'unique_together': {('date', 'content_type', 'object_id')},
             },
         ),
     ]

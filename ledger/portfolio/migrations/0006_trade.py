@@ -25,27 +25,33 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('portfolio', '0003_closing'),
+        ('units', '0001_initial'),
+        ('portfolio', '0005_position'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Position',
+            name='Trade',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('slug', models.SlugField(max_length=1024, unique=True, verbose_name='Slug')),
-                ('object_id', models.PositiveIntegerField()),
-                ('closed', models.BooleanField(default=False, verbose_name='Closed')),
-                ('trailing_stop_atr_factor', models.FloatField(default=3, verbose_name='Trailing-stop ATR factor')),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='positions', to='contenttypes.contenttype')),
+                ('serial_number', models.IntegerField(verbose_name='Serial number')),
+                ('date', models.DateField(verbose_name='Date')),
+                ('units', models.FloatField(default=0., verbose_name='Units')),
+                ('unit_price', models.FloatField(default=0., verbose_name='Unit price')),
+                ('extra', models.FloatField(default=0., verbose_name='Extra cost')),
+                ('extra2', models.FloatField(default=0., verbose_name='Extra cost')),
+                ('exchange_rate', models.FloatField(blank=True, null=True, verbose_name='Exchange rate')),
+                ('type', models.IntegerField(choices=[(None, '(Unknown)'), (0, 'Buy'), (1, 'Sell'), (2, 'Dividend')], verbose_name='Type')),
+                ('position', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='trades', to='portfolio.position', verbose_name='Position')),
+                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='trades', to='units.unit', verbose_name='Unit')),
             ],
             options={
-                'verbose_name': 'Position',
-                'verbose_name_plural': 'Positions',
-                'ordering': ('content_type', 'object_id', 'updated_at'),
+                'verbose_name': 'Trade',
+                'verbose_name_plural': 'Trades',
+                'ordering': ('position', '-serial_number'),
+                'unique_together': {('position', 'serial_number')},
             },
         ),
     ]

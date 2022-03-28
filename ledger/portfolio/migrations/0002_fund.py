@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('wkn', models.CharField(blank=True, max_length=6, null=True, unique=True, verbose_name='WKN')),
                 ('symbol', models.CharField(blank=True, max_length=12, null=True, unique=True, verbose_name='Symbol')),
                 ('traded', models.BooleanField(default=True, verbose_name='Traded')),
-                ('currency', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='funds', related_query_name='portfolio_funds', to='units.unit', verbose_name='Currency')),
+                ('currency', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)ss', related_query_name='%(app_label)s_%(class)ss', to='units.unit', verbose_name='Currency')),
             ],
             options={
                 'verbose_name': 'Fund',
