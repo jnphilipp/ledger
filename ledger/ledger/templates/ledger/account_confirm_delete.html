@@ -12,7 +12,7 @@
             {% if account.entries %}
                 <ul>
                     {% for entry in account.entries.all %}
-                        <li>{% trans "Entry" %}: <em>#{{ entry.serial_number }}: {{ entry.day|date:"D., d. F Y" }} - {{ entry.category.name }}</em></li>
+                        <li>{% trans "Entry" %}: <em>#{{ entry.serial_number }}: {{ entry.date|date:"D., d. F Y" }} - {{ entry.category.name }}</em></li>
                     {% endfor %}
                 </ul>
             {% endif %}
