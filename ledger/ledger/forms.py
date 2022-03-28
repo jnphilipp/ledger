@@ -33,7 +33,7 @@ class AccountForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(AccountForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["name"].validators = [validate_account_name]
 
         if "instance" not in kwargs or kwargs["instance"] is None:
@@ -66,7 +66,7 @@ class EntryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(EntryForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.fields["amount"].localize = True
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
@@ -127,7 +127,7 @@ class StandingEntryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(StandingEntryForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.fields["start_date"].help_text = mark_safe(_("Date format: yyyy-mm-dd"))
         self.fields["start_date"].localize = True
@@ -161,9 +161,9 @@ class StandingEntryForm(forms.ModelForm):
             cleaned_data["tags"] = Tag.objects.filter(pk__in=tags)
             del self.errors["tags"]
 
-    def save(self, commit=True):
+    def save(self, commit: bool = True):
         """Save."""
-        instance = super(StandingEntryForm, self).save(commit=False)
+        instance = super().save(commit=False)
         entries = []
         start = self.cleaned_data["start_date"]
         end = self.cleaned_data["end_date"]
@@ -234,7 +234,7 @@ class TransferForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(TransferForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class EntryFilterForm(forms.Form):
@@ -277,7 +277,7 @@ class EntryFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(EntryFilterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.fields["accounts"].widget.attrs[
             "style"
@@ -301,7 +301,7 @@ class FileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(FileForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["content_type"].widget = forms.HiddenInput()
         self.fields["object_id"].widget = forms.HiddenInput()
 
@@ -336,7 +336,7 @@ class BudgetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
-        super(BudgetForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["income_tags"].empty_label = ""
         self.fields["income_tags"].queryset = Tag.objects.all()
 

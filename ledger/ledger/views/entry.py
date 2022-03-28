@@ -97,7 +97,7 @@ class ListView(generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         """Get context data."""
-        context = super(ListView, self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
 
         context["form"] = self.form
         context["start_date"] = self.start_date
@@ -156,7 +156,7 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     def form_valid(self, form):
         """Form valid."""
         self.orig_serial_number = self.object.serial_number
-        return super(UpdateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_initial(self):
         """Get initial."""
@@ -188,7 +188,7 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """Delete."""
-        v = super(DeleteView, self).delete(request, *args, **kwargs)
+        v = super().delete(request, *args, **kwargs)
         for entry in Entry.objects.filter(account=self.object.account).filter(
             serial_number__gt=self.object.serial_number
         ):

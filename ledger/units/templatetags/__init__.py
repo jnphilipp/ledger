@@ -16,20 +16,4 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
-"""Ledger Django app base views."""
-
-from django.views import generic
-
-
-class AnotherSuccessView(generic.base.TemplateView):
-    """Another success view."""
-
-    template_name = "ledger/another_success.html"
-
-    def get_context_data(self, *args, **kwargs):
-        """Get context data."""
-        context = super().get_context_data(*args, **kwargs)
-        if "next" in self.request.GET:
-            context["next"] = self.request.GET.get("next")
-
-        return context
+"""Units Django app templatetags."""

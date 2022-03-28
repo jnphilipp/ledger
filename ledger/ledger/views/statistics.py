@@ -37,7 +37,7 @@ class StatisticsView(generic.base.TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         """Get context data."""
-        context = super(StatisticsView, self).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
 
         if "unit" in self.kwargs:
             context["unit"] = get_object_or_404(Unit, code=self.kwargs["unit"])

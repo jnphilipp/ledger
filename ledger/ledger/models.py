@@ -114,7 +114,7 @@ class Account(models.Model):
         """Delete."""
         for file in self.files.all():
             file.delete()
-        super(Account, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
     def renumber_entries(self):
         """Renumber entries."""
@@ -130,7 +130,7 @@ class Account(models.Model):
             orig = Account.objects.get(pk=self.id)
             if orig.name != self.name:
                 self.slug = slugify(self.name)
-        super(Account, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """Name."""
@@ -170,7 +170,7 @@ class Entry(models.Model):
         """Delete."""
         for file in self.files.all():
             file.delete()
-        super(Entry, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         """Save."""
@@ -206,7 +206,7 @@ class Entry(models.Model):
                 entry.serial_number += 1
                 entry.save()
             self.serial_number = next_snr
-        super(Entry, self).save()
+        super().save()
 
         if old_account:
             old_account.renumber_entries()
@@ -271,7 +271,7 @@ class File(models.Model):
                 or orig.object_id != self.object_id
             ):
                 self.slug = make_slug()
-        super(File, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """Name."""
