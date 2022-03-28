@@ -26,10 +26,10 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from units.templatetags.units import unitcolorfy
 
 from ..forms import BudgetForm
 from ..models import Account, Budget, Entry
-from ..templatetags.ledger import colorfy
 
 
 class DetailView(generic.DetailView):
@@ -87,8 +87,8 @@ class DetailView(generic.DetailView):
                     {
                         "pk": tag.pk if i < 1 else "",
                         "name": tag.name if i < 1 else "",
-                        "monthly": colorfy(v / 12, unit),
-                        "yearly": colorfy(v, unit),
+                        "monthly": unitcolorfy(v / 12, unit),
+                        "yearly": unitcolorfy(v, unit),
                     }
                 )
                 if unit not in drilldown[0]:
@@ -207,8 +207,8 @@ class DetailView(generic.DetailView):
                     {
                         "pk": tag.pk if i < 1 else "",
                         "name": tag.name if i < 1 else "",
-                        "monthly": colorfy(v / 12, unit),
-                        "yearly": colorfy(v, unit),
+                        "monthly": unitcolorfy(v / 12, unit),
+                        "yearly": unitcolorfy(v, unit),
                     }
                 )
                 if unit not in drilldown[0]:
@@ -323,8 +323,8 @@ class DetailView(generic.DetailView):
                     {
                         "pk": tag.pk if i < 1 else "",
                         "name": tag.name if i < 1 else "",
-                        "monthly": colorfy(v / 12, unit),
-                        "yearly": colorfy(v, unit),
+                        "monthly": unitcolorfy(v / 12, unit),
+                        "yearly": unitcolorfy(v, unit),
                     }
                 )
                 if unit not in drilldown[0]:
@@ -439,8 +439,8 @@ class DetailView(generic.DetailView):
                     {
                         "pk": tag.pk if i < 1 else "",
                         "name": tag.name if i < 1 else "",
-                        "monthly": colorfy(v / 12, unit),
-                        "yearly": colorfy(v, unit),
+                        "monthly": unitcolorfy(v / 12, unit),
+                        "yearly": unitcolorfy(v, unit),
                     }
                 )
                 if unit not in drilldown[0]:
@@ -663,31 +663,31 @@ class DetailView(generic.DetailView):
             )
 
             footer[i][1] = (
-                colorfy(footer[i][1][unit], unit) if unit in footer[i][1] else ""
+                unitcolorfy(footer[i][1][unit], unit) if unit in footer[i][1] else ""
             )
             footer[i][2] = (
-                colorfy(footer[i][2][unit], unit) if unit in footer[i][2] else ""
+                unitcolorfy(footer[i][2][unit], unit) if unit in footer[i][2] else ""
             )
             footer[i][4] = (
-                colorfy(footer[i][4][unit], unit) if unit in footer[i][4] else ""
+                unitcolorfy(footer[i][4][unit], unit) if unit in footer[i][4] else ""
             )
             footer[i][5] = (
-                colorfy(footer[i][5][unit], unit) if unit in footer[i][5] else ""
+                unitcolorfy(footer[i][5][unit], unit) if unit in footer[i][5] else ""
             )
             footer[i][7] = (
-                colorfy(footer[i][7][unit], unit) if unit in footer[i][7] else ""
+                unitcolorfy(footer[i][7][unit], unit) if unit in footer[i][7] else ""
             )
             footer[i][8] = (
-                colorfy(footer[i][8][unit], unit) if unit in footer[i][8] else ""
+                unitcolorfy(footer[i][8][unit], unit) if unit in footer[i][8] else ""
             )
             footer[i][10] = (
-                colorfy(footer[i][10][unit], unit) if unit in footer[i][10] else ""
+                unitcolorfy(footer[i][10][unit], unit) if unit in footer[i][10] else ""
             )
             footer[i][11] = (
-                colorfy(footer[i][11][unit], unit) if unit in footer[i][11] else ""
+                unitcolorfy(footer[i][11][unit], unit) if unit in footer[i][11] else ""
             )
-            footer[-1][10] = colorfy(footer[-1][10], unit)
-            footer[-1][11] = colorfy(footer[-1][11], unit)
+            footer[-1][10] = unitcolorfy(footer[-1][10], unit)
+            footer[-1][11] = unitcolorfy(footer[-1][11], unit)
 
         for i, unit in enumerate(units):
             real = (
@@ -698,8 +698,8 @@ class DetailView(generic.DetailView):
             footer.append(
                 ["", "", "", "", "", "", "", "", "", _("Real") if i == 0 else "", 0, 0]
             )
-            footer[-1][10] = colorfy(real / 12, unit)
-            footer[-1][11] = colorfy(real, unit)
+            footer[-1][10] = unitcolorfy(real / 12, unit)
+            footer[-1][11] = unitcolorfy(real, unit)
 
         table = []
         for i in range(

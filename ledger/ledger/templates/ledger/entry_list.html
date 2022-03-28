@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load bootstrap i18n l10n ledger static %}
+{% load bootstrap i18n l10n ledger static units %}
 {% get_current_language as LANGUAGE_CODE %}
 
 
@@ -162,7 +162,7 @@
                             </th>
                             <td>{{ entry.date|date:"d.m.Y" }}</td>
                             <td>{{ entry.date|date:"D" }}</td>
-                            <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% trans "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% trans "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|colorfy:entry.account.unit }}</td>
+                            <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% trans "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% trans "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|unitcolorfy:entry.account.unit }}</td>
                             <td><a href="{% url "entry_list" %}?categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.category }}</a></td>
                             <td>{{ entry.text|default_if_none:"" }}</td>
                             <td>

@@ -1,5 +1,6 @@
 {% extends "ledger/popup.html" %}
-{% load i18n ledger %}
+{% load i18n l10n ledger units %}
+{% get_current_language as LANGUAGE_CODE %}
 
 
 {% block extrahead %}
@@ -43,11 +44,11 @@
         </tr>
         <tr>
             <th scope="row">{% trans "Amount" %}</th>
-            <td>{{ entry.amount|colorfy:entry.account.unit }}</td>
+            <td>{{ entry.amount|unitcolorfy:entry.account.unit }}</td>
         </tr>
         <tr>
             <th scope="row">{% trans "Fees" %}</th>
-            <td>{{ entry.fees|colorfy:entry.account.unit }}</td>
+            <td>{{ entry.fees|unitcolorfy:entry.account.unit }}</td>
         </tr>
         <tr>
             <th scope="row">{% trans "Category" %}</th>

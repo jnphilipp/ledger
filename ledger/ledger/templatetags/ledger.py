@@ -23,8 +23,8 @@ from django.db.models import F, Sum
 from django.contrib.contenttypes.models import ContentType
 from django.template import Library
 from django.template.defaultfilters import floatformat
-from django.utils.safestring import mark_safe
 from units.models import Unit
+from units.templatetags.units import unitcolorfy
 
 from ..dates import get_last_date_current_month
 from ..models import Account, Entry
@@ -85,20 +85,6 @@ def content_type_pk(model):
 
 
 @register.filter
-def colorfy(amount, unit=None):
-    """Colorfy template filter."""
-    precision = unit.precision if unit else 2
-    symbol = unit.symbol if unit else ""
-    if amount:
-        return mark_safe(
-            f'<span class="{"green" if amount >= 0 else "red"}"'
-            + f">{floatformat(amount, precision)} {symbol}</span>"
-        )
-    else:
-        return f"{floatformat(0, precision)} {symbol}".strip()
-
-
-@register.filter
 def balance(obj):
     """Balance template filter."""
     if isinstance(obj, Account):
@@ -120,7 +106,7 @@ def balance(obj):
         balance = 0
         unit = None
 
-    return colorfy(balance, unit)
+    return unitcolorfy(balance, unit)
 
 
 @register.filter
@@ -140,7 +126,7 @@ def outstanding(account):
             .filter(date__lte=get_last_date_current_month())
             .aggregate(Sum("amount"))["amount__sum"]
         )
-    return colorfy(outstanding, account.unit)
+    return unitcolorfy(outstanding, account.unit)
 
 
 @register.inclusion_tag("ledger/partials/_balances.html", takes_context=True)
@@ -183,8 +169,8 @@ def balances(context):
 
         values.append(
             {
-                "balance": colorfy(balance, unit),
-                "outstanding": colorfy(outstanding, unit),
+                "balance": unitcolorfy(balance, unit),
+                "outstanding": unitcolorfy(outstanding, unit),
                 "accounts": accounts,
             }
         )
