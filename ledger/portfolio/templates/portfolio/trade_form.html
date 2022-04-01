@@ -6,22 +6,39 @@
 {% block extrahead %}
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#id_tradeable").select2({
-            placeholder: "{% trans "Select a tradeable" %}",
+        $("#id_date").datepicker({
+                dateFormat:"yy-mm-dd",
+                firstDay: 1,
+                showOtherMonths: true,
+                selectOtherMonths: true
+            });
+            $("#date_today").click(function() {
+                $("#id_date").val("{% now "Y-m-d" %}");
+                $("#id_amount").focus();
+                return false;
+            });
+        $("#id_position").select2({
+            placeholder: "{% trans "Select a position" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
             ajax: {
-                url: "{% url "portfolio:tradeable_autocomplete" %}",
+                url: "{% url "portfolio:position_autocomplete" %}?append",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
                 },
                 processResults: function (data, params) {
-                    return { results: data.tradeables }
+                    return { results: data.positions }
                 }
             }
+        });
+        $("#id_type").select2({
+            placeholder: "{% trans "Select a type" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
         });
         $("#id_unit").select2({
             placeholder: "{% trans "Select a unit" %}",

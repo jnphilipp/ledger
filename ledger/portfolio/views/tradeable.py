@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2021 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2022 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -16,40 +16,124 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Portfolio Django app tradeable views."""
 
 import json
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count
+from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Count, Q
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.views import generic
 
-from ..models import Stock, Fund
+from ..forms import TradeableForm
+from ..models import ETF, Fund, Stock, Tradeable
 
 
-@login_required
 def autocomplete(request):
     """Handels GET/POST request to autocomplete tradeables.
 
     GET/POST parameters:
     q --- search term
     """
-
     params = request.POST.copy() if request.method == "POST" else request.GET.copy()
     if "application/json" == request.META.get("CONTENT_TYPE"):
         params.update(json.loads(request.body.decode("utf-8")))
 
-    stocks = Stock.objects.all()
-    funds = Fund.objects.all()
+    etfs = ETF.objects.annotate(Count("positions")).order_by("-positions__count")
+    funds = Fund.objects.annotate(Count("positions")).order_by("-positions__count")
+    stocks = Stock.objects.annotate(Count("positions")).order_by("-positions__count")
+    q = None
     if "q" in params:
-        stocks = stocks.filter(name__icontains=params.pop("q")[0])
-        funds = funds.filter(name__icontains=params.pop("q")[0])
+        q = params.pop("q")[0]
+        etfs = etfs.filter(
+            Q(name__icontains=q)
+            | Q(isin__icontains=q)
+            | Q(wkn__icontains=q)
+            | Q(symbol__icontains=q)
+        )
+        stocks = stocks.filter(
+            Q(name__icontains=q)
+            | Q(isin__icontains=q)
+            | Q(wkn__icontains=q)
+            | Q(symbol__icontains=q)
+        )
+        funds = funds.filter(
+            Q(name__icontains=q)
+            | Q(isin__icontains=q)
+            | Q(wkn__icontains=q)
+            | Q(symbol__icontains=q)
+        )
 
-    stock_content_type = ContentType.objects.get_for_model(Stock)
-    fund_content_type = ContentType.objects.get_for_model(Fund)
     data = {
         "response_date": timezone.now().strftime("%Y-%m-%dT%H:%M:%S:%f%z"),
-        "tradeable": [{"id": f"{stock_content_type.pk}{stock.pk}", "text": stock.name} for stock in stocks] + [{"id": f"{fund_content_type.pk}{fund.pk}", "text": fund.name} for fund in funds],
+        "tradeables": sorted(
+            [
+                {"id": f"etf:{etf.pk}", "text": etf.name, "count": etf.positions__count}
+                for etf in etfs
+            ]
+            + [
+                {
+                    "id": f"fund:{fund.pk}",
+                    "text": fund.name,
+                    "count": fund.positions__count,
+                }
+                for fund in funds
+            ]
+            + [
+                {
+                    "id": f"stock:{stock.pk}",
+                    "text": stock.name,
+                    "count": stock.positions__count,
+                }
+                for stock in stocks
+            ],
+            key=lambda x: x["count"],
+        ),
     }
     return JsonResponse(data)
+
+
+class CreateView(SuccessMessageMixin, generic.edit.CreateView):
+    """Tradeable create view."""
+
+    form_class = TradeableForm
+    model = Tradeable
+    success_message = _('The tradeable (%(type)s) "%(name)s" was successfully created.')
+    success_url = reverse_lazy("create_another_success")
+
+    def get_success_message(self, cleaned_data):
+        """Get success message."""
+        print(self.object)
+        return self.success_message % {
+            "type": self.object._meta.verbose_name.title(),
+            "name": self.object.name,
+        }
+
+
+class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
+    """Tradeable update view."""
+
+    form_class = TradeableForm
+    model = Tradeable
+    success_message = _('The stock "%(name)s" was successfully update.')
+    success_url = reverse_lazy("create_another_success")
+
+    def get_success_message(self, cleaned_data):
+        """Get success message."""
+        return self.success_message % {"name": self.object.name}
+
+
+class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
+    """Tradeable delete view."""
+
+    form_class = TradeableForm
+    model = Tradeable
+    success_message = _('The stock "%(name)s" was successfully deleted.')
+    success_url = reverse_lazy("create_another_success")
+
+    def get_success_message(self, cleaned_data):
+        """Get success message."""
+        return self.success_message % {"name": self.object.name}

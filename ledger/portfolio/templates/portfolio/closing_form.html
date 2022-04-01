@@ -23,23 +23,6 @@
                 }
             }
         });
-        $("#id_unit").select2({
-            placeholder: "{% trans "Select a unit" %}",
-            allowClear: true,
-            language: "{{ LANGUAGE_CODE }}",
-            width: "100%",
-            ajax: {
-                url: "{% url "units:unit_autocomplete" %}",
-                dataType: "json",
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data, params) {
-                    return { results: data.units }
-                }
-            }
-        });
     });
 </script>
 {% endblock %}

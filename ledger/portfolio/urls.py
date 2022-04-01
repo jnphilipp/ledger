@@ -20,16 +20,40 @@
 
 from django.urls import path
 
-from .views import fund, position, stock
+from .views import closing, position, trade, tradeable
 
 
 app_name = "portfolio"
 urlpatterns = [
     path("", position.ListView.as_view(), name="position_list"),
     path("<int:page>/", position.ListView.as_view()),
+    path("closing/create/", closing.CreateView.as_view(), name="closing_create"),
+    path("position/autocomplete/", position.autocomplete, name="position_autocomplete"),
     path("position/create/", position.CreateView.as_view(), name="position_create"),
-    path("position/<slug:slug>/", position.DetailView.as_view(), name="position_detail"),
-
-    path("tradeable/fund/autocomplete/", fund.autocomplete, name="fund_autocomplete"),
-    path("tradeable/stock/autocomplete/", stock.autocomplete, name="stock_autocomplete"),
+    path(
+        "position/<slug:slug>/", position.DetailView.as_view(), name="position_detail"
+    ),
+    path("position/<slug:slug>/chart/", position.chart, name="position_chart"),
+    path(
+        "position/<slug:slug>/close/",
+        position.CloseView.as_view(),
+        name="position_close",
+    ),
+    path(
+        "position/<slug:slug>/delete/",
+        position.DeleteView.as_view(),
+        name="position_delete",
+    ),
+    path(
+        "position/<slug:slug>/edit/",
+        position.UpdateView.as_view(),
+        name="position_edit",
+    ),
+    path("trade/create/", trade.CreateView.as_view(), name="trade_create"),
+    path("trade/<int:pk>/delete/", trade.DeleteView.as_view(), name="trade_delete"),
+    path("trade/<int:pk>/edit/", trade.UpdateView.as_view(), name="trade_edit"),
+    path(
+        "tradeable/autocomplete/", tradeable.autocomplete, name="tradeable_autocomplete"
+    ),
+    path("tradeable/create/", tradeable.CreateView.as_view(), name="tradeable_create"),
 ]

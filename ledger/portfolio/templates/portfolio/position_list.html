@@ -1,28 +1,55 @@
 {% extends "ledger/base.html" %}
-{% load bootstrap i18n %}
+{% load bootstrap i18n l10n ledger portfolio static units %}
+{% get_current_language as LANGUAGE_CODE %}
 
 
 {% block extrahead %}
 <script type="text/javascript">
     $(function() {
-        $("a.iframeFormModal").modal({
-            show: false
+        $("#id_closed").select2({
+            placeholder: "{% trans "State" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            width: "element",
         });
-        $('#iframeFormModal').on('show.bs.modal', function (event) {
-            $("#iframeFormModalLabel").html(event.relatedTarget.title);
-            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
-
-            if ( event.relatedTarget.href.includes("/portfolio/") && (event.relatedTarget.href.includes("/create/") || event.relatedTarget.href.includes("/edit/")) ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+        $("#id_tradeables").select2({
+            placeholder: "{% trans "Tradeables" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            width: "element",
+            ajax: {
+                url: "{% url "portfolio:tradeable_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.tradeables }
+                }
             }
         });
 
-        $("#iframeFormModalIframe").on("load", function() {
-            $("#iframeFormModalIframe").width(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
-            $("#iframeFormModalIframe").height(Math.max(300, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
-            $("#iframeFormModal").modal("handleUpdate");
+        $("a.iframeFormModal").modal({
+            show: false
+        });
+        $('#iframeFormModal').on('show.bs.modal', function (e) {
+            $("#iframeFormModalLabel").html(e.relatedTarget.title);
+            $("#iframeFormModalIframe").attr("src", e.relatedTarget.href);
+
+            if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+                $(".modal-footer").show();
+            }
+            else if ( e.relatedTarget.href.includes("/delete/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-danger");
+                $("#iframeFormModalSubmit").removeClass("btn-primary");
+                $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+                $(".modal-footer").show();
+            }
+            else if ( e.relatedTarget.href.includes("/position/") ) {
+                $(".modal-footer").hide();
+            }
         });
     });
 </script>
@@ -31,73 +58,120 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12">
-        <div class="float-right">
-            <a class="btn btn-outline-primary iframeFormModal" href="{% url "portfolio:position_create" %}?reload=True" title="{% trans "Add position" %}" data-toggle="modal" data-target="#iframeFormModal" role="button"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
-        </div>
-    </div>
-</div>
-<div class="row mt-md-2">
-    <div class="col-md-12">
-        {% if positions %}
-            <div class="table-responsive">
-                <table class="table table-hover table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans "Name" %}</th>
-                            {% trans "Closed" as closed_trans %}
-                            {% sortable_th column_name=closed_trans o=o get_name="o" get_value="closed" %}
-                            <th>{% trans "Invested" %}</th>
-                            <th>{% trans "Return" %}</th>
-                            <th>{% trans "Return with bonus" %}</th>
-                            <th>{% trans "Win/Loss" %}</th>
-                            <th>{% trans "Win/Loss with bonus" %}</th>
-                            <th>{% trans "Bonus" %}</th>
-                            <th>{% trans "Annual return" %}</th>
-                            <th>{% trans "Yield" %}</th>
-                            <th>{% trans "First trade" %}</th>
-                            <th>{% trans "Last trade" %}</th>
-                            <th>{% trans "Duration" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for position in positions %}
-                            <tr>
-                                <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}">{{ position.content_object.name }}</a></th>
-                                <td scope="col" class="text-center">
-                                    {% if account.closed %}
-                                        {% trans "yes" %}
-                                    {% else %}
-                                        {% trans "no" %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p>{% trans "There are no positions available." %}</p>
+    <div class="col-9 text-center">
+        {% if positions and form %}
+            {% trans "Filter" as filter_trans %}
+            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
         {% endif %}
     </div>
-</div>
-<div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="iframeFormModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans "Cancel" %}">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
-                <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
+   <div class="col text-end">
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+            <div class="dropdown-menu" aria-labelledby="add_dropdown">
+                {% if positions %}
+                    <a class="dropdown-item iframeFormModal" href="{% url "portfolio:trade_create" %}" title="{% trans "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Trade" %}</a>
+                    <div><hr class="dropdown-divider"></div>
+                {% endif %}
+                {% if has_tradeables %}
+                    <a class="dropdown-item iframeFormModal" href="{% url "portfolio:position_create" %}" title="{% trans "Add position" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Position" %}</a>
+                    <div><hr class="dropdown-divider"></div>
+                {% endif %}
+                <a class="dropdown-item iframeFormModal" href="{% url "portfolio:tradeable_create" %}" title="{% trans "Add Tradeable" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Tradeable" %}</a>
+                {% if has_tradeables %}
+                <a class="dropdown-item iframeFormModal" href="{% url "portfolio:closing_create" %}" title="{% trans "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Closings" %}</a>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+{% if positions %}
+<div class="row mt-2">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col">{% trans "Position" %}</th>
+                        <th class="text-center" scope="col">{% trans "Closed" %}</th>
+                        <th class="text-center" scope="col">{% trans "Tradeable" %}</th>
+                        <th class="text-center" scope="col">{% trans "Number of trades" %}</th>
+                        <th class="text-center" scope="col">{% trans "Invested" %}</th>
+                        <th class="text-center" scope="col">{% trans "Units" %}</th>
+                        <th class="text-center" scope="col">{% trans "Return" %}</th>
+                        <th class="text-center" scope="col">{% trans "Win/Loss" %}</th>
+                        <th class="text-center" scope="col">{% trans "Dividend" %}</th>
+                        <th class="text-center" scope="col">{% trans "Annual return" %}</th>
+                        <th class="text-center" scope="col">{% trans "Yield" %}</th>
+                        <th class="text-center" scope="col">{% trans "First trade" %}</th>
+                        <th class="text-center" scope="col">{% trans "Last trade" %}</th>
+                        <th class="text-center" scope="col">{% trans "Duration" %}</th>
+                        <th scope="col" class="visually-hidden">{% trans "Options" %}</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{% invested positions %}</td>
+                        <td></td>
+                        <td></td>
+                        <td>{% win_loss positions %}</td>
+                        <td>{% dividend positions %}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for position in positions %}
+                        <tr>
+                            <th scope="row"><a class="iframeFormModal" href="{% url "portfolio:position_detail" position.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% blocktranslate with name=position.slug %}Position {{ name }}{% endblocktranslate %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
+                            <td scope="col" class="text-center">
+                                {% if position.closed %}
+                                    {% trans "yes" %}
+                                {% else %}
+                                    {% trans "no" %}
+                                {% endif %}
+                            </td>
+                            <td data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{{ position.content_object|as_title }}">
+                                <a href="{% url "portfolio:position_list" %}?tradeables={{ position.content_type.model.lower }}:{{ position.content_object.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ position.content_object.name }}</a>
+                            </td>
+                            <td class="text-end">{{ position.trades.count }}</td>
+                            <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units }}{% endif %}</td>
+                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.preturn|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.win_loss|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.dividend|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
+                            <td class="text-end">{{ position.pyield|unitcolorfy:"%.3f%%" }}</td>
+                            <td class="text-end">{{ position.start_date|date:"d.m.Y" }}</td>
+                            <td class="text-end">{% if position.closed %}{{ position.end_date|date:"d.m.Y" }}{% endif %}</td>
+                            <td class="text-end">{% blocktranslate with duration=position.duration %}{{ duration }} days{% endblocktranslate %}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{position.pk}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
+                                    <div class="dropdown-menu" aria-labelledby="options-{position.pk}">
+                                        <div class="dropdown-item text-muted">
+                                            {{ position }}
+                                        </div>
+                                        <div><hr class="dropdown-divider"></div>
+                                        <a class="dropdown-item iframeFormModal" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                                        {% if not position.closed %}
+                                            <a class="dropdown-item" href="{% url "portfolio:position_close" position.slug %}" title="{% blocktranslate with position=position %}Close position {{ position }}{% endblocktranslate %}"><span class="fas fa-clone"></span> {% trans "Close" %}</a>
+                                        {% endif %}
+                                        <a class="dropdown-item iframeFormModal" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col text-center">
+        <h3>{% trans "There is no data available." %}</h3>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
