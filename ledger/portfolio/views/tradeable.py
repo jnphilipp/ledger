@@ -118,7 +118,7 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     form_class = TradeableForm
     model = Tradeable
-    success_message = _('The stock "%(name)s" was successfully update.')
+    success_message = _('The tradeable (%(type)s) "%(name)s" was successfully update.')
     success_url = reverse_lazy("create_another_success")
 
     def get_success_message(self, cleaned_data):
@@ -131,7 +131,7 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
 
     form_class = TradeableForm
     model = Tradeable
-    success_message = _('The stock "%(name)s" was successfully deleted.')
+    success_message = _('The tradeable (%(type)s) "%(name)s" was successfully deleted.')
     success_url = reverse_lazy("create_another_success")
 
     def get_success_message(self, cleaned_data):

@@ -20,7 +20,7 @@
 
 from django.template import Library
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 
 from units.templatetags.units import unitcolorfy
 
@@ -44,7 +44,7 @@ def as_title(tradeable):
 @register.filter
 def duration(position):
     """Position duration template filter."""
-    return _("%(days)s days") % {
+    return ngettext_lazy("%(days)d day", "%(days)d days", "days") % {
         "days": (position.end_date() - position.start_date()).days
     }
 

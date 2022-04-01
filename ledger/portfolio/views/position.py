@@ -285,9 +285,9 @@ class CloseView(generic.base.RedirectView):
         position.save()
 
         if position.closed:
-            msg = _("The position %(name)s was successfully closed.")
+            msg = _('The position "%(name)s" was successfully closed.')
         else:
-            msg = _("The position %(name)s was successfully re-open.")
+            msg = _('The position "%(name)s" was successfully re-open.')
 
         msg %= {"name": position.slug}
         messages.add_message(self.request, messages.SUCCESS, msg)

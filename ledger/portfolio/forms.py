@@ -265,8 +265,8 @@ class ClosingForm(forms.ModelForm):
     )
     dateformat = forms.CharField(
         initial=CLOSING_FORM_DATEFORMAT,
-        help_text=_("Dateformat using the 1989 C standard codes."),
-        label=_("Dateformat"),
+        help_text=_("Date format using the 1989 C standard codes."),
+        label=_("Date format"),
     )
     price_field = forms.CharField(
         initial=CLOSING_FORM_INITIAL_PRICE_FIELD,

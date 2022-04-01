@@ -52,8 +52,8 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     def get_success_message(self, cleaned_data):
         """Get success message."""
 
-        return _('The trade "%(trade)s" was successfully updated.') % {
-            "trade": f"{self.object.position} - #{self.object.pk}"
+        return _('The trade "%(name)s" was successfully updated.') % {
+            "name": f"{self.object.position} - #{self.object.pk}"
         }
 
 
@@ -65,6 +65,6 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        return _('The trade #"%(trade)s" was successfully deleted.') % {
-            "trade": f"{self.object.position} - #{self.object.pk}"
+        return _('The trade #"%(name)s" was successfully deleted.') % {
+            "name": f"{self.object.position} - #{self.object.pk}"
         }

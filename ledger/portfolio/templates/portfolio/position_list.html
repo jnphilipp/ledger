@@ -143,7 +143,7 @@
                             <td class="text-end">{{ position.pyield|unitcolorfy:"%.3f%%" }}</td>
                             <td class="text-end">{{ position.start_date|date:"d.m.Y" }}</td>
                             <td class="text-end">{% if position.closed %}{{ position.end_date|date:"d.m.Y" }}{% endif %}</td>
-                            <td class="text-end">{% blocktranslate with duration=position.duration %}{{ duration }} days{% endblocktranslate %}</td>
+                            <td class="text-end">{{ position|duration }}</td>
                             <td>
                                 <div class="dropdown">
                                     <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{position.pk}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>

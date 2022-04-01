@@ -430,8 +430,8 @@ class Trade(models.Model):
     date = models.DateField(verbose_name=_("Date"))
     units = models.FloatField(default=0.0, verbose_name=_("Units"))
     unit_price = models.FloatField(default=0.0, verbose_name=_("Unit price"))
-    extra = models.FloatField(default=0.0, verbose_name=_("Extra cost"))
-    extra2 = models.FloatField(default=0.0, verbose_name=_("Extra cost"))
+    extra = models.FloatField(default=0.0, verbose_name=_("Extra costs"))
+    extra2 = models.FloatField(default=0.0, verbose_name=_("Extra costs"))
     exchange_rate = models.FloatField(
         blank=True, null=True, verbose_name=_("Exchange rate")
     )

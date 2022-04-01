@@ -20,7 +20,7 @@
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from django.views import generic
 
 from ..forms import ClosingForm
@@ -32,8 +32,10 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
 
     form_class = ClosingForm
     model = Closing
-    success_message = _(
-        '%(num_closings)s closings were successfully added to "%(name)s".'
+    success_message = ngettext_lazy(
+        '%(num_closings)d closing were successfully added to "%(name)s".',
+        '%(num_closings)d closings were successfully added to "%(name)s".',
+        "num_closings",
     )
 
     def get_success_message(self, cleaned_data):
