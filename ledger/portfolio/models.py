@@ -202,14 +202,23 @@ class Position(models.Model):
 
     def end_date(self) -> date:
         """End date, i.e., date of the last trade or current date."""
-        if self.content_object.closings.count() == 0 and not self.closed:
-            return timezone.now().date()
+        today = timezone.now().date()
+        if not self.trades.exists():
+            return today
+
+        last_trade = self.trades.aggregate(models.Max("date"))["date__max"]
+        if self.closed:
+            return last_trade
+        elif self.content_object.closings.count() == 0:
+            return today if today > last_trade else last_trade
+
+        last_closing = self.content_object.closings.first().date
+        if last_closing > today and last_closing > last_trade:
+            return last_closing
+        elif last_trade > today and last_trade > last_closing:
+            return last_trade
         else:
-            return (
-                self.trades.aggregate(models.Max("date"))["date__max"]
-                if self.closed
-                else self.content_object.closings.first().date
-            )
+            return today
 
     def duration(self) -> int:
         """Position duration in days."""
