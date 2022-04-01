@@ -6,29 +6,17 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ledger\n"
+"Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-10 18:18+0100\n"
-"PO-Revision-Date: 2022-03-10 18:18+0100\n"
+"POT-Creation-Date: 2022-04-01 19:28+0200\n"
+"PO-Revision-Date: 2022-04-01 19:28+0200\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
-"Language-Team: \n"
+"Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: admin.py:86 templates/ledger/account_detail.html:46
-#: templates/ledger/account_list.html:56
-msgid "Number of entries"
-msgstr "Anzahl an Einträgen"
-
-#: admin.py:108 models.py:91 models.py:165
-#: templates/ledger/entry_detail.html:61 templates/ledger/entry_list.html:54
-#: templates/ledger/entry_list.html:150 templates/ledger/statistics.html:47
-#: views/statistics.py:59 views/statistics.py:68
-msgid "Tags"
-msgstr "Tags"
 
 #: apps.py:30 templates/ledger/base.html:39 templates/ledger/base.html:57
 msgid "Ledger"
@@ -38,7 +26,7 @@ msgstr "Haushaltsbuch"
 msgid "Ledgers"
 msgstr "Haushaltsbücher"
 
-#: fields.py:28 models.py:163 templates/ledger/entry_detail.html:57
+#: fields.py:29 models.py:163 templates/ledger/entry_detail.html:58
 #: templates/ledger/entry_list.html:149
 msgid "Text"
 msgstr "Text"
@@ -59,13 +47,13 @@ msgstr "Startdatum"
 msgid "End date"
 msgstr "Enddatum"
 
-#: forms.py:118 templates/ledger/budget_detail.html:76
-#: templates/ledger/budget_detail.html:98
-#: templates/ledger/budget_detail.html:132
-#: templates/ledger/budget_detail.html:163
-#: templates/ledger/budget_detail.html:166
-#: templates/ledger/budget_detail.html:169
-#: templates/ledger/budget_detail.html:172
+#: forms.py:118 templates/ledger/budget_detail.html:77
+#: templates/ledger/budget_detail.html:99
+#: templates/ledger/budget_detail.html:133
+#: templates/ledger/budget_detail.html:164
+#: templates/ledger/budget_detail.html:167
+#: templates/ledger/budget_detail.html:170
+#: templates/ledger/budget_detail.html:173
 msgid "Monthly"
 msgstr "Montalich"
 
@@ -81,13 +69,13 @@ msgstr "Vierteljährlich"
 msgid "Half-yearly"
 msgstr "Halbjährlich"
 
-#: forms.py:122 templates/ledger/budget_detail.html:77
-#: templates/ledger/budget_detail.html:99
-#: templates/ledger/budget_detail.html:142
-#: templates/ledger/budget_detail.html:164
-#: templates/ledger/budget_detail.html:167
-#: templates/ledger/budget_detail.html:170
-#: templates/ledger/budget_detail.html:173
+#: forms.py:122 templates/ledger/budget_detail.html:78
+#: templates/ledger/budget_detail.html:100
+#: templates/ledger/budget_detail.html:143
+#: templates/ledger/budget_detail.html:165
+#: templates/ledger/budget_detail.html:168
+#: templates/ledger/budget_detail.html:171
+#: templates/ledger/budget_detail.html:174
 msgid "Yearly"
 msgstr "Jährlich"
 
@@ -100,7 +88,7 @@ msgid "From"
 msgstr "Von"
 
 #: forms.py:214 forms.py:224 models.py:157
-#: templates/ledger/entry_detail.html:41 templates/ledger/entry_list.html:146
+#: templates/ledger/entry_detail.html:42 templates/ledger/entry_list.html:146
 msgid "Date"
 msgstr "Datum"
 
@@ -108,12 +96,12 @@ msgstr "Datum"
 msgid "To"
 msgstr "Nach"
 
-#: forms.py:227 models.py:158 templates/ledger/entry_detail.html:45
+#: forms.py:227 models.py:158 templates/ledger/entry_detail.html:46
 #: templates/ledger/entry_list.html:147 templates/ledger/entry_list.html:165
 msgid "Amount"
 msgstr "Betrag"
 
-#: forms.py:230 models.py:159 templates/ledger/entry_detail.html:49
+#: forms.py:230 models.py:159 templates/ledger/entry_detail.html:50
 #: templates/ledger/entry_list.html:165
 msgid "Fees"
 msgstr "Gebühren"
@@ -124,16 +112,16 @@ msgstr "Eine Datei mit diesem Name existiert bereits."
 
 #: models.py:60 models.py:80 models.py:101 models.py:234
 #: templates/ledger/account_detail.html:34
-#: templates/ledger/budget_detail.html:162
-#: templates/ledger/budget_detail.html:165
-#: templates/ledger/budget_detail.html:168
-#: templates/ledger/budget_detail.html:171
+#: templates/ledger/budget_detail.html:163
+#: templates/ledger/budget_detail.html:166
+#: templates/ledger/budget_detail.html:169
+#: templates/ledger/budget_detail.html:172
 msgid "Name"
 msgstr "Name"
 
 #: models.py:70 models.py:106 models.py:161
 #: templates/ledger/account_detail.html:38
-#: templates/ledger/entry_detail.html:53 templates/ledger/entry_list.html:148
+#: templates/ledger/entry_detail.html:54 templates/ledger/entry_list.html:148
 msgid "Category"
 msgstr "Kategorie"
 
@@ -147,9 +135,16 @@ msgstr "Kategorien"
 msgid "Tag"
 msgstr "Tag"
 
+#: models.py:91 models.py:165 templates/ledger/entry_detail.html:62
+#: templates/ledger/entry_list.html:54 templates/ledger/entry_list.html:150
+#: templates/ledger/statistics.html:47 views/statistics.py:59
+#: views/statistics.py:68
+msgid "Tags"
+msgstr "Tags"
+
 #: models.py:97 models.py:150 models.py:230 models.py:292
 #: templates/ledger/account_detail.html:26
-#: templates/ledger/entry_detail.html:25
+#: templates/ledger/entry_detail.html:26
 msgid "Created at"
 msgstr "Erstellt am"
 
@@ -171,12 +166,12 @@ msgstr "Geschlossen"
 
 #: models.py:110 models.py:167 models.py:286
 #: templates/ledger/account_detail.html:50
-#: templates/ledger/entry_detail.html:69 templates/ledger/entry_list.html:151
+#: templates/ledger/entry_detail.html:70 templates/ledger/entry_list.html:151
 msgid "Files"
 msgstr "Dateien"
 
 #: models.py:143 models.py:154 templates/ledger/account_confirm_delete.html:11
-#: templates/ledger/account_list.html:52 templates/ledger/entry_detail.html:33
+#: templates/ledger/account_list.html:52 templates/ledger/entry_detail.html:34
 #: templates/ledger/entry_list.html:145
 msgid "Account"
 msgstr "Konto"
@@ -186,9 +181,9 @@ msgstr "Konto"
 msgid "Accounts"
 msgstr "Konten"
 
-#: models.py:156 templates/ledger/entry_detail.html:37
+#: models.py:156 templates/ledger/entry_detail.html:38
 msgid "Serial number"
-msgstr "Seriennummer"
+msgstr "Laufende Nummer"
 
 #: models.py:223 templates/ledger/account_confirm_delete.html:15
 #: templates/ledger/entry_confirm_delete.html:11
@@ -267,7 +262,7 @@ msgstr ""
 "Objekte und ihre zugehörigen Elemente werden gelöscht:"
 
 #: templates/ledger/account_detail.html:13
-#: templates/ledger/account_list.html:27 templates/ledger/entry_detail.html:13
+#: templates/ledger/account_list.html:27 templates/ledger/entry_detail.html:14
 #: templates/ledger/entry_list.html:104
 msgid "Yes, I'm sure"
 msgstr "Ja, ich bin sicher"
@@ -277,12 +272,17 @@ msgid "This account is currently closed."
 msgstr "Dieses Konto ist derzeit geschlossen."
 
 #: templates/ledger/account_detail.html:30
-#: templates/ledger/entry_detail.html:29
+#: templates/ledger/entry_detail.html:30
 msgid "Last updated at"
 msgstr "Zuletzt aktualisiert am"
 
+#: templates/ledger/account_detail.html:46
+#: templates/ledger/account_list.html:56
+msgid "Number of entries"
+msgstr "Anzahl an Einträgen"
+
 #: templates/ledger/account_detail.html:56
-#: templates/ledger/entry_detail.html:75
+#: templates/ledger/entry_detail.html:76
 #, python-format
 msgid "Delete file %(name)s"
 msgstr "Lösche Datei %(name)s"
@@ -296,7 +296,7 @@ msgid "Select a unit"
 msgstr "Einheit auswählen"
 
 #: templates/ledger/account_list.html:15 templates/ledger/account_list.html:21
-#: templates/ledger/budget_detail.html:17 templates/ledger/entry_list.html:92
+#: templates/ledger/budget_detail.html:18 templates/ledger/entry_list.html:92
 #: templates/ledger/entry_list.html:98
 msgid "Save"
 msgstr "Speichern"
@@ -335,8 +335,8 @@ msgstr "geschlossen"
 msgid "Edit account"
 msgstr "Konto bearbeiten"
 
-#: templates/ledger/account_list.html:78 templates/ledger/budget_detail.html:46
-#: templates/ledger/budget_detail.html:209 templates/ledger/entry_list.html:186
+#: templates/ledger/account_list.html:78 templates/ledger/budget_detail.html:47
+#: templates/ledger/budget_detail.html:210 templates/ledger/entry_list.html:186
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -380,57 +380,57 @@ msgstr "Statistik"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: templates/ledger/budget_detail.html:30 views/statistics.py:210
+#: templates/ledger/budget_detail.html:31 views/statistics.py:210
 #: views/statistics.py:334
 msgid "Years"
 msgstr "Jahre"
 
-#: templates/ledger/budget_detail.html:33
+#: templates/ledger/budget_detail.html:34
 msgid "Previous"
 msgstr "Vorheriges"
 
-#: templates/ledger/budget_detail.html:38
+#: templates/ledger/budget_detail.html:39
 msgid "Next"
 msgstr "Nächstes"
 
-#: templates/ledger/budget_detail.html:41
+#: templates/ledger/budget_detail.html:42
 msgid "Chart/Table toggle"
 msgstr "Grafik/Tabelle umschalten"
 
-#: templates/ledger/budget_detail.html:42
+#: templates/ledger/budget_detail.html:43
 msgid "Chart"
 msgstr "Grafik"
 
-#: templates/ledger/budget_detail.html:43
+#: templates/ledger/budget_detail.html:44
 msgid "Table"
 msgstr "Tabelle"
 
-#: templates/ledger/budget_detail.html:46
-#: templates/ledger/budget_detail.html:209
+#: templates/ledger/budget_detail.html:47
+#: templates/ledger/budget_detail.html:210
 msgid "Edit budget"
 msgstr "Budget bearbeiten"
 
-#: templates/ledger/budget_detail.html:156 views/budget.py:99
+#: templates/ledger/budget_detail.html:157 views/budget.py:99
 #: views/budget.py:102 views/budget.py:171 views/budget.py:179
 msgid "Income"
 msgstr "Einkommen"
 
-#: templates/ledger/budget_detail.html:157 views/budget.py:219
+#: templates/ledger/budget_detail.html:158 views/budget.py:219
 #: views/budget.py:222 views/budget.py:287 views/budget.py:295
 msgid "Consumption"
 msgstr "Konsum"
 
-#: templates/ledger/budget_detail.html:158 views/budget.py:335
+#: templates/ledger/budget_detail.html:159 views/budget.py:335
 #: views/budget.py:338 views/budget.py:403 views/budget.py:411
 msgid "Insurance"
 msgstr "Versicherung"
 
-#: templates/ledger/budget_detail.html:159 views/budget.py:451
+#: templates/ledger/budget_detail.html:160 views/budget.py:451
 #: views/budget.py:454 views/budget.py:519 views/budget.py:527
 msgid "Savings"
 msgstr "Sparen"
 
-#: templates/ledger/budget_detail.html:214 templates/ledger/entry_list.html:208
+#: templates/ledger/budget_detail.html:215 templates/ledger/entry_list.html:208
 #: templates/ledger/statistics.html:92
 msgid "There is no data available."
 msgstr "Es sind keine Daten vorhanden."
@@ -509,8 +509,9 @@ msgid "Move up"
 msgstr "Nach oben verschieben"
 
 #: templates/ledger/entry_list.html:190
-msgid "Delete entry"
-msgstr "Eintrag löschen"
+#, python-format
+msgid "Delete entry %(account)s #%(entry_no)s"
+msgstr "Eintrag %(account)s #%(entry_no)s löschen"
 
 #: templates/ledger/entry_list.html:191
 #, python-format
@@ -669,6 +670,3 @@ msgstr "Verlust und Gewinn"
 #: views/statistics.py:172 views/statistics.py:298
 msgid "Months"
 msgstr "Monate"
-
-#~ msgid "Edit entry"
-#~ msgstr "Eintrag bearbeiten"

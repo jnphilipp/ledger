@@ -16,6 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Ledger Django app fields."""
 
 from django.db import connection
 from django.db.models.fields import Field
@@ -23,7 +24,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class SingleLineTextField(Field):
-    """SingleLineTextField ORM field."""
+    """SingleLineTextField model field."""
 
     description = _("Text")
 
