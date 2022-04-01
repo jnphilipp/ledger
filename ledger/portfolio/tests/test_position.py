@@ -163,8 +163,8 @@ class PositionModelTestCase(TestCase):
     def test_annual_return(self):
         with patch.object(timezone, "now", new=lambda: datetime(2022, 3, 31)):
             self.assertEquals(self.etf_position.annual_return(), 411952.21888563794)
-            self.assertEquals(self.fund_position.annual_return(), -41.57130701839539)
-            self.assertEquals(self.stock_position.annual_return(), 10.931413583885297)
+            self.assertEquals(self.fund_position.annual_return(), 23.412243666891207)
+            self.assertEquals(self.stock_position.annual_return(), 29.632379989801816)
 
     def test_dividend(self):
         self.assertEquals(self.etf_position.dividend(), 0.0)
@@ -189,8 +189,8 @@ class PositionModelTestCase(TestCase):
 
     def test_preturn(self):
         self.assertEquals(self.etf_position.preturn(), 1990.0)
-        self.assertEquals(self.fund_position.preturn(), 300.0)
-        self.assertEquals(self.stock_position.preturn(), 365.0)
+        self.assertEquals(self.fund_position.preturn(), 360.0)
+        self.assertEquals(self.stock_position.preturn(), 490.0)
 
     def test_units(self):
         self.assertEquals(self.etf_position.units(), 0.0)
@@ -199,5 +199,5 @@ class PositionModelTestCase(TestCase):
 
     def test_win_loss(self):
         self.assertEquals(self.etf_position.win_loss(), 986.0)
-        self.assertEquals(self.fund_position.win_loss(), -42.0)
-        self.assertEquals(self.stock_position.win_loss(), 65.0)
+        self.assertEquals(self.fund_position.win_loss(), 18.0)
+        self.assertEquals(self.stock_position.win_loss(), 190.0)

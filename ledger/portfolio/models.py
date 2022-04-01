@@ -277,7 +277,7 @@ class Position(models.Model):
                 * self.trades.filter(
                     Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
                 )
-                .last()
+                .first()
                 .unit_price
             )
         elif not self.closed:
@@ -305,7 +305,7 @@ class Position(models.Model):
                     * self.trades.filter(
                         Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
                     )
-                    .last()
+                    .first()
                     .unit_price
                 )
                 + sold
@@ -343,7 +343,7 @@ class Position(models.Model):
         if self.content_object.closings.count() == 0 and not self.closed:
             gain += self.trades.filter(
                 Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
-            ).last().unit_price * (bought - sold)
+            ).first().unit_price * (bought - sold)
         elif not self.closed:
             gain += self.content_object.closings.first().price * (bought - sold)
 
@@ -360,7 +360,7 @@ class Position(models.Model):
                 self.trades.filter(
                     Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
                 )
-                .last()
+                .first()
                 .unit_price
             )
         elif not self.closed:
@@ -370,26 +370,11 @@ class Position(models.Model):
             [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
         )
 
-        if self.trades.filter(type=Trade.TradeType.SELL).count() == 0:
-            bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
-                units=Coalesce(Sum("units"), 0.0)
-            )["units"]
-            sum_sell = cur_price * bought
-        else:
-            sum_sell = sum(
-                [
-                    trade.total()
-                    for trade in self.trades.filter(type=Trade.TradeType.SELL)
-                ]
-            )
-            if not self.closed:
-                bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
-                    units=Coalesce(Sum("units"), 0.0)
-                )["units"]
-                sold = self.trades.filter(type=Trade.TradeType.SELL).aggregate(
-                    units=Coalesce(Sum("units"), 0.0)
-                )["units"]
-                sum_sell += cur_price * (bought - sold)
+        sum_sell = sum(
+            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
+        )
+        if not self.closed:
+            sum_sell += cur_price * self.units()
 
         return (sum_sell * 100 / sum_buy) - 100
 
