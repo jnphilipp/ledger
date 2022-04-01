@@ -16,13 +16,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
+"""Units Django app config."""
 
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
 
 
 class UnitsConfig(AppConfig):
-    default_auto_field = "django.db.models.AutoField"
+    """Units app config."""
+
+    default_auto_field = "django.db.models.BigAutoField"
     name = "units"
     verbose_name = _("Unit")
     verbose_name_plural = _("Units")
