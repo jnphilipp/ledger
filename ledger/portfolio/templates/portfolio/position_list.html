@@ -112,18 +112,18 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td>{% invested positions %}</td>
+                        <td class="text-end">{% invested positions %}</td>
                         <td></td>
                         <td></td>
-                        <td>{% win_loss positions %}</td>
-                        <td>{% dividend positions %}</td>
+                        <td class="text-end">{% win_loss positions %}</td>
+                        <td class="text-end">{% dividend positions %}</td>
                     </tr>
                 </thead>
                 <tbody>
                     {% for position in positions %}
                         <tr>
                             <th scope="row"><a class="iframeFormModal" href="{% url "portfolio:position_detail" position.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% blocktranslate with name=position.slug %}Position {{ name }}{% endblocktranslate %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
-                            <td scope="col" class="text-center">
+                            <td class="text-center">
                                 {% if position.closed %}
                                     {% trans "yes" %}
                                 {% else %}

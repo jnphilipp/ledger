@@ -12,7 +12,7 @@
             {% if position.trades %}
                 <ul>
                     {% for trade in position.trades.all %}
-                        <li>{% trans "Trades" %}: <em>#{{ trade.pk }}: {{ trade.date|date:"D., d. F Y" }} - {{ trade.get_type_display }}</em></li>
+                        <li>{% trans "Trade" %}: <em>#{{ trade.pk }}: {{ trade.date|date:"D., d. F Y" }} - {{ trade.get_type_display }}</em></li>
                     {% endfor %}
                 </ul>
             {% endif %}

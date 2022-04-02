@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-01 17:33+0200\n"
-"PO-Revision-Date: 2022-04-01 17:33+0200\n"
+"POT-Creation-Date: 2022-04-02 11:40+0200\n"
+"PO-Revision-Date: 2022-04-02 11:40+0200\n"
 "Last-Translator: J. Nathanael Philipp <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -253,13 +253,14 @@ msgstr "Wechselkurs"
 msgid "Type"
 msgstr "Type"
 
-#: models.py:518 templates/portfolio/position_detail.html:116
+#: models.py:518 templates/portfolio/position_confirm_delete.html:15
+#: templates/portfolio/position_detail.html:116
 #: templates/portfolio/position_list.html:72
 #: templates/portfolio/trade_confirm_delete.html:11
 msgid "Trade"
 msgstr "Handel"
 
-#: models.py:519 templates/portfolio/position_confirm_delete.html:15
+#: models.py:519
 msgid "Trades"
 msgstr "Händel"
 
@@ -282,7 +283,6 @@ msgstr ""
 "Objekte und ihre zugehörigen Elemente werden gelöscht:"
 
 #: templates/portfolio/position_confirm_delete.html:11
-#: templates/portfolio/trade_confirm_delete.html:11
 #, python-format
 msgid "Trade %(position)s #%(no)s"
 msgstr "Handel %(position)s #%(no)s"
@@ -467,7 +467,7 @@ msgstr "Typ auswählen"
 msgid "Select a currency"
 msgstr "Währung auswählen"
 
-#: templatetags/portfolio.py:48
+#: templatetags/portfolio.py:47
 #, python-format
 msgid "%(days)d day"
 msgid_plural "%(days)d days"
