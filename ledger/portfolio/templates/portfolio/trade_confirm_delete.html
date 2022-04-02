@@ -1,0 +1,16 @@
+{% extends "ledger/popup.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<div class="alert alert-danger" role="alert">
+    <h5><b>{% trans "Confirm deletion" %}</b></h5>
+    <p>{% blocktrans %}Are you sure you want to delete this trade? All of the following objects and their related items will be deleted:{% endblocktrans %}</p>
+    <ul>
+        <li>
+            {% trans "Trade" %}: <em>{{ trade.position }} #{{ trade.pk }}</em>
+        </li>
+    </ul>
+    <form action="" method="post">{% csrf_token %}</form>
+</div>
+{% endblock%}

@@ -167,7 +167,9 @@ class StandingEntryForm(forms.ModelForm):
         entries = []
         start = self.cleaned_data["start_date"]
         end = self.cleaned_data["end_date"]
-        for date in daterange(start, end, int(self.cleaned_data["execution"])):
+        for date in daterange(
+            start, end, "months", int(self.cleaned_data["execution"])
+        ):
             entry, created = Entry.objects.update_or_create(
                 date=date,
                 amount=instance.amount,

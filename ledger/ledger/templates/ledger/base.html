@@ -73,6 +73,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            {% url "portfolio:position_list" as position_list_url %}
+                            <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" href="{{ position_list_url }}">
+                                {% trans "Portfolio" %}
+                                {% if request.path|startswith:position_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             {% url "statistics_detail" as statistics_detail_url %}
                             <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" href="{{ statistics_detail_url }}">
                                 {% trans "Statistics" %}

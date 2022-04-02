@@ -23,6 +23,7 @@ import sys
 
 from argparse import FileType
 from django.core.management.base import BaseCommand
+from portfolio.models import ETF, Fund, Position, Stock
 
 from ...models import Account, Budget
 
@@ -34,16 +35,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         """Add arguments for parser."""
-        parser.add_argument("-r", "--renumber-entries", action="store_true")
+        parser.add_argument("-r", "--renumber", action="store_true")
         parser.add_argument(
             "output", nargs="?", type=FileType("w", encoding="utf8"), default=sys.stdout
         )
 
     def handle(self, *args, **options):
         """Handle command."""
-        data = {"accounts": []}
+        data = {"accounts": [], "portfolio": [], "tradeables": []}
         for account in Account.objects.all():
-            if options["renumber_entries"]:
+            if options["renumber"]:
                 account.renumber_entries()
             data["accounts"].append(
                 {
@@ -86,6 +87,92 @@ class Command(BaseCommand):
             "insurance_tags": [tag.name for tag in budget.insurance_tags.all()],
             "savings_tags": [tag.name for tag in budget.savings_tags.all()],
         }
+
+        for position in Position.objects.all():
+            if options["renumber"]:
+                position.renumber_trades()
+            data["portfolio"].append(
+                {
+                    "slug": position.slug,
+                    "closed": position.closed,
+                    "trailing_stop_atr_factor": position.trailing_stop_atr_factor,
+                    "unit": {
+                        "name": position.unit.name,
+                        "code": position.unit.code,
+                        "symbol": position.unit.symbol,
+                        "precision": position.unit.precision,
+                    },
+                    "tradeable": {
+                        "name": position.content_object.name,
+                        "isin": position.content_object.isin,
+                        "wkn": position.content_object.wkn,
+                        "symbol": position.content_object.symbol,
+                        "traded": position.content_object.traded,
+                        "type": position.content_object.__class__.__name__.lower(),
+                        "currency": {
+                            "name": position.content_object.currency.name,
+                            "code": position.content_object.currency.code,
+                            "symbol": position.content_object.currency.symbol,
+                            "precision": position.content_object.currency.precision,
+                        },
+                    },
+                    "trades": [
+                        {
+                            "serial_number": trade.serial_number,
+                            "type": trade.type,
+                            "date": trade.date.strftime("%Y-%m-%d"),
+                            "units": trade.units,
+                            "unit_price": trade.unit_price,
+                            "extra": trade.extra,
+                            "extra2": trade.extra2,
+                            "exchange_rate": trade.exchange_rate,
+                            "unit": {
+                                "name": trade.unit.name,
+                                "code": trade.unit.code,
+                                "symbol": trade.unit.symbol,
+                                "precision": trade.unit.precision,
+                            },
+                        }
+                        for trade in position.trades.all().reverse()
+                    ],
+                }
+            )
+
+        for tradeable in (
+            list(ETF.objects.all())
+            + list(Fund.objects.all())
+            + list(Stock.objects.all())
+        ):
+            if tradeable.closings.count() == 0:
+                continue
+
+            data["tradeables"].append(
+                {
+                    "name": tradeable.name,
+                    "isin": tradeable.isin,
+                    "wkn": tradeable.wkn,
+                    "symbol": tradeable.symbol,
+                    "traded": tradeable.traded,
+                    "type": tradeable.__class__.__name__.lower(),
+                    "currency": {
+                        "name": tradeable.currency.name,
+                        "code": tradeable.currency.code,
+                        "symbol": tradeable.currency.symbol,
+                        "precision": tradeable.currency.precision,
+                    },
+                    "closings": [
+                        {
+                            "date": closing.date.strftime("%Y-%m-%d"),
+                            "price": closing.price,
+                            "high": closing.high,
+                            "low": closing.low,
+                            "change_previous": closing.change_previous,
+                            "change_previous_percent": closing.change_previous_percent,
+                        }
+                        for closing in tradeable.closings.all().reverse()
+                    ],
+                }
+            )
 
         options["output"].write(json.dumps(data, indent=4, ensure_ascii=False))
         options["output"].write("\n")

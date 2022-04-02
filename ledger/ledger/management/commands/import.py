@@ -25,6 +25,8 @@ import sys
 from argparse import FileType
 from django.core.files import File as DJFile
 from django.core.management.base import BaseCommand
+from portfolio.models import Closing, ETF, Fund, Position, Stock, Trade
+from typing import Dict, Union
 from units.models import Unit
 
 from ...models import Account, Budget, Category, Entry, File, Tag
@@ -48,20 +50,7 @@ class Command(BaseCommand):
 
         if "accounts" in data:
             for a in data["accounts"]:
-                if "code" in a["unit"]:
-                    unit = Unit.objects.get(code=a["unit"]["code"])
-                else:
-                    try:
-                        unit = Unit.objects.get(
-                            name=a["unit"]["name"],
-                            precision=a["unit"]["precision"],
-                        )
-                    except Unit.DoesNotExist:
-                        self.stderr.write(
-                            self.style.ERROR(f"Unit {a['unit']['name']} not found.")
-                        )
-                        sys.exit(0)
-
+                unit = self.get_unit(a["unit"])
                 category, created = Category.objects.get_or_create(name=a["category"])
                 if created:
                     self.stdout.write(
@@ -138,11 +127,145 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS(f"File {file} successfully created.")
                         )
-        else:
-            self.stdout.write(
-                self.style.ERROR("No accounts found in data, aborting...")
-            )
-            sys.exit(1)
+
+        if "portfolio" in data:
+            for p in data["portfolio"]:
+                unit = self.get_unit(p["tradeable"]["currency"])
+                tradeable = None
+                if p["tradeable"]["type"] == "etf":
+                    tradeable, created = ETF.objects.get_or_create(
+                        name=p["tradeable"]["name"],
+                        isin=p["tradeable"]["isin"],
+                        wkn=p["tradeable"]["wkn"],
+                        symbol=p["tradeable"]["symbol"],
+                        traded=p["tradeable"]["traded"],
+                        currency=unit,
+                    )
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(f"ETF {tradeable} successfully created.")
+                        )
+                elif p["tradeable"]["type"] == "fund":
+                    tradeable, created = Fund.objects.get_or_create(
+                        name=p["tradeable"]["name"],
+                        isin=p["tradeable"]["isin"],
+                        wkn=p["tradeable"]["wkn"],
+                        symbol=p["tradeable"]["symbol"],
+                        traded=p["tradeable"]["traded"],
+                        currency=unit,
+                    )
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f"Fund {tradeable} successfully created."
+                            )
+                        )
+                elif p["tradeable"]["type"] == "stock":
+                    tradeable, created = Stock.objects.get_or_create(
+                        name=p["tradeable"]["name"],
+                        isin=p["tradeable"]["isin"],
+                        wkn=p["tradeable"]["wkn"],
+                        symbol=p["tradeable"]["symbol"],
+                        traded=p["tradeable"]["traded"],
+                        currency=unit,
+                    )
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f"Stock {tradeable} successfully created."
+                            )
+                        )
+
+                unit = self.get_unit(p["unit"])
+                position = Position.objects.create(
+                    slug=p["slug"],
+                    trailing_stop_atr_factor=p["trailing_stop_atr_factor"],
+                    closed=p["closed"],
+                    content_object=tradeable,
+                    unit=unit,
+                )
+                self.stdout.write(
+                    self.style.SUCCESS(f"Position {position} successfully created.")
+                )
+
+                for t in p["trades"]:
+                    unit = self.get_unit(t["unit"])
+                    trade = Trade.objects.create(
+                        serial_number=t["serial_number"],
+                        date=t["date"],
+                        units=t["units"],
+                        unit_price=t["unit_price"],
+                        extra=t["extra"],
+                        extra2=t["extra2"],
+                        exchange_rate=t["exchange_rate"],
+                        type=t["type"],
+                        unit=unit,
+                        position=position,
+                    )
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Trade {trade} successfully created.")
+                    )
+
+        if "tradeables" in data:
+            for t in data["tradeables"]:
+                unit = self.get_unit(p["currency"])
+                tradeable = None
+                if t["type"] == "etf":
+                    tradeable, created = ETF.objects.get_or_create(
+                        name=t["name"],
+                        isin=t["isin"],
+                        wkn=t["wkn"],
+                        symbol=t["symbol"],
+                        traded=t["traded"],
+                        currency=unit,
+                    )
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(f"ETF {tradeable} successfully created.")
+                        )
+                elif t["type"] == "fund":
+                    tradeable, created = Fund.objects.get_or_create(
+                        name=t["name"],
+                        isin=t["isin"],
+                        wkn=t["wkn"],
+                        symbol=t["symbol"],
+                        traded=t["traded"],
+                        currency=unit,
+                    )
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f"Fund {tradeable} successfully created."
+                            )
+                        )
+                elif t["type"] == "stock":
+                    tradeable, created = Stock.objects.get_or_create(
+                        name=t["name"],
+                        isin=t["isin"],
+                        wkn=t["wkn"],
+                        symbol=t["symbol"],
+                        traded=t["traded"],
+                        currency=unit,
+                    )
+                    if created:
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f"Stock {tradeable} successfully created."
+                            )
+                        )
+
+                for c in t["closings"]:
+                    closing = Closing.objects.create(
+                        date=c["date"],
+                        price=c["price"],
+                        high=c["high"],
+                        low=c["low"],
+                        change_previous=c["change_previous"],
+                        change_previous_percent=c["change_previous_percent"],
+                    )
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Closing {closing} successfully created.")
+                    )
 
         if "budget" in data:
             budget, created = Budget.objects.get_or_create()
@@ -163,3 +286,17 @@ class Command(BaseCommand):
                 budget.savings_tags.add(Tag.objects.get(name=t))
         else:
             self.stdout.write(self.style.ERROR("No budget found in data."))
+
+    def get_unit(self, data: Dict[str, Union[str, int]]) -> Unit:
+        """Get unit."""
+        if "code" in data:
+            return Unit.objects.get(code=data["code"])
+        else:
+            try:
+                return Unit.objects.get(
+                    name=data["name"],
+                    precision=data["precision"],
+                )
+            except Unit.DoesNotExist:
+                self.stderr.write(self.style.ERROR(f"Unit {data['name']} not found."))
+                sys.exit(0)

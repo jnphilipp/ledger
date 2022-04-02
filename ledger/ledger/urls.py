@@ -107,6 +107,7 @@ urlpatterns = [
     ),
     path("file/<slug:slug>/", file.DetailView.as_view(), name="file_detail"),
     path("file/<slug:slug>/delete/", file.DeleteView.as_view(), name="file_delete"),
+    path("portfolio/", include("portfolio.urls")),
     path("statistics/", statistics.StatisticsView.as_view(), name="statistics_detail"),
     path(
         "statistics/<slug:unit>/",

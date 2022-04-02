@@ -1,0 +1,38 @@
+{% extends "ledger/popup.html" %}
+{% load bootstrap ledger i18n l10n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extrahead %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#id_currency").select2({
+            placeholder: "{% trans "Select a currency" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            ajax: {
+                url: "{% url "units:unit_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.units }
+                }
+            }
+        });
+        $("#id_type").select2({
+            placeholder: "{% trans "Select a type" %}",
+            allowClear: true,
+            language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+{% bootstrap_form form=form submit=False %}
+{% endblock%}
