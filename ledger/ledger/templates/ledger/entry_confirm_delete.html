@@ -9,10 +9,10 @@
     <ul>
         <li>
             {% trans "Entry" %}: <em>{% blocktrans with no=entry.serial_number %}Entry #{{ no }}{% endblocktrans %}</em>
-            {% if entry.invoices %}
+            {% if entry.files %}
                 <ul>
-                    {% for invoice in entry.invoices.all %}
-                        <li>{% trans "Invoice" %}: <em>{{ invoice.name }}</em></li>
+                    {% for file in entry.files.all %}
+                        <li>{% trans "File" %}: <em>{{ file.name }}</em></li>
                     {% endfor %}
                 </ul>
             {% endif %}

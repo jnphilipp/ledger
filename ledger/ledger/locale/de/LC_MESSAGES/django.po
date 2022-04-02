@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-01 19:28+0200\n"
-"PO-Revision-Date: 2022-04-01 19:28+0200\n"
+"POT-Creation-Date: 2022-04-02 09:44+0000\n"
+"PO-Revision-Date: 2022-04-02 09:44+0000\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -195,7 +195,9 @@ msgstr "Eintrag"
 msgid "Entries"
 msgstr "Einträge"
 
-#: models.py:236 models.py:285 templates/ledger/file_confirm_delete.html:11
+#: models.py:236 models.py:285 templates/ledger/account_confirm_delete.html:22
+#: templates/ledger/entry_confirm_delete.html:15
+#: templates/ledger/file_confirm_delete.html:11
 msgid "File"
 msgstr "Datei"
 
@@ -453,10 +455,6 @@ msgstr ""
 #, python-format
 msgid "Entry #%(no)s"
 msgstr "Eintrag #%(no)s"
-
-#: templates/ledger/entry_confirm_delete.html:15
-msgid "Invoice"
-msgstr "Rechnung"
 
 #: templates/ledger/entry_form.html:41 templates/ledger/transfer_form.html:32
 #: templates/ledger/transfer_form.html:49

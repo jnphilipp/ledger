@@ -16,6 +16,13 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if account.files %}
+                <ul>
+                    {% for file in account.files.all %}
+                        <li>{% trans "File" %}: <em>{{ file.name }}</em></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </li>
     </ul>
     <form action="" method="post">{% csrf_token %}</form>
