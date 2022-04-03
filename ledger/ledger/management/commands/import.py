@@ -208,7 +208,7 @@ class Command(BaseCommand):
 
         if "tradeables" in data:
             for t in data["tradeables"]:
-                unit = self.get_unit(p["currency"])
+                unit = self.get_unit(t["currency"])
                 tradeable = None
                 if t["type"] == "etf":
                     tradeable, created = ETF.objects.get_or_create(
@@ -262,6 +262,7 @@ class Command(BaseCommand):
                         low=c["low"],
                         change_previous=c["change_previous"],
                         change_previous_percent=c["change_previous_percent"],
+                        content_object=tradeable,
                     )
                     self.stdout.write(
                         self.style.SUCCESS(f"Closing {closing} successfully created.")
