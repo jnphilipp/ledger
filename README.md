@@ -6,6 +6,7 @@ Web based ledger system to keep track of your money.
 * run as systemd service
 * detailed statistics
 * budget view
+* portfolio view
 * attach files to entries or accounts, for invoics, statements, ...
 
 ## Install
