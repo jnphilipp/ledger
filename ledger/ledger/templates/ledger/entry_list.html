@@ -53,6 +53,7 @@
         $("#id_tags").select2({
             placeholder: "{% trans "Tags" %}",
             language: "{{ LANGUAGE_CODE }}",
+            width: "element",
             ajax: {
                 url: "{% url "tag_autocomplete" %}",
                 dataType: "json",
@@ -68,7 +69,7 @@
         $("#id_units").select2({
             placeholder: "{% trans "Units" %}",
             language: "{{ LANGUAGE_CODE }}",
-            width: "100%",
+            width: "element",
             ajax: {
                 url: "{% url "units:unit_autocomplete" %}",
                 dataType: "json",
