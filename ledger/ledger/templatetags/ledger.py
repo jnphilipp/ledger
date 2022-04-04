@@ -22,9 +22,8 @@ from datetime import date
 from django.db.models import F, Sum
 from django.contrib.contenttypes.models import ContentType
 from django.template import Library
-from django.template.defaultfilters import floatformat
 from units.models import Unit
-from units.templatetags.units import unitcolorfy
+from units.templatetags.units import unitcolorfy, unitformat
 
 from ..dates import get_last_date_current_month
 from ..models import Account, Entry
@@ -162,15 +161,15 @@ def balances(context):
             accounts.append(
                 {
                     "name": a.name,
-                    "balance": f"{floatformat(b, unit.precision)} {unit.symbol}",
-                    "outstanding": f"{floatformat(o, unit.precision)} {unit.symbol}",
+                    "balance": unitformat(b, unit),
+                    "outstanding": unitformat(o, unit),
                 }
             )
 
         values.append(
             {
                 "balance": unitcolorfy(balance, unit),
-                "outstanding": unitcolorfy(outstanding, unit),
+                "outstanding": unitcolorfy(outstanding if outstanding else 0.0, unit),
                 "accounts": accounts,
             }
         )

@@ -56,14 +56,20 @@ def unitcolorfy(
     if isinstance(unit, Unit):
         precision = unit.precision if unit else 2
         symbol = unit.symbol if unit else ""
-        return mark_safe(
-            f'<span class="{"green" if amount >= 0. else "red"}"'
-            + f">{floatformat(amount, precision)} {symbol}</span>"
-        )
+        if amount == 0.0:
+            return unitformat(amount, unit)
+        else:
+            return mark_safe(
+                f'<span class="{"green" if amount >=0. else "red"}"'
+                + f">{floatformat(amount, precision)} {symbol}</span>"
+            )
     elif isinstance(unit, str):
-        return mark_safe(
-            f'<span class="{"green" if amount >= 0. else "red"}"'
-            + f">{unit % amount}</span>"
-        )
+        if amount == 0.0:
+            return unitformat(amount, unit)
+        else:
+            return mark_safe(
+                f'<span class="{"green" if amount > 0. else "red"}"'
+                + f">{unit % amount}</span>"
+            )
     else:
         return f"{amount}"
