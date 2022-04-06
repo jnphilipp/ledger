@@ -43,6 +43,17 @@ class TradeModelTestCase(TestCase):
         self.assertEquals(trade.total(), 1004.0)
 
         trade = Trade.objects.create(
+            date="2022-02-15",
+            units=100,
+            unit_price=3,
+            extra=0.0,
+            unit=Unit.objects.get(code="EUR"),
+            type=Trade.TradeType.PRE_EMPTION_RIGHT,
+            position=self.etf_position,
+        )
+        self.assertEquals(trade.total(), 300.0)
+
+        trade = Trade.objects.create(
             date="2022-02-01",
             units=100,
             unit_price=1,

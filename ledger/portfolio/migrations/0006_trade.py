@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('extra', models.FloatField(default=0., verbose_name='Extra costs')),
                 ('extra2', models.FloatField(default=0., verbose_name='Extra costs')),
                 ('exchange_rate', models.FloatField(blank=True, null=True, verbose_name='Exchange rate')),
-                ('type', models.IntegerField(choices=[(None, '(Unknown)'), (0, 'Buy'), (1, 'Sell'), (2, 'Dividend')], verbose_name='Type')),
+                ('type', models.IntegerField(choices=[(None, '(Unknown)'), (0, 'Buy'), (1, 'Sell'), (2, 'Dividend'), (3, 'Pre-emption right')], verbose_name='Type')),
                 ('position', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='trades', to='portfolio.position', verbose_name='Position')),
                 ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='trades', to='units.unit', verbose_name='Unit')),
             ],

@@ -236,7 +236,13 @@ class Position(models.Model):
         if self.closed:
             return 0.0
         buy = sum(
-            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+            [
+                trade.total()
+                for trade in self.trades.filter(
+                    Q(type=Trade.TradeType.BUY)
+                    | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                )
+            ]
         )
         sell = sum(
             [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
@@ -291,7 +297,13 @@ class Position(models.Model):
             return None
 
         bought = sum(
-            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+            [
+                trade.total()
+                for trade in self.trades.filter(
+                    Q(type=Trade.TradeType.BUY)
+                    | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                )
+            ]
         )
         sold = sum(
             [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
@@ -328,7 +340,13 @@ class Position(models.Model):
             return None
 
         costs = sum(
-            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+            [
+                trade.total()
+                for trade in self.trades.filter(
+                    Q(type=Trade.TradeType.BUY)
+                    | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                )
+            ]
         )
         bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
             units=Coalesce(Sum("units"), 0.0)
@@ -367,7 +385,13 @@ class Position(models.Model):
             cur_price = self.content_object.closings.first().price
 
         sum_buy = sum(
-            [trade.total() for trade in self.trades.filter(type=Trade.TradeType.BUY)]
+            [
+                trade.total()
+                for trade in self.trades.filter(
+                    Q(type=Trade.TradeType.BUY)
+                    | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                )
+            ]
         )
 
         sum_sell = sum(
@@ -420,6 +444,7 @@ class Trade(models.Model):
         BUY = 0, _("Buy")
         SELL = 1, _("Sell")
         DIVIDEND = 2, _("Dividend")
+        PRE_EMPTION_RIGHT = 3, _("Pre-emption right")
 
         __empty__ = _("(Unknown)")
 
@@ -449,14 +474,20 @@ class Trade(models.Model):
     def total(self) -> float:
         """Total."""
         total = 0.0
-        if self.type == Trade.TradeType.BUY:
+        if (
+            self.type == Trade.TradeType.BUY
+            or self.type == Trade.TradeType.PRE_EMPTION_RIGHT
+        ):
             total = self.unit_price * self.units + self.extra
         elif self.type == Trade.TradeType.SELL or self.type == Trade.TradeType.DIVIDEND:
             total = self.unit_price * self.units - self.extra
         total = round(total, self.unit.precision)
         if self.exchange_rate:
             total = round(total / self.exchange_rate, self.position.unit.precision)
-            if self.type == Trade.TradeType.BUY:
+            if (
+                self.type == Trade.TradeType.BUY
+                or self.type == Trade.TradeType.PRE_EMPTION_RIGHT
+            ):
                 total += self.extra2
             elif (
                 self.type == Trade.TradeType.SELL
