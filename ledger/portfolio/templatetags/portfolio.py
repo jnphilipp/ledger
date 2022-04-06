@@ -22,7 +22,7 @@ from django.template import Library
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, ngettext_lazy
 
-from units.templatetags.units import unitcolorfy
+from units.templatetags.units import unitcolorfy, unitformat
 
 
 register = Library()
@@ -59,7 +59,7 @@ def invested(positions) -> float:
         if position.unit not in sums:
             sums[position.unit] = 0.0
         sums[position.unit] += position.invested()
-    return mark_safe("<br>".join([unitcolorfy(v, k) for k, v in sums.items()]))
+    return mark_safe("<br>".join([unitformat(v, k) for k, v in sums.items()]))
 
 
 @register.simple_tag
@@ -85,4 +85,4 @@ def dividend(positions) -> float:
         if position.unit not in sums:
             sums[position.unit] = 0.0
         sums[position.unit] += position.dividend()
-    return mark_safe("<br>".join([unitcolorfy(v, k) for k, v in sums.items()]))
+    return mark_safe("<br>".join([unitformat(v, k) for k, v in sums.items()]))

@@ -66,7 +66,7 @@
             {% if not position.closed and position.trades.count > 0 %}
                 <tr>
                     <th scope="row">{% trans "Invested" %}</th>
-                    <td>{{ position.invested|unitcolorfy:position.content_object.currency }}</td>
+                    <td>{{ position.invested|unitformat:position.content_object.currency }}</td>
                 </tr>
                 <tr>
                     <th scope="row">{% trans "Units" %}</th>

@@ -101,7 +101,6 @@
                         <th class="text-center" scope="col">{% trans "Win/Loss" %}</th>
                         <th class="text-center" scope="col">{% trans "Dividend" %}</th>
                         <th class="text-center" scope="col">{% trans "Annual return" %}</th>
-                        <th class="text-center" scope="col">{% trans "Yield" %}</th>
                         <th class="text-center" scope="col">{% trans "First trade" %}</th>
                         <th class="text-center" scope="col">{% trans "Last trade" %}</th>
                         <th class="text-center" scope="col">{% trans "Duration" %}</th>
@@ -134,13 +133,12 @@
                                 <a href="{% url "portfolio:position_list" %}?tradeables={{ position.content_type.model.lower }}:{{ position.content_object.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ position.content_object.name }}</a>
                             </td>
                             <td class="text-end">{{ position.trades.count }}</td>
-                            <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitformat:position.unit }}{% endif %}</td>
                             <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units }}{% endif %}</td>
-                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.preturn|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.preturn|unitformat:position.unit }}{% endif %}</td>
                             <td class="text-end">{% if position.trades.count > 0 %}{{ position.win_loss|unitcolorfy:position.unit }}{% endif %}</td>
-                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.dividend|unitcolorfy:position.unit }}{% endif %}</td>
+                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.dividend|unitformat:position.unit }}{% endif %}</td>
                             <td class="text-end">{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
-                            <td class="text-end">{{ position.pyield|unitcolorfy:"%.3f%%" }}</td>
                             <td class="text-end">{{ position.start_date|date:"d.m.Y" }}</td>
                             <td class="text-end">{% if position.closed %}{{ position.end_date|date:"d.m.Y" }}{% endif %}</td>
                             <td class="text-end">{{ position|duration }}</td>

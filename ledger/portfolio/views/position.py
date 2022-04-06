@@ -22,7 +22,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count, Q
+from django.db.models import Count, Min, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -197,7 +197,9 @@ class ListView(generic.ListView):
                     positions = positions.filter(portfolio_etfs__in=etfs)
                 if stocks:
                     positions = positions.filter(portfolio_stocks__in=stocks)
-        return positions
+        return positions.annotate(Min("trades__date")).order_by(
+            "closed", "-trades__date__min"
+        )
 
     def get_context_data(self, *args, **kwargs):
         """Get context data."""
