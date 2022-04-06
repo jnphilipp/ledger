@@ -23,6 +23,7 @@ import os
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import F, Func
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -66,7 +67,7 @@ class Category(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("name",)
+        ordering = (Func(F("name"), function="LOWER"),)
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
 
@@ -86,7 +87,7 @@ class Tag(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("name",)
+        ordering = (Func(F("name"), function="LOWER"),)
         verbose_name = _("Tag")
         verbose_name_plural = _("Tags")
 
@@ -139,7 +140,7 @@ class Account(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("closed", "name")
+        ordering = ("closed", Func(F("name"), function="LOWER"))
         verbose_name = _("Account")
         verbose_name_plural = _("Accounts")
 
@@ -218,7 +219,7 @@ class Entry(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("account", "serial_number")
+        ordering = (Func(F("account__name"), function="LOWER"), "serial_number")
         unique_together = ("account", "serial_number")
         verbose_name = _("Entry")
         verbose_name_plural = _("Entries")
@@ -280,7 +281,7 @@ class File(models.Model):
     class Meta:
         """Meta."""
 
-        ordering = ("-updated_at", "name")
+        ordering = ("-updated_at", Func(F("name"), function="LOWER"))
         unique_together = ("content_type", "object_id", "name")
         verbose_name = _("File")
         verbose_name_plural = _("Files")

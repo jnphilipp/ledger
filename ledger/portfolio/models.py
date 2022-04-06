@@ -22,7 +22,7 @@ from datetime import date
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import F, Func, Q, Sum
 from django.db.models.functions import Coalesce
 from django.template.defaultfilters import slugify
 from django.utils import timezone
@@ -87,7 +87,7 @@ class Tradeable(models.Model):
         """Meta."""
 
         abstract = True
-        ordering = ("name",)
+        ordering = (Func(F("name"), function="LOWER"),)
         verbose_name = _("Tradeable")
         verbose_name_plural = _("Tradeables")
 

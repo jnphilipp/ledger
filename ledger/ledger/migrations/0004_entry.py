@@ -20,6 +20,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import django.db.models.expressions
 import ledger.fields
 
 
@@ -48,7 +49,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'Entry',
                 'verbose_name_plural': 'Entries',
-                'ordering': ('account', 'serial_number'),
+                'ordering': (django.db.models.expressions.Func(django.db.models.expressions.F('account__name'), function='LOWER'), 'serial_number'),
                 'unique_together': {('account', 'serial_number')},
             },
         ),

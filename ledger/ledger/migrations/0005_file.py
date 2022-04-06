@@ -20,6 +20,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import django.db.models.expressions
 import ledger.fields
 import ledger.models
 
@@ -47,7 +48,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'File',
                 'verbose_name_plural': 'Files',
-                'ordering': ('-updated_at', 'name'),
+                'ordering': ('-updated_at', django.db.models.expressions.Func(django.db.models.expressions.F('name'), function='LOWER')),
                 'unique_together': {('content_type', 'object_id', 'name')},
             },
         ),

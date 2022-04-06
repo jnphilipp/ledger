@@ -20,6 +20,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import django.db.models.expressions
 import ledger.fields
 
 
@@ -46,7 +47,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'Account',
                 'verbose_name_plural': 'Accounts',
-                'ordering': ('closed', 'name'),
+                'ordering': ('closed', django.db.models.expressions.Func(django.db.models.expressions.F('name'), function='LOWER')),
             },
         ),
     ]
