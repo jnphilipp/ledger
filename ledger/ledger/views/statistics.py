@@ -19,7 +19,7 @@
 """Ledger Django ledger statistics views."""
 
 from datetime import date
-from django.db.models import Q, Sum
+from django.db.models import F, Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
@@ -157,7 +157,7 @@ def categories(request, unit, year=None, month=None):
             sdata = []
             for d in dates:
                 v = entries.filter(date__day=d.strftime("%d")).aggregate(
-                    sum=Sum("amount")
+                    sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 sdata.append((f"{d.strftime('%d')}.", v))
             series.append({"name": category.name, "data": sdata})
@@ -197,7 +197,7 @@ def categories(request, unit, year=None, month=None):
             sdata = []
             for m in months:
                 v = entries.filter(date__month=m.strftime("%m")).aggregate(
-                    sum=Sum("amount")
+                    sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 sdata.append((_(m.strftime("%B")), v))
             series.append({"name": category.name, "data": sdata})
@@ -231,7 +231,7 @@ def categories(request, unit, year=None, month=None):
             sdata = []
             for y in years:
                 v = entries.filter(date__year=y.strftime("%Y")).aggregate(
-                    sum=Sum("amount")
+                    sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 sdata.append((y.strftime("%Y"), v))
             series.append({"name": category.name, "data": sdata})
@@ -283,7 +283,7 @@ def tags(request, unit, year=None, month=None):
             sdata = []
             for d in dates:
                 v = entries.filter(date__day=d.strftime("%d")).aggregate(
-                    sum=Sum("amount")
+                    sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 sdata.append((f"{d.strftime('%d')}", v))
             series.append({"name": tag.name, "data": sdata})
@@ -319,7 +319,7 @@ def tags(request, unit, year=None, month=None):
             sdata = []
             for m in months:
                 v = entries.filter(date__month=m.strftime("%m")).aggregate(
-                    sum=Sum("amount")
+                    sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 sdata.append((_(m.strftime("%B")), v))
             series.append({"name": tag.name, "data": sdata})
@@ -353,7 +353,7 @@ def tags(request, unit, year=None, month=None):
             sdata = []
             for y in years:
                 v = entries.filter(date__year=y.strftime("%Y")).aggregate(
-                    sum=Sum("amount")
+                    sum=Sum(F("amount") + F("fees"))
                 )["sum"]
                 sdata.append((y.strftime("%Y"), v))
             series.append({"name": tag.name, "data": sdata})
