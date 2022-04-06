@@ -26,6 +26,8 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from typing import Any, Dict, List, Set, Tuple
+from units.models import Unit
 from units.templatetags.units import unitcolorfy
 
 from ..forms import BudgetForm
@@ -58,478 +60,77 @@ class DetailView(generic.DetailView):
 
         entry_ids = set()
         units = set()
-        series = [{}, {}]
-        drilldown = [{}, {}]
+        series = ({}, {})
+        drilldown = ({}, {})
 
         footer = []
         footer.append(_("Sum"))
         footer.append({})
         footer.append({})
-
-        income = []
-        for tag in self.object.income_tags.annotate(
-            name_lower=Func(F("name"), function="LOWER")
-        ).order_by("name_lower"):
-            amounts = {}
-            for e in Entry.objects.filter(
-                Q(date__year=year) & Q(tags__pk=tag.pk)
-            ).annotate(total=F("amount") + F("fees")):
-                if e.pk not in entry_ids:
-                    entry_ids.add(e.pk)
-                    if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.total
-                    else:
-                        amounts[e.account.unit] = e.total
-
-            unit = None
-            for i, (unit, v) in enumerate(amounts.items()):
-                income.append(
-                    {
-                        "pk": tag.pk if i < 1 else "",
-                        "name": tag.name if i < 1 else "",
-                        "monthly": unitcolorfy(v / 12, unit),
-                        "yearly": unitcolorfy(v, unit),
-                    }
-                )
-                if unit not in drilldown[0]:
-                    drilldown[0][unit] = {}
-                    drilldown[1][unit] = {}
-                if "income" not in drilldown[0][unit]:
-                    drilldown[0][unit]["income"] = self.drilldown(
-                        _("Income"), "income", unit
-                    )
-                    drilldown[1][unit]["income"] = self.drilldown(
-                        _("Income"), "income", unit
-                    )
-                drilldown[0][unit]["income"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v / 12,
-                        "y": abs(v) / 12,
-                        "drilldown": "income_%s" % tag.pk,
-                    }
-                )
-                drilldown[1][unit]["income"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v,
-                        "y": abs(v),
-                        "drilldown": "income_%s" % tag.pk,
-                    }
-                )
-            if unit:
-                drilldown[0][unit][tag.pk] = self.drilldown(
-                    tag.name, "income_%s" % tag.pk, unit
-                )
-                drilldown[1][unit][tag.pk] = self.drilldown(
-                    tag.name, "income_%s" % tag.pk, unit
-                )
-                categories = [{}, {}]
-                for e in Entry.objects.filter(
-                    Q(date__year=year) & Q(account__unit=unit) & Q(tags=tag)
-                ).annotate(total=F("amount") + F("fees")):
-                    if e.category.pk in categories[0]:
-                        categories[0][e.category.pk]["v"] += e.total
-                        categories[1][e.category.pk]["v"] += e.total
-                    else:
-                        categories[0][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                        categories[1][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                for k in categories[0].keys():
-                    categories[0][k]["y"] = abs(categories[0][k]["v"]) / 12
-                    categories[1][k]["y"] = abs(categories[1][k]["v"])
-                drilldown[0][unit][tag.pk]["data"] = [
-                    v for k, v in categories[0].items()
-                ]
-                drilldown[1][unit][tag.pk]["data"] = [
-                    v for k, v in categories[1].items()
-                ]
-            for k, v in amounts.items():
-                if k in footer[1]:
-                    footer[1][k] += v / 12
-                else:
-                    footer[1][k] = v / 12
-                if k in footer[2]:
-                    footer[2][k] += v
-                else:
-                    footer[2][k] = v
-        units.update(footer[1].keys())
-        for unit in units:
-            if len(units) > 1:
-                name = _("Budget %(unit)s" % {"unit": unit.name})
-            else:
-                name = _("Budget")
-            series[0][unit] = self.series(name, unit)
-            series[1][unit] = self.series(name, unit)
-            series[0][unit]["data"].append(
-                {
-                    "name": str(_("Income")),
-                    "v": footer[2][unit] / 12,
-                    "y": abs(footer[2][unit]) / 12,
-                    "drilldown": "income",
-                }
-            )
-            series[1][unit]["data"].append(
-                {
-                    "name": str(_("Income")),
-                    "v": footer[2][unit],
-                    "y": abs(footer[2][unit]),
-                    "drilldown": "income",
-                }
-            )
+        income = self.calculate_part(
+            self.object.income_tags.annotate(
+                name_lower=Func(F("name"), function="LOWER")
+            ).order_by("name_lower"),
+            year,
+            "income",
+            _("Income"),
+            entry_ids,
+            series,
+            drilldown,
+            footer,
+            units,
+        )
 
         footer.append(_("Sum"))
         footer.append({})
         footer.append({})
-        consumption = []
-        for tag in self.object.consumption_tags.annotate(
-            name_lower=Func(F("name"), function="LOWER")
-        ).order_by("name_lower"):
-            amounts = {}
-            for e in Entry.objects.filter(
-                Q(date__year=year) & Q(tags__pk=tag.pk)
-            ).annotate(total=F("amount") + F("fees")):
-                if e.pk not in entry_ids:
-                    entry_ids.add(e.pk)
-                    if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.total
-                    else:
-                        amounts[e.account.unit] = e.total
-
-            unit = None
-            for i, (unit, v) in enumerate(amounts.items()):
-                consumption.append(
-                    {
-                        "pk": tag.pk if i < 1 else "",
-                        "name": tag.name if i < 1 else "",
-                        "monthly": unitcolorfy(v / 12, unit),
-                        "yearly": unitcolorfy(v, unit),
-                    }
-                )
-                if unit not in drilldown[0]:
-                    drilldown[0][unit] = {}
-                    drilldown[1][unit] = {}
-                if "consumption" not in drilldown[0][unit]:
-                    drilldown[0][unit]["consumption"] = self.drilldown(
-                        _("Consumption"), "consumption", unit
-                    )
-                    drilldown[1][unit]["consumption"] = self.drilldown(
-                        _("Consumption"), "consumption", unit
-                    )
-                drilldown[0][unit]["consumption"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v / 12,
-                        "y": abs(v) / 12,
-                        "drilldown": "consumption_%s" % tag.pk,
-                    }
-                )
-                drilldown[1][unit]["consumption"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v,
-                        "y": abs(v),
-                        "drilldown": "consumption_%s" % tag.pk,
-                    }
-                )
-            if unit:
-                drilldown[0][unit][tag.pk] = self.drilldown(
-                    tag.name, "consumption_%s" % tag.pk, unit
-                )
-                drilldown[1][unit][tag.pk] = self.drilldown(
-                    tag.name, "consumption_%s" % tag.pk, unit
-                )
-                categories = [{}, {}]
-                for e in Entry.objects.filter(
-                    Q(date__year=year) & Q(account__unit=unit) & Q(tags=tag)
-                ).annotate(total=F("amount") + F("fees")):
-                    if e.category.pk in categories[0]:
-                        categories[0][e.category.pk]["v"] += e.total
-                        categories[1][e.category.pk]["v"] += e.total
-                    else:
-                        categories[0][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                        categories[1][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                for k in categories[0].keys():
-                    categories[0][k]["y"] = abs(categories[0][k]["v"]) / 12
-                    categories[1][k]["y"] = abs(categories[1][k]["v"])
-                drilldown[0][unit][tag.pk]["data"] = [
-                    v for k, v in categories[0].items()
-                ]
-                drilldown[1][unit][tag.pk]["data"] = [
-                    v for k, v in categories[1].items()
-                ]
-            for k, v in amounts.items():
-                if k in footer[4]:
-                    footer[4][k] += v / 12
-                else:
-                    footer[4][k] = v / 12
-                footer[5][k] = footer[5][k] + v if k in footer[5] else v
-        units.update(footer[4].keys())
-        for unit in units:
-            if unit not in series[0] and unit in footer[5]:
-                name = _("Budget %(unit)s") % {"unit": unit.name}
-                series[0][unit] = self.series(name, unit)
-                series[1][unit] = self.series(name, unit)
-            if unit in footer[5]:
-                series[0][unit]["data"].append(
-                    {
-                        "name": str(_("Consumption")),
-                        "v": footer[5][unit] / 12,
-                        "y": abs(footer[5][unit]) / 12,
-                        "drilldown": "consumption",
-                    }
-                )
-                series[1][unit]["data"].append(
-                    {
-                        "name": str(_("Consumption")),
-                        "v": footer[5][unit],
-                        "y": abs(footer[5][unit]),
-                        "drilldown": "consumption",
-                    }
-                )
+        consumption = self.calculate_part(
+            self.object.consumption_tags.annotate(
+                name_lower=Func(F("name"), function="LOWER")
+            ).order_by("name_lower"),
+            year,
+            "consumption",
+            _("Consumption"),
+            entry_ids,
+            series,
+            drilldown,
+            footer,
+            units,
+        )
 
         footer.append(_("Sum"))
         footer.append({})
         footer.append({})
-        insurance = []
-        for tag in self.object.insurance_tags.annotate(
-            name_lower=Func(F("name"), function="LOWER")
-        ).order_by("name_lower"):
-            amounts = {}
-            for e in Entry.objects.filter(
-                Q(date__year=year) & Q(tags__pk=tag.pk)
-            ).annotate(total=F("amount") + F("fees")):
-                if e.pk not in entry_ids:
-                    entry_ids.add(e.pk)
-                    if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.total
-                    else:
-                        amounts[e.account.unit] = e.total
-
-            unit = None
-            for i, (unit, v) in enumerate(amounts.items()):
-                insurance.append(
-                    {
-                        "pk": tag.pk if i < 1 else "",
-                        "name": tag.name if i < 1 else "",
-                        "monthly": unitcolorfy(v / 12, unit),
-                        "yearly": unitcolorfy(v, unit),
-                    }
-                )
-                if unit not in drilldown[0]:
-                    drilldown[0][unit] = {}
-                    drilldown[1][unit] = {}
-                if "insurance" not in drilldown[0][unit]:
-                    drilldown[0][unit]["insurance"] = self.drilldown(
-                        _("Insurance"), "insurance", unit
-                    )
-                    drilldown[1][unit]["insurance"] = self.drilldown(
-                        _("Insurance"), "insurance", unit
-                    )
-                drilldown[0][unit]["insurance"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v / 12,
-                        "y": abs(v) / 12,
-                        "drilldown": "insurance_%s" % tag.pk,
-                    }
-                )
-                drilldown[1][unit]["insurance"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v,
-                        "y": abs(v),
-                        "drilldown": "insurance_%s" % tag.pk,
-                    }
-                )
-            if unit:
-                drilldown[0][unit][tag.pk] = self.drilldown(
-                    tag.name, "insurance_%s" % tag.pk, unit
-                )
-                drilldown[1][unit][tag.pk] = self.drilldown(
-                    tag.name, "insurance_%s" % tag.pk, unit
-                )
-                categories = [{}, {}]
-                for e in Entry.objects.filter(
-                    Q(date__year=year) & Q(account__unit=unit) & Q(tags=tag)
-                ).annotate(total=F("amount") + F("fees")):
-                    if e.category.pk in categories[0]:
-                        categories[0][e.category.pk]["v"] += e.total
-                        categories[1][e.category.pk]["v"] += e.total
-                    else:
-                        categories[0][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                        categories[1][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                for k in categories[0].keys():
-                    categories[0][k]["y"] = abs(categories[0][k]["v"]) / 12
-                    categories[1][k]["y"] = abs(categories[1][k]["v"])
-                drilldown[0][unit][tag.pk]["data"] = [
-                    v for k, v in categories[0].items()
-                ]
-                drilldown[1][unit][tag.pk]["data"] = [
-                    v for k, v in categories[1].items()
-                ]
-            for k, v in amounts.items():
-                if k in footer[7]:
-                    footer[7][k] += v / 12
-                else:
-                    footer[7][k] = v / 12
-                footer[8][k] = footer[8][k] + v if k in footer[8] else v
-        units.update(footer[7].keys())
-        for unit in units:
-            if unit not in series[0] and unit in footer[8]:
-                name = _("Budget %(unit)s") % {"unit": unit.name}
-                series[0][unit] = self.series(name, unit)
-                series[1][unit] = self.series(name, unit)
-            if unit in footer[8]:
-                series[0][unit]["data"].append(
-                    {
-                        "name": str(_("Insurance")),
-                        "v": footer[8][unit] / 12,
-                        "y": abs(footer[8][unit]) / 12,
-                        "drilldown": "insurance",
-                    }
-                )
-                series[1][unit]["data"].append(
-                    {
-                        "name": str(_("Insurance")),
-                        "v": footer[8][unit],
-                        "y": abs(footer[8][unit]),
-                        "drilldown": "insurance",
-                    }
-                )
+        insurance = self.calculate_part(
+            self.object.insurance_tags.annotate(
+                name_lower=Func(F("name"), function="LOWER")
+            ).order_by("name_lower"),
+            year,
+            "insurance",
+            _("Insurance"),
+            entry_ids,
+            series,
+            drilldown,
+            footer,
+            units,
+        )
 
         footer.append(_("Sum"))
         footer.append({})
         footer.append({})
-        savings = []
-        for tag in self.object.savings_tags.annotate(
-            name_lower=Func(F("name"), function="LOWER")
-        ).order_by("name_lower"):
-            amounts = {}
-            for e in Entry.objects.filter(
-                Q(date__year=year) & Q(tags__pk=tag.pk)
-            ).annotate(total=F("amount") + F("fees")):
-                if e.pk not in entry_ids:
-                    entry_ids.add(e.pk)
-                    if e.account.unit in amounts:
-                        amounts[e.account.unit] += e.total
-                    else:
-                        amounts[e.account.unit] = e.total
-
-            unit = None
-            for i, (unit, v) in enumerate(amounts.items()):
-                savings.append(
-                    {
-                        "pk": tag.pk if i < 1 else "",
-                        "name": tag.name if i < 1 else "",
-                        "monthly": unitcolorfy(v / 12, unit),
-                        "yearly": unitcolorfy(v, unit),
-                    }
-                )
-                if unit not in drilldown[0]:
-                    drilldown[0][unit] = {}
-                    drilldown[1][unit] = {}
-                if "savings" not in drilldown[0][unit]:
-                    drilldown[0][unit]["savings"] = self.drilldown(
-                        _("Savings"), "savings", unit
-                    )
-                    drilldown[1][unit]["savings"] = self.drilldown(
-                        _("Savings"), "savings", unit
-                    )
-                drilldown[0][unit]["savings"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v / 12,
-                        "y": abs(v) / 12,
-                        "drilldown": "savings_%s" % tag.pk,
-                    }
-                )
-                drilldown[1][unit]["savings"]["data"].append(
-                    {
-                        "name": tag.name,
-                        "v": v,
-                        "y": abs(v),
-                        "drilldown": "savings_%s" % tag.pk,
-                    }
-                )
-            if unit:
-                drilldown[0][unit][tag.pk] = self.drilldown(
-                    tag.name, "savings_%s" % tag.pk, unit
-                )
-                drilldown[1][unit][tag.pk] = self.drilldown(
-                    tag.name, "savings_%s" % tag.pk, unit
-                )
-                categories = [{}, {}]
-                for e in Entry.objects.filter(
-                    Q(date__year=year) & Q(account__unit=unit) & Q(tags=tag)
-                ).annotate(total=F("amount") + F("fees")):
-                    if e.category.pk in categories[0]:
-                        categories[0][e.category.pk]["v"] += e.total
-                        categories[1][e.category.pk]["v"] += e.total
-                    else:
-                        categories[0][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                        categories[1][e.category.pk] = {
-                            "name": e.category.name,
-                            "v": e.total,
-                        }
-                for k in categories[0].keys():
-                    categories[0][k]["y"] = abs(categories[0][k]["v"]) / 12
-                    categories[1][k]["y"] = abs(categories[1][k]["v"])
-                drilldown[0][unit][tag.pk]["data"] = [
-                    v for k, v in categories[0].items()
-                ]
-                drilldown[1][unit][tag.pk]["data"] = [
-                    v for k, v in categories[1].items()
-                ]
-            for k, v in amounts.items():
-                if k in footer[10]:
-                    footer[10][k] += v / 12
-                else:
-                    footer[10][k] = v / 12
-                footer[11][k] = footer[11][k] + v if k in footer[11] else v
-        units.update(footer[10].keys())
-        for unit in units:
-            if unit not in series[0] and unit in footer[11]:
-                name = _("Budget %(unit)s" % {"unit": unit.name})
-                series[0][unit] = self.series(name, unit)
-                series[1][unit] = self.series(name, unit)
-            if unit in footer[11]:
-                series[0][unit]["data"].append(
-                    {
-                        "name": str(_("Savings")),
-                        "v": footer[11][unit] / 12,
-                        "y": abs(footer[11][unit]) / 12,
-                        "drilldown": "savings",
-                    }
-                )
-                series[1][unit]["data"].append(
-                    {
-                        "name": str(_("Savings")),
-                        "v": footer[11][unit],
-                        "y": abs(footer[11][unit]),
-                        "drilldown": "savings",
-                    }
-                )
+        savings = self.calculate_part(
+            self.object.savings_tags.annotate(
+                name_lower=Func(F("name"), function="LOWER")
+            ).order_by("name_lower"),
+            year,
+            "savings",
+            _("Savings"),
+            entry_ids,
+            series,
+            drilldown,
+            footer,
+            units,
+        )
 
         for unit in units:
             msum = (
@@ -801,10 +402,10 @@ class DetailView(generic.DetailView):
             Budget.objects.create()
         return Budget.objects.first()
 
-    def series(self, name, unit):
+    def series(self, name: str, unit: Unit) -> Dict:
         """Series."""
         return {
-            "name": "%s" % name,
+            "name": str(name),
             "colorByPoint": True,
             "dataLabels": {
                 "enabled": True,
@@ -824,10 +425,10 @@ class DetailView(generic.DetailView):
             "data": [],
         }
 
-    def drilldown(self, name, id, unit):
+    def drilldown(self, name: str, id: str, unit: Unit) -> Dict:
         """Drilldown."""
         return {
-            "name": "%s" % name,
+            "name": str(name),
             "id": id,
             "dataLabels": {
                 "enabled": True,
@@ -846,6 +447,141 @@ class DetailView(generic.DetailView):
             },
             "data": [],
         }
+
+    def calculate_part(
+        self,
+        tags,
+        year: int,
+        key: str,
+        name: str,
+        entry_ids: Set[int],
+        series: Tuple[Dict, Dict],
+        drilldown: Tuple[Dict, Dict],
+        footer,
+        units,
+    ) -> List:
+        """Calculate everything for a part of the budget."""
+        part = []
+        for tag in tags:
+            amounts: Dict[Unit, float] = {}
+            for e in Entry.objects.filter(
+                Q(date__year=year) & Q(tags__pk=tag.pk)
+            ).annotate(total=F("amount") + F("fees")):
+                if e.pk not in entry_ids:
+                    entry_ids.add(e.pk)
+                    if e.account.unit in amounts:
+                        amounts[e.account.unit] += e.total
+                    else:
+                        amounts[e.account.unit] = e.total
+
+            for i, (unit, v) in enumerate(amounts.items()):
+                part.append(
+                    {
+                        "pk": tag.pk if i < 1 else "",
+                        "name": tag.name if i < 1 else "",
+                        "monthly": unitcolorfy(v / 12, unit),
+                        "yearly": unitcolorfy(v, unit),
+                    }
+                )
+                if unit not in drilldown[0]:
+                    drilldown[0][unit] = {}
+                    drilldown[1][unit] = {}
+                if key not in drilldown[0][unit]:
+                    drilldown[0][unit][key] = self.drilldown(name, key, unit)
+                    drilldown[1][unit][key] = self.drilldown(name, key, unit)
+                drilldown[0][unit][key]["data"].append(
+                    {
+                        "name": tag.name,
+                        "v": v / 12,
+                        "y": abs(v) / 12,
+                        "drilldown": f"{key}_{tag.pk}",
+                    }
+                )
+                drilldown[1][unit][key]["data"].append(
+                    {
+                        "name": tag.name,
+                        "v": v,
+                        "y": abs(v),
+                        "drilldown": f"{key}_{tag.pk}",
+                    }
+                )
+            if unit:
+                drilldown[0][unit][tag.pk] = self.drilldown(
+                    tag.name, f"{key}_{tag.pk}", unit
+                )
+                drilldown[1][unit][tag.pk] = self.drilldown(
+                    tag.name, f"{key}_{tag.pk}", unit
+                )
+                categories: Tuple[Dict[Any, Any], Dict[Any, Any]] = (
+                    {},
+                    {},
+                )
+                for e in Entry.objects.filter(
+                    Q(date__year=year) & Q(account__unit=unit) & Q(tags=tag)
+                ).annotate(total=F("amount") + F("fees")):
+                    if e.category.pk in categories[0]:
+                        categories[0][e.category.pk]["v"] += e.total / 12
+                        categories[1][e.category.pk]["v"] += e.total
+                    else:
+                        categories[0][e.category.pk] = {
+                            "name": e.category.name,
+                            "v": e.total / 12,
+                        }
+                        categories[1][e.category.pk] = {
+                            "name": e.category.name,
+                            "v": e.total,
+                        }
+                for k in categories[0].keys():
+                    categories[0][k]["y"] = abs(categories[0][k]["v"])
+                    categories[1][k]["y"] = abs(categories[1][k]["v"])
+                drilldown[0][unit][tag.pk]["data"] = [
+                    v for k, v in categories[0].items()
+                ]
+                drilldown[1][unit][tag.pk]["data"] = [
+                    v for k, v in categories[1].items()
+                ]
+            for k, v in amounts.items():
+                if k in footer[1]:
+                    footer[1][k] += v / 12
+                else:
+                    footer[1][k] = v / 12
+                if k in footer[2]:
+                    footer[2][k] += v
+                else:
+                    footer[2][k] = v
+        units.update(footer[1].keys())
+        for unit in units:
+            if unit not in series[0] and unit not in series[1]:
+                series[0][unit] = self.series(
+                    _("Budget %(unit)s" % {"unit": unit.name})
+                    if len(units) > 1
+                    else _("Budget"),
+                    unit,
+                )
+                series[1][unit] = self.series(
+                    _("Budget %(unit)s" % {"unit": unit.name})
+                    if len(units) > 1
+                    else _("Budget"),
+                    unit,
+                )
+            series[0][unit]["data"].append(
+                {
+                    "name": str(name),
+                    "v": footer[2][unit] / 12,
+                    "y": abs(footer[2][unit]) / 12,
+                    "drilldown": key,
+                }
+            )
+            series[1][unit]["data"].append(
+                {
+                    "name": str(name),
+                    "v": footer[2][unit],
+                    "y": abs(footer[2][unit]),
+                    "drilldown": key,
+                }
+            )
+
+        return part
 
 
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
