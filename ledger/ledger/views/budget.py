@@ -505,7 +505,6 @@ class DetailView(generic.DetailView):
                         "drilldown": f"{key}_{tag.pk}",
                     }
                 )
-            if unit:
                 drilldown[0][unit][tag.pk] = self.drilldown(
                     tag.name, f"{key}_{tag.pk}", unit
                 )
