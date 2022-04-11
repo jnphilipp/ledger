@@ -78,7 +78,7 @@
                             <a class="dropdown-item iframeFormModal" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
                             <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% trans "Reopen account" %}{% else %}{% trans "Close account" %}{% endif %}"><span class="fas fa-clone"></span> {% if account.closed %}{% trans "Reopen" %}{% else %}{% trans "Close" %}{% endif %}</a>
                             <a class="dropdown-item iframeFormModal" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
-                            <a class="dropdown-item iframeFormModal" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% trans "Add file" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
+                            <a class="dropdown-item iframeFormModal" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
                         </div>
                     </div>
                 </td>
