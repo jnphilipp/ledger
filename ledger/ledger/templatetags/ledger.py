@@ -91,8 +91,8 @@ def balance(obj):
             balance = 0
         else:
             balance = obj.entries.filter(date__lte=date.today()).aggregate(
-                Sum("amount")
-            )["amount__sum"]
+                sum=Sum(F("amount") + F("fees"))
+            )["sum"]
         unit = obj.unit
     elif isinstance(obj, Unit):
         balance = (
@@ -123,7 +123,7 @@ def outstanding(account):
         outstanding = (
             account.entries.filter(date__gt=date.today())
             .filter(date__lte=get_last_date_current_month())
-            .aggregate(Sum("amount"))["amount__sum"]
+            .aggregate(sum=Sum(F("amount") + F("fees")))["sum"]
         )
     return unitcolorfy(outstanding, account.unit)
 
