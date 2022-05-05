@@ -123,6 +123,7 @@
     <div class="col-7 text-center">
         {% if form %}
             {% trans "Filter" as filter_trans %}
+            {% url "entry_list" as form_url %}
             {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
         {% endif %}
     </div>
