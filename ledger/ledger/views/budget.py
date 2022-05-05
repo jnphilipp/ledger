@@ -78,6 +78,7 @@ class DetailView(generic.DetailView):
             series,
             drilldown,
             footer,
+            1,
             units,
         )
 
@@ -95,6 +96,7 @@ class DetailView(generic.DetailView):
             series,
             drilldown,
             footer,
+            4,
             units,
         )
 
@@ -112,6 +114,7 @@ class DetailView(generic.DetailView):
             series,
             drilldown,
             footer,
+            7,
             units,
         )
 
@@ -129,6 +132,7 @@ class DetailView(generic.DetailView):
             series,
             drilldown,
             footer,
+            10,
             units,
         )
 
@@ -458,6 +462,7 @@ class DetailView(generic.DetailView):
         series: Tuple[Dict, Dict],
         drilldown: Tuple[Dict, Dict],
         footer,
+        footer_idx: int,
         units,
     ) -> List:
         """Calculate everything for a part of the budget."""
@@ -540,15 +545,15 @@ class DetailView(generic.DetailView):
                     v for k, v in categories[1].items()
                 ]
             for k, v in amounts.items():
-                if k in footer[1]:
-                    footer[1][k] += v / 12
+                if k in footer[footer_idx]:
+                    footer[footer_idx][k] += v / 12
                 else:
-                    footer[1][k] = v / 12
-                if k in footer[2]:
-                    footer[2][k] += v
+                    footer[footer_idx][k] = v / 12
+                if k in footer[footer_idx + 1]:
+                    footer[footer_idx + 1][k] += v
                 else:
-                    footer[2][k] = v
-        units.update(footer[1].keys())
+                    footer[footer_idx + 1][k] = v
+        units.update(footer[footer_idx].keys())
         for unit in units:
             if unit not in series[0] and unit not in series[1]:
                 series[0][unit] = self.series(
@@ -566,16 +571,16 @@ class DetailView(generic.DetailView):
             series[0][unit]["data"].append(
                 {
                     "name": str(name),
-                    "v": footer[2][unit] / 12,
-                    "y": abs(footer[2][unit]) / 12,
+                    "v": footer[footer_idx + 1][unit] / 12,
+                    "y": abs(footer[footer_idx + 1][unit]) / 12,
                     "drilldown": key,
                 }
             )
             series[1][unit]["data"].append(
                 {
                     "name": str(name),
-                    "v": footer[2][unit],
-                    "y": abs(footer[2][unit]),
+                    "v": footer[footer_idx + 1][unit],
+                    "y": abs(footer[footer_idx + 1][unit]),
                     "drilldown": key,
                 }
             )
