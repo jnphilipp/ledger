@@ -252,7 +252,7 @@ class DetailView(generic.DetailView):
                 footer[i][0] = footer[i][3] = footer[i][6] = footer[i][9] = ""
 
             footer.append(
-                ["", "", "", "", "", "", "", "", "", _("Total") if i == 0 else "", 0, 0]
+                ["", "", "", "", "", "", "", "", "", _("Sum") if i == 0 else "", 0, 0]
             )
             footer[-1][10] = (
                 (footer[i][1][unit] if unit in footer[i][1] else 0)
@@ -295,16 +295,23 @@ class DetailView(generic.DetailView):
             footer[-1][11] = unitcolorfy(footer[-1][11], unit)
 
         for i, unit in enumerate(units):
-            real = (
+            footer.append(
+                ["", "", "", "", "", "", "", "", "", _("Rest") if i == 0 else "", 0, 0]
+            )
+            footer[-1][10] = unitcolorfy(series[0][unit]["data"][-1]["v"] / 12, unit)
+            footer[-1][11] = unitcolorfy(series[1][unit]["data"][-1]["v"], unit)
+
+            total = (
                 Entry.objects.exclude(category__accounts__in=Account.objects.all())
                 .filter(Q(account__unit=unit) & Q(date__year=year))
-                .aggregate(sum=Sum("amount"))["sum"]
+                .annotate(total=F("amount") + F("fees"))
+                .aggregate(Sum("total"))["total__sum"]
             )
             footer.append(
-                ["", "", "", "", "", "", "", "", "", _("Real") if i == 0 else "", 0, 0]
+                ["", "", "", "", "", "", "", "", "", _("Total") if i == 0 else "", 0, 0]
             )
-            footer[-1][10] = unitcolorfy(real / 12, unit)
-            footer[-1][11] = unitcolorfy(real, unit)
+            footer[-1][10] = unitcolorfy(total / 12, unit)
+            footer[-1][11] = unitcolorfy(total, unit)
 
         table = []
         for i in range(
