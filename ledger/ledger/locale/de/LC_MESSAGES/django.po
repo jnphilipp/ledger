@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-05 10:17+0200\n"
-"PO-Revision-Date: 2022-05-05 10:17+0200\n"
+"POT-Creation-Date: 2022-05-06 11:16+0200\n"
+"PO-Revision-Date: 2022-05-06 11:16+0200\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -55,11 +55,11 @@ msgstr "Enddatum"
 #: templates/ledger/budget_detail.html:170
 #: templates/ledger/budget_detail.html:173
 msgid "Monthly"
-msgstr "Montalich"
+msgstr "Monatlich"
 
 #: forms.py:119
 msgid "Bimonthly"
-msgstr "Zweimontalich"
+msgstr "Zweimonatlich"
 
 #: forms.py:120
 msgid "Quarterly"
@@ -217,8 +217,8 @@ msgstr "Versicherungstags"
 msgid "Savings tags"
 msgstr "Sparentags"
 
-#: models.py:332 templates/ledger/base.html:71 views/budget.py:569
-#: views/budget.py:575
+#: models.py:332 templates/ledger/base.html:71 views/budget.py:665
+#: views/budget.py:671
 msgid "Budget"
 msgstr "Budget"
 
@@ -380,7 +380,8 @@ msgstr "Datei hinzufügen"
 msgid "There are no accounts available."
 msgstr "Es sind keine Konten vorhanden."
 
-#: templates/ledger/base.html:78
+#: templates/ledger/base.html:78 views/budget.py:150 views/budget.py:158
+#: views/budget.py:165 views/budget.py:166 views/budget.py:391
 msgid "Portfolio"
 msgstr "Portfolio"
 
@@ -561,26 +562,26 @@ msgid "The account %(name)s was successfully re-open."
 msgstr "Das Konto \"%(name)s\" wurde erfolgreich wieder eröffnet."
 
 #: views/budget.py:67 views/budget.py:85 views/budget.py:103
-#: views/budget.py:121 views/budget.py:255
+#: views/budget.py:121 views/budget.py:331
 msgid "Sum"
 msgstr "Summe"
 
-#: views/budget.py:150 views/budget.py:158 views/budget.py:165
-#: views/budget.py:166 views/budget.py:167 views/budget.py:168
-#: views/budget.py:169 views/budget.py:299
+#: views/budget.py:191 views/budget.py:225 views/budget.py:233
+#: views/budget.py:240 views/budget.py:241 views/budget.py:242
+#: views/budget.py:243 views/budget.py:244 views/budget.py:375
 msgid "Rest"
 msgstr "Rest"
 
-#: views/budget.py:311
+#: views/budget.py:407
 msgid "Total"
 msgstr "Gesamt"
 
-#: views/budget.py:567 views/budget.py:573
+#: views/budget.py:663 views/budget.py:669
 #, python-format
 msgid "Budget %(unit)s"
 msgstr "Budget %(unit)s"
 
-#: views/budget.py:603
+#: views/budget.py:699
 msgid "Your budget was successfully updated."
 msgstr "Ihr Budget wurde erfolgreich aktualisiert."
 

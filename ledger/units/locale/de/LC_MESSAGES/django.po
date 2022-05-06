@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-01 19:18+0200\n"
-"PO-Revision-Date: 2022-04-01 19:18+0200\n"
+"POT-Creation-Date: 2022-05-06 11:20+0200\n"
+"PO-Revision-Date: 2022-05-06 11:20+0200\n"
 "Last-Translator: J. Nathanael Philipp <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:29 models.py:47
+#: apps.py:30 models.py:47
 msgid "Unit"
 msgstr "Einheit"
 
-#: apps.py:30 models.py:48
+#: apps.py:31 models.py:48
 msgid "Units"
 msgstr "Einheiten"
 
