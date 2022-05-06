@@ -192,9 +192,9 @@
                         <tr>
                             {% for cell in row %}
                                 {% if forloop.counter0|divisibleby:3 %}
-                                    <th style="{% if forloop.parentloop.counter0 == 0 and forloop.counter0 > 1 %}border-left: 2px solid rgb(222, 226, 230);{% elif forloop.parentloop.counter0 > 1 and forloop.counter0 < 9 %}border: hidden;{% endif %} {% if forloop.parentloop.counter0 == 0 or forloop.parentloop.counter0 == 2 %}{% if forloop.counter0 == 9 %}border-bottom: 2px solid rgb(33, 37, 41);{% endif %}{% endif %}">{{ cell }}</th>
+                                    <th style="{% if forloop.parentloop.counter0 == 0 and forloop.counter0 > 1 %}border-left: 2px solid rgb(222, 226, 230);{% elif forloop.parentloop.counter0 > 1 and forloop.counter0 < 9 %}border: hidden;{% endif %} {% if forloop.parentloop.counter0 == 0 or forloop.parentloop.counter0 == 3 %}{% if forloop.counter0 == 9 %}border-bottom: 2px solid rgb(33, 37, 41);{% endif %}{% endif %}">{{ cell }}</th>
                                 {% else %}
-                                    <td class="text-end" style="{% if forloop.parentloop.counter0 > 1 and forloop.counter0 < 9 %}border: hidden;{% elif forloop.parentloop.counter0 == 0 or forloop.parentloop.counter0 == 2 %}{% if forloop.counter0 > 9 %}border-bottom: 2px solid rgb(33, 37, 41);{% endif %}{% endif %}">{{ cell }}</td>
+                                    <td class="text-end" style="{% if forloop.parentloop.counter0 > 1 and forloop.counter0 < 9 %}border: hidden;{% elif forloop.parentloop.counter0 == 0 or forloop.parentloop.counter0 == 3 %}{% if forloop.counter0 > 9 %}border-bottom: 2px solid rgb(33, 37, 41);{% endif %}{% endif %}">{{ cell }}</td>
                                 {% endif %}
                             {% endfor %}
                         </tr>

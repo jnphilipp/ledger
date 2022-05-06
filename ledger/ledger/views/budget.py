@@ -139,7 +139,82 @@ class DetailView(generic.DetailView):
         for unit in units:
             msum = (
                 Entry.objects.exclude(pk__in=entry_ids)
+                .filter(category__name="Portfolio")
+                .filter(Q(date__year=year) & Q(account__unit=unit))
+                .annotate(total=F("amount") + F("fees"))
+                .aggregate(Sum("total"))["total__sum"]
+            )
+            if unit in series[0] and msum:
+                series[0][unit]["data"].append(
+                    {
+                        "name": str(_("Portfolio")),
+                        "v": msum / 12,
+                        "y": abs(msum) / 12,
+                        "drilldown": "p",
+                    }
+                )
+                series[1][unit]["data"].append(
+                    {
+                        "name": str(_("Portfolio")),
+                        "v": msum,
+                        "y": abs(msum),
+                        "drilldown": "p",
+                    }
+                )
+
+            drilldown[0][unit]["p"] = self.drilldown(_("Portfolio"), "p", unit)
+            drilldown[1][unit]["p"] = self.drilldown(_("Portfolio"), "p", unit)
+            portfolio = {}
+            entries = (
+                Entry.objects.exclude(pk__in=entry_ids)
+                .filter(category__name="Portfolio")
+                .filter(Q(date__year=year) & Q(account__unit=unit))
+                .annotate(total=F("amount") + F("fees"))
+            )
+            for e in entries:
+                if e.pk not in entry_ids:
+                    t = (
+                        e.tags.exclude(
+                            pk__in=self.object.income_tags.all().values("pk")
+                        )
+                        .exclude(pk__in=self.object.consumption_tags.all().values("pk"))
+                        .exclude(pk__in=self.object.insurance_tags.all().values("pk"))
+                        .exclude(pk__in=self.object.savings_tags.all().values("pk"))
+                        .first()
+                    )
+                    if t:
+                        if t.pk not in portfolio:
+                            portfolio[t.pk] = {"name": t.name, "amount": 0}
+                        portfolio[t.pk]["amount"] += e.total
+                    else:
+                        if "rest" not in portfolio:
+                            portfolio["rest"] = {"name": _("Rest"), "amount": 0}
+                        portfolio["rest"]["amount"] += e.total
+                    entry_ids.add(e.pk)
+
+            for k, v in portfolio.items():
+                if v:
+                    drilldown[0][unit]["p"]["data"].append(
+                        {
+                            "name": str(v["name"]),
+                            "v": v["amount"] / 12,
+                            "y": abs(v["amount"]) / 12,
+                            "drilldown": "p_%s" % k,
+                        }
+                    )
+                    drilldown[1][unit]["p"]["data"].append(
+                        {
+                            "name": str(v["name"]),
+                            "v": v["amount"],
+                            "y": abs(v["amount"]),
+                            "drilldown": "p_%s" % k,
+                        }
+                    )
+
+            msum = (
+                Entry.objects.exclude(pk__in=entry_ids)
                 .exclude(category__accounts__in=Account.objects.all())
+                .exclude(category__name="Portfolio")
                 .filter(Q(date__year=year) & Q(account__unit=unit))
                 .annotate(total=F("amount") + F("fees"))
                 .aggregate(Sum("total"))["total__sum"]
@@ -170,6 +245,7 @@ class DetailView(generic.DetailView):
             entries = (
                 Entry.objects.exclude(pk__in=entry_ids)
                 .exclude(category__accounts__in=Account.objects.all())
+                .exclude(category__name="Portfolio")
                 .filter(Q(date__year=year) & Q(account__unit=unit))
                 .annotate(total=F("amount") + F("fees"))
             )
@@ -187,7 +263,7 @@ class DetailView(generic.DetailView):
                                 "amount": 0,
                             }
 
-                            id = "r_%s" % t.pk
+                            id = f"r_{t.pk}"
                             drilldown[0][unit][id] = self.drilldown(
                                 e.category.name, id, unit
                             )
@@ -298,11 +374,31 @@ class DetailView(generic.DetailView):
             footer.append(
                 ["", "", "", "", "", "", "", "", "", _("Rest") if i == 0 else "", 0, 0]
             )
-            footer[-1][10] = unitcolorfy(series[0][unit]["data"][-1]["v"] / 12, unit)
+            footer[-1][10] = unitcolorfy(series[0][unit]["data"][-1]["v"], unit)
             footer[-1][11] = unitcolorfy(series[1][unit]["data"][-1]["v"], unit)
+
+            footer.append(
+                [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    _("Portfolio") if i == 0 else "",
+                    0,
+                    0,
+                ]
+            )
+            footer[-1][10] = unitcolorfy(series[0][unit]["data"][-2]["v"], unit)
+            footer[-1][11] = unitcolorfy(series[1][unit]["data"][-2]["v"], unit)
 
             total = (
                 Entry.objects.exclude(category__accounts__in=Account.objects.all())
+                .exclude(category__accounts__in=Account.objects.all())
                 .filter(Q(account__unit=unit) & Q(date__year=year))
                 .annotate(total=F("amount") + F("fees"))
                 .aggregate(Sum("total"))["total__sum"]
