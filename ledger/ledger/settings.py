@@ -171,7 +171,9 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Load local settings
 
-LOCAL_SETTINGS_PATHS = BASE_DIR / "local.py" if DEBUG else APP_DATA_DIR / "settings.py"
+LOCAL_SETTINGS_PATHS = (
+    BASE_DIR / "local.py" if DEBUG else APP_CONFIG_DIR / "settings.py"
+)
 
 try:
     if LOCAL_SETTINGS_PATHS.exists():
