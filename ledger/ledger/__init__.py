@@ -24,6 +24,6 @@ __license__ = "GPLv3+"
 __maintainer__ = __author__
 __email__ = "nathanael@philipp.land"
 __app_name__ = "ledger"
-__version_info__ = (2, 1, 5)
+__version_info__ = (2, 1, 6)
 __version__ = ".".join(str(e) for e in __version_info__)
 __github__ = "https://github.com/jnphilipp/ledger"
