@@ -139,77 +139,91 @@ class DetailView(generic.DetailView):
         for unit in units:
             msum = (
                 Entry.objects.exclude(pk__in=entry_ids)
-                .filter(category__name="Portfolio")
-                .filter(Q(date__year=year) & Q(account__unit=unit))
+                .filter(
+                    Q(category__name="Portfolio")
+                    & Q(date__year=year)
+                    & Q(account__unit=unit)
+                )
                 .annotate(total=F("amount") + F("fees"))
                 .aggregate(Sum("total"))["total__sum"]
             )
-            if unit in series[0] and msum:
+            if unit in series[0]:
                 series[0][unit]["data"].append(
                     {
                         "name": str(_("Portfolio")),
-                        "v": msum / 12,
-                        "y": abs(msum) / 12,
+                        "v": msum / 12 if msum else 0.0,
+                        "y": abs(msum) / 12 if msum else 0.0,
                         "drilldown": "p",
                     }
                 )
                 series[1][unit]["data"].append(
                     {
                         "name": str(_("Portfolio")),
-                        "v": msum,
-                        "y": abs(msum),
+                        "v": msum if msum else 0.0,
+                        "y": abs(msum) if msum else 0.0,
                         "drilldown": "p",
                     }
                 )
 
-            drilldown[0][unit]["p"] = self.drilldown(_("Portfolio"), "p", unit)
-            drilldown[1][unit]["p"] = self.drilldown(_("Portfolio"), "p", unit)
-            portfolio = {}
-            entries = (
-                Entry.objects.exclude(pk__in=entry_ids)
-                .filter(category__name="Portfolio")
-                .filter(Q(date__year=year) & Q(account__unit=unit))
-                .annotate(total=F("amount") + F("fees"))
-            )
-            for e in entries:
-                if e.pk not in entry_ids:
-                    t = (
-                        e.tags.exclude(
-                            pk__in=self.object.income_tags.all().values("pk")
+            if not msum:
+                del series[0][unit]["data"][-1]["drilldown"]
+                del series[1][unit]["data"][-1]["drilldown"]
+            else:
+                drilldown[0][unit]["p"] = self.drilldown(_("Portfolio"), "p", unit)
+                drilldown[1][unit]["p"] = self.drilldown(_("Portfolio"), "p", unit)
+                portfolio = {}
+                entries = (
+                    Entry.objects.exclude(pk__in=entry_ids)
+                    .filter(
+                        Q(category__name="Portfolio")
+                        & Q(date__year=year)
+                        & Q(account__unit=unit)
+                    )
+                    .annotate(total=F("amount") + F("fees"))
+                )
+                for e in entries:
+                    if e.pk not in entry_ids:
+                        t = (
+                            e.tags.exclude(
+                                pk__in=self.object.income_tags.all().values("pk")
+                            )
+                            .exclude(
+                                pk__in=self.object.consumption_tags.all().values("pk")
+                            )
+                            .exclude(
+                                pk__in=self.object.insurance_tags.all().values("pk")
+                            )
+                            .exclude(pk__in=self.object.savings_tags.all().values("pk"))
+                            .first()
                         )
-                        .exclude(pk__in=self.object.consumption_tags.all().values("pk"))
-                        .exclude(pk__in=self.object.insurance_tags.all().values("pk"))
-                        .exclude(pk__in=self.object.savings_tags.all().values("pk"))
-                        .first()
-                    )
-                    if t:
-                        if t.pk not in portfolio:
-                            portfolio[t.pk] = {"name": t.name, "amount": 0}
-                        portfolio[t.pk]["amount"] += e.total
-                    else:
-                        if "rest" not in portfolio:
-                            portfolio["rest"] = {"name": _("Rest"), "amount": 0}
-                        portfolio["rest"]["amount"] += e.total
-                    entry_ids.add(e.pk)
+                        if t:
+                            if t.pk not in portfolio:
+                                portfolio[t.pk] = {"name": t.name, "amount": 0}
+                            portfolio[t.pk]["amount"] += e.total
+                        else:
+                            if "rest" not in portfolio:
+                                portfolio["rest"] = {"name": _("Rest"), "amount": 0}
+                            portfolio["rest"]["amount"] += e.total
+                        entry_ids.add(e.pk)
 
-            for k, v in portfolio.items():
-                if v:
-                    drilldown[0][unit]["p"]["data"].append(
-                        {
-                            "name": str(v["name"]),
-                            "v": v["amount"] / 12,
-                            "y": abs(v["amount"]) / 12,
-                            "drilldown": "p_%s" % k,
-                        }
-                    )
-                    drilldown[1][unit]["p"]["data"].append(
-                        {
-                            "name": str(v["name"]),
-                            "v": v["amount"],
-                            "y": abs(v["amount"]),
-                            "drilldown": "p_%s" % k,
-                        }
-                    )
+                for k, v in portfolio.items():
+                    if v:
+                        drilldown[0][unit]["p"]["data"].append(
+                            {
+                                "name": str(v["name"]),
+                                "v": v["amount"] / 12,
+                                "y": abs(v["amount"]) / 12,
+                                "drilldown": "p_%s" % k,
+                            }
+                        )
+                        drilldown[1][unit]["p"]["data"].append(
+                            {
+                                "name": str(v["name"]),
+                                "v": v["amount"],
+                                "y": abs(v["amount"]),
+                                "drilldown": "p_%s" % k,
+                            }
+                        )
 
             msum = (
                 Entry.objects.exclude(pk__in=entry_ids)
@@ -219,108 +233,116 @@ class DetailView(generic.DetailView):
                 .annotate(total=F("amount") + F("fees"))
                 .aggregate(Sum("total"))["total__sum"]
             )
-            if unit in series[0] and msum:
+            if unit in series[0]:
                 series[0][unit]["data"].append(
                     {
                         "name": str(_("Rest")),
-                        "v": msum / 12,
-                        "y": abs(msum) / 12,
+                        "v": msum / 12 if msum else 0.0,
+                        "y": abs(msum) / 12 if msum else 0.0,
                         "drilldown": "r",
                     }
                 )
                 series[1][unit]["data"].append(
                     {
                         "name": str(_("Rest")),
-                        "v": msum,
-                        "y": abs(msum),
+                        "v": msum if msum else 0.0,
+                        "y": abs(msum) if msum else 0.0,
                         "drilldown": "r",
                     }
                 )
 
-            drilldown[0][unit]["r"] = self.drilldown(_("Rest"), "r", unit)
-            drilldown[1][unit]["r"] = self.drilldown(_("Rest"), "r", unit)
-            drilldown[0][unit]["r2"] = self.drilldown(_("Rest"), "r2", unit)
-            drilldown[1][unit]["r2"] = self.drilldown(_("Rest"), "r2", unit)
-            rest = {"r2": {"name": _("Rest"), "amount": 0, "categories": {}}}
-            entries = (
-                Entry.objects.exclude(pk__in=entry_ids)
-                .exclude(category__accounts__in=Account.objects.all())
-                .exclude(category__name="Portfolio")
-                .filter(Q(date__year=year) & Q(account__unit=unit))
-                .annotate(total=F("amount") + F("fees"))
-            )
-            for e in entries:
-                if e.pk not in entry_ids:
-                    t = e.tags.first()
-                    if t:
-                        if t.pk not in rest:
-                            rest[t.pk] = {"name": t.name, "amount": 0, "categories": {}}
-                        rest[t.pk]["amount"] += e.total
-
-                        if e.category.pk not in rest[t.pk]["categories"]:
-                            rest[t.pk]["categories"][e.category.pk] = {
-                                "name": e.category.name,
-                                "amount": 0,
-                            }
-
-                            id = f"r_{t.pk}"
-                            drilldown[0][unit][id] = self.drilldown(
-                                e.category.name, id, unit
-                            )
-                            drilldown[1][unit][id] = self.drilldown(
-                                e.category.name, id, unit
-                            )
-                        rest[t.pk]["categories"][e.category.pk]["amount"] += e.total
-                    else:
-                        rest["r2"]["amount"] += e.total
-                        if e.category.pk not in rest["r2"]["categories"]:
-                            rest["r2"]["categories"][e.category.pk] = {
-                                "name": e.category.name,
-                                "amount": 0,
-                            }
-                            drilldown[0][unit]["r_r2"] = self.drilldown(
-                                e.category.name, "r_r2", unit
-                            )
-                            drilldown[1][unit]["r_r2"] = self.drilldown(
-                                e.category.name, "r_r2", unit
-                            )
-                        rest["r2"]["categories"][e.category.pk]["amount"] += e.total
-                    entry_ids.add(e.pk)
-
-            for k, v in rest.items():
-                if v:
-                    drilldown[0][unit]["r"]["data"].append(
-                        {
-                            "name": str(v["name"]),
-                            "v": v["amount"] / 12,
-                            "y": abs(v["amount"]) / 12,
-                            "drilldown": "r_%s" % k,
-                        }
-                    )
-                    drilldown[1][unit]["r"]["data"].append(
-                        {
-                            "name": str(v["name"]),
-                            "v": v["amount"],
-                            "y": abs(v["amount"]),
-                            "drilldown": "r_%s" % k,
-                        }
-                    )
-                    for category, v2 in v["categories"].items():
-                        if v2["amount"]:
-                            drilldown[0][unit]["r_%s" % k]["data"].append(
-                                {
-                                    "name": str(v2["name"]),
-                                    "v": v2["amount"] / 12,
-                                    "y": abs(v2["amount"]) / 12,
+            if not msum:
+                del series[0][unit]["data"][-1]["drilldown"]
+                del series[1][unit]["data"][-1]["drilldown"]
+            else:
+                drilldown[0][unit]["r"] = self.drilldown(_("Rest"), "r", unit)
+                drilldown[1][unit]["r"] = self.drilldown(_("Rest"), "r", unit)
+                drilldown[0][unit]["r2"] = self.drilldown(_("Rest"), "r2", unit)
+                drilldown[1][unit]["r2"] = self.drilldown(_("Rest"), "r2", unit)
+                rest = {"r2": {"name": _("Rest"), "amount": 0, "categories": {}}}
+                entries = (
+                    Entry.objects.exclude(pk__in=entry_ids)
+                    .exclude(category__accounts__in=Account.objects.all())
+                    .exclude(category__name="Portfolio")
+                    .filter(Q(date__year=year) & Q(account__unit=unit))
+                    .annotate(total=F("amount") + F("fees"))
+                )
+                for e in entries:
+                    if e.pk not in entry_ids:
+                        t = e.tags.first()
+                        if t:
+                            if t.pk not in rest:
+                                rest[t.pk] = {
+                                    "name": t.name,
+                                    "amount": 0,
+                                    "categories": {},
                                 }
-                            )
-                            drilldown[1][unit]["r_%s" % k]["data"].append(
-                                {
-                                    "name": str(v2["name"]),
-                                    "v": v2["amount"],
-                                    "y": abs(v2["amount"]),
+                            rest[t.pk]["amount"] += e.total
+
+                            if e.category.pk not in rest[t.pk]["categories"]:
+                                rest[t.pk]["categories"][e.category.pk] = {
+                                    "name": e.category.name,
+                                    "amount": 0,
                                 }
-                            )
+
+                                id = f"r_{t.pk}"
+                                drilldown[0][unit][id] = self.drilldown(
+                                    e.category.name, id, unit
+                                )
+                                drilldown[1][unit][id] = self.drilldown(
+                                    e.category.name, id, unit
+                                )
+                            rest[t.pk]["categories"][e.category.pk]["amount"] += e.total
+                        else:
+                            rest["r2"]["amount"] += e.total
+                            if e.category.pk not in rest["r2"]["categories"]:
+                                rest["r2"]["categories"][e.category.pk] = {
+                                    "name": e.category.name,
+                                    "amount": 0,
+                                }
+                                drilldown[0][unit]["r_r2"] = self.drilldown(
+                                    e.category.name, "r_r2", unit
+                                )
+                                drilldown[1][unit]["r_r2"] = self.drilldown(
+                                    e.category.name, "r_r2", unit
+                                )
+                            rest["r2"]["categories"][e.category.pk]["amount"] += e.total
+                        entry_ids.add(e.pk)
+
+                for k, v in rest.items():
+                    if v:
+                        drilldown[0][unit]["r"]["data"].append(
+                            {
+                                "name": str(v["name"]),
+                                "v": v["amount"] / 12,
+                                "y": abs(v["amount"]) / 12,
+                                "drilldown": "r_%s" % k,
+                            }
+                        )
+                        drilldown[1][unit]["r"]["data"].append(
+                            {
+                                "name": str(v["name"]),
+                                "v": v["amount"],
+                                "y": abs(v["amount"]),
+                                "drilldown": "r_%s" % k,
+                            }
+                        )
+                        for category, v2 in v["categories"].items():
+                            if v2["amount"]:
+                                drilldown[0][unit]["r_%s" % k]["data"].append(
+                                    {
+                                        "name": str(v2["name"]),
+                                        "v": v2["amount"] / 12,
+                                        "y": abs(v2["amount"]) / 12,
+                                    }
+                                )
+                                drilldown[1][unit]["r_%s" % k]["data"].append(
+                                    {
+                                        "name": str(v2["name"]),
+                                        "v": v2["amount"],
+                                        "y": abs(v2["amount"]),
+                                    }
+                                )
 
         footer = [footer.copy() for unit in units]
         for i, unit in enumerate(units):
@@ -398,7 +420,6 @@ class DetailView(generic.DetailView):
 
             total = (
                 Entry.objects.exclude(category__accounts__in=Account.objects.all())
-                .exclude(category__accounts__in=Account.objects.all())
                 .filter(Q(account__unit=unit) & Q(date__year=year))
                 .annotate(total=F("amount") + F("fees"))
                 .aggregate(Sum("total"))["total__sum"]
