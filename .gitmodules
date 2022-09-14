@@ -1,3 +1,0 @@
-[submodule "django_bootstrap5"]
-	path = ledger/django_bootstrap5
-	url = https://github.com/jnphilipp/django_bootstrap5
