@@ -411,7 +411,8 @@ class Position(models.Model):
     def save(self, *args, **kwargs):
         """Save."""
         self.slug = slugify(
-            f"{self.content_object.name}-{self.start_date().strftime('%Y%m%d')}"
+            f"{self.content_object.name}-"
+            f"{'new' if self.id is None else self.start_date().strftime('%Y%m%d')}"
         )
         super().save(*args, **kwargs)
 
