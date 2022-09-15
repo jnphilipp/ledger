@@ -42,7 +42,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo apt install python3-gi
+          sudo apt install python-gi
           python -m pip install --upgrade pip wheel
           pip install -r requirements.txt
           pip install Django~=${{ matrix.django-version }}
