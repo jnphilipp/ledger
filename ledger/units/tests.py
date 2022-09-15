@@ -18,5 +18,39 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.test import TestCase
+from units.models import Unit
+from units.templatetags.units import unitformat, unitcolorfy
 
-# Create your tests here.
+
+class TemplatetagsTestCase(TestCase):
+    def test_unitformat(self):
+        self.assertEquals("0.123%", unitformat(0.1234, "%.3f%%"))
+        self.assertEquals("-0.123%", unitformat(-0.1234, "%.3f%%"))
+        self.assertEquals("3.57 €", unitformat(3.567, "%.2f €"))
+        self.assertEquals("3.57 €", unitformat(3.567, Unit.objects.get(code="EUR")))
+        self.assertEquals("-3.57 €", unitformat(-3.567, Unit.objects.get(code="EUR")))
+        self.assertEquals(
+            "3.56734400 ₿", unitformat(3.567344, Unit.objects.get(code="BTC"))
+        )
+
+    def test_unitcolorfy(self):
+        self.assertEquals(
+            '<span class="green">0.123%</span>', unitcolorfy(0.1234, "%.3f%%")
+        )
+        self.assertEquals(
+            '<span class="red">-0.123%</span>', unitcolorfy(-0.1234, "%.3f%%")
+        )
+        self.assertEquals(
+            '<span class="green">3.57 €</span>', unitcolorfy(3.567, "%.2f €")
+        )
+        self.assertEquals(
+            '<span class="red">-5.74 €</span>', unitcolorfy(-5.741, "%.2f €")
+        )
+        self.assertEquals(
+            '<span class="green">3.57 €</span>',
+            unitcolorfy(3.567, Unit.objects.get(code="EUR")),
+        )
+        self.assertEquals(
+            '<span class="red">-5.74 €</span>',
+            unitcolorfy(-5.741, Unit.objects.get(code="EUR")),
+        )
