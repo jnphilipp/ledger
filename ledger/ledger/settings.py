@@ -32,7 +32,7 @@ import os
 import sys
 
 from gi.repository import GLib
-from importlib.utils import module_from_spec, spec_from_file_location
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 
@@ -66,7 +66,7 @@ APP_DATA_DIR = XDG_DATA_DIR / APP_IDENTIFIER
 SECRET_KEY = "".join(["%02x" % h for h in os.urandom(4096)])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
