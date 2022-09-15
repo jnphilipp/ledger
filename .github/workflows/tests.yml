@@ -12,13 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
           pip install -r requirements.txt
+          python -m pip install vext
+          python -m pip install vext.gi
           python -m pip install flake8
           python -m pip install mypy types-python-dateutil
       - uses: psf/black@stable
@@ -37,13 +39,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo apt install python-gi
           python -m pip install --upgrade pip wheel
+          python -m pip install vext
+          python -m pip install vext.gi
           pip install -r requirements.txt
           pip install Django~=${{ matrix.django-version }}
       - name: Run Tests
