@@ -31,8 +31,8 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ledger.settings")
 
-from django.conf import settings
-from django.core.management import execute_from_command_line
+from django.conf import settings  # noqa: E402
+from django.core.management import execute_from_command_line  # noqa: E402
 
 if not settings.APP_DATA_DIR.exists():
     settings.APP_DATA_DIR.mkdir(parents=True, exist_ok=True)

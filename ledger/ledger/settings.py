@@ -183,7 +183,7 @@ try:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         sys.modules["local_settings"] = module
-        from local_settings import *
+        from local_settings import *  # noqa: F401, F403
 except ImportError as e:
     sys.stderr.write(str(e))
     pass
