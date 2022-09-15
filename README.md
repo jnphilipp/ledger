@@ -1,5 +1,7 @@
 # ledger
 
+![Tests](https://github.com/jnphilipp/ledger/actions/workflows/tests.yml/badge.svg)
+
 Web based ledger system to keep track of your money.
 
 ## Features
