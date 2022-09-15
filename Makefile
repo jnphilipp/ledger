@@ -43,7 +43,8 @@ venv:
 test: .venv
 	$(Q)( \
 		source .venv/bin/activate; \
-		python ledger/manage.py test; \
+		cd ledger; \
+		python manage.py test; \
 	)
 
 ledger/static: .venv
