@@ -28,11 +28,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import importlib
 import os
 import sys
 
 from gi.repository import GLib
+from importlib.utils import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 
@@ -177,10 +177,8 @@ LOCAL_SETTINGS_PATHS = (
 
 try:
     if LOCAL_SETTINGS_PATHS.exists():
-        spec = importlib.util.spec_from_file_location(
-            "local_settings", LOCAL_SETTINGS_PATHS
-        )
-        module = importlib.util.module_from_spec(spec)
+        spec = spec_from_file_location("local_settings", LOCAL_SETTINGS_PATHS)
+        module = module_from_spec(spec)
         spec.loader.exec_module(module)
         sys.modules["local_settings"] = module
         from local_settings import *  # noqa: F401, F403
