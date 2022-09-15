@@ -66,7 +66,7 @@ APP_DATA_DIR = XDG_DATA_DIR / APP_IDENTIFIER
 SECRET_KEY = "".join(["%02x" % h for h in os.urandom(4096)])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
@@ -171,13 +171,13 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Load local settings
 
-LOCAL_SETTINGS_PATHS = (
-    BASE_DIR / "local.py" if DEBUG else APP_CONFIG_DIR / "settings.py"
-)
+LOCAL_SETTINGS_PATH = BASE_DIR / "local.py" if DEBUG else APP_CONFIG_DIR / "settings.py"
 
 try:
-    if LOCAL_SETTINGS_PATHS.exists():
-        spec = spec_from_file_location("local_settings", LOCAL_SETTINGS_PATHS)
+    if LOCAL_SETTINGS_PATH.exists():
+        spec = spec_from_file_location("local_settings", LOCAL_SETTINGS_PATH)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Couldn't load spec from file {LOCAL_SETTINGS_PATH}.")
         module = module_from_spec(spec)
         spec.loader.exec_module(module)
         sys.modules["local_settings"] = module
