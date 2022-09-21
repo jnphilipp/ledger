@@ -50,6 +50,4 @@ jobs:
           pip install -r requirements.txt
           pip install Django~=${{ matrix.django-version }}
       - name: Run Tests
-        run: |
-          cd ledger
-          python manage.py test
+        run: make test
