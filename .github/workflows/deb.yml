@@ -1,0 +1,45 @@
+name: DEB Package
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build_deb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0
+          sudo apt-get install -y help2man lintian
+          python -m pip install --upgrade pip wheel
+          pip install -r requirements.txt
+          python -m pip install pycairo PyGObject
+      - name: Build deb
+        run: |
+          make deb
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload deb-package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/gpgmail.deb
+          asset_name: gpgmail.deb
+          asset_content_type: application/x-debian-package
