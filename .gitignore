@@ -17,3 +17,6 @@ db.sqlite3-journal
 # SublimeText
 *.sublime-project
 *.sublime-workspace
+
+# Vim
+Session.vim
