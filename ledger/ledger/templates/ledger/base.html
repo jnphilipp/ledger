@@ -21,11 +21,6 @@
                 $("a.iframeFormModal").modal({
                     show: false
                 });
-                $("#iframeFormModalIframe").on("load", function() {
-                    $("#iframeFormModalIframe").width(Math.max(1140, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollWidth));
-                    $("#iframeFormModalIframe").height(Math.max(600, $("#iframeFormModalIframe").prop("contentWindow").document.body.scrollHeight));
-                    $("#iframeFormModal").modal("handleUpdate");
-                });
                 $(document).on('select2:open', () => {
                     let allFound = document.querySelectorAll('.select2-container--open .select2-search__field');
                     $(this).one('mouseup keyup',()=>{
@@ -110,7 +105,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Cancel" %}"></button>
                     </div>
                     <div class="modal-body" style="padding-left: 0; padding-right: 0;">
-                        <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" width="100%"></iframe>
+                        <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" style="width: 100%; min-height: 500px;"></iframe>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
