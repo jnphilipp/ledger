@@ -50,8 +50,12 @@ ledger/static:
 deb: test build/package/DEBIAN/control
 	$(Q)fakeroot dpkg-deb -b build/package build/ledger.deb
 	$(Q)lintian -Ivi --suppress-tags embedded-javascript-library,font-outside-font-dir,font-in-non-font-package,desktop-command-not-in-package build/ledger.deb
-	$(Q)dpkg-sig -s builder build/ledger.deb
 	@echo "ledger.deb completed."
+
+
+deb-sig: deb
+	$(Q)dpkg-sig -s builder build/ledger.deb
+	@echo "Signed ledger.deb."
 
 
 install: ledger/static build/copyright build/changelog.Debian.gz build/package/DEBIAN build/conf/ledger.desktop
