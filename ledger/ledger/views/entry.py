@@ -186,9 +186,9 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
     model = Entry
     success_url = reverse_lazy("create_another_success")
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
         """Delete."""
-        v = super().delete(request, *args, **kwargs)
+        v = super().form_valid(form)
         for entry in Entry.objects.filter(account=self.object.account).filter(
             serial_number__gt=self.object.serial_number
         ):
