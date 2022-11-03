@@ -14,8 +14,6 @@
             parent.$("#iframeFormModalLabel").html(this.title);
             parent.$("#iframeFormModalIframe").attr("src", this.href);
 
-            console.log(this.href);
-
             if ( this.href.includes("/edit/") ) {
                 parent.$("#iframeFormModalSubmit").addClass("btn-primary");
                 parent.$("#iframeFormModalSubmit").removeClass("btn-danger");
@@ -139,8 +137,8 @@
                     <td class="text-end">{{ trade.extra2|unitformat:position.unit }}</td>
                     <td class="text-end">{{ trade.total|unitformat:position.unit }}</td>
                     <td>
-                        <a class="iframeFormModal" href="{% url "portfolio:trade_edit" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Edit trade {{ position }} #{{ trade }}{% endblocktranslate %}"><span class="fas fa-edit"></span></a>
-                        <a class="iframeFormModal" href="{% url "portfolio:trade_delete" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Delete trade {{ position }} #{{ trade }}{% endblocktranslate %}"><span class="fas fa-trash"></span></a>
+                        <a class="iframeFormModal" href="{% url "portfolio:trade_edit" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Edit trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-edit"></span></a>
+                        <a class="iframeFormModal" href="{% url "portfolio:trade_delete" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Delete trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-trash"></span></a>
                     </td>
                 </tr>
             {% endfor %}

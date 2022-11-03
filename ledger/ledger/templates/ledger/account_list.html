@@ -6,9 +6,6 @@
 <script type="text/javascript">
     $(function() {
         $('#iframeFormModal').on('show.bs.modal', function (e) {
-            $("#iframeFormModalLabel").html(e.relatedTarget.title);
-            $("#iframeFormModalIframe").attr("src", e.relatedTarget.href);
-
             if ( e.relatedTarget.href.includes("/account/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")) ) {
                 $("#iframeFormModalSubmit").addClass("btn-primary");
                 $("#iframeFormModalSubmit").removeClass("btn-danger");
@@ -39,7 +36,7 @@
 {% block content %}
 <div class="row">
     <div class="col text-end">
-        <a class="btn btn-outline-primary iframeFormModal" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% trans "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% trans "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
     </div>
 </div>
 {% if accounts %}
@@ -61,7 +58,7 @@
                 <tbody>
                     {% for account in accounts %}
                         <tr>
-                            <th scope="row"><a class="iframeFormModal" href="{% url "account_detail" account.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{{ account.name }}">{{ account.name }}{% if account.closed %} [{% translate "closed" %}]{% endif %}</a></th>
+                            <th scope="row"><a href="{% url "account_detail" account.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{{ account.name }}">{{ account.name }}{% if account.closed %} [{% translate "closed" %}]{% endif %}</a></th>
                             <td class="text-end">{{ account|balance }}</td>
                             <td class="text-end">{{ account|outstanding }}</td>
                             <td class="text-end">{{ account.files.count }}</td>
@@ -75,10 +72,10 @@
                                 {{ account.name }}
                             </div>
                             <div><hr class="dropdown-divider"></div>
-                            <a class="dropdown-item iframeFormModal" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                            <a class="dropdown-item" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
                             <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% trans "Reopen account" %}{% else %}{% trans "Close account" %}{% endif %}"><span class="fas fa-clone"></span> {% if account.closed %}{% trans "Reopen" %}{% else %}{% trans "Close" %}{% endif %}</a>
-                            <a class="dropdown-item iframeFormModal" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
-                            <a class="dropdown-item iframeFormModal" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
+                            <a class="dropdown-item" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                            <a class="dropdown-item" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
                         </div>
                     </div>
                 </td>

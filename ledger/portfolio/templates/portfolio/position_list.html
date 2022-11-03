@@ -28,13 +28,7 @@
             }
         });
 
-        $("a.iframeFormModal").modal({
-            show: false
-        });
         $('#iframeFormModal').on('show.bs.modal', function (e) {
-            $("#iframeFormModalLabel").html(e.relatedTarget.title);
-            $("#iframeFormModalIframe").attr("src", e.relatedTarget.href);
-
             if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
                 $("#iframeFormModalSubmit").addClass("btn-primary");
                 $("#iframeFormModalSubmit").removeClass("btn-danger");
@@ -69,16 +63,16 @@
             <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
             <div class="dropdown-menu" aria-labelledby="add_dropdown">
                 {% if positions %}
-                    <a class="dropdown-item iframeFormModal" href="{% url "portfolio:trade_create" %}" title="{% trans "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Trade" %}</a>
+                    <a class="dropdown-item" href="{% url "portfolio:trade_create" %}" title="{% trans "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Trade" %}</a>
                     <div><hr class="dropdown-divider"></div>
                 {% endif %}
                 {% if has_tradeables %}
-                    <a class="dropdown-item iframeFormModal" href="{% url "portfolio:position_create" %}" title="{% trans "Add position" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Position" %}</a>
+                    <a class="dropdown-item" href="{% url "portfolio:position_create" %}" title="{% trans "Add position" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Position" %}</a>
                     <div><hr class="dropdown-divider"></div>
                 {% endif %}
-                <a class="dropdown-item iframeFormModal" href="{% url "portfolio:tradeable_create" %}" title="{% trans "Add Tradeable" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Tradeable" %}</a>
+                <a class="dropdown-item" href="{% url "portfolio:tradeable_create" %}" title="{% trans "Add Tradeable" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Tradeable" %}</a>
                 {% if has_tradeables %}
-                <a class="dropdown-item iframeFormModal" href="{% url "portfolio:closing_create" %}" title="{% trans "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Closings" %}</a>
+                <a class="dropdown-item" href="{% url "portfolio:closing_create" %}" title="{% trans "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Closings" %}</a>
                 {% endif %}
             </div>
         </div>
@@ -121,7 +115,7 @@
                 <tbody>
                     {% for position in positions %}
                         <tr>
-                            <th scope="row"><a class="iframeFormModal" href="{% url "portfolio:position_detail" position.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% blocktranslate with name=position.slug %}Position {{ name }}{% endblocktranslate %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
+                            <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% blocktranslate with name=position.slug %}Position {{ name }}{% endblocktranslate %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
                             <td class="text-center">
                                 {% if position.closed %}
                                     {% trans "yes" %}
@@ -150,11 +144,11 @@
                                             {{ position }}
                                         </div>
                                         <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item iframeFormModal" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
                                         {% if not position.closed %}
                                             <a class="dropdown-item" href="{% url "portfolio:position_close" position.slug %}" title="{% blocktranslate with position=position %}Close position {{ position }}{% endblocktranslate %}"><span class="fas fa-clone"></span> {% trans "Close" %}</a>
                                         {% endif %}
-                                        <a class="dropdown-item iframeFormModal" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                                        <a class="dropdown-item" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
                                     </div>
                                 </div>
                             </td>

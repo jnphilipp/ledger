@@ -73,7 +73,7 @@
                     {% for file in entry.files.all %}
                         <li>
                             <a href="{% url "file_detail" file.slug %}">{{ file.name }}</a>
-                            <a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}"><span class="fas fa-trash"></span></a>
+                            <a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-trash"></span></a>
                         </li>
                     {% endfor %}
                 </ul>

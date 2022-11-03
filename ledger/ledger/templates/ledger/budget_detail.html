@@ -8,12 +8,7 @@
 <script type="text/javascript" src="{% static "js/highcharts/modules/drilldown.js" %}"></script>
 <script type="text/javascript">
     $(function() {
-        $("a.iframeFormModal").modal({
-            show: false
-        });
-        $('#iframeFormModal').on('show.bs.modal', function (event) {
-            $("#iframeFormModalLabel").html(event.relatedTarget.title);
-            $("#iframeFormModalIframe").attr("src", event.relatedTarget.href);
+        $('#iframeFormModal').on('show.bs.modal', function (e) {
             $("#iframeFormModalSubmit").addClass("btn-primary");
             $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
             $(".modal-footer").show();
@@ -44,7 +39,7 @@
                 <a class="btn btn btn-outline-secondary" data-bs-target="#toggleView" role="button">{% translate "Table" %}</a>
             </div>
             <div class="btn-group">
-                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
+                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
             </div>
         </div>
         <script type="text/javascript">
@@ -207,7 +202,7 @@
 {% else %}
 <div class="row">
     <div class="text-end">
-        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary iframeFormModal" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
+        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fas fa-edit"></span> {% translate "Edit" %}</a>
     </div>
 </div>
 <div class="row">

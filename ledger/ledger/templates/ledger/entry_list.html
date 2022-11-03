@@ -84,9 +84,6 @@
         });
 
         $("#iframeFormModal").on("show.bs.modal", function(e) {
-            $("#iframeFormModalLabel").html(e.relatedTarget.title);
-            $("#iframeFormModalIframe").attr("src", e.relatedTarget.href);
-
             if ( e.relatedTarget.href.includes("/entry/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")) ) {
                 $("#iframeFormModalSubmit").addClass("btn-primary");
                 $("#iframeFormModalSubmit").removeClass("btn-danger");
@@ -131,9 +128,9 @@
         <div class="dropdown">
             <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
             <div class="dropdown-menu" aria-labelledby="add_dropdown">
-                <a class="dropdown-item iframeFormModal" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Entry" %}</a>
-                <a class="dropdown-item iframeFormModal" href="{% url "transfer_create" %}" title="{% trans "Transfer" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Transfer" %}</a>
-                <a class="dropdown-item iframeFormModal" href="{% url "standing_entry_create" %}" title="{% trans "Add standing entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Standing entry" %}</a>
+                <a class="dropdown-item" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Entry" %}</a>
+                <a class="dropdown-item" href="{% url "transfer_create" %}" title="{% trans "Transfer" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Transfer" %}</a>
+                <a class="dropdown-item" href="{% url "standing_entry_create" %}" title="{% trans "Add standing entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Standing entry" %}</a>
             </div>
         </div>
     </div>
@@ -160,7 +157,7 @@
                         <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
                             <th scope="row">
                                 <a href="{% url "entry_list" %}?accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.account.name }}</a>
-                                <a class="iframeFormModal" href="{% url "entry_detail" entry.pk %}" title="{{ entry.account.name}} #{{ entry.serial_number }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
+                                <a href="{% url "entry_detail" entry.pk %}" title="{{ entry.account.name}} #{{ entry.serial_number }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
                             </th>
                             <td>{{ entry.date|date:"d.m.Y" }}</td>
                             <td>{{ entry.date|date:"D" }}</td>
@@ -185,12 +182,12 @@
                                             {{ entry.account.name }} #{{ entry.serial_number }}
                                         </div>
                                         <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item iframeFormModal" href="{% url "entry_edit" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Edit entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_edit" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Edit entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
                                         <a class="dropdown-item" href="{% url "entry_duplicate" entry.pk %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Duplicate entry" %}"><span class="fas fa-clone"></span> {% trans "Duplicate" %}</a>
                                         <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Move down" %}"><span class="fas fa-arrow-down"></span> {% trans "Move down" %}</a>
                                         <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Move up" %}"><span class="fas fa-arrow-up"></span> {% trans "Move up" %}</a>
-                                        <a class="dropdown-item iframeFormModal" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
-                                        <a class="dropdown-item iframeFormModal" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
+                                        <a class="dropdown-item" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-upload"></span> {% trans "Add file" %}</a>
                                     </div>
                                 </div>
                             </td>

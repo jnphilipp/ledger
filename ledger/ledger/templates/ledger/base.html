@@ -18,9 +18,6 @@
                     return new bootstrap.Tooltip(tooltipTriggerEl)
                 });
 
-                $("a.iframeFormModal").modal({
-                    show: false
-                });
                 $(document).on('select2:open', () => {
                     let allFound = document.querySelectorAll('.select2-container--open .select2-search__field');
                     $(this).one('mouseup keyup',()=>{
@@ -97,22 +94,11 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="iframeFormModal" tabindex="-1" role="dialog" aria-labelledby="iframeFormModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="iframeFormModalLabel"></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans "Cancel" %}"></button>
-                    </div>
-                    <div class="modal-body" style="padding-left: 0; padding-right: 0;">
-                        <iframe id="iframeFormModalIframe" name="iframeFormModalIframe" frameborder="0" style="width: 100%; min-height: 500px;"></iframe>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                        <button id="iframeFormModalSubmit" type="submit" class="btn" onclick="window.frames['iframeFormModalIframe'].document.forms[0].submit();"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% if request.path|startswith:position_list_url %}
+            {% iframe_form_modal iframe_min_height="700px" %}
+        {% else %}
+            500
+            {% iframe_form_modal iframe_min_height="500px" %}
+        {% endif %}
     </body>
 </html>
