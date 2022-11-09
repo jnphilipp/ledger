@@ -29,7 +29,7 @@ from .models import Account, Entry, File
 def delete_account_folder(sender, instance, **kwargs):
     """Delete account folder signal."""
     try:
-        (settings.MEDIA_ROOT / "accounts" / instance.account.slug).rmdir()
+        (settings.MEDIA_ROOT / "accounts" / instance.slug).rmdir()
     except FileNotFoundError:
         pass
 
