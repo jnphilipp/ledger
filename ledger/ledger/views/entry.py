@@ -26,6 +26,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from typing import Iterable
 
 from ..dates import get_last_date_current_month
 from ..forms import EntryForm, EntryFilterForm
@@ -130,7 +131,6 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
 
     form_class = EntryForm
     model = Entry
-    success_url = reverse_lazy("create_another_success")
 
     def get_initial(self):
         """Get initial."""
@@ -141,9 +141,19 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        return _('The entry "%(entry)s" was successfully created.') % {
-            "entry": f"{self.object.account.name} - #{self.object.serial_number}"
-        }
+        if isinstance(self.object, Iterable):
+            return _("The entries %(entries)s were successfully created.") % {
+                "entries": f"{self.object[0].account.name} - "
+                + f'#{", #".join(str(e.serial_number) for e in self.object)}'
+            }
+        else:
+            return _('The entry "%(entry)s" was successfully created.') % {
+                "entry": f"{self.object.account.name} - #{self.object.serial_number}"
+            }
+
+    def get_success_url(self):
+        """Get success URL."""
+        return reverse_lazy("create_another_success")
 
 
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):

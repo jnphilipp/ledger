@@ -53,9 +53,28 @@ class AccountForm(forms.ModelForm):
 class EntryForm(forms.ModelForm):
     """Entry form."""
 
+    intervall = forms.ChoiceField(
+        choices=(
+            (0, _("Never")),
+            (1, _("Monthly")),
+            (2, _("Bimonthly")),
+            (3, _("Quarterly")),
+            (4, _("Half-yearly")),
+            (5, _("Yearly")),
+        ),
+        widget=forms.Select(),
+        label=_("Repeat intervall"),
+        required=False,
+    )
+    end_date = forms.DateField(label=_("End date"), required=False)
+
     def __init__(self, *args, **kwargs):
         """Init."""
         super().__init__(*args, **kwargs)
+
+        if "instance" in kwargs and kwargs["instance"] is not None:
+            del self.fields["intervall"]
+            del self.fields["end_date"]
 
         self.fields["amount"].localize = True
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
@@ -72,65 +91,15 @@ class EntryForm(forms.ModelForm):
         """Clean."""
         cleaned_data = super().clean()
 
-        if self.data["category"] and "category" not in cleaned_data:
-            category, created = Category.objects.get_or_create(
-                name=self.data["category"]
-            )
-            cleaned_data["category"] = category
-            del self.errors["category"]
-
-        if "tags" in self.data and self.data["tags"] and "tags" not in cleaned_data:
-            tags = []
-            for tag in self.data.getlist("tags"):
-                if tag.isdigit():
-                    tag = Tag.objects.get(pk=tag)
-                else:
-                    tag, created = Tag.objects.get_or_create(name=tag)
-                tags.append(tag.pk)
-            cleaned_data["tags"] = Tag.objects.filter(pk__in=tags)
-            del self.errors["tags"]
-
-    class Meta:
-        """Meta."""
-
-        model = Entry
-        exclude = ["serial_number"]
-
-
-class StandingEntryForm(forms.ModelForm):
-    """Standing entry form."""
-
-    start_date = forms.DateField(label=_("Start date"))
-    end_date = forms.DateField(label=_("End date"))
-    execution = forms.ChoiceField(
-        choices=(
-            (1, _("Monthly")),
-            (2, _("Bimonthly")),
-            (3, _("Quarterly")),
-            (4, _("Half-yearly")),
-            (5, _("Yearly")),
-        ),
-        widget=forms.Select(),
-        label=_("Execution"),
-    )
-
-    def __init__(self, *args, **kwargs):
-        """Init."""
-        super().__init__(*args, **kwargs)
-
-        self.fields["start_date"].help_text = mark_safe(_("Date format: yyyy-mm-dd"))
-        self.fields["start_date"].localize = True
-        self.fields["end_date"].help_text = mark_safe(_("Date format: yyyy-mm-dd"))
-        self.fields["end_date"].localize = True
-
-        self.fields["amount"].localize = True
-        self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
-        self.fields["fees"].localize = True
-        self.fields["fees"].widget = forms.TextInput(attrs={"step": "any"})
-
-    def clean(self):
-        """Clean."""
-        cleaned_data = super().clean()
+        if "intervall" in cleaned_data and "end_date" in cleaned_data:
+            intervall = cleaned_data["intervall"]
+            end_date = cleaned_data["end_date"]
+            if (int(intervall) > 0 and end_date is None) or (
+                int(intervall) == 0 and end_date is not None
+            ):
+                msg = _("Repeat intervall and end date need both be set.")
+                self.add_error("intervall", msg)
+                self.add_error("end_date", msg)
 
         if self.data["category"] and "category" not in cleaned_data:
             category, created = Category.objects.get_or_create(
@@ -153,77 +122,72 @@ class StandingEntryForm(forms.ModelForm):
     def save(self, commit: bool = True):
         """Save."""
         instance = super().save(commit=False)
-        entries = []
-        start = self.cleaned_data["start_date"]
-        end = self.cleaned_data["end_date"]
-        for date in daterange(
-            start, end, "months", int(self.cleaned_data["execution"])
-        ):
-            entry, created = Entry.objects.update_or_create(
-                date=date,
-                amount=instance.amount,
-                fees=instance.fees,
-                category=instance.category,
-                text=instance.text,
-                account=instance.account,
-            )
 
-            for tag in self.cleaned_data["tags"]:
-                entry.tags.add(tag)
-            entries.append(entry)
-        return entries
+        date = self.cleaned_data["date"]
+        intervall = (
+            self.cleaned_data["intervall"] if "intervall" in self.cleaned_data else 0
+        )
+        end_date = (
+            self.cleaned_data["end_date"] if "end_date" in self.cleaned_data else None
+        )
+
+        if int(intervall) == 0 and end_date is None:
+            if instance.pk is None:
+                try:
+                    account = Account.objects.get(category__pk=instance.category.pk)
+                    entry, created = Entry.objects.update_or_create(
+                        date=instance.date,
+                        amount=instance.amount,
+                        fees=instance.fees,
+                        category=account.category,
+                        text=instance.text,
+                        account=account,
+                    )
+                    for tag in self.cleaned_data["tags"]:
+                        entry.tags.add(tag)
+                    return [instance, entry]
+                except Account.DoesNotExist:
+                    pass
+            instance.save()
+            return instance
+        else:
+            entries = []
+            try:
+                account = Account.objects.get(category__pk=instance.category.pk)
+            except Account.DoesNotExist:
+                account = None
+            for cur_date in daterange(date, end_date, "months", int(intervall)):
+                entry, created = Entry.objects.update_or_create(
+                    date=cur_date,
+                    amount=instance.amount,
+                    fees=instance.fees,
+                    category=instance.category,
+                    text=instance.text,
+                    account=instance.account,
+                )
+                for tag in self.cleaned_data["tags"]:
+                    entry.tags.add(tag)
+                entries.append(entry)
+
+                if account is not None:
+                    entry, created = Entry.objects.update_or_create(
+                        date=cur_date,
+                        amount=instance.amount,
+                        fees=instance.fees,
+                        category=account.category,
+                        text=instance.text,
+                        account=account,
+                    )
+                    for tag in self.cleaned_data["tags"]:
+                        entry.tags.add(tag)
+                    entries.append(entry)
+            return entries
 
     class Meta:
         """Meta."""
 
         model = Entry
-        exclude = ["serial_number", "date"]
-        fields = [
-            "account",
-            "start_date",
-            "end_date",
-            "execution",
-            "amount",
-            "fees",
-            "category",
-            "text",
-            "tags",
-        ]
-
-
-class TransferForm(forms.Form):
-    """Transfer form."""
-
-    from_account = forms.ModelChoiceField(
-        queryset=Account.objects.filter(closed=False), label=_("From"), localize=True
-    )
-    from_date = forms.DateField(
-        help_text=mark_safe(
-            '<a id="from_date_today" href="">%s</a> (%s)'
-            % (_("Today"), _("Date format: yyyy-mm-dd"))
-        ),
-        label=_("Date"),
-    )
-    to_account = forms.ModelChoiceField(
-        queryset=Account.objects.filter(closed=False), label=_("To"), localize=True
-    )
-    to_date = forms.DateField(
-        help_text=mark_safe(
-            '<a id="to_date_today" href="">%s</a> (%s)'
-            % (_("Today"), _("Date format: yyyy-mm-dd"))
-        ),
-        label=_("Date"),
-    )
-    amount = forms.DecimalField(
-        min_value=0.0, initial=0.0, label=_("Amount"), localize=True
-    )
-    fees = forms.DecimalField(
-        min_value=0.0, initial=0.0, label=_("Fees"), localize=True
-    )
-
-    def __init__(self, *args, **kwargs):
-        """Init."""
-        super().__init__(*args, **kwargs)
+        exclude = ["serial_number"]
 
 
 class EntryFilterForm(forms.Form):
@@ -270,16 +234,16 @@ class EntryFilterForm(forms.Form):
 
         self.fields["accounts"].widget.attrs[
             "style"
-        ] = "min-width: 113px !important; max-width: 352px !important;"
+        ] = "min-width: 113px !important; max-width: 227px !important;"
         self.fields["categories"].widget.attrs[
             "style"
-        ] = "min-width: 113px !important; max-width: 352px !important;"
+        ] = "min-width: 113px !important; max-width: 227px !important;"
         self.fields["tags"].widget.attrs[
             "style"
-        ] = "min-width: 113px !important; max-width: 352px !important;"
+        ] = "min-width: 113px !important; max-width: 227px !important;"
         self.fields["units"].widget.attrs[
             "style"
-        ] = "min-width: 113px !important; max-width: 352px !important;"
+        ] = "min-width: 113px !important; max-width: 227px !important;"
 
         if Tag.objects.count() == 0:
             del self.fields["tags"]

@@ -26,14 +26,10 @@ from . import file
 from . import statistics
 from . import tag
 from .base import AnotherSuccessView
-from .standing_entry import CreateView as StandingEntryCreateView
-from .transfer import CreateView as TransferCreateView
 
 
 __all__ = (
     "AnotherSuccessView",
-    "StandingEntryCreateView",
-    "TransferCreateView",
     "account",
     "budget",
     "category",

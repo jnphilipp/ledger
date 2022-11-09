@@ -39,8 +39,6 @@ from django.views.generic.base import RedirectView
 
 from .views import (
     AnotherSuccessView,
-    StandingEntryCreateView,
-    TransferCreateView,
     account,
     budget,
     category,
@@ -79,14 +77,6 @@ urlpatterns = [
     path("budget/edit/", budget.UpdateView.as_view(), name="budget_edit"),
     path("category/autocomplete/", category.autocomplete, name="category_autocomplete"),
     path("entry/create/", entry.CreateView.as_view(), name="entry_create"),
-    path(
-        "entry/standing/create/",
-        StandingEntryCreateView.as_view(),
-        name="standing_entry_create",
-    ),
-    path(
-        "entry/transfer/create/", TransferCreateView.as_view(), name="transfer_create"
-    ),
     path("entry/<int:pk>/", entry.DetailView.as_view(), name="entry_detail"),
     path("entry/<int:pk>/edit/", entry.UpdateView.as_view(), name="entry_edit"),
     path("entry/<int:pk>/delete/", entry.DeleteView.as_view(), name="entry_delete"),

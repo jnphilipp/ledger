@@ -125,14 +125,7 @@
         {% endif %}
     </div>
    <div class="col text-end">
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
-            <div class="dropdown-menu" aria-labelledby="add_dropdown">
-                <a class="dropdown-item" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Entry" %}</a>
-                <a class="dropdown-item" href="{% url "transfer_create" %}" title="{% trans "Transfer" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Transfer" %}</a>
-                <a class="dropdown-item" href="{% url "standing_entry_create" %}" title="{% trans "Add standing entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Standing entry" %}</a>
-            </div>
-        </div>
+        <a class="btn btn-outline-primary" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Add" %}</a>
     </div>
 </div>
 <div class="row mt-2">
