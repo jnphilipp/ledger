@@ -43,22 +43,11 @@ class AccountForm(forms.ModelForm):
         """Clean name."""
         return self.cleaned_data["name"] or None
 
-    def clean(self):
-        """Clean."""
-        cleaned_data = super().clean()
-
-        if self.data["category"] and "category" not in cleaned_data:
-            category, created = Category.objects.get_or_create(
-                name=self.data["category"]
-            )
-            cleaned_data["category"] = category
-            del self.errors["category"]
-
     class Meta:
         """Meta."""
 
         model = Account
-        fields = ("name", "closed", "category", "unit")
+        fields = ("name", "closed", "unit")
 
 
 class EntryForm(forms.ModelForm):

@@ -125,12 +125,16 @@ class Account(models.Model):
 
     def save(self, *args, **kwargs):
         """Save."""
-        if not self.slug:
+        if not hasattr(self, "category") or self.category is None:
+            self.category = Category.objects.get_or_create(name=self.name)[0]
+        if self.slug is None or self.pk is None:
             self.slug = slugify(self.name)
         else:
-            orig = Account.objects.get(pk=self.id)
+            orig = Account.objects.get(pk=self.pk)
             if orig.name != self.name:
                 self.slug = slugify(self.name)
+                self.category.name = self.name
+                self.category.save()
         super().save(*args, **kwargs)
 
     def __str__(self):
