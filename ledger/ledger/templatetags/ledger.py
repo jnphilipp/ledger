@@ -109,7 +109,7 @@ def balance(obj):
 
 
 @register.filter
-def has_tags(account):
+def has_tags(account: Account):
     """Has tags template filter."""
     return account.entries.filter(tags__isnull=False).count() > 0
 

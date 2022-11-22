@@ -98,7 +98,7 @@
                         <th class="text-center" scope="col">{% trans "First trade" %}</th>
                         <th class="text-center" scope="col">{% trans "Last trade" %}</th>
                         <th class="text-center" scope="col">{% trans "Duration" %}</th>
-                        <th scope="col" class="visually-hidden">{% trans "Options" %}</th>
+                        <th scope="col"><span class="visually-hidden">{% trans "Options" %}</span></th>
                     </tr>
                     <tr>
                         <td></td>
@@ -110,9 +110,14 @@
                         <td></td>
                         <td class="text-end">{% win_loss positions %}</td>
                         <td class="text-end">{% dividend positions %}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                     {% for position in positions %}
                         <tr>
                             <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% blocktranslate with name=position.slug %}Position {{ name }}{% endblocktranslate %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>

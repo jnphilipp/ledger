@@ -117,14 +117,14 @@
     <div class="col-2">
         {% balances %}
     </div>
-    <div class="col-7 text-center">
+    <div class="col-8 text-center">
         {% if form %}
             {% trans "Filter" as filter_trans %}
             {% url "entry_list" as form_url %}
             {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
         {% endif %}
     </div>
-   <div class="col text-end">
+   <div class="col-2 text-end">
         <a class="btn btn-outline-primary" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Add" %}</a>
     </div>
 </div>
@@ -134,17 +134,16 @@
             <table class="table table-hover table-sm">
                 <thead>
                     <tr>
-                        <th class="text-center" scope="col">{% trans "Account" %}</th>
-                        <th class="text-center" scope="col" colspan="2">{% trans "Date" %}</th>
-                        <th class="text-center" scope="col">{% trans "Amount" %}</th>
-                        <th class="text-center" scope="col">{% trans "Category" %}</th>
-                        <th class="text-center" scope="col">{% trans "Text" %}</th>
-                        <th class="text-center" scope="col">{% trans "Tags" %}</th>
-                        <th class="text-center" scope="col">{% trans "Files" %}</th>
+                        <th scope="col">{% trans "Account" %}</th>
+                        <th scope="col">{% trans "Date" %}</th>
+                        <th scope="col">{% trans "Amount" %}</th>
+                        <th scope="col">{% trans "Category" %}</th>
+                        <th scope="col">{% trans "Text & Tags" %}</th>
+                        <th scope="col">{% trans "Files" %}</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                     {% now "Y-m-d" as today %}
                     {% for entry in entries %}
                         <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
@@ -152,12 +151,11 @@
                                 <a href="{% url "entry_list" %}?accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.account.name }}</a>
                                 <a href="{% url "entry_detail" entry.pk %}" title="{{ entry.account.name}} #{{ entry.serial_number }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
                             </th>
-                            <td>{{ entry.date|date:"d.m.Y" }}</td>
-                            <td>{{ entry.date|date:"D" }}</td>
+                            <td>{{ entry.date|date:"D, d.m.Y" }}</td>
                             <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% trans "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% trans "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|unitcolorfy:entry.account.unit }}</td>
                             <td><a href="{% url "entry_list" %}?categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.category }}</a></td>
-                            <td>{{ entry.text|default_if_none:"" }}</td>
                             <td>
+                                {% if entry.text %}{{ entry.text }}{% if entry.tags.all %}, {% endif %}{% endif %}
                                 {% for tag in entry.tags.all %}
                                     <a href="{% url "entry_list" %}?tags={{ tag.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
