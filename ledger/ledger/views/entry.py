@@ -214,42 +214,21 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
         }
 
 
-class DuplicateView(generic.base.RedirectView):
+class DuplicateView(CreateView):
     """Entry duplicate view."""
 
-    permanent = False
-    query_string = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        """Get redirect URL."""
-        entry = get_object_or_404(Entry, pk=kwargs["pk"])
-
-        new = Entry.objects.create(
-            account=entry.account,
-            date=date.today(),
-            amount=entry.amount,
-            fees=entry.fees,
-            category=entry.category,
-            text=entry.text,
-        )
-        for tag in entry.tags.all():
-            new.tags.add(tag.id)
-        new.save()
-
-        msg = _(
-            'The entry "%(old_entry)s" has been successfully duplicated '
-            + 'as entry "%(new_entry)s".'
-        )
-        old_entry = f"{entry.account.name} - #{entry.serial_number}"
-        new_entry = f"{new.account.name} - #{new.serial_number}"
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            msg % {"old_entry": old_entry, "new_entry": new_entry},
-        )
-
-        self.url = reverse_lazy("entry_list")
-        return super().get_redirect_url(*args, **kwargs)
+    def get_initial(self):
+        """Get initial."""
+        entry = get_object_or_404(Entry, pk=self.kwargs["pk"])
+        return {
+            "account": entry.account,
+            "date": date.today(),
+            "amount": entry.amount,
+            "fees": entry.fees,
+            "category": entry.category,
+            "text": entry.text,
+            "tags": entry.tags.all(),
+        }
 
 
 class SwapView(generic.base.RedirectView):
