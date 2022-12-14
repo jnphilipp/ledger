@@ -74,6 +74,23 @@
                 }
             }
         });
+        $("#id_related").select2({
+            placeholder: "{% trans "Select a realted entry" %}",
+            language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
+            allowClear: true,
+            ajax: {
+                url: "{% url "entry_autocomplete" %}",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term };
+                },
+                processResults: function (data, params) {
+                    return { results: data.entries }
+                }
+            }
+        });
         $("#id_intervall").select2({
             minimumResultsForSearch: Infinity,
             allowClear: true,

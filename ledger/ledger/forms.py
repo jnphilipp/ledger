@@ -63,6 +63,7 @@ class EntryForm(forms.ModelForm):
             (5, _("Yearly")),
         ),
         widget=forms.Select(),
+        initial=0,
         label=_("Repeat intervall"),
         required=False,
     )
@@ -75,6 +76,16 @@ class EntryForm(forms.ModelForm):
         if "instance" in kwargs and kwargs["instance"] is not None:
             del self.fields["intervall"]
             del self.fields["end_date"]
+            self.fields["related"].queryset = Entry.objects.filter(
+                pk__in=[
+                    kwargs["instance"].pk,
+                    kwargs["instance"].related.pk
+                    if kwargs["instance"].related is not None
+                    else None,
+                ]
+            )
+        else:
+            del self.fields["related"]
 
         self.fields["amount"].localize = True
         self.fields["amount"].widget = forms.TextInput(attrs={"step": "any"})
@@ -134,22 +145,37 @@ class EntryForm(forms.ModelForm):
         if int(intervall) == 0 and end_date is None:
             if instance.pk is None:
                 try:
+                    instance.save()
                     account = Account.objects.get(category__pk=instance.category.pk)
                     entry, created = Entry.objects.update_or_create(
                         date=instance.date,
-                        amount=instance.amount,
+                        amount=-1.0 * instance.amount,
                         fees=instance.fees,
-                        category=account.category,
+                        category=instance.account.category,
                         text=instance.text,
                         account=account,
+                        related=instance,
                     )
+                    instance.related = entry
+                    instance.save()
                     for tag in self.cleaned_data["tags"]:
                         entry.tags.add(tag)
                     return [instance, entry]
                 except Account.DoesNotExist:
-                    pass
-            instance.save()
-            return instance
+                    return instance
+            else:
+                instance.save()
+                if instance.related is not None:
+                    instance.related.amount = -1.0 * instance.amount
+                    try:
+                        instance.related.account = Account.objects.get(
+                            category__pk=instance.category.pk
+                        )
+                    except Account.DoesNotExist:
+                        pass
+                    instance.related.category = instance.account.category
+                    instance.related.save()
+                return instance
         else:
             entries = []
             try:
@@ -159,7 +185,7 @@ class EntryForm(forms.ModelForm):
             for cur_date in daterange(date, end_date, "months", int(intervall)):
                 entry, created = Entry.objects.update_or_create(
                     date=cur_date,
-                    amount=instance.amount,
+                    amount=-1.0 * instance.amount,
                     fees=instance.fees,
                     category=instance.category,
                     text=instance.text,
@@ -174,10 +200,13 @@ class EntryForm(forms.ModelForm):
                         date=cur_date,
                         amount=instance.amount,
                         fees=instance.fees,
-                        category=account.category,
+                        category=instance.account.category,
                         text=instance.text,
                         account=account,
+                        related=entries[-1],
                     )
+                    entries[-1].related = entry
+                    entries[-1].save()
                     for tag in self.cleaned_data["tags"]:
                         entry.tags.add(tag)
                     entries.append(entry)

@@ -77,6 +77,7 @@ urlpatterns = [
     path("budget/edit/", budget.UpdateView.as_view(), name="budget_edit"),
     path("category/autocomplete/", category.autocomplete, name="category_autocomplete"),
     path("entry/create/", entry.CreateView.as_view(), name="entry_create"),
+    path("entry/autocomplete/", entry.autocomplete, name="entry_autocomplete"),
     path("entry/<int:pk>/", entry.DetailView.as_view(), name="entry_detail"),
     path("entry/<int:pk>/edit/", entry.UpdateView.as_view(), name="entry_edit"),
     path("entry/<int:pk>/delete/", entry.DeleteView.as_view(), name="entry_delete"),

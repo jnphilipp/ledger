@@ -18,12 +18,17 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 """Ledger Django app entry views."""
 
+import json
+
 from datetime import date
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import F
+from django.db.models import F, TextField, Value
+from django.db.models.functions import Concat
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 from typing import Iterable
@@ -31,6 +36,33 @@ from typing import Iterable
 from ..dates import get_last_date_current_month
 from ..forms import EntryForm, EntryFilterForm
 from ..models import Account, Entry
+
+
+def autocomplete(request):
+    """Handels GET/POST request to autocomplete entries.
+
+    GET/POST parameters:
+    q --- search term
+    """
+    params = request.POST.copy() if request.method == "POST" else request.GET.copy()
+    if "application/json" == request.META.get("CONTENT_TYPE"):
+        params.update(json.loads(request.body.decode("utf-8")))
+
+    entries = Entry.objects.annotate(
+        name=Concat(
+            "account__name", Value(" #"), "serial_number", output_field=TextField()
+        )
+    ).order_by("account__name", "-serial_number")
+    q = None
+    if "q" in params:
+        q = params.pop("q")[0]
+        entries = entries.filter(name__icontains=q)
+
+    data = {
+        "response_date": timezone.now().strftime("%Y-%m-%dT%H:%M:%S:%f%z"),
+        "entries": [{"id": tag.id, "text": tag.name} for tag in entries],
+    }
+    return JsonResponse(data)
 
 
 class ListView(generic.ListView):
@@ -143,12 +175,11 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         """Get success message."""
         if isinstance(self.object, Iterable):
             return _("The entries %(entries)s were successfully created.") % {
-                "entries": f"{self.object[0].account.name} - "
-                + f'#{", #".join(str(e.serial_number) for e in self.object)}'
+                "entries": f'{", ".join(str(e) for e in self.object)}'
             }
         else:
             return _('The entry "%(entry)s" was successfully created.') % {
-                "entry": f"{self.object.account.name} - #{self.object.serial_number}"
+                "entry": self.object
             }
 
     def get_success_url(self):
@@ -166,6 +197,13 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
     def form_valid(self, form):
         """Form valid."""
         self.orig_serial_number = self.object.serial_number
+
+        self.orig_related = None
+        self.orig_related_serial_number = None
+        if self.object.related is not None:
+            self.orig_related = self.object.related
+            self.orig_related_serial_number = self.object.related.serial_number
+
         return super().form_valid(form)
 
     def get_initial(self):
@@ -176,18 +214,101 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        entry = "%s - #%s" % (self.object.account.name, self.orig_serial_number)
-        no = "%s - #%s" % (self.object.account.name, self.object.serial_number)
+        entry = "%s #%s" % (self.object.account.name, self.orig_serial_number)
+        no = "%s #%s" % (self.object.account.name, self.object.serial_number)
 
-        if self.orig_serial_number == self.object.serial_number:
-            return _('The entry "%(entry)s" was successfully updated.') % {
-                "entry": entry
-            }
+        if (
+            self.orig_related is not None
+            and self.object.related is not None
+            and self.object.related != self.orig_related
+        ):
+            self.orig_related.related = None
+            self.orig_related.save()
+            self.object.related.related = self.object
+            self.object.related.save()
+
+            entry2 = "%s #%s" % (
+                self.object.related.account.name,
+                self.object.related.serial_number,
+            )
+
+            if self.orig_serial_number == self.object.serial_number:
+                return _(
+                    'The entry "%(entry)s" was successfully updated and has a new '
+                    + 'relation to "%(entry2)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+            else:
+                return _(
+                    'The entry "%(entry)s" was successfully updated and moved to '
+                    + '"%(no)s and has a new relation to "%(entry2)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+        elif (
+            self.orig_related is not None
+            and self.object.related is not None
+            and self.object.related == self.orig_related
+        ):
+            entry2 = "%s #%s" % (
+                self.object.related.account.name,
+                self.object.related.serial_number,
+            )
+
+            if self.orig_serial_number == self.object.serial_number:
+                return _(
+                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
+                    + "updated."
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+            else:
+                return _(
+                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
+                    + 'updated and moved to "%(no)s.'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+        elif self.object.related is None and self.orig_related is not None:
+            self.orig_related.related = None
+            self.orig_related.save()
+
+            entry2 = "%s #%s" % (
+                self.orig_related.account.name,
+                self.orig_related.serial_number,
+            )
+
+            if self.orig_serial_number == self.object.serial_number:
+                return _(
+                    'The entry "%(entry)s" was successfully updated and is no longer '
+                    + 'relation to "%(entry2)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+            else:
+                return _(
+                    'The entry "%(entry)s" was successfully updated and moved to '
+                    + '"%(no)s and is no longer related to "%(entry2)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
         else:
-            return _(
-                'The entry "%(entry)s" was successfully updated and'
-                + ' moved to "%(no)s".'
-            ) % {"entry": entry, "no": no}
+            if self.orig_serial_number == self.object.serial_number:
+                return _('The entry "%(entry)s" was successfully updated.') % {
+                    "entry": entry
+                }
+            else:
+                return _(
+                    'The entry "%(entry)s" was successfully updated and'
+                    + ' moved to "%(no)s".'
+                ) % {"entry": entry, "no": no}
 
 
 class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
@@ -209,9 +330,18 @@ class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        return _('The entry "%(entry)s" was successfully deleted.') % {
-            "entry": f"{self.object.account.name} - #{self.object.serial_number}"
-        }
+        if self.object.related is not None:
+            return _(
+                'The entries "%(entry1)s" and "%(entry2)s" were successfully deleted.'
+            ) % {
+                "entry1": f"{self.object.account.name} #{self.object.serial_number}",
+                "entry2": f"{self.object.related.account.name} "
+                + f"#{self.object.related.serial_number}",
+            }
+        else:
+            return _('The entry "%(entry)s" was successfully deleted.') % {
+                "entry": f"{self.object.account.name} #{self.object.serial_number}"
+            }
 
 
 class DuplicateView(CreateView):

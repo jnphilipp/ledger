@@ -6,7 +6,12 @@
 {% block extrahead %}
 <script type="text/javascript">
     $(function() {
-        $(".iframeFormModal").click(function(e) {
+        $(".iframeDetail").click(function(e) {
+            parent.$("#iframeFormModalLabel").html(this.title);
+            parent.$("#iframeFormModalIframe").attr("src", this.href);
+            parent.$(".modal-footer").hide();
+        });
+        $(".iframeDelete").click(function(e) {
             parent.$("#iframeFormModalLabel").html(this.title);
             parent.$("#iframeFormModalIframe").attr("src", this.href);
             parent.$("#iframeFormModalSubmit").addClass("btn-danger");
@@ -55,6 +60,10 @@
             <td>{{ entry.category.name }}</td>
         </tr>
         <tr>
+            <th scope="row">{% trans "Related entry" %}</th>
+            <td>{% if entry.related %}<a class="iframeDetail" href="{% url "entry_detail" entry.related.pk %}" title="{{ entry.related }}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal">{{ entry.related }}</a>{% endif %}</td>
+        </tr>
+        <tr>
             <th scope="row">{% trans "Text" %}</th>
             <td>{{ entry.text|default_if_none:"" }}</td>
         </tr>
@@ -73,7 +82,7 @@
                     {% for file in entry.files.all %}
                         <li>
                             <a href="{% url "file_detail" file.slug %}">{{ file.name }}</a>
-                            <a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-trash"></span></a>
+                            <a class="iframeDelete" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-trash"></span></a>
                         </li>
                     {% endfor %}
                 </ul>

@@ -170,12 +170,22 @@ class Entry(models.Model):
         Tag, blank=True, related_name="entries", verbose_name=_("Tags")
     )
     files = GenericRelation("File", related_query_name="files", verbose_name=_("Files"))
+    related = models.OneToOneField(
+        "Entry",
+        models.SET_NULL,
+        blank=True,
+        null=True,
+        default=None,
+        verbose_name=_("Related entry"),
+    )
 
     def delete(self, *args, **kwargs):
         """Delete."""
         for file in self.files.all():
             file.delete()
         super().delete(*args, **kwargs)
+        if self.related is not None:
+            self.related.delete()
 
     def save(self, *args, **kwargs):
         """Save."""
