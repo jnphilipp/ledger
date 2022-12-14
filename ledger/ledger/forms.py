@@ -146,6 +146,7 @@ class EntryForm(forms.ModelForm):
             if instance.pk is None:
                 try:
                     instance.save()
+                    self.save_m2m()
                     account = Account.objects.get(category__pk=instance.category.pk)
                     entry, created = Entry.objects.update_or_create(
                         date=instance.date,
@@ -165,6 +166,7 @@ class EntryForm(forms.ModelForm):
                     return instance
             else:
                 instance.save()
+                self.save_m2m()
                 if instance.related is not None:
                     instance.related.amount = -1.0 * instance.amount
                     try:
