@@ -196,13 +196,13 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     def form_valid(self, form):
         """Form valid."""
-        self.orig_serial_number = self.object.serial_number
+        self.orig_sno = self.object.serial_number
 
-        self.orig_related = None
-        self.orig_related_serial_number = None
+        self.orig_rel = None
+        self.orig_rel_sno = None
         if self.object.related is not None:
-            self.orig_related = self.object.related
-            self.orig_related_serial_number = self.object.related.serial_number
+            self.orig_rel = self.object.related
+            self.orig_rel_sno = self.object.related.serial_number
 
         return super().form_valid(form)
 
@@ -214,25 +214,134 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        entry = "%s #%s" % (self.object.account.name, self.orig_serial_number)
-        no = "%s #%s" % (self.object.account.name, self.object.serial_number)
+        entry = f"{self.object.account.name} #{self.orig_sno}"
+        no = f"{self.object.account.name} #{self.object.serial_number}"
 
-        if (
-            self.orig_related is not None
-            and self.object.related is not None
-            and self.object.related != self.orig_related
-        ):
-            self.orig_related.related = None
-            self.orig_related.save()
+        if self.object.related is not None and self.object.related != self.orig_rel:
+            self.orig_rel.related = None
+            self.orig_rel.save()
             self.object.related.related = self.object
             self.object.related.save()
 
-            entry2 = "%s #%s" % (
-                self.object.related.account.name,
-                self.object.related.serial_number,
+            entry2 = (
+                f"{self.object.related.account.name} "
+                + f"#{self.object.related.serial_number}"
             )
 
-            if self.orig_serial_number == self.object.serial_number:
+            orig_entry = f"{self.orig_rel.account.name} #{self.orig_rel_sno}"
+            orig_no = f"{self.orig_rel.account.name} #{self.orig_rel.serial_number}"
+
+            if (
+                self.orig_sno == self.object.serial_number
+                and self.orig_rel.serial_number == self.orig_rel_sno
+            ):
+                return _(
+                    'The entry "%(entry)s" was successfully updated and has a new '
+                    + 'relation to "%(entry2)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+            elif (
+                self.orig_sno == self.object.serial_number
+                and self.orig_rel.serial_number != self.orig_rel_sno
+            ):
+                return _(
+                    'The entry "%(entry)s" was successfully updated and has a new '
+                    + 'relation to "%(entry2)s". The original related entry '
+                    + '"%(orig_entry)s" was moved to "%(orig_no)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                    "orig_entry": orig_entry,
+                    "orig_no": orig_no,
+                }
+            elif (
+                self.orig_sno != self.object.serial_number
+                and self.orig_rel.serial_number == self.orig_rel_sno
+            ):
+                return _(
+                    'The entry "%(entry)s" was successfully updated and moved to '
+                    + '"%(no)s and has a new relation to "%(entry2)s".'
+                ) % {
+                    "entry": entry,
+                    "no": no,
+                    "entry2": entry2,
+                }
+            else:
+                return _(
+                    'The entry "%(entry)s" was successfully updated and moved to '
+                    + '"%(no)s and has a new relation to "%(entry2)s". The original '
+                    + 'related entry "%(orig_entry)s" was moved to "%(orig_no)s".'
+                ) % {
+                    "entry": entry,
+                    "no": no,
+                    "entry2": entry2,
+                    "orig_entry": orig_entry,
+                    "orig_no": orig_no,
+                }
+        elif self.object.related is not None and self.object.related == self.orig_rel:
+            entry2 = f"{self.object.related.account.name} #{self.orig_sno}"
+            no2 = (
+                f"{self.object.related.account.name} "
+                + f"#{self.object.related.serial_number}"
+            )
+
+            if (
+                self.orig_sno == self.object.serial_number
+                and self.orig_rel.serial_number == self.orig_rel_sno
+            ):
+                return _(
+                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
+                    + "updated."
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                }
+            elif (
+                self.orig_sno != self.object.serial_number
+                and self.orig_rel.serial_number == self.orig_rel_sno
+            ):
+                return _(
+                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
+                    + 'updated and the entry "%(entry)s" was moved to "%(no)s".'
+                ) % {
+                    "entry": entry,
+                    "no": no,
+                    "entry2": entry2,
+                }
+            elif (
+                self.orig_sno != self.object.serial_number
+                and self.orig_rel.serial_number != self.orig_rel_sno
+            ):
+                return _(
+                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
+                    + 'updated and moved to "%(no)s" and "%(no2)s".'
+                ) % {
+                    "entry": entry,
+                    "no": no,
+                    "entry2": entry2,
+                    "no2": no2,
+                }
+            elif (
+                self.orig_sno == self.object.serial_number
+                and self.orig_rel.serial_number != self.orig_rel_sno
+            ):
+                return _(
+                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
+                    + 'updated and the entry "%(entry2)s" was moved to "%(no2)s".'
+                ) % {
+                    "entry": entry,
+                    "entry2": entry2,
+                    "no2": no2,
+                }
+        elif self.object.related is not None and self.orig_rel is None:
+            entry2 = (
+                f"{self.object.related.account.name} "
+                + f"#{self.object.related.serial_number}"
+            )
+
+            if self.orig_sno == self.object.serial_number:
                 return _(
                     'The entry "%(entry)s" was successfully updated and has a new '
                     + 'relation to "%(entry2)s".'
@@ -243,72 +352,81 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
             else:
                 return _(
                     'The entry "%(entry)s" was successfully updated and moved to '
-                    + '"%(no)s and has a new relation to "%(entry2)s".'
+                    + '"%(no)s" and has a new relation to "%(entry2)s".'
                 ) % {
                     "entry": entry,
+                    "no": no,
                     "entry2": entry2,
                 }
-        elif (
-            self.orig_related is not None
-            and self.object.related is not None
-            and self.object.related == self.orig_related
-        ):
-            entry2 = "%s #%s" % (
-                self.object.related.account.name,
-                self.object.related.serial_number,
-            )
+        elif self.object.related is None and self.orig_rel is not None:
+            self.orig_rel.related = None
+            self.orig_rel.save()
 
-            if self.orig_serial_number == self.object.serial_number:
-                return _(
-                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
-                    + "updated."
-                ) % {
-                    "entry": entry,
-                    "entry2": entry2,
-                }
-            else:
-                return _(
-                    'The entries "%(entry)s" and "%(entry2)s" were successfully '
-                    + 'updated and moved to "%(no)s.'
-                ) % {
-                    "entry": entry,
-                    "entry2": entry2,
-                }
-        elif self.object.related is None and self.orig_related is not None:
-            self.orig_related.related = None
-            self.orig_related.save()
+            orig_entry = f"{self.orig_rel.account.name} #{self.orig_rel_sno}"
+            orig_no = f"{self.orig_rel.account.name} #{self.orig_rel.serial_number}"
 
-            entry2 = "%s #%s" % (
-                self.orig_related.account.name,
-                self.orig_related.serial_number,
-            )
-
-            if self.orig_serial_number == self.object.serial_number:
+            if (
+                self.orig_sno == self.object.serial_number
+                and self.orig_rel.serial_number == self.orig_rel_sno
+            ):
                 return _(
                     'The entry "%(entry)s" was successfully updated and is no longer '
-                    + 'relation to "%(entry2)s".'
+                    + 'related to "%(orig_entry)s".'
                 ) % {
                     "entry": entry,
                     "entry2": entry2,
                 }
-            else:
+            elif (
+                self.orig_sno == self.object.serial_number
+                and self.orig_rel.serial_number != self.orig_rel_sno
+            ):
+                return _(
+                    'The entry "%(entry)s" was successfully updated and is no longer '
+                    + 'related to "%(orig_entry)s", which was moved to "%(orig_no)s".'
+                ) % {
+                    "entry": entry,
+                    "orig_entry": orig_entry,
+                    "orig_no": orig_no,
+                }
+            elif (
+                self.orig_sno != self.object.serial_number
+                and self.orig_rel.serial_number == self.orig_rel_sno
+            ):
                 return _(
                     'The entry "%(entry)s" was successfully updated and moved to '
-                    + '"%(no)s and is no longer related to "%(entry2)s".'
+                    + '"%(no)s" and is no longer related to "%(orig_entry)s".'
                 ) % {
                     "entry": entry,
-                    "entry2": entry2,
+                    "no": no,
+                    "orig_entry": orig_entry,
+                }
+            elif (
+                self.orig_sno != self.object.serial_number
+                and self.orig_rel.serial_number != self.orig_rel_sno
+            ):
+                return _(
+                    'The entry "%(entry)s" was successfully updated and moved to '
+                    + '"%(no)s" and is no longer related to "%(orig_entry)s", which '
+                    + 'was moved to "%(orig_no)s".'
+                ) % {
+                    "entry": entry,
+                    "no": no,
+                    "orig_entry": orig_entry,
+                    "orig_no": orig_no,
                 }
         else:
-            if self.orig_serial_number == self.object.serial_number:
+            if self.orig_sno == self.object.serial_number:
                 return _('The entry "%(entry)s" was successfully updated.') % {
                     "entry": entry
                 }
             else:
                 return _(
-                    'The entry "%(entry)s" was successfully updated and'
-                    + ' moved to "%(no)s".'
-                ) % {"entry": entry, "no": no}
+                    'The entry "%(entry)s" was successfully updated and moved to '
+                    + '"%(no)s".'
+                ) % {
+                    "entry": entry,
+                    "no": no,
+                }
 
 
 class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):

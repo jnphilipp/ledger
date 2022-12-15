@@ -148,8 +148,8 @@
                     {% for entry in entries %}
                         <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
                             <th scope="row">
-                                <a href="{% url "entry_list" %}?accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.account.name }}</a>
-                                <a href="{% url "entry_detail" entry.pk %}" title="{{ entry.account.name}} #{{ entry.serial_number }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
+                                <a href="{% url "entry_list" %}?accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}" title="{{ entry.account.name }}">{{ entry.account.name }}</a>
+                                <a href="{% url "entry_detail" entry.pk %}" title="{{ entry }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
                             </th>
                             <td>{{ entry.date|date:"D, d.m.Y" }}</td>
                             <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% trans "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% trans "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|unitcolorfy:entry.account.unit }}</td>
