@@ -102,6 +102,14 @@ class EntryForm(forms.ModelForm):
         """Clean."""
         cleaned_data = super().clean()
 
+        if "related" in self.errors:
+            try:
+                entry = Entry.objects.get(pk=self.data["related"])
+                cleaned_data["related"] = entry
+                del self.errors["related"]
+            except Entry.DoesNotExist:
+                pass
+
         if "intervall" in cleaned_data and "end_date" in cleaned_data:
             intervall = cleaned_data["intervall"]
             end_date = cleaned_data["end_date"]
