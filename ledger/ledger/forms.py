@@ -195,7 +195,7 @@ class EntryForm(forms.ModelForm):
             for cur_date in daterange(date, end_date, "months", int(intervall)):
                 entry, created = Entry.objects.update_or_create(
                     date=cur_date,
-                    amount=-1.0 * instance.amount,
+                    amount=instance.amount,
                     fees=instance.fees,
                     category=instance.category,
                     text=instance.text,
@@ -208,7 +208,7 @@ class EntryForm(forms.ModelForm):
                 if account is not None:
                     entry, created = Entry.objects.update_or_create(
                         date=cur_date,
-                        amount=instance.amount,
+                        amount=-1.0 * instance.amount,
                         fees=instance.fees,
                         category=instance.account.category,
                         text=instance.text,
