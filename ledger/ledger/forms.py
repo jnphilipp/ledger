@@ -176,7 +176,8 @@ class EntryForm(forms.ModelForm):
                 instance.save()
                 self.save_m2m()
                 if instance.related is not None:
-                    instance.related.amount = -1.0 * instance.amount
+                    if instance.account.unit == instance.related.account.unit:
+                        instance.related.amount = -1.0 * instance.amount
                     try:
                         instance.related.account = Account.objects.get(
                             category__pk=instance.category.pk
