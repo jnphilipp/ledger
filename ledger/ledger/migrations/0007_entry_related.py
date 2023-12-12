@@ -26,7 +26,7 @@ def infer_related_entries(apps, schema_editor):
             continue
         others = (
             Entry.objects.filter(account__category=entry.category)
-            .filter(amount=entry.amount * -1.)
+            .filter(amount=entry.amount * -1.0)
             .filter(date=entry.date)
             .filter(category=entry.account.category)
             .filter(related__isnull=True)
@@ -61,7 +61,7 @@ def infer_related_entries(apps, schema_editor):
             continue
         others = (
             Entry.objects.filter(account__category=entry.category)
-            .filter(amount=entry.amount * -1.)
+            .filter(amount=entry.amount * -1.0)
             .filter(date__range=[entry.date - d3, entry.date + d3])
             .filter(category=entry.account.category)
             .filter(related__isnull=True)
@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="ledger.entry",
-                verbose_name="Transfer entry",
+                verbose_name="Related entry",
             ),
         ),
         migrations.RunPython(infer_related_entries),
