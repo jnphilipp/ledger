@@ -24,33 +24,33 @@ from units.templatetags.units import unitformat, unitcolorfy
 
 class TemplatetagsTestCase(TestCase):
     def test_unitformat(self):
-        self.assertEquals("0.123%", unitformat(0.1234, "%.3f%%"))
-        self.assertEquals("-0.123%", unitformat(-0.1234, "%.3f%%"))
-        self.assertEquals("3.57 €", unitformat(3.567, "%.2f €"))
-        self.assertEquals("3.57 €", unitformat(3.567, Unit.objects.get(code="EUR")))
-        self.assertEquals("-3.57 €", unitformat(-3.567, Unit.objects.get(code="EUR")))
-        self.assertEquals(
+        self.assertEqual("0.123%", unitformat(0.1234, "%.3f%%"))
+        self.assertEqual("-0.123%", unitformat(-0.1234, "%.3f%%"))
+        self.assertEqual("3.57 €", unitformat(3.567, "%.2f €"))
+        self.assertEqual("3.57 €", unitformat(3.567, Unit.objects.get(code="EUR")))
+        self.assertEqual("-3.57 €", unitformat(-3.567, Unit.objects.get(code="EUR")))
+        self.assertEqual(
             "3.56734400 ₿", unitformat(3.567344, Unit.objects.get(code="BTC"))
         )
 
     def test_unitcolorfy(self):
-        self.assertEquals(
+        self.assertEqual(
             '<span class="green">0.123%</span>', unitcolorfy(0.1234, "%.3f%%")
         )
-        self.assertEquals(
+        self.assertEqual(
             '<span class="red">-0.123%</span>', unitcolorfy(-0.1234, "%.3f%%")
         )
-        self.assertEquals(
+        self.assertEqual(
             '<span class="green">3.57 €</span>', unitcolorfy(3.567, "%.2f €")
         )
-        self.assertEquals(
+        self.assertEqual(
             '<span class="red">-5.74 €</span>', unitcolorfy(-5.741, "%.2f €")
         )
-        self.assertEquals(
+        self.assertEqual(
             '<span class="green">3.57 €</span>',
             unitcolorfy(3.567, Unit.objects.get(code="EUR")),
         )
-        self.assertEquals(
+        self.assertEqual(
             '<span class="red">-5.74 €</span>',
             unitcolorfy(-5.741, Unit.objects.get(code="EUR")),
         )

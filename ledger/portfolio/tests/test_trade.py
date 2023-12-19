@@ -40,7 +40,7 @@ class TradeModelTestCase(TestCase):
             type=Trade.TradeType.BUY,
             position=self.etf_position,
         )
-        self.assertEquals(trade.total(), 1004.0)
+        self.assertEqual(trade.total(), 1004.0)
 
         trade = Trade.objects.create(
             date="2022-02-15",
@@ -51,7 +51,7 @@ class TradeModelTestCase(TestCase):
             type=Trade.TradeType.PRE_EMPTION_RIGHT,
             position=self.etf_position,
         )
-        self.assertEquals(trade.total(), 300.0)
+        self.assertEqual(trade.total(), 300.0)
 
         trade = Trade.objects.create(
             date="2022-02-01",
@@ -62,7 +62,7 @@ class TradeModelTestCase(TestCase):
             type=Trade.TradeType.DIVIDEND,
             position=self.etf_position,
         )
-        self.assertEquals(trade.total(), 96.0)
+        self.assertEqual(trade.total(), 96.0)
 
         trade = Trade.objects.create(
             date="2022-02-01",
@@ -75,7 +75,7 @@ class TradeModelTestCase(TestCase):
             type=Trade.TradeType.DIVIDEND,
             position=self.etf_position,
         )
-        self.assertEquals(trade.total(), 80.45)
+        self.assertEqual(trade.total(), 80.45)
 
         trade = Trade.objects.create(
             date="2022-02-20",
@@ -86,4 +86,4 @@ class TradeModelTestCase(TestCase):
             type=Trade.TradeType.SELL,
             position=self.etf_position,
         )
-        self.assertEquals(trade.total(), 1494.0)
+        self.assertEqual(trade.total(), 1494.0)
