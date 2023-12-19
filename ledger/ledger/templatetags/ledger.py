@@ -35,7 +35,7 @@ register = Library()
 @register.filter
 def get_item(d, key):
     """Get item template filter."""
-    if type(d) == dict:
+    if isinstance(d, dict):
         return d[key] if key in d else None
     else:
         return d[key] if key < len(d) else None
