@@ -60,7 +60,7 @@ def unitcolorfy(
             return unitformat(amount, unit)
         else:
             return mark_safe(
-                f'<span class="{"green" if amount >=0. else "red"}"'
+                f'<span class="{"green" if amount >= 0. else "red"}"'
                 + f">{floatformat(amount, precision)} {symbol}</span>"
             )
     elif isinstance(unit, str):
