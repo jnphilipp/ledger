@@ -28,15 +28,15 @@ print-%:
 
 
 venv:
-	$(Q)/usr/bin/python3 -m venv .venv
+	$(Q)/usr/bin/python3 -m venv venv
 	$(Q)( \
-		source .venv/bin/activate; \
+		source venv/bin/activate; \
 		pip install -r requirements.txt; \
 	)
-	$(Q)ln -fs ${PYTHON_LIB_DIR}/gi .venv/lib/python3*/site-packages/
-	$(Q)ln -fs ${PYTHON_LIB_DIR}/dbus .venv/lib/python3*/site-packages/
+	$(Q)ln -fs ${PYTHON_LIB_DIR}/gi venv/lib/python3*/site-packages/
+	$(Q)ln -fs ${PYTHON_LIB_DIR}/dbus venv/lib/python3*/site-packages/
 	$(Q)for f in ${PYTHON_LIB_DIR}/_dbus*; do \
-		ln -fs $$f .venv/lib/python3*/site-packages/; \
+		ln -fs $$f venv/lib/python3*/site-packages/; \
 	done
 
 
