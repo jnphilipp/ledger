@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2024 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -692,22 +690,23 @@ class DetailView(generic.DetailView):
                     else _("Budget"),
                     unit,
                 )
-            series[0][unit]["data"].append(
-                {
-                    "name": str(name),
-                    "v": footer[footer_idx + 1][unit] / 12,
-                    "y": abs(footer[footer_idx + 1][unit]) / 12,
-                    "drilldown": key,
-                }
-            )
-            series[1][unit]["data"].append(
-                {
-                    "name": str(name),
-                    "v": footer[footer_idx + 1][unit],
-                    "y": abs(footer[footer_idx + 1][unit]),
-                    "drilldown": key,
-                }
-            )
+            if unit in footer[footer_idx + 1]:
+                series[0][unit]["data"].append(
+                    {
+                        "name": str(name),
+                        "v": footer[footer_idx + 1][unit] / 12,
+                        "y": abs(footer[footer_idx + 1][unit]) / 12,
+                        "drilldown": key,
+                    }
+                )
+                series[1][unit]["data"].append(
+                    {
+                        "name": str(name),
+                        "v": footer[footer_idx + 1][unit],
+                        "y": abs(footer[footer_idx + 1][unit]),
+                        "drilldown": key,
+                    }
+                )
 
         return part
 
