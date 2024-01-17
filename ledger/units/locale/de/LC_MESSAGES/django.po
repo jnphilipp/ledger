@@ -1,15 +1,15 @@
 # German translation.
-# Copyright (C) 2014-2022 J. Nathanael Philipp
+# Copyright (C) 2014-2024 J. Nathanael Philipp
 # This file is distributed under the same license as the ledger package.
-# J. Nathanael Philipp <nathanael@philipp.land>, 2014-2022.
+# J. Nathanael Philipp <nathanael@philipp.land>, 2014-2024.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-06 11:20+0200\n"
-"PO-Revision-Date: 2022-05-06 11:20+0200\n"
+"POT-Creation-Date: 2024-01-17 14:55+0100\n"
+"PO-Revision-Date: 2024-01-17 14:55+0100\n"
 "Last-Translator: J. Nathanael Philipp <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -18,34 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:30 models.py:47
+#: units/apps.py:30 units/models.py:47
 msgid "Unit"
 msgstr "Einheit"
 
-#: apps.py:31 models.py:48
+#: units/apps.py:31 units/models.py:48
 msgid "Units"
 msgstr "Einheiten"
 
-#: models.py:29
+#: units/models.py:29
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: models.py:30
+#: units/models.py:30
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: models.py:32
+#: units/models.py:32
 msgid "Name"
 msgstr "Name"
 
-#: models.py:34
+#: units/models.py:34
 msgid "Currency code (ISO 4217)"
 msgstr "Währungscode (ISO 4217)"
 
-#: models.py:36
+#: units/models.py:36
 msgid "Symbol"
 msgstr "Symbol"
 
-#: models.py:37
+#: units/models.py:37
 msgid "Precision"
 msgstr "Genauigkeit"
