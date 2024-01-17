@@ -11,6 +11,7 @@ ledger/static
 
 # Other
 build
+changelog.latest.md
 db.sqlite3
 db.sqlite3-journal
 
