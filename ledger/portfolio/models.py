@@ -241,6 +241,7 @@ class Position(models.Model):
                 for trade in self.trades.filter(
                     Q(type=Trade.TradeType.BUY)
                     | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                    | Q(type=Trade.TradeType.CORPORATE_ACTION)
                 )
             ]
         )
@@ -260,9 +261,9 @@ class Position(models.Model):
         elif date is None and self.closed:
             return 0
 
-        bought = trades.filter(type=Trade.TradeType.BUY).aggregate(
-            units=Coalesce(Sum("units"), 0.0)
-        )["units"]
+        bought = trades.filter(
+            Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.CORPORATE_ACTION)
+        ).aggregate(units=Coalesce(Sum("units"), 0.0))["units"]
         sold = trades.filter(type=Trade.TradeType.SELL).aggregate(
             units=Coalesce(Sum("units"), 0.0)
         )["units"]
@@ -302,6 +303,7 @@ class Position(models.Model):
                 for trade in self.trades.filter(
                     Q(type=Trade.TradeType.BUY)
                     | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                    | Q(type=Trade.TradeType.CORPORATE_ACTION)
                 )
             ]
         )
@@ -336,7 +338,7 @@ class Position(models.Model):
 
     def annual_return(self) -> Optional[float]:
         """Annual return."""
-        if self.trades.filter(type=Trade.TradeType.BUY).count() == 0:
+        if self.trades.count() == 0:
             return None
 
         costs = sum(
@@ -345,12 +347,13 @@ class Position(models.Model):
                 for trade in self.trades.filter(
                     Q(type=Trade.TradeType.BUY)
                     | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                    | Q(type=Trade.TradeType.CORPORATE_ACTION)
                 )
             ]
         )
-        bought = self.trades.filter(type=Trade.TradeType.BUY).aggregate(
-            units=Coalesce(Sum("units"), 0.0)
-        )["units"]
+        bought = self.trades.filter(
+            Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.CORPORATE_ACTION)
+        ).aggregate(units=Coalesce(Sum("units"), 0.0))["units"]
         gain = sum(
             [trade.total() for trade in self.trades.filter(type=Trade.TradeType.SELL)]
         )
@@ -366,11 +369,13 @@ class Position(models.Model):
             gain += self.content_object.closings.first().price * (bought - sold)
 
         time = self.duration()
-        return (pow(gain / costs, 365 / time) - 1) * 100 if time > 0 else 0.0
+        return (
+            (pow(gain / costs, 365 / time) - 1) * 100 if time > 0 and costs > 0 else 0.0
+        )
 
     def pyield(self) -> Optional[float]:
         """Yield."""
-        if self.trades.filter(type=Trade.TradeType.BUY).count() == 0:
+        if self.trades.count() == 0:
             return None
 
         if self.content_object.closings.count() == 0:
@@ -390,6 +395,7 @@ class Position(models.Model):
                 for trade in self.trades.filter(
                     Q(type=Trade.TradeType.BUY)
                     | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                    | Q(type=Trade.TradeType.CORPORATE_ACTION)
                 )
             ]
         )
@@ -446,6 +452,7 @@ class Trade(models.Model):
         SELL = 1, _("Sell")
         DIVIDEND = 2, _("Dividend")
         PRE_EMPTION_RIGHT = 3, _("Pre-emption right")
+        CORPORATE_ACTION = 4, _("Corporate action")
 
         __empty__ = _("(Unknown)")
 
@@ -478,6 +485,7 @@ class Trade(models.Model):
         if (
             self.type == Trade.TradeType.BUY
             or self.type == Trade.TradeType.PRE_EMPTION_RIGHT
+            or self.type == Trade.TradeType.CORPORATE_ACTION
         ):
             total = self.unit_price * self.units + self.extra
         elif self.type == Trade.TradeType.SELL or self.type == Trade.TradeType.DIVIDEND:
@@ -488,6 +496,7 @@ class Trade(models.Model):
             if (
                 self.type == Trade.TradeType.BUY
                 or self.type == Trade.TradeType.PRE_EMPTION_RIGHT
+                or self.type == Trade.TradeType.CORPORATE_ACTION
             ):
                 total += self.extra2
             elif (
