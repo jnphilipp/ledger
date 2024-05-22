@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 14:55+0100\n"
-"PO-Revision-Date: 2024-01-17 14:55+0100\n"
+"POT-Creation-Date: 2024-05-22 09:57+0200\n"
+"PO-Revision-Date: 2024-05-22 09:57+0200\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -18,25 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ledger/apps.py:30 ledger/templates/ledger/base.html:31
-#: ledger/templates/ledger/base.html:49
+#: ledger/apps.py:30 ledger/models.py:120 ledger/models.py:143
+#: ledger/templates/ledger/base.html:40 ledger/templates/ledger/base.html:57
 msgid "Ledger"
 msgstr "Haushaltsbuch"
 
-#: ledger/apps.py:31
+#: ledger/apps.py:31 ledger/models.py:121
 msgid "Ledgers"
 msgstr "Haushaltsbücher"
 
-#: ledger/fields.py:29 ledger/models.py:168
+#: ledger/fields.py:29 ledger/models.py:200
 #: ledger/templates/ledger/entry_detail.html:67
 msgid "Text"
 msgstr "Text"
 
-#: ledger/forms.py:58
+#: ledger/forms.py:76
 msgid "Never"
 msgstr "Niemals"
 
-#: ledger/forms.py:59 ledger/templates/ledger/budget_detail.html:72
+#: ledger/forms.py:77 ledger/templates/ledger/budget_detail.html:72
 #: ledger/templates/ledger/budget_detail.html:94
 #: ledger/templates/ledger/budget_detail.html:128
 #: ledger/templates/ledger/budget_detail.html:159
@@ -46,19 +46,19 @@ msgstr "Niemals"
 msgid "Monthly"
 msgstr "Monatlich"
 
-#: ledger/forms.py:60
+#: ledger/forms.py:78
 msgid "Bimonthly"
 msgstr "Zweimonatlich"
 
-#: ledger/forms.py:61
+#: ledger/forms.py:79
 msgid "Quarterly"
 msgstr "Vierteljährlich"
 
-#: ledger/forms.py:62
+#: ledger/forms.py:80
 msgid "Half-yearly"
 msgstr "Halbjährlich"
 
-#: ledger/forms.py:63 ledger/templates/ledger/budget_detail.html:73
+#: ledger/forms.py:81 ledger/templates/ledger/budget_detail.html:73
 #: ledger/templates/ledger/budget_detail.html:95
 #: ledger/templates/ledger/budget_detail.html:138
 #: ledger/templates/ledger/budget_detail.html:160
@@ -68,36 +68,37 @@ msgstr "Halbjährlich"
 msgid "Yearly"
 msgstr "Jährlich"
 
-#: ledger/forms.py:67
+#: ledger/forms.py:85
 msgid "Repeat intervall"
 msgstr "Wiederholungsintervall"
 
-#: ledger/forms.py:70 ledger/forms.py:249
+#: ledger/forms.py:88 ledger/forms.py:267
 msgid "End date"
 msgstr "Enddatum"
 
-#: ledger/forms.py:97
+#: ledger/forms.py:115
 msgid "Today"
 msgstr "Heute"
 
-#: ledger/forms.py:97
+#: ledger/forms.py:115
 msgid "Date format: yyyy-mm-dd"
 msgstr "Datumsformat: yyyy-mm-dd"
 
-#: ledger/forms.py:119
+#: ledger/forms.py:137
 msgid "Repeat intervall and end date need both be set."
 msgstr "Wiederholungsintervall und Enddatum müssen beide gesetzt sein."
 
-#: ledger/forms.py:240
+#: ledger/forms.py:258
 msgid "Start date"
 msgstr "Startdatum"
 
-#: ledger/forms.py:316
+#: ledger/forms.py:334
 msgid "A file with this name already exists."
 msgstr "Eine Datei mit diesem Name existiert bereits."
 
-#: ledger/models.py:61 ledger/models.py:81 ledger/models.py:102
-#: ledger/models.py:249 ledger/templates/ledger/account_detail.html:34
+#: ledger/models.py:59 ledger/models.py:79 ledger/models.py:100
+#: ledger/models.py:131 ledger/models.py:281
+#: ledger/templates/ledger/account_detail.html:48
 #: ledger/templates/ledger/budget_detail.html:158
 #: ledger/templates/ledger/budget_detail.html:161
 #: ledger/templates/ledger/budget_detail.html:164
@@ -105,24 +106,24 @@ msgstr "Eine Datei mit diesem Name existiert bereits."
 msgid "Name"
 msgstr "Name"
 
-#: ledger/models.py:71 ledger/models.py:107 ledger/models.py:166
-#: ledger/templates/ledger/account_detail.html:38
+#: ledger/models.py:69 ledger/models.py:136 ledger/models.py:198
+#: ledger/templates/ledger/account_detail.html:52
 #: ledger/templates/ledger/entry_detail.html:59
 #: ledger/templates/ledger/entry_list.html:140
 msgid "Category"
 msgstr "Kategorie"
 
-#: ledger/models.py:72 ledger/templates/ledger/entry_list.html:38
+#: ledger/models.py:70 ledger/templates/ledger/entry_list.html:38
 #: ledger/templates/ledger/statistics.html:47 ledger/views/statistics.py:61
 #: ledger/views/statistics.py:67
 msgid "Categories"
 msgstr "Kategorien"
 
-#: ledger/models.py:91
+#: ledger/models.py:89
 msgid "Tag"
 msgstr "Tag"
 
-#: ledger/models.py:92 ledger/models.py:170
+#: ledger/models.py:90 ledger/models.py:202
 #: ledger/templates/ledger/entry_detail.html:71
 #: ledger/templates/ledger/entry_list.html:54
 #: ledger/templates/ledger/statistics.html:47 ledger/views/statistics.py:59
@@ -130,37 +131,38 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: ledger/models.py:98 ledger/models.py:155 ledger/models.py:245
-#: ledger/models.py:307 ledger/templates/ledger/account_detail.html:26
+#: ledger/models.py:96 ledger/models.py:127 ledger/models.py:187
+#: ledger/models.py:277 ledger/models.py:339
+#: ledger/templates/ledger/account_detail.html:40
 #: ledger/templates/ledger/entry_detail.html:31
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: ledger/models.py:99 ledger/models.py:156 ledger/models.py:246
-#: ledger/models.py:308
+#: ledger/models.py:97 ledger/models.py:128 ledger/models.py:188
+#: ledger/models.py:278 ledger/models.py:340
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: ledger/models.py:101 ledger/models.py:248
+#: ledger/models.py:99 ledger/models.py:130 ledger/models.py:280
 msgid "Slug"
 msgstr "Slug"
 
-#: ledger/models.py:104 ledger/templates/ledger/account_detail.html:42
+#: ledger/models.py:133 ledger/templates/ledger/account_detail.html:56
 msgid "Unit"
 msgstr "Einheit"
 
-#: ledger/models.py:109
+#: ledger/models.py:138
 msgid "Closed"
 msgstr "Geschlossen"
 
-#: ledger/models.py:111 ledger/models.py:172 ledger/models.py:301
-#: ledger/templates/ledger/account_detail.html:50
+#: ledger/models.py:140 ledger/models.py:204 ledger/models.py:333
+#: ledger/templates/ledger/account_detail.html:70
 #: ledger/templates/ledger/entry_detail.html:79
 #: ledger/templates/ledger/entry_list.html:142
 msgid "Files"
 msgstr "Dateien"
 
-#: ledger/models.py:148 ledger/models.py:159
+#: ledger/models.py:180 ledger/models.py:191
 #: ledger/templates/ledger/account_confirm_delete.html:11
 #: ledger/templates/ledger/account_list.html:49
 #: ledger/templates/ledger/entry_detail.html:39
@@ -168,46 +170,46 @@ msgstr "Dateien"
 msgid "Account"
 msgstr "Konto"
 
-#: ledger/models.py:149 ledger/templates/ledger/base.html:56
+#: ledger/models.py:181 ledger/templates/ledger/base.html:61
 #: ledger/templates/ledger/entry_list.html:22
 msgid "Accounts"
 msgstr "Konten"
 
-#: ledger/models.py:161 ledger/templates/ledger/entry_detail.html:43
+#: ledger/models.py:193 ledger/templates/ledger/entry_detail.html:43
 msgid "Serial number"
 msgstr "Laufende Nummer"
 
-#: ledger/models.py:162 ledger/templates/ledger/entry_detail.html:47
+#: ledger/models.py:194 ledger/templates/ledger/entry_detail.html:47
 #: ledger/templates/ledger/entry_list.html:138
 msgid "Date"
 msgstr "Datum"
 
-#: ledger/models.py:163 ledger/templates/ledger/entry_detail.html:51
+#: ledger/models.py:195 ledger/templates/ledger/entry_detail.html:51
 #: ledger/templates/ledger/entry_list.html:139
 #: ledger/templates/ledger/entry_list.html:155
 msgid "Amount"
 msgstr "Betrag"
 
-#: ledger/models.py:164 ledger/templates/ledger/entry_detail.html:55
+#: ledger/models.py:196 ledger/templates/ledger/entry_detail.html:55
 #: ledger/templates/ledger/entry_list.html:155
 msgid "Fees"
 msgstr "Gebühren"
 
-#: ledger/models.py:179 ledger/templates/ledger/entry_detail.html:63
+#: ledger/models.py:211 ledger/templates/ledger/entry_detail.html:63
 msgid "Related entry"
 msgstr "Verwandter Eintrag"
 
-#: ledger/models.py:238 ledger/templates/ledger/account_confirm_delete.html:15
+#: ledger/models.py:270 ledger/templates/ledger/account_confirm_delete.html:15
 #: ledger/templates/ledger/entry_confirm_delete.html:11
 #: ledger/templates/ledger/entry_confirm_delete.html:22
 msgid "Entry"
 msgstr "Eintrag"
 
-#: ledger/models.py:239 ledger/templates/ledger/entry_list.html:191
+#: ledger/models.py:271 ledger/templates/ledger/entry_list.html:191
 msgid "Entries"
 msgstr "Einträge"
 
-#: ledger/models.py:251 ledger/models.py:300
+#: ledger/models.py:283 ledger/models.py:332
 #: ledger/templates/ledger/account_confirm_delete.html:22
 #: ledger/templates/ledger/entry_confirm_delete.html:15
 #: ledger/templates/ledger/entry_confirm_delete.html:26
@@ -215,28 +217,28 @@ msgstr "Einträge"
 msgid "File"
 msgstr "Datei"
 
-#: ledger/models.py:314
+#: ledger/models.py:346
 msgid "Income tags"
 msgstr "Einkommentags"
 
-#: ledger/models.py:320
+#: ledger/models.py:352
 msgid "Consumption tags"
 msgstr "Konsumtags"
 
-#: ledger/models.py:326
+#: ledger/models.py:358
 msgid "Insurance tags"
 msgstr "Versicherungstags"
 
-#: ledger/models.py:332
+#: ledger/models.py:364
 msgid "Savings tags"
 msgstr "Sparentags"
 
-#: ledger/models.py:346 ledger/templates/ledger/base.html:63
+#: ledger/models.py:378 ledger/templates/ledger/base.html:65
 #: ledger/views/budget.py:684 ledger/views/budget.py:690
 msgid "Budget"
 msgstr "Budget"
 
-#: ledger/models.py:347
+#: ledger/models.py:379
 msgid "Budgets"
 msgstr "Budget"
 
@@ -285,21 +287,25 @@ msgstr ""
 msgid "Yes, I'm sure"
 msgstr "Ja, ich bin sicher"
 
-#: ledger/templates/ledger/account_detail.html:22
+#: ledger/templates/ledger/account_detail.html:25
 msgid "This account is currently closed."
 msgstr "Dieses Konto ist derzeit geschlossen."
 
-#: ledger/templates/ledger/account_detail.html:30
+#: ledger/templates/ledger/account_detail.html:33
+msgid "Details"
+msgstr "Details"
+
+#: ledger/templates/ledger/account_detail.html:44
 #: ledger/templates/ledger/entry_detail.html:35
 msgid "Last updated at"
 msgstr "Zuletzt aktualisiert am"
 
-#: ledger/templates/ledger/account_detail.html:46
+#: ledger/templates/ledger/account_detail.html:60
 #: ledger/templates/ledger/account_list.html:53
 msgid "Number of entries"
 msgstr "Anzahl an Einträgen"
 
-#: ledger/templates/ledger/account_detail.html:56
+#: ledger/templates/ledger/account_detail.html:79
 #: ledger/templates/ledger/entry_detail.html:85
 #, python-format
 msgid "Delete file %(name)s"
@@ -316,6 +322,7 @@ msgstr "Einheit auswählen"
 
 #: ledger/templates/ledger/account_list.html:12
 #: ledger/templates/ledger/account_list.html:18
+#: ledger/templates/ledger/base.html:34
 #: ledger/templates/ledger/budget_detail.html:13
 #: ledger/templates/ledger/entry_list.html:90
 #: ledger/templates/ledger/entry_list.html:96
@@ -327,6 +334,7 @@ msgid "Add account"
 msgstr "Konten hinzufügen"
 
 #: ledger/templates/ledger/account_list.html:39
+#: ledger/templates/ledger/base.html:86
 #: ledger/templates/ledger/entry_list.html:128
 msgid "Add"
 msgstr "Hinzufügen"
@@ -403,15 +411,19 @@ msgstr "Datei hinzufügen"
 msgid "There are no accounts available."
 msgstr "Es sind keine Konten vorhanden."
 
-#: ledger/templates/ledger/base.html:70 ledger/views/budget.py:151
+#: ledger/templates/ledger/base.html:69 ledger/views/budget.py:151
 #: ledger/views/budget.py:159 ledger/views/budget.py:170
 #: ledger/views/budget.py:171 ledger/views/budget.py:411
 msgid "Portfolio"
 msgstr "Portfolio"
 
-#: ledger/templates/ledger/base.html:77
+#: ledger/templates/ledger/base.html:73
 msgid "Statistics"
 msgstr "Statistik"
+
+#: ledger/templates/ledger/base.html:86
+msgid "Add ledger"
+msgstr "Haushaltsbuch hinzufügen"
 
 #: ledger/templates/ledger/budget_detail.html:26 ledger/views/statistics.py:210
 #: ledger/views/statistics.py:334
@@ -544,32 +556,32 @@ msgstr ""
 "Sind Sie sicher, dass Sie diese Datei löschen möchten? Alle folgenden "
 "Objekte und ihre zugehörigen Elemente werden gelöscht:"
 
-#: ledger/validators.py:29
+#: ledger/validators.py:27
 #, python-format
 msgid "\"%(value)s\" is not a valid account name."
 msgstr "\"%(value)s\" ist kein gültiger Kontoname."
 
-#: ledger/views/account.py:82
+#: ledger/views/account.py:104
 #, python-format
 msgid "The account \"%(name)s\" was successfully created."
 msgstr "Das Konto \"%(name)s\" wurde erfolgreich erstellt."
 
-#: ledger/views/account.py:98
+#: ledger/views/account.py:120
 #, python-format
 msgid "The account \"%(name)s\" was successfully updated."
 msgstr "Das Konto \"%(name)s\" wurde erfolgreich aktualisiert."
 
-#: ledger/views/account.py:119
+#: ledger/views/account.py:141
 #, python-format
 msgid "The account \"%(name)s\" was successfully deleted."
 msgstr "Das Konto \"%(name)s\" wurde erfolgreich gelöscht."
 
-#: ledger/views/account.py:141
+#: ledger/views/account.py:163
 #, python-format
 msgid "The account %(name)s was successfully closed."
 msgstr "Das Konto \"%(name)s\" wurde erfolgreich geschlossen."
 
-#: ledger/views/account.py:143
+#: ledger/views/account.py:165
 #, python-format
 msgid "The account %(name)s was successfully re-open."
 msgstr "Das Konto \"%(name)s\" wurde erfolgreich wieder eröffnet."
@@ -601,17 +613,17 @@ msgstr "Budget %(unit)s"
 msgid "Your budget was successfully updated."
 msgstr "Ihr Budget wurde erfolgreich aktualisiert."
 
-#: ledger/views/entry.py:177
+#: ledger/views/entry.py:186
 #, python-format
 msgid "The entries %(entries)s were successfully created."
 msgstr "Die Einträge \"%(entries)s\" wurden erfolgreich erstellt."
 
-#: ledger/views/entry.py:181
+#: ledger/views/entry.py:190
 #, python-format
 msgid "The entry \"%(entry)s\" was successfully created."
 msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich erstellt."
 
-#: ledger/views/entry.py:239 ledger/views/entry.py:346
+#: ledger/views/entry.py:248 ledger/views/entry.py:355
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and has a new relation to "
@@ -620,7 +632,7 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und hat eine neue "
 "Beziehung zu \"%(entry2)s\" verschoben."
 
-#: ledger/views/entry.py:250
+#: ledger/views/entry.py:259
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and has a new relation to "
@@ -631,7 +643,7 @@ msgstr ""
 "Beziehung zu Eintrag \"%(entry2)s\". Der originale verwandte Eintrag "
 "\"%(orig_entry)s\" wurde nach \"%(orig_no)s\" verschoben."
 
-#: ledger/views/entry.py:264
+#: ledger/views/entry.py:273
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s and "
@@ -640,7 +652,7 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und nach \"%(no)s\" "
 "verschoben und hat eine neue Beziehung zu \"%(entry2)s\"."
 
-#: ledger/views/entry.py:273
+#: ledger/views/entry.py:282
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s and "
@@ -652,14 +664,14 @@ msgstr ""
 "originale verwandte Eintrag \"%(orig_entry)s\" wurde nach \"%(orig_no)s\" "
 "verschoben."
 
-#: ledger/views/entry.py:295
+#: ledger/views/entry.py:304
 #, python-format
 msgid "The entries \"%(entry)s\" and \"%(entry2)s\" were successfully updated."
 msgstr ""
 "Die Einträge \"#%(entry)s\" und \"#%(entry2)s\" wurden erfolgreich "
 "aktualisiert."
 
-#: ledger/views/entry.py:306
+#: ledger/views/entry.py:315
 #, python-format
 msgid ""
 "The entries \"%(entry)s\" and \"%(entry2)s\" were successfully updated and "
@@ -668,7 +680,7 @@ msgstr ""
 "Die Einträge \"%(entry)s\" und \"%(entry2)s\" wurden erfolgreich "
 "aktualisiert und der Eintrag \"%(entry)s\" wurde nach \"%(no)s\" verschoben."
 
-#: ledger/views/entry.py:318
+#: ledger/views/entry.py:327
 #, python-format
 msgid ""
 "The entries \"%(entry)s\" and \"%(entry2)s\" were successfully updated and "
@@ -677,7 +689,7 @@ msgstr ""
 "Die Einträge \"%(entry)s\" und \"%(entry2)s\" wurden erfolgreich "
 "aktualisiert und nach \"%(no)s\" und \"%(no2)s\" verschoben."
 
-#: ledger/views/entry.py:331
+#: ledger/views/entry.py:340
 #, python-format
 msgid ""
 "The entries \"%(entry)s\" and \"%(entry2)s\" were successfully updated and "
@@ -687,7 +699,7 @@ msgstr ""
 "aktualisiert und der Eintrag \"%(entry2)s\" wurde nach \"%(no2)s\" "
 "verschoben."
 
-#: ledger/views/entry.py:354
+#: ledger/views/entry.py:363
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s\" and "
@@ -696,7 +708,7 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und nach \"%(no)s\" "
 "verschoben und hat eine neue Beziehung zu \"%(entry2)s\"."
 
-#: ledger/views/entry.py:373
+#: ledger/views/entry.py:382
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and is no longer related to "
@@ -705,7 +717,7 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und ist nicht mehr "
 "mit dem Eintrag \"%(orig_entry)s\" verwandt."
 
-#: ledger/views/entry.py:384
+#: ledger/views/entry.py:393
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and is no longer related to "
@@ -715,7 +727,7 @@ msgstr ""
 "mit dem Eintrag \"%(orig_entry)s\" verwandt, welcher nach \"%(orig_no)s\" "
 "verschoben wurde."
 
-#: ledger/views/entry.py:396
+#: ledger/views/entry.py:405
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s\" and "
@@ -724,7 +736,7 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und nach \"%(no)s\" "
 "verschoben und ist nicht mehr mit dem Eintrag \"%(orig_entry)s\" verwandt."
 
-#: ledger/views/entry.py:408
+#: ledger/views/entry.py:417
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s\" and "
@@ -735,12 +747,12 @@ msgstr ""
 "verschoben und ist nicht mehr mit dem Eintrag \"%(orig_entry)s\" verwandt, "
 "welcher nach \"%(orig_no)s\" verschoben wurde."
 
-#: ledger/views/entry.py:419
+#: ledger/views/entry.py:428
 #, python-format
 msgid "The entry \"%(entry)s\" was successfully updated."
 msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert."
 
-#: ledger/views/entry.py:424
+#: ledger/views/entry.py:433
 #, python-format
 msgid ""
 "The entry \"%(entry)s\" was successfully updated and moved to \"%(no)s\"."
@@ -748,19 +760,19 @@ msgstr ""
 "Der Eintrag \"%(entry)s\" wurde erfolgreich aktualisiert und nach \"%(no)s\" "
 "verschoben."
 
-#: ledger/views/entry.py:453
+#: ledger/views/entry.py:462
 #, python-format
 msgid ""
 "The entries \"%(entry1)s\" and \"%(entry2)s\" were successfully deleted."
 msgstr ""
 "Die Einträge \"%(entry1)s\" und \"#%(entry2)s\" wurden erfolgreich gelöscht."
 
-#: ledger/views/entry.py:460
+#: ledger/views/entry.py:469
 #, python-format
 msgid "The entry \"%(entry)s\" was successfully deleted."
 msgstr "Der Eintrag \"%(entry)s\" wurde erfolgreich gelöscht."
 
-#: ledger/views/entry.py:518
+#: ledger/views/entry.py:527
 #, python-format
 msgid "The entries \"#%(e1)s\" and \"#%(e2)s\" were successfully swaped."
 msgstr ""
@@ -783,6 +795,21 @@ msgstr "Die Datei \"%(name)s\" wurde erfolgreich aktualisiert."
 #, python-format
 msgid "The file \"%(name)s\" was successfully deleted."
 msgstr "Die Datei \"%(name)s\" wurde erfolgreich gelöscht."
+
+#: ledger/views/ledger.py:52
+#, python-format
+msgid "The ledger \"%(name)s\" was successfully created."
+msgstr "Das Haushaltsbuch \"%(name)s\" wurde erfolgreich erstellt."
+
+#: ledger/views/ledger.py:75
+#, python-format
+msgid "The ledger \"%(name)s\" was successfully updated."
+msgstr "Das Haushaltsbuch \"%(name)s\" wurde erfolgreich aktualisiert."
+
+#: ledger/views/ledger.py:96
+#, python-format
+msgid "The ledger \"%(name)s\" was successfully deleted."
+msgstr "Das Haushaltsbuch \"%(name)s\" wurde erfolgreich gelöscht."
 
 #: ledger/views/statistics.py:65
 msgid "Select a chart"

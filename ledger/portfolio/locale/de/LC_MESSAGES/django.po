@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 14:55+0100\n"
-"PO-Revision-Date: 2024-01-17 14:55+0100\n"
+"POT-Creation-Date: 2024-05-22 09:57+0200\n"
+"PO-Revision-Date: 2024-05-22 09:57+0200\n"
 "Last-Translator: J. Nathanael Philipp <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -40,7 +40,7 @@ msgstr "Aktie"
 
 #: portfolio/forms.py:188
 msgid "All positions"
-msgstr "Alle Portfolios"
+msgstr "Alle Positionen"
 
 #: portfolio/forms.py:189
 msgid "Opened positions"
@@ -70,7 +70,7 @@ msgstr "Datumsformat: yyyy-mm-dd"
 msgid "Name of the date column"
 msgstr "Name der Datumsspalte"
 
-#: portfolio/forms.py:264 portfolio/models.py:131 portfolio/models.py:456
+#: portfolio/forms.py:264 portfolio/models.py:131 portfolio/models.py:463
 #: portfolio/templates/portfolio/position_detail.html:115
 msgid "Date"
 msgstr "Datum"
@@ -113,13 +113,13 @@ msgid "Data"
 msgstr "Daten"
 
 #: portfolio/models.py:37 portfolio/models.py:128 portfolio/models.py:175
-#: portfolio/models.py:452
+#: portfolio/models.py:459
 #: portfolio/templates/portfolio/position_detail.html:41
 msgid "Created at"
 msgstr "Erstellt am"
 
 #: portfolio/models.py:38 portfolio/models.py:129 portfolio/models.py:176
-#: portfolio/models.py:453
+#: portfolio/models.py:460
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
@@ -199,75 +199,79 @@ msgstr "Geschlossen"
 msgid "Trailing-stop ATR factor"
 msgstr "Trailing-stop ATR-Faktor"
 
-#: portfolio/models.py:192 portfolio/models.py:469
+#: portfolio/models.py:192 portfolio/models.py:476
 msgid "Unit"
 msgstr "Einheit"
 
-#: portfolio/models.py:435 portfolio/models.py:472
+#: portfolio/models.py:441 portfolio/models.py:479
 #: portfolio/templates/portfolio/position_confirm_delete.html:11
 #: portfolio/templates/portfolio/position_list.html:70
 #: portfolio/templates/portfolio/position_list.html:88
 msgid "Position"
 msgstr "Position"
 
-#: portfolio/models.py:436
+#: portfolio/models.py:442
 msgid "Positions"
 msgstr "Positionen"
 
-#: portfolio/models.py:445
+#: portfolio/models.py:451
 msgid "Buy"
 msgstr "Kauf"
 
-#: portfolio/models.py:446
+#: portfolio/models.py:452
 msgid "Sell"
 msgstr "Verkauf"
 
-#: portfolio/models.py:447
+#: portfolio/models.py:453
 #: portfolio/templates/portfolio/position_detail.html:84
 #: portfolio/templates/portfolio/position_list.html:96
 msgid "Dividend"
 msgstr "Dividende"
 
-#: portfolio/models.py:448
+#: portfolio/models.py:454
 msgid "Pre-emption right"
 msgstr "Bezugsrecht"
 
-#: portfolio/models.py:450
+#: portfolio/models.py:455
+msgid "Corporate action"
+msgstr "Kapitalmaßnahme"
+
+#: portfolio/models.py:457
 msgid "(Unknown)"
 msgstr "(Unbekannt)"
 
-#: portfolio/models.py:455
+#: portfolio/models.py:462
 msgid "Serial number"
 msgstr "Laufende Nummer"
 
-#: portfolio/models.py:457
+#: portfolio/models.py:464
 #: portfolio/templates/portfolio/position_detail.html:70
 #: portfolio/templates/portfolio/position_detail.html:117
 #: portfolio/templates/portfolio/position_list.html:93
 msgid "Units"
 msgstr "Einheiten"
 
-#: portfolio/models.py:458
+#: portfolio/models.py:465
 msgid "Unit price"
 msgstr "Stückpreis"
 
-#: portfolio/models.py:459 portfolio/models.py:460
+#: portfolio/models.py:466 portfolio/models.py:467
 #: portfolio/templates/portfolio/position_detail.html:119
 #: portfolio/templates/portfolio/position_detail.html:121
 msgid "Extra costs"
 msgstr "Zusätzliche Kosten"
 
-#: portfolio/models.py:462
+#: portfolio/models.py:469
 #: portfolio/templates/portfolio/position_detail.html:120
 msgid "Exchange rate"
 msgstr "Wechselkurs"
 
-#: portfolio/models.py:464
+#: portfolio/models.py:471
 #: portfolio/templates/portfolio/position_detail.html:116
 msgid "Type"
 msgstr "Type"
 
-#: portfolio/models.py:550
+#: portfolio/models.py:559
 #: portfolio/templates/portfolio/position_confirm_delete.html:15
 #: portfolio/templates/portfolio/position_detail.html:114
 #: portfolio/templates/portfolio/position_list.html:66
@@ -275,7 +279,7 @@ msgstr "Type"
 msgid "Trade"
 msgstr "Handel"
 
-#: portfolio/models.py:551
+#: portfolio/models.py:560
 msgid "Trades"
 msgstr "Händel"
 
