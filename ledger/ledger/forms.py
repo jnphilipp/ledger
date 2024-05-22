@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2024 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -79,9 +77,11 @@ class EntryForm(forms.ModelForm):
             self.fields["related"].queryset = Entry.objects.filter(
                 pk__in=[
                     kwargs["instance"].pk,
-                    kwargs["instance"].related.pk
-                    if kwargs["instance"].related is not None
-                    else None,
+                    (
+                        kwargs["instance"].related.pk
+                        if kwargs["instance"].related is not None
+                        else None
+                    ),
                 ]
             )
         else:

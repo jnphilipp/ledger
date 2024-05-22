@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2024 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -39,7 +38,6 @@ def default_units(apps, schema_editor):
     Unit.objects.create(code="AWG", precision=2, name="Aruban florin", symbol="ƒ")
     Unit.objects.create(code="AZN", precision=2, name="Azerbaijani manat", symbol="₼")
     Unit.objects.create(
-
         code="BAM",
         precision=2,
         name="Bosnia and Herzegovina convertible mark",
