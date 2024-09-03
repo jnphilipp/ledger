@@ -32,13 +32,13 @@
             if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
                 $("#iframeFormModalSubmit").addClass("btn-primary");
                 $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
+                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
                 $(".modal-footer").show();
             }
             else if ( e.relatedTarget.href.includes("/delete/") ) {
                 $("#iframeFormModalSubmit").addClass("btn-danger");
                 $("#iframeFormModalSubmit").removeClass("btn-primary");
-                $("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
                 $(".modal-footer").show();
             }
             else if ( e.relatedTarget.href.includes("/position/") ) {
@@ -55,12 +55,12 @@
     <div class="col-9 text-center">
         {% if positions and form %}
             {% trans "Filter" as filter_trans %}
-            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fas fa-search" submit_title=filter_trans %}
+            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fa-solid fa-search" submit_title=filter_trans %}
         {% endif %}
     </div>
    <div class="col text-end">
         <div class="dropdown">
-            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fas fa-plus"></span> {% trans "Add" %}</a>
+            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fa-solid fa-plus"></span> {% trans "Add" %}</a>
             <div class="dropdown-menu" aria-labelledby="add_dropdown">
                 {% if positions %}
                     <a class="dropdown-item" href="{% url "portfolio:trade_create" %}" title="{% trans "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% trans "Trade" %}</a>
