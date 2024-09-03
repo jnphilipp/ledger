@@ -679,15 +679,19 @@ class DetailView(generic.DetailView):
         for unit in units:
             if unit not in series[0] and unit not in series[1]:
                 series[0][unit] = self.series(
-                    _("Budget %(unit)s" % {"unit": unit.name})
-                    if len(units) > 1
-                    else _("Budget"),
+                    (
+                        _("Budget %(unit)s" % {"unit": unit.name})
+                        if len(units) > 1
+                        else _("Budget")
+                    ),
                     unit,
                 )
                 series[1][unit] = self.series(
-                    _("Budget %(unit)s" % {"unit": unit.name})
-                    if len(units) > 1
-                    else _("Budget"),
+                    (
+                        _("Budget %(unit)s" % {"unit": unit.name})
+                        if len(units) > 1
+                        else _("Budget")
+                    ),
                     unit,
                 )
             if unit in footer[footer_idx + 1]:
