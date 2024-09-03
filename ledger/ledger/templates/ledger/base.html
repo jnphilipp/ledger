@@ -2,7 +2,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -35,7 +35,7 @@
         {% block extrahead %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar sticky-top navbar-expand-lg bg-white">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{% url "entry_list" %}">
                     <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>
@@ -45,41 +45,26 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             {% url "entry_list" as entry_list_url %}
-                            <a class="nav-link{% if request.path == entry_list_url %} active{% endif %}" href="{{ entry_list_url }}">
-                                {% trans "Ledger" %}
-                                {% if request.path == entry_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
+                            <a class="nav-link{% if request.path == entry_list_url %} active{% endif %}" {% if request.path == entry_list_url %}aria-current="page"{% endif %} href="{{ entry_list_url }}" title="{% translate "Ledger" %}">{% translate "Ledger" %}</a>
                         </li>
                         <li class="nav-item">
                             {% url "account_list" as account_list_url %}
-                            <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" href="{{ account_list_url }}">
-                                {% trans "Accounts" %}
-                                {% if request.path|startswith:account_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
+                            <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" {% if request.path|startswith:account_list_url %}aria-current="page"{% endif %} href="{{ account_list_url }}" title="{% translate "Accounts" %}">{% translate "Accounts" %}</a>
                         </li>
                         <li class="nav-item">
                             {% url "budget_detail" as budget_detail_url %}
-                            <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" href="{{ budget_detail_url }}">
-                                {% trans "Budget" %}
-                                {% if request.path|startswith:budget_detail_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
+                            <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" {% if request.path|startswith:budget_detail_url %}aria-current="page"{% endif %} href="{{ budget_detail_url }}" title="{% translate "Budget" %}">{% translate "Budget" %}</a>
                         </li>
                         <li class="nav-item">
                             {% url "portfolio:position_list" as position_list_url %}
-                            <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" href="{{ position_list_url }}">
-                                {% trans "Portfolio" %}
-                                {% if request.path|startswith:position_list_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
+                            <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" {% if request.path|startswith:position_list_url %}aria-current="page"{% endif %} href="{{ position_list_url }}" title="{% translate "Portfolio" %}">{% translate "Portfolio" %}</a>
                         </li>
                         <li class="nav-item">
                             {% url "statistics_detail" as statistics_detail_url %}
-                            <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" href="{{ statistics_detail_url }}">
-                                {% trans "Statistics" %}
-                                {% if request.path|startswith:statistics_detail_url %}<span class="visually-hidden">(current)</span>{% endif %}
-                            </a>
+                            <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" {% if request.path|startswith:statistics_detail_url %}aria-current="page"{% endif %} href="{{ statistics_detail_url }}" title="{% translate "Statistics" %}">{% translate "Statistics" %}</a>
                         </li>
                     </ul>
                 </div>
@@ -97,10 +82,6 @@
                 </div>
             </div>
         </div>
-        {% if request.path|startswith:position_list_url %}
-            {% iframe_form_modal iframe_min_height="700px" %}
-        {% else %}
-            {% iframe_form_modal iframe_min_height="500px" %}
-        {% endif %}
+        {% iframe_form_modal iframe_min_height="100px" %}
     </body>
 </html>
