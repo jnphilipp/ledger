@@ -55,10 +55,10 @@
                         <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                     {% for account in accounts %}
                         <tr>
-                            <th scope="row"><a href="{% url "account_detail" account.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{{ account.name }}">{{ account.name }}{% if account.closed %} [{% translate "closed" %}]{% endif %}</a></th>
+                            <th scope="row"><a href="{% url "account_detail" account.slug %}" title="{{ account.name }}">{{ account.name }}{% if account.closed %} [{% translate "closed" %}]{% endif %}</a></th>
                             <td class="text-end">{{ account|balance }}</td>
                             <td class="text-end">{{ account|outstanding }}</td>
                             <td class="text-end">{{ account.files.count }}</td>

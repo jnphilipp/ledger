@@ -10,6 +10,7 @@
             placeholder: "{% trans "Select a currency" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
+            width: "100%",
             ajax: {
                 url: "{% url "units:unit_autocomplete" %}",
                 dataType: "json",

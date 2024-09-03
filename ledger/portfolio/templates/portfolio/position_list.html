@@ -119,45 +119,37 @@
                 </thead>
                 <tbody class="table-group-divider">
                     {% for position in positions %}
-                        <tr>
-                            <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% blocktranslate with name=position.slug %}Position {{ name }}{% endblocktranslate %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
-                            <td class="text-center">
-                                {% if position.closed %}
-                                    {% trans "yes" %}
-                                {% else %}
-                                    {% trans "no" %}
-                                {% endif %}
-                            </td>
-                            <td data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{{ position.content_object|as_title }}">
-                                <a href="{% url "portfolio:position_list" %}?tradeables={{ position.content_type.model.lower }}:{{ position.content_object.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ position.content_object.name }}</a>
-                            </td>
-                            <td class="text-end">{{ position.trades.count }}</td>
-                            <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitformat:position.unit }}{% endif %}</td>
-                            <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units }}{% endif %}</td>
-                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.preturn|unitformat:position.unit }}{% endif %}</td>
-                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.win_loss|unitcolorfy:position.unit }}{% endif %}</td>
-                            <td class="text-end">{% if position.trades.count > 0 %}{{ position.dividend|unitformat:position.unit }}{% endif %}</td>
-                            <td class="text-end">{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
-                            <td class="text-end">{{ position.start_date|date:"d.m.Y" }}</td>
-                            <td class="text-end">{% if position.closed %}{{ position.end_date|date:"d.m.Y" }}{% endif %}</td>
-                            <td class="text-end">{{ position|duration }}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{position.pk}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></a>
-                                    <div class="dropdown-menu" aria-labelledby="options-{position.pk}">
-                                        <div class="dropdown-item text-muted">
-                                            {{ position }}
-                                        </div>
-                                        <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-edit"></span> {% trans "Edit" %}</a>
-                                        {% if not position.closed %}
-                                            <a class="dropdown-item" href="{% url "portfolio:position_close" position.slug %}" title="{% blocktranslate with position=position %}Close position {{ position }}{% endblocktranslate %}"><span class="fas fa-clone"></span> {% trans "Close" %}</a>
-                                        {% endif %}
-                                        <a class="dropdown-item" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fas fa-trash"></span> {% trans "Delete" %}</a>
-                                    </div>
+                    <tr>
+                        <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
+                        <td class="text-center">{% if position.closed %}{% translate "yes" %}{% else %}{% trans "no" %}{% endif %}</td>
+                        <td data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{{ position.content_object|as_title }}">
+                            <a href="{% url "portfolio:position_list" %}?tradeables={{ position.content_type.model.lower }}:{{ position.content_object.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ position.content_object.name }}</a>
+                        </td>
+                        <td class="text-end">{{ position.trades.count }}</td>
+                        <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitformat:position.unit }}{% endif %}</td>
+                        <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units }}{% endif %}</td>
+                        <td class="text-end">{% if position.trades.count > 0 %}{{ position.preturn|unitformat:position.unit }}{% endif %}</td>
+                        <td class="text-end">{% if position.trades.count > 0 %}{{ position.win_loss|unitcolorfy:position.unit }}{% endif %}</td>
+                        <td class="text-end">{% if position.trades.count > 0 %}{{ position.dividend|unitformat:position.unit }}{% endif %}</td>
+                        <td class="text-end">{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
+                        <td class="text-end">{{ position.start_date|date:"d.m.Y" }}</td>
+                        <td class="text-end">{% if position.closed %}{{ position.end_date|date:"d.m.Y" }}{% endif %}</td>
+                        <td class="text-end">{{ position|duration }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{position.pk}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span class="fa-solid fa-ellipsis-h"></span></a>
+                                <div class="dropdown-menu" aria-labelledby="options-{position.pk}">
+                                    <div class="dropdown-item text-muted">{{ position }}</div>
+                                    <div><hr class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% trans "Edit" %}</a>
+                                    {% if not position.closed %}
+                                    <a class="dropdown-item" href="{% url "portfolio:position_close" position.slug %}" title="{% blocktranslate with position=position %}Close position {{ position }}{% endblocktranslate %}"><span class="fa-solid fa-clone"></span> {% trans "Close" %}</a>
+                                    {% endif %}
+                                    <a class="dropdown-item" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% trans "Delete" %}</a>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>

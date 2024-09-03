@@ -1,4 +1,4 @@
-{% extends "ledger/popup.html" %}
+{% extends "ledger/base.html" %}
 {% load bootstrap i18n l10n ledger portfolio static units %}
 {% get_current_language as LANGUAGE_CODE %}
 
@@ -10,21 +10,21 @@
 <script src="{% static "js/position.js" %}"></script>
 <script type="text/javascript">
     $(function() {
-        $(".iframeFormModal").click(function(e) {
-            parent.$("#iframeFormModalLabel").html(this.title);
-            parent.$("#iframeFormModalIframe").attr("src", this.href);
-
-            if ( this.href.includes("/edit/") ) {
-                parent.$("#iframeFormModalSubmit").addClass("btn-primary");
-                parent.$("#iframeFormModalSubmit").removeClass("btn-danger");
-                parent.$("#iframeFormModalSubmit").html("<span class=\"fas fa-save\"></span> {% trans "Save" %}");
-                parent.$(".modal-footer").show();
+        $('#iframeFormModal').on('show.bs.modal', function (e) {
+            if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-primary");
+                $("#iframeFormModalSubmit").removeClass("btn-danger");
+                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
+                $(".modal-footer").show();
             }
-            else if (  this.href.includes("/delete/") ) {
-                parent.$("#iframeFormModalSubmit").addClass("btn-danger");
-                parent.$("#iframeFormModalSubmit").removeClass("btn-primary");
-                parent.$("#iframeFormModalSubmit").html("<span class=\"fas fa-trash\"></span> {% trans "Yes, I'm sure" %}");
-                parent.$(".modal-footer").show();
+            else if ( e.relatedTarget.href.includes("/delete/") ) {
+                $("#iframeFormModalSubmit").addClass("btn-danger");
+                $("#iframeFormModalSubmit").removeClass("btn-primary");
+                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+                $(".modal-footer").show();
+            }
+            else if ( e.relatedTarget.href.includes("/position/") ) {
+                $(".modal-footer").hide();
             }
         });
     });
@@ -33,72 +33,89 @@
 
 
 {% block content %}
-{% if position.closed %}<div class="alert alert-danger" role="alert">{% translate "This position is currently closed." %}</div>{% endif %}
-<div class="table-responsive">
-    <table class="table table-hover table-borderless">
-        <tbody>
-            <tr>
-                <th scope="row">{% translate "Created at" %}</th>
-                <td>{{ position.created_at|date:"r" }}</td>
-            </tr>
-            <tr>
-                <th scope="row">{% translate "Last updated at" %}</th>
-                <td>{{ position.updated_at|date:"r" }}</td>
-            </tr>
-            <tr>
-                <th scope="row">{% translate "Name" %}</th>
-                <td>{{ position.slug }}</td>
-            </tr>
-            <tr>
-                <th scope="row">{% translate "Tradeable" %}</th>
-                <td>{{ position.content_object.name }}</td>
-            </tr>
-            <tr>
-                <th scope="row">{% translate "Trailing-stop ATR factor" %}</th>
-                <td>{{ position.trailing_stop_atr_factor }}</td>
-            </tr>
-            <tr>
-                <th scope="row">{% translate "Number of trades" %}</th>
-                <td>{{ position.trades.count }}</td>
-            </tr>
-            {% if not position.closed and position.trades.count > 0 %}
-                <tr>
-                    <th scope="row">{% trans "Invested" %}</th>
-                    <td>{{ position.invested|unitformat:position.content_object.currency }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">{% trans "Units" %}</th>
-                    <td>{{ position.units }}</td>
-                </tr>
-            {% endif %}
-            {% if position.trades.count > 0 %}
-                <tr>
-                    <th scope="row">{% trans "Return" %}</th>
-                    <td>{{ position.preturn|unitcolorfy:position.content_object.currency }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">{% trans "Win/Loss" %}</th>
-                    <td>{{ position.win_loss|unitcolorfy:position.content_object.currency }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">{% trans "Dividend" %}</th>
-                    <td>{{ position.dividend|unitcolorfy:position.content_object.currency }}</td>
-                </tr>
-                <tr>
-                    <th scope="col">{% trans "Annual return" %}</th>
-                    <td>{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
-                </tr>
-                <tr>
-                    <th scope="col">{% trans "Yield" %}</th>
-                    <td>{{ position.pyield|unitcolorfy:"%.3f%%" }}</td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
+<div class="row">
+    <div class="col">
+        <h1>{{ position.content_object.name }} [{{ position.start_date|date:"Y-m-d" }}]</h1>
+        {% if position.closed %}<div class="alert alert-danger" role="alert">{% translate "This position is currently closed." %}</div>{% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover table-borderless">
+                <tbody>
+                    <tr>
+                        <th scope="row">{% translate "Created at" %}</th>
+                        <td>{{ position.created_at|date:"r" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% translate "Last updated at" %}</th>
+                        <td>{{ position.updated_at|date:"r" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% translate "Name" %}</th>
+                        <td>{{ position.slug }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% translate "Tradeable" %}</th>
+                        <td>{{ position.content_object.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% translate "Trailing-stop ATR factor" %}</th>
+                        <td>{{ position.trailing_stop_atr_factor }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% translate "Number of trades" %}</th>
+                        <td>{{ position.trades.count }}</td>
+                    </tr>
+                    {% if not position.closed and position.trades.count > 0 %}
+                    <tr>
+                        <th scope="row">{% trans "Invested" %}</th>
+                        <td>{{ position.invested|unitformat:position.content_object.currency }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Units" %}</th>
+                        <td>{{ position.units }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if position.trades.count > 0 %}
+                    <tr>
+                        <th scope="row">{% trans "Return" %}</th>
+                        <td>{{ position.preturn|unitcolorfy:position.content_object.currency }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Win/Loss" %}</th>
+                        <td>{{ position.win_loss|unitcolorfy:position.content_object.currency }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{% trans "Dividend" %}</th>
+                        <td>{{ position.dividend|unitcolorfy:position.content_object.currency }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">{% trans "Annual return" %}</th>
+                        <td>{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col">{% trans "Yield" %}</th>
+                        <td>{{ position.pyield|unitcolorfy:"%.3f%%" }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% if position.trades.all %}
 <div class="row">
-    <div>
+    <div class="col-8">
+        <h2>{% translate "Win/Loss-chart" %}</h2>
+    </div>
+    <div class="col-4 text-end">
+        <a class="btn btn-outline-primary" href="{% url "portfolio:closing_create" %}" title="{% translate "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add Closings" %}</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
         <div id="chart" style="min-width: 310px; height: 500px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
@@ -107,43 +124,56 @@
         </script>
     </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-sm">
-        <thead>
-            <tr>
-                <td class="text-center">{% trans "Trade" %}</td>
-                <th class="text-center" scope="col" colspan="2">{% trans "Date" %}</th>
-                <th class="text-center" scope="col">{% trans "Type" %}</th>
-                <th class="text-center" scope="col">{% trans "Units" %}</th>
-                <th class="text-center" scope="col">{% trans "Price per unit" %}</th>
-                <th class="text-center" scope="col">{% trans "Extra costs" %}</th>
-                <th class="text-center" scope="col">{% trans "Exchange rate" %}</th>
-                <th class="text-center" scope="col">{% trans "Extra costs" %}</th>
-                <th class="text-center" scope="col">{% trans "Total" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% now "Y-m-d" as today %}
-            {% for trade in position.trades.all %}
-                <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
-                    <th scope="row">{{ trade.serial_number }}</th>
-                    <td>{{ trade.date|date:"d.m.Y" }}</td>
-                    <td>{{ trade.date|date:"D" }}</td>
-                    <td>{{ trade.get_type_display }}</td>
-                    <td class="text-end">{{ trade.units|floatformat:5 }}</td>
-                    <td class="text-end">{{ trade.unit_price|unitformat:trade.unit }}</td>
-                    <td class="text-end">{{ trade.extra|unitformat:trade.unit }}</td>
-                    <td class="text-end">{{ trade.exchange_rate|default_if_none:"" }}</td>
-                    <td class="text-end">{{ trade.extra2|unitformat:position.unit }}</td>
-                    <td class="text-end">{{ trade.total|unitformat:position.unit }}</td>
-                    <td>
-                        <a class="iframeFormModal" href="{% url "portfolio:trade_edit" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Edit trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-edit"></span></a>
-                        <a class="iframeFormModal" href="{% url "portfolio:trade_delete" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Delete trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fas fa-trash"></span></a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="row">
+    <div class="col-8">
+        <h2>{% translate "Trades" %}</h2>
+    </div>
+    <div class="col-4 text-end">
+        <a class="btn btn-outline-primary" href="{% url "portfolio:trade_create" %}" title="{% translate "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add Trade" %}</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center">{% trans "Trade" %}</th>
+                        <th class="text-center" scope="col" colspan="2">{% trans "Date" %}</th>
+                        <th class="text-center" scope="col">{% trans "Type" %}</th>
+                        <th class="text-center" scope="col">{% trans "Units" %}</th>
+                        <th class="text-center" scope="col">{% trans "Price per unit" %}</th>
+                        <th class="text-center" scope="col">{% trans "Extra costs" %}</th>
+                        <th class="text-center" scope="col">{% trans "Exchange rate" %}</th>
+                        <th class="text-center" scope="col">{% trans "Extra costs" %}</th>
+                        <th class="text-center" scope="col">{% trans "Total" %}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% now "Y-m-d" as today %}
+                    {% for trade in position.trades.all %}
+                    <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
+                        <th scope="row">{{ trade.serial_number }}</th>
+                        <td>{{ trade.date|date:"d.m.Y" }}</td>
+                        <td>{{ trade.date|date:"D" }}</td>
+                        <td>{{ trade.get_type_display }}</td>
+                        <td class="text-end">{{ trade.units|floatformat:5 }}</td>
+                        <td class="text-end">{{ trade.unit_price|unitformat:trade.unit }}</td>
+                        <td class="text-end">{{ trade.extra|unitformat:trade.unit }}</td>
+                        <td class="text-end">{{ trade.exchange_rate|default_if_none:"" }}</td>
+                        <td class="text-end">{{ trade.extra2|unitformat:position.unit }}</td>
+                        <td class="text-end">{{ trade.total|unitformat:position.unit }}</td>
+                        <td>
+                            <a class="iframeFormModal" href="{% url "portfolio:trade_edit" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Edit trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span></a>
+                            <a class="iframeFormModal" href="{% url "portfolio:trade_delete" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Delete trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endif %}
 {% endblock %}
