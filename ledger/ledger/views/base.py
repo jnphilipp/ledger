@@ -16,10 +16,10 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 """Ledger Django app base views."""
 
-from django.views import generic
+from django.views.generic.base import TemplateView
 
 
-class AnotherSuccessView(generic.base.TemplateView):
+class AnotherSuccessView(TemplateView):
     """Another success view."""
 
     template_name = "ledger/another_success.html"

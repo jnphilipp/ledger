@@ -406,7 +406,7 @@ class Position(models.Model):
         if not self.closed:
             sum_sell += cur_price * self.units()
 
-        return (sum_sell * 100 / sum_buy) - 100
+        return (sum_sell * 100 / sum_buy) - 100 if sum_buy != 0 else 0.0
 
     def renumber_trades(self):
         """Renumber trades."""

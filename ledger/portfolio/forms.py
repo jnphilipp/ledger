@@ -78,7 +78,6 @@ class TradeableForm(forms.ModelForm):
 
     def save(self, commit=True):
         """Save."""
-        print(self.cleaned_data)
         if self.cleaned_data["type"] == 0:
             etf = ETF(
                 name=self.cleaned_data["name"],
