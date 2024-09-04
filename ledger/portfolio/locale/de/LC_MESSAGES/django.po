@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-03 15:25+0200\n"
-"PO-Revision-Date: 2024-09-03 15:25+0200\n"
+"POT-Creation-Date: 2024-09-04 11:19+0200\n"
+"PO-Revision-Date: 2024-09-04 11:19+0200\n"
 "Last-Translator: J. Nathanael Philipp <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -38,83 +38,83 @@ msgstr "Fond"
 msgid "Stock"
 msgstr "Aktie"
 
-#: portfolio/forms.py:187
+#: portfolio/forms.py:188
 msgid "All positions"
 msgstr "Alle Positionen"
 
-#: portfolio/forms.py:188
+#: portfolio/forms.py:189
 msgid "Opened positions"
 msgstr "Geöffnete Positionen"
 
-#: portfolio/forms.py:189
+#: portfolio/forms.py:190
 msgid "Closed positions"
 msgstr "Geschlossene Positionen"
 
-#: portfolio/forms.py:225
+#: portfolio/forms.py:226
 msgid "Applied before exchange rate."
 msgstr "Vor dem Wechselkurs angewendet."
 
-#: portfolio/forms.py:228
+#: portfolio/forms.py:229
 msgid "Applied after exchange rate."
 msgstr "Nach Wechselkurs angewendet."
 
-#: portfolio/forms.py:232
+#: portfolio/forms.py:233
 msgid "Today"
 msgstr "Heute"
 
-#: portfolio/forms.py:232
+#: portfolio/forms.py:233
 msgid "Date format: yyyy-mm-dd"
 msgstr "Datumsformat: yyyy-mm-dd"
 
-#: portfolio/forms.py:262
+#: portfolio/forms.py:263
 msgid "Name of the date column"
 msgstr "Name der Datumsspalte"
 
-#: portfolio/forms.py:263 portfolio/models.py:131 portfolio/models.py:463
-#: portfolio/templates/portfolio/position_detail.html:142
+#: portfolio/forms.py:264 portfolio/models.py:131 portfolio/models.py:463
+#: portfolio/templates/portfolio/position_detail.html:121
 msgid "Date"
 msgstr "Datum"
 
-#: portfolio/forms.py:267
+#: portfolio/forms.py:268
 msgid "Date format using the 1989 C standard codes."
 msgstr "Datumsformat mit den 1989 C Standardcodes."
 
-#: portfolio/forms.py:268
+#: portfolio/forms.py:269
 msgid "Date format"
 msgstr "Datumsformat"
 
-#: portfolio/forms.py:272
+#: portfolio/forms.py:273
 msgid "Name of the price column"
 msgstr "Name der Preisspalte"
 
-#: portfolio/forms.py:273 portfolio/models.py:132
+#: portfolio/forms.py:274 portfolio/models.py:132
 #: portfolio/views/position.py:153
 msgid "Price"
 msgstr "Preis"
 
-#: portfolio/forms.py:277
+#: portfolio/forms.py:278
 msgid "Name of the low column"
 msgstr "Name der Tiefspalte"
 
-#: portfolio/forms.py:278 portfolio/models.py:134
+#: portfolio/forms.py:279 portfolio/models.py:134
 msgid "Low"
 msgstr "Tief"
 
-#: portfolio/forms.py:282
+#: portfolio/forms.py:283
 msgid "Name of the high column"
 msgstr "Name der Hochspalte"
 
-#: portfolio/forms.py:283 portfolio/models.py:133
+#: portfolio/forms.py:284 portfolio/models.py:133
 msgid "High"
 msgstr "Hoch"
 
-#: portfolio/forms.py:290
+#: portfolio/forms.py:291
 msgid "Data"
 msgstr "Daten"
 
 #: portfolio/models.py:37 portfolio/models.py:128 portfolio/models.py:175
 #: portfolio/models.py:459
-#: portfolio/templates/portfolio/position_detail.html:48
+#: portfolio/templates/portfolio/position_detail.html:27
 msgid "Created at"
 msgstr "Erstellt am"
 
@@ -127,7 +127,7 @@ msgstr "Aktualisiert am"
 msgid "Slug"
 msgstr "Slug"
 
-#: portfolio/models.py:41 portfolio/templates/portfolio/position_detail.html:56
+#: portfolio/models.py:41 portfolio/templates/portfolio/position_detail.html:35
 msgid "Name"
 msgstr "Name"
 
@@ -152,9 +152,9 @@ msgid "Traded"
 msgstr "Gehandelt"
 
 #: portfolio/models.py:64 portfolio/models.py:91
-#: portfolio/templates/portfolio/position_detail.html:60
-#: portfolio/templates/portfolio/position_list.html:73
-#: portfolio/templates/portfolio/position_list.html:90
+#: portfolio/templates/portfolio/position_detail.html:39
+#: portfolio/templates/portfolio/position_list.html:55
+#: portfolio/templates/portfolio/position_list.html:72
 msgid "Tradeable"
 msgstr "Handelbar"
 
@@ -186,16 +186,16 @@ msgstr "Absolute Veränderung"
 msgid "Relative change"
 msgstr "Relative Veränderung"
 
-#: portfolio/models.py:169 portfolio/templates/portfolio/position_list.html:75
+#: portfolio/models.py:169 portfolio/templates/portfolio/position_list.html:57
 msgid "Closings"
 msgstr "Schlüsse"
 
-#: portfolio/models.py:184 portfolio/templates/portfolio/position_list.html:89
+#: portfolio/models.py:184 portfolio/templates/portfolio/position_list.html:71
 msgid "Closed"
 msgstr "Geschlossen"
 
 #: portfolio/models.py:186
-#: portfolio/templates/portfolio/position_detail.html:64
+#: portfolio/templates/portfolio/position_detail.html:43
 msgid "Trailing-stop ATR factor"
 msgstr "Trailing-stop ATR-Faktor"
 
@@ -205,8 +205,8 @@ msgstr "Einheit"
 
 #: portfolio/models.py:441 portfolio/models.py:479
 #: portfolio/templates/portfolio/position_confirm_delete.html:11
+#: portfolio/templates/portfolio/position_list.html:52
 #: portfolio/templates/portfolio/position_list.html:70
-#: portfolio/templates/portfolio/position_list.html:88
 msgid "Position"
 msgstr "Position"
 
@@ -223,8 +223,8 @@ msgid "Sell"
 msgstr "Verkauf"
 
 #: portfolio/models.py:453
-#: portfolio/templates/portfolio/position_detail.html:91
-#: portfolio/templates/portfolio/position_list.html:96
+#: portfolio/templates/portfolio/position_detail.html:70
+#: portfolio/templates/portfolio/position_list.html:78
 msgid "Dividend"
 msgstr "Dividende"
 
@@ -245,9 +245,9 @@ msgid "Serial number"
 msgstr "Laufende Nummer"
 
 #: portfolio/models.py:464
-#: portfolio/templates/portfolio/position_detail.html:77
-#: portfolio/templates/portfolio/position_detail.html:144
-#: portfolio/templates/portfolio/position_list.html:93
+#: portfolio/templates/portfolio/position_detail.html:56
+#: portfolio/templates/portfolio/position_detail.html:123
+#: portfolio/templates/portfolio/position_list.html:75
 msgid "Units"
 msgstr "Einheiten"
 
@@ -256,31 +256,31 @@ msgid "Unit price"
 msgstr "Stückpreis"
 
 #: portfolio/models.py:466 portfolio/models.py:467
-#: portfolio/templates/portfolio/position_detail.html:146
-#: portfolio/templates/portfolio/position_detail.html:148
+#: portfolio/templates/portfolio/position_detail.html:125
+#: portfolio/templates/portfolio/position_detail.html:127
 msgid "Extra costs"
 msgstr "Zusätzliche Kosten"
 
 #: portfolio/models.py:469
-#: portfolio/templates/portfolio/position_detail.html:147
+#: portfolio/templates/portfolio/position_detail.html:126
 msgid "Exchange rate"
 msgstr "Wechselkurs"
 
 #: portfolio/models.py:471
-#: portfolio/templates/portfolio/position_detail.html:143
+#: portfolio/templates/portfolio/position_detail.html:122
 msgid "Type"
 msgstr "Type"
 
 #: portfolio/models.py:559
 #: portfolio/templates/portfolio/position_confirm_delete.html:15
-#: portfolio/templates/portfolio/position_detail.html:141
-#: portfolio/templates/portfolio/position_list.html:66
+#: portfolio/templates/portfolio/position_detail.html:120
+#: portfolio/templates/portfolio/position_list.html:48
 #: portfolio/templates/portfolio/trade_confirm_delete.html:11
 msgid "Trade"
 msgstr "Handel"
 
 #: portfolio/models.py:560
-#: portfolio/templates/portfolio/position_detail.html:129
+#: portfolio/templates/portfolio/position_detail.html:108
 msgid "Trades"
 msgstr "Handel"
 
@@ -307,81 +307,71 @@ msgstr ""
 msgid "Trade %(position)s #%(no)s"
 msgstr "Handel %(position)s #%(no)s"
 
-#: portfolio/templates/portfolio/position_detail.html:17
-#: portfolio/templates/portfolio/position_list.html:35
-msgid "Save"
-msgstr "Speichern"
-
-#: portfolio/templates/portfolio/position_detail.html:23
-#: portfolio/templates/portfolio/position_list.html:41
-msgid "Yes, I'm sure"
-msgstr "Ja, ich bin sicher"
-
-#: portfolio/templates/portfolio/position_detail.html:39
+#: portfolio/templates/portfolio/position_detail.html:18
 msgid "This position is currently closed."
 msgstr "Diese Position ist derzeit geschlossen."
 
-#: portfolio/templates/portfolio/position_detail.html:52
+#: portfolio/templates/portfolio/position_detail.html:31
 msgid "Last updated at"
 msgstr "Zuletzt aktualisiert am"
 
-#: portfolio/templates/portfolio/position_detail.html:68
-#: portfolio/templates/portfolio/position_list.html:91
+#: portfolio/templates/portfolio/position_detail.html:47
+#: portfolio/templates/portfolio/position_list.html:73
 msgid "Number of trades"
 msgstr "Anzahl an Handels"
 
-#: portfolio/templates/portfolio/position_detail.html:73
-#: portfolio/templates/portfolio/position_list.html:92
+#: portfolio/templates/portfolio/position_detail.html:52
+#: portfolio/templates/portfolio/position_list.html:74
 msgid "Invested"
 msgstr "Investiert"
 
-#: portfolio/templates/portfolio/position_detail.html:83
-#: portfolio/templates/portfolio/position_list.html:94
+#: portfolio/templates/portfolio/position_detail.html:62
+#: portfolio/templates/portfolio/position_list.html:76
 msgid "Return"
 msgstr "Ertrag"
 
-#: portfolio/templates/portfolio/position_detail.html:87
-#: portfolio/templates/portfolio/position_list.html:95
+#: portfolio/templates/portfolio/position_detail.html:66
+#: portfolio/templates/portfolio/position_list.html:77
 msgid "Win/Loss"
 msgstr "Gewinn/Verlust"
 
-#: portfolio/templates/portfolio/position_detail.html:95
-#: portfolio/templates/portfolio/position_list.html:97
+#: portfolio/templates/portfolio/position_detail.html:74
+#: portfolio/templates/portfolio/position_list.html:79
 msgid "Annual return"
 msgstr "Jahresrendite"
 
-#: portfolio/templates/portfolio/position_detail.html:99
+#: portfolio/templates/portfolio/position_detail.html:78
 msgid "Yield"
 msgstr "Ertrag"
 
-#: portfolio/templates/portfolio/position_detail.html:111
+#: portfolio/templates/portfolio/position_detail.html:90
 msgid "Win/Loss-chart"
 msgstr "Gewinn/Verlust-Graph"
 
-#: portfolio/templates/portfolio/position_detail.html:114
-#: portfolio/templates/portfolio/position_list.html:75
+#: portfolio/templates/portfolio/position_detail.html:93
+#: portfolio/templates/portfolio/position_list.html:57
 msgid "Add closings"
 msgstr "Schlüsse hinzufügen"
 
-#: portfolio/templates/portfolio/position_detail.html:132
-#: portfolio/templates/portfolio/position_list.html:66
+#: portfolio/templates/portfolio/position_detail.html:111
+#: portfolio/templates/portfolio/position_list.html:48
 msgid "Add trade"
 msgstr "Handel hinzufügen"
 
-#: portfolio/templates/portfolio/position_detail.html:145
+#: portfolio/templates/portfolio/position_detail.html:124
 msgid "Price per unit"
 msgstr "Preis pro Einheit"
 
-#: portfolio/templates/portfolio/position_detail.html:149
+#: portfolio/templates/portfolio/position_detail.html:128
 msgid "Total"
 msgstr "Gesamt"
 
-#: portfolio/templates/portfolio/position_detail.html:168
+#: portfolio/templates/portfolio/position_detail.html:147
 #, python-format
 msgid "Edit trade %(position)s #%(trade)s"
 msgstr "Handel %(position)s #%(trade)s bearbeiten"
 
-#: portfolio/templates/portfolio/position_detail.html:169
+#: portfolio/templates/portfolio/position_detail.html:148
 #, python-format
 msgid "Delete trade %(position)s #%(trade)s"
 msgstr "Handel %(position)s #%(trade)s löschen"
@@ -395,74 +385,74 @@ msgstr "Einheit auswählen"
 msgid "State"
 msgstr "Status"
 
-#: portfolio/templates/portfolio/position_list.html:57
+#: portfolio/templates/portfolio/position_list.html:39
 msgid "Filter"
 msgstr "Filtern"
 
-#: portfolio/templates/portfolio/position_list.html:63
+#: portfolio/templates/portfolio/position_list.html:45
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: portfolio/templates/portfolio/position_list.html:70
+#: portfolio/templates/portfolio/position_list.html:52
 msgid "Add position"
 msgstr "Position hinzufügen"
 
-#: portfolio/templates/portfolio/position_list.html:73
-msgid "Add Tradeable"
-msgstr "Handel hinzufügen"
+#: portfolio/templates/portfolio/position_list.html:55
+msgid "Add tradeable"
+msgstr "Handelbar hinzufügen"
 
-#: portfolio/templates/portfolio/position_list.html:98
+#: portfolio/templates/portfolio/position_list.html:80
 msgid "First trade"
 msgstr "Erster Handel"
 
-#: portfolio/templates/portfolio/position_list.html:99
+#: portfolio/templates/portfolio/position_list.html:81
 msgid "Last trade"
 msgstr "Letzter Handel"
 
-#: portfolio/templates/portfolio/position_list.html:100
+#: portfolio/templates/portfolio/position_list.html:82
 msgid "Duration"
 msgstr "Zeitraum"
 
-#: portfolio/templates/portfolio/position_list.html:101
+#: portfolio/templates/portfolio/position_list.html:83
 msgid "Options"
 msgstr "Optionen"
 
-#: portfolio/templates/portfolio/position_list.html:124
+#: portfolio/templates/portfolio/position_list.html:106
 msgid "yes"
 msgstr "ja"
 
-#: portfolio/templates/portfolio/position_list.html:124
+#: portfolio/templates/portfolio/position_list.html:106
 msgid "no"
 msgstr "nein"
 
-#: portfolio/templates/portfolio/position_list.html:144
+#: portfolio/templates/portfolio/position_list.html:126
 #, python-format
 msgid "Edit position %(position)s"
 msgstr "Position %(position)s bearbeiten"
 
-#: portfolio/templates/portfolio/position_list.html:144
+#: portfolio/templates/portfolio/position_list.html:126
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: portfolio/templates/portfolio/position_list.html:146
+#: portfolio/templates/portfolio/position_list.html:128
 #, python-format
 msgid "Close position %(position)s"
 msgstr "Positionen %(position)s schließen"
 
-#: portfolio/templates/portfolio/position_list.html:146
+#: portfolio/templates/portfolio/position_list.html:128
 msgid "Close"
 msgstr "Schließen"
 
-#: portfolio/templates/portfolio/position_list.html:148
+#: portfolio/templates/portfolio/position_list.html:130
 #, python-format
 msgid "Delete position %(position)s"
 msgstr "Position %(position)s löschen"
 
-#: portfolio/templates/portfolio/position_list.html:148
+#: portfolio/templates/portfolio/position_list.html:130
 msgid "Delete"
 msgstr "Löschen"
 
-#: portfolio/templates/portfolio/position_list.html:162
+#: portfolio/templates/portfolio/position_list.html:144
 msgid "There is no data available."
 msgstr "Es sind keine Daten verfügbar."
 
@@ -566,6 +556,12 @@ msgstr "Das Handelbare (%(type)s) \"%(name)s\" wurde erfolgreich aktualisiert."
 #, python-format
 msgid "The tradeable (%(type)s) \"%(name)s\" was successfully deleted."
 msgstr "Das Handelbare (%(type)s) \"%(name)s\" wurde erfolgreich gelöscht."
+
+#~ msgid "Save"
+#~ msgstr "Speichern"
+
+#~ msgid "Yes, I'm sure"
+#~ msgstr "Ja, ich bin sicher"
 
 #, python-format
 #~ msgid "Position %(name)s"

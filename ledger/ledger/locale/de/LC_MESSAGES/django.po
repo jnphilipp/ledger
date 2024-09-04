@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ledger master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-03 15:25+0200\n"
-"PO-Revision-Date: 2024-09-03 15:25+0200\n"
+"POT-Creation-Date: 2024-09-04 11:19+0200\n"
+"PO-Revision-Date: 2024-09-04 11:19+0200\n"
 "Last-Translator: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>\n"
 "Language-Team: Deutsch <nathanael@philipp.land>\n"
 "Language: de\n"
@@ -18,8 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ledger/apps.py:30 ledger/templates/ledger/base.html:34
-#: ledger/templates/ledger/base.html:51
+#: ledger/apps.py:30 ledger/templates/ledger/base.html:56
+#: ledger/templates/ledger/base.html:73
 msgid "Ledger"
 msgstr "Haushaltsbuch"
 
@@ -36,13 +36,13 @@ msgstr "Text"
 msgid "Never"
 msgstr "Niemals"
 
-#: ledger/forms.py:57 ledger/templates/ledger/budget_detail.html:72
-#: ledger/templates/ledger/budget_detail.html:94
-#: ledger/templates/ledger/budget_detail.html:128
+#: ledger/forms.py:57 ledger/templates/ledger/budget_detail.html:63
+#: ledger/templates/ledger/budget_detail.html:85
+#: ledger/templates/ledger/budget_detail.html:119
+#: ledger/templates/ledger/budget_detail.html:150
+#: ledger/templates/ledger/budget_detail.html:153
+#: ledger/templates/ledger/budget_detail.html:156
 #: ledger/templates/ledger/budget_detail.html:159
-#: ledger/templates/ledger/budget_detail.html:162
-#: ledger/templates/ledger/budget_detail.html:165
-#: ledger/templates/ledger/budget_detail.html:168
 msgid "Monthly"
 msgstr "Monatlich"
 
@@ -58,13 +58,13 @@ msgstr "Vierteljährlich"
 msgid "Half-yearly"
 msgstr "Halbjährlich"
 
-#: ledger/forms.py:61 ledger/templates/ledger/budget_detail.html:73
-#: ledger/templates/ledger/budget_detail.html:95
-#: ledger/templates/ledger/budget_detail.html:138
+#: ledger/forms.py:61 ledger/templates/ledger/budget_detail.html:64
+#: ledger/templates/ledger/budget_detail.html:86
+#: ledger/templates/ledger/budget_detail.html:129
+#: ledger/templates/ledger/budget_detail.html:151
+#: ledger/templates/ledger/budget_detail.html:154
+#: ledger/templates/ledger/budget_detail.html:157
 #: ledger/templates/ledger/budget_detail.html:160
-#: ledger/templates/ledger/budget_detail.html:163
-#: ledger/templates/ledger/budget_detail.html:166
-#: ledger/templates/ledger/budget_detail.html:169
 msgid "Yearly"
 msgstr "Jährlich"
 
@@ -97,17 +97,17 @@ msgid "A file with this name already exists."
 msgstr "Eine Datei mit diesem Name existiert bereits."
 
 #: ledger/models.py:59 ledger/models.py:79 ledger/models.py:100
-#: ledger/models.py:247 ledger/templates/ledger/budget_detail.html:158
-#: ledger/templates/ledger/budget_detail.html:161
-#: ledger/templates/ledger/budget_detail.html:164
-#: ledger/templates/ledger/budget_detail.html:167
+#: ledger/models.py:247 ledger/templates/ledger/budget_detail.html:149
+#: ledger/templates/ledger/budget_detail.html:152
+#: ledger/templates/ledger/budget_detail.html:155
+#: ledger/templates/ledger/budget_detail.html:158
 msgid "Name"
 msgstr "Name"
 
 #: ledger/models.py:69 ledger/models.py:105 ledger/models.py:164
-#: ledger/templates/ledger/account_detail.html:59
+#: ledger/templates/ledger/account_detail.html:26
 #: ledger/templates/ledger/entry_detail.html:59
-#: ledger/templates/ledger/entry_list.html:140
+#: ledger/templates/ledger/entry_list.html:116
 msgid "Category"
 msgstr "Kategorie"
 
@@ -130,7 +130,7 @@ msgid "Tags"
 msgstr "Tags"
 
 #: ledger/models.py:96 ledger/models.py:153 ledger/models.py:243
-#: ledger/models.py:305 ledger/templates/ledger/account_detail.html:51
+#: ledger/models.py:305 ledger/templates/ledger/account_detail.html:18
 #: ledger/templates/ledger/entry_detail.html:31
 msgid "Created at"
 msgstr "Erstellt am"
@@ -144,7 +144,7 @@ msgstr "Aktualisiert am"
 msgid "Slug"
 msgstr "Slug"
 
-#: ledger/models.py:102 ledger/templates/ledger/account_detail.html:63
+#: ledger/models.py:102 ledger/templates/ledger/account_detail.html:30
 msgid "Unit"
 msgstr "Einheit"
 
@@ -153,21 +153,21 @@ msgid "Closed"
 msgstr "Geschlossen"
 
 #: ledger/models.py:109 ledger/models.py:170 ledger/models.py:299
-#: ledger/templates/ledger/account_detail.html:85
+#: ledger/templates/ledger/account_detail.html:52
 #: ledger/templates/ledger/entry_detail.html:79
-#: ledger/templates/ledger/entry_list.html:142
+#: ledger/templates/ledger/entry_list.html:118
 msgid "Files"
 msgstr "Dateien"
 
 #: ledger/models.py:146 ledger/models.py:157
 #: ledger/templates/ledger/account_confirm_delete.html:11
-#: ledger/templates/ledger/account_list.html:49
+#: ledger/templates/ledger/account_list.html:18
 #: ledger/templates/ledger/entry_detail.html:39
-#: ledger/templates/ledger/entry_list.html:137
+#: ledger/templates/ledger/entry_list.html:113
 msgid "Account"
 msgstr "Konto"
 
-#: ledger/models.py:147 ledger/templates/ledger/base.html:55
+#: ledger/models.py:147 ledger/templates/ledger/base.html:77
 #: ledger/templates/ledger/entry_list.html:22
 msgid "Accounts"
 msgstr "Konten"
@@ -177,18 +177,18 @@ msgid "Serial number"
 msgstr "Laufende Nummer"
 
 #: ledger/models.py:160 ledger/templates/ledger/entry_detail.html:47
-#: ledger/templates/ledger/entry_list.html:138
+#: ledger/templates/ledger/entry_list.html:114
 msgid "Date"
 msgstr "Datum"
 
 #: ledger/models.py:161 ledger/templates/ledger/entry_detail.html:51
-#: ledger/templates/ledger/entry_list.html:139
-#: ledger/templates/ledger/entry_list.html:155
+#: ledger/templates/ledger/entry_list.html:115
+#: ledger/templates/ledger/entry_list.html:131
 msgid "Amount"
 msgstr "Betrag"
 
 #: ledger/models.py:162 ledger/templates/ledger/entry_detail.html:55
-#: ledger/templates/ledger/entry_list.html:155
+#: ledger/templates/ledger/entry_list.html:131
 msgid "Fees"
 msgstr "Gebühren"
 
@@ -202,7 +202,7 @@ msgstr "Verwandter Eintrag"
 msgid "Entry"
 msgstr "Eintrag"
 
-#: ledger/models.py:237 ledger/templates/ledger/entry_list.html:191
+#: ledger/models.py:237 ledger/templates/ledger/entry_list.html:167
 msgid "Entries"
 msgstr "Einträge"
 
@@ -230,8 +230,8 @@ msgstr "Versicherungstags"
 msgid "Savings tags"
 msgstr "Sparentags"
 
-#: ledger/models.py:344 ledger/templates/ledger/base.html:59
-#: ledger/views/budget.py:684 ledger/views/budget.py:690
+#: ledger/models.py:344 ledger/templates/ledger/base.html:81
+#: ledger/views/budget.py:685 ledger/views/budget.py:693
 msgid "Budget"
 msgstr "Budget"
 
@@ -277,75 +277,46 @@ msgstr ""
 "Sind Sie sicher, dass Sie dieses Konto löschen möchten? Alle folgenden "
 "Objekte und ihre zugehörigen Elemente werden gelöscht:"
 
-#: ledger/templates/ledger/account_detail.html:12
-#: ledger/templates/ledger/account_detail.html:18
-#: ledger/templates/ledger/account_list.html:12
-#: ledger/templates/ledger/account_list.html:18
-#: ledger/templates/ledger/budget_detail.html:13
-#: ledger/templates/ledger/entry_list.html:90
-#: ledger/templates/ledger/entry_list.html:96
-msgid "Save"
-msgstr "Speichern"
-
-#: ledger/templates/ledger/account_detail.html:24
-#: ledger/templates/ledger/account_list.html:24
-#: ledger/templates/ledger/entry_detail.html:19
-#: ledger/templates/ledger/entry_list.html:102
-msgid "Yes, I'm sure"
-msgstr "Ja, ich bin sicher"
-
-#: ledger/templates/ledger/account_detail.html:40
-msgid "This account is currently closed."
-msgstr "Dieses Konto ist derzeit geschlossen."
-
-#: ledger/templates/ledger/account_detail.html:43
+#: ledger/templates/ledger/account_detail.html:8
 #, python-format
 msgid "Edit %(name)s"
 msgstr "%(name)s bearbeiten"
 
-#: ledger/templates/ledger/account_detail.html:43
-#: ledger/templates/ledger/account_list.html:75
-#: ledger/templates/ledger/budget_detail.html:42
-#: ledger/templates/ledger/budget_detail.html:205
-#: ledger/templates/ledger/entry_list.html:176
+#: ledger/templates/ledger/account_detail.html:8
+#: ledger/templates/ledger/account_list.html:44
+#: ledger/templates/ledger/budget_detail.html:33
+#: ledger/templates/ledger/budget_detail.html:196
+#: ledger/templates/ledger/entry_list.html:152
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: ledger/templates/ledger/account_detail.html:55
+#: ledger/templates/ledger/account_detail.html:14
+msgid "This account is currently closed."
+msgstr "Dieses Konto ist derzeit geschlossen."
+
+#: ledger/templates/ledger/account_detail.html:22
 #: ledger/templates/ledger/entry_detail.html:35
 msgid "Last updated at"
 msgstr "Zuletzt aktualisiert am"
 
-#: ledger/templates/ledger/account_detail.html:67
-#: ledger/templates/ledger/account_list.html:53
+#: ledger/templates/ledger/account_detail.html:34
+#: ledger/templates/ledger/account_list.html:22
 msgid "Number of entries"
 msgstr "Anzahl an Einträgen"
 
-#: ledger/templates/ledger/account_detail.html:71
-#: ledger/templates/ledger/account_list.html:50
+#: ledger/templates/ledger/account_detail.html:38
+#: ledger/templates/ledger/account_list.html:19
 #: ledger/templates/ledger/partials/_balances.html:5
 msgid "Balance"
 msgstr "Saldo"
 
-#: ledger/templates/ledger/account_detail.html:75
-#: ledger/templates/ledger/account_list.html:51
+#: ledger/templates/ledger/account_detail.html:42
+#: ledger/templates/ledger/account_list.html:20
 #: ledger/templates/ledger/partials/_balances.html:21
 msgid "Outstanding"
 msgstr "Ausstehend"
 
-#: ledger/templates/ledger/account_detail.html:90
-#: ledger/templates/ledger/account_list.html:78
-#, python-format
-msgid "Add file to account %(name)s"
-msgstr "Datei zu Konto %(name)s hinzufügen"
-
-#: ledger/templates/ledger/account_detail.html:90
-#: ledger/templates/ledger/account_list.html:78
-#: ledger/templates/ledger/entry_list.html:181
-msgid "Add file"
-msgstr "Datei hinzufügen"
-
-#: ledger/templates/ledger/account_detail.html:100
+#: ledger/templates/ledger/account_detail.html:60
 #: ledger/templates/ledger/entry_detail.html:85
 #, python-format
 msgid "Delete file %(name)s"
@@ -360,118 +331,137 @@ msgstr "Kategorie auswählen"
 msgid "Select a unit"
 msgstr "Einheit auswählen"
 
-#: ledger/templates/ledger/account_list.html:39
+#: ledger/templates/ledger/account_list.html:8
 msgid "Add account"
 msgstr "Konten hinzufügen"
 
-#: ledger/templates/ledger/account_list.html:39
-#: ledger/templates/ledger/entry_list.html:128
+#: ledger/templates/ledger/account_list.html:8
+#: ledger/templates/ledger/entry_list.html:104
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: ledger/templates/ledger/account_list.html:52
+#: ledger/templates/ledger/account_list.html:21
 msgid "Number of Files"
 msgstr "Anzahl an Dateien"
 
-#: ledger/templates/ledger/account_list.html:54
+#: ledger/templates/ledger/account_list.html:23
 msgid "Last entry"
 msgstr "Letzter Eintrag"
 
-#: ledger/templates/ledger/account_list.html:61
+#: ledger/templates/ledger/account_list.html:30
 msgid "closed"
 msgstr "geschlossen"
 
-#: ledger/templates/ledger/account_list.html:75
+#: ledger/templates/ledger/account_list.html:44
 msgid "Edit account"
 msgstr "Konto bearbeiten"
 
-#: ledger/templates/ledger/account_list.html:76
+#: ledger/templates/ledger/account_list.html:45
 msgid "Reopen account"
 msgstr "Konto wiedereröffnen"
 
-#: ledger/templates/ledger/account_list.html:76
+#: ledger/templates/ledger/account_list.html:45
 msgid "Close account"
 msgstr "Konto schließen"
 
-#: ledger/templates/ledger/account_list.html:76
+#: ledger/templates/ledger/account_list.html:45
 msgid "Reopen"
 msgstr "Wiedereröffnen"
 
-#: ledger/templates/ledger/account_list.html:76
+#: ledger/templates/ledger/account_list.html:45
 msgid "Close"
 msgstr "Schließen"
 
-#: ledger/templates/ledger/account_list.html:77
+#: ledger/templates/ledger/account_list.html:46
 msgid "Delete account"
 msgstr "Konto löschen"
 
-#: ledger/templates/ledger/account_list.html:77
-#: ledger/templates/ledger/entry_list.html:180
+#: ledger/templates/ledger/account_list.html:46
+#: ledger/templates/ledger/entry_list.html:156
 msgid "Delete"
 msgstr "Löschen"
 
-#: ledger/templates/ledger/account_list.html:92
+#: ledger/templates/ledger/account_list.html:47
+#, python-format
+msgid "Add file to account %(name)s"
+msgstr "Datei zu Konto %(name)s hinzufügen"
+
+#: ledger/templates/ledger/account_list.html:47
+#: ledger/templates/ledger/entry_list.html:157
+msgid "Add file"
+msgstr "Datei hinzufügen"
+
+#: ledger/templates/ledger/account_list.html:61
 msgid "There are no accounts available."
 msgstr "Es sind keine Konten vorhanden."
 
-#: ledger/templates/ledger/base.html:63 ledger/views/budget.py:151
+#: ledger/templates/ledger/base.html:38 ledger/templates/ledger/base.html:40
+msgid "Save"
+msgstr "Speichern"
+
+#: ledger/templates/ledger/base.html:47
+#: ledger/templates/ledger/entry_detail.html:19
+msgid "Yes, I'm sure"
+msgstr "Ja, ich bin sicher"
+
+#: ledger/templates/ledger/base.html:85 ledger/views/budget.py:151
 #: ledger/views/budget.py:159 ledger/views/budget.py:170
 #: ledger/views/budget.py:171 ledger/views/budget.py:411
 msgid "Portfolio"
 msgstr "Portfolio"
 
-#: ledger/templates/ledger/base.html:67
+#: ledger/templates/ledger/base.html:89
 msgid "Statistics"
 msgstr "Statistik"
 
-#: ledger/templates/ledger/budget_detail.html:26 ledger/views/statistics.py:210
+#: ledger/templates/ledger/budget_detail.html:17 ledger/views/statistics.py:210
 #: ledger/views/statistics.py:334
 msgid "Years"
 msgstr "Jahre"
 
-#: ledger/templates/ledger/budget_detail.html:29
+#: ledger/templates/ledger/budget_detail.html:20
 msgid "Previous"
 msgstr "Vorheriges"
 
-#: ledger/templates/ledger/budget_detail.html:34
+#: ledger/templates/ledger/budget_detail.html:25
 msgid "Next"
 msgstr "Nächstes"
 
-#: ledger/templates/ledger/budget_detail.html:37
+#: ledger/templates/ledger/budget_detail.html:28
 msgid "Chart/Table toggle"
 msgstr "Grafik/Tabelle umschalten"
 
-#: ledger/templates/ledger/budget_detail.html:38
+#: ledger/templates/ledger/budget_detail.html:29
 msgid "Chart"
 msgstr "Grafik"
 
-#: ledger/templates/ledger/budget_detail.html:39
+#: ledger/templates/ledger/budget_detail.html:30
 msgid "Table"
 msgstr "Tabelle"
 
-#: ledger/templates/ledger/budget_detail.html:42
-#: ledger/templates/ledger/budget_detail.html:205
+#: ledger/templates/ledger/budget_detail.html:33
+#: ledger/templates/ledger/budget_detail.html:196
 msgid "Edit budget"
 msgstr "Budget bearbeiten"
 
-#: ledger/templates/ledger/budget_detail.html:152 ledger/views/budget.py:74
+#: ledger/templates/ledger/budget_detail.html:143 ledger/views/budget.py:74
 msgid "Income"
 msgstr "Einkommen"
 
-#: ledger/templates/ledger/budget_detail.html:153 ledger/views/budget.py:92
+#: ledger/templates/ledger/budget_detail.html:144 ledger/views/budget.py:92
 msgid "Consumption"
 msgstr "Konsum"
 
-#: ledger/templates/ledger/budget_detail.html:154 ledger/views/budget.py:110
+#: ledger/templates/ledger/budget_detail.html:145 ledger/views/budget.py:110
 msgid "Insurance"
 msgstr "Versicherung"
 
-#: ledger/templates/ledger/budget_detail.html:155 ledger/views/budget.py:128
+#: ledger/templates/ledger/budget_detail.html:146 ledger/views/budget.py:128
 msgid "Savings"
 msgstr "Sparen"
 
-#: ledger/templates/ledger/budget_detail.html:210
-#: ledger/templates/ledger/entry_list.html:198
+#: ledger/templates/ledger/budget_detail.html:201
+#: ledger/templates/ledger/entry_list.html:174
 #: ledger/templates/ledger/statistics.html:92
 msgid "There is no data available."
 msgstr "Es sind keine Daten vorhanden."
@@ -504,45 +494,45 @@ msgstr "Verwandten Eintrag auswählen"
 msgid "Units"
 msgstr "Einheiten"
 
-#: ledger/templates/ledger/entry_list.html:122
+#: ledger/templates/ledger/entry_list.html:98
 msgid "Filter"
 msgstr "Filtern"
 
-#: ledger/templates/ledger/entry_list.html:128
+#: ledger/templates/ledger/entry_list.html:104
 msgid "Add entry"
 msgstr "Eintrag hinzufügen"
 
-#: ledger/templates/ledger/entry_list.html:141
+#: ledger/templates/ledger/entry_list.html:117
 msgid "Text & Tags"
 msgstr "Text & Tags"
 
-#: ledger/templates/ledger/entry_list.html:176
+#: ledger/templates/ledger/entry_list.html:152
 #, python-format
 msgid "Edit entry %(account)s #%(entry_no)s"
 msgstr "Eintrag %(account)s #%(entry_no)s bearbeiten"
 
-#: ledger/templates/ledger/entry_list.html:177
+#: ledger/templates/ledger/entry_list.html:153
 msgid "Duplicate entry"
 msgstr "Eintrag duplizieren"
 
-#: ledger/templates/ledger/entry_list.html:177
+#: ledger/templates/ledger/entry_list.html:153
 msgid "Duplicate"
 msgstr "Duplizieren"
 
-#: ledger/templates/ledger/entry_list.html:178
+#: ledger/templates/ledger/entry_list.html:154
 msgid "Move down"
 msgstr "Nach unten verschieben"
 
-#: ledger/templates/ledger/entry_list.html:179
+#: ledger/templates/ledger/entry_list.html:155
 msgid "Move up"
 msgstr "Nach oben verschieben"
 
-#: ledger/templates/ledger/entry_list.html:180
+#: ledger/templates/ledger/entry_list.html:156
 #, python-format
 msgid "Delete entry %(account)s #%(entry_no)s"
 msgstr "Eintrag %(account)s #%(entry_no)s löschen"
 
-#: ledger/templates/ledger/entry_list.html:181
+#: ledger/templates/ledger/entry_list.html:157
 #, python-format
 msgid "Add file to entry %(account)s #%(entry)s"
 msgstr "Datei zu Eintrag %(account)s #%(entry)s hinzufügen"
@@ -603,12 +593,12 @@ msgstr "Rest"
 msgid "Total"
 msgstr "Gesamt"
 
-#: ledger/views/budget.py:682 ledger/views/budget.py:688
+#: ledger/views/budget.py:683 ledger/views/budget.py:691
 #, python-format
 msgid "Budget %(unit)s"
 msgstr "Budget %(unit)s"
 
-#: ledger/views/budget.py:719
+#: ledger/views/budget.py:723
 msgid "Your budget was successfully updated."
 msgstr "Ihr Budget wurde erfolgreich aktualisiert."
 
