@@ -2,49 +2,16 @@
 {% load i18n ledger %}
 
 
-{% block extrahead %}
-<script type="text/javascript">
-    $(function() {
-        $('#iframeFormModal').on('show.bs.modal', function (e) {
-            if ( e.relatedTarget.href.includes("/account/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")) ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/file/") && e.relatedTarget.href.includes("/create/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-upload\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/account/") && e.relatedTarget.href.includes("/delete/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-danger");
-                $("#iframeFormModalSubmit").removeClass("btn-primary");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/account/") ) {
-                $(".modal-footer").hide();
-            }
-        });
-    });
-</script>
-{% endblock %}
-
-
 {% block content %}
 <div class="row">
-    <div class="col-8">
-        <h1><a href="{% url "entry_list" %}?accounts={{ account.pk }}">{{ account.name }}</a></h1>
-        {% if account.closed %}<div class="alert alert-danger" role="alert">{% translate "This account is currently closed." %}</div>{% endif %}
-    </div>
-    <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" class="iframeFormModal" href="{% url "account_edit" account.slug %}" title="{% blocktranslate with name=account.name %}Edit {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+    <div class="col text-end">
+        <a class="iframeFormModal" href="{% url "account_edit" account.slug %}" title="{% blocktranslate with name=account.name %}Edit {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
     </div>
 </div>
 <div class="row">
     <div class="col">
+        <h1><a href="{% url "entry_list" %}?accounts={{ account.pk }}">{{ account.name }}</a></h1>
+        {% if account.closed %}<div class="alert alert-danger" role="alert">{% translate "This account is currently closed." %}</div>{% endif %}
         <table class="table table-hover table-borderless">
             <tbody>
                 <tr>
@@ -80,24 +47,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-8">
+    <div class="col">
         <h2>
             {% translate "Files" %}
             <span class="badge rounded-pill text-bg-light">{{ account.files.count }}</span>
         </h2>
-    </div>
-    <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% translate "Add file" %}</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col">
         <table class="table table-hover table-borderless">
             <tbody>
                 {% for file in account.files.all %}
                 <tr>
                     <th><a href="{% url "file_detail" file.slug %}">{{ file.name }}</a></th>
-                    <td class="text-end"><a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span></a></td>
+                    <td><a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span></a></td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -2,7 +2,7 @@
 
 <ul class="list-inline">
     <li class="list-inline-item">
-        <b>{% trans "Balance" %}</b>
+        <b>{% translate "Balance" %}</b>
         {% if values|length == 1 %}
             {{ values|get_item:0|get_item:"balance" }}
         {% else %}
@@ -18,7 +18,7 @@
         {% endif %}
     </li>
     <li class="list-inline-item ml-5">
-        <b>{% trans "Outstanding" %}</b>
+        <b>{% translate "Outstanding" %}</b>
         {% if values|length == 1 %}
             {{ values|get_item:0|get_item:"outstanding" }}
         {% else %}

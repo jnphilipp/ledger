@@ -19,7 +19,7 @@
             selectOtherMonths: true
         });
         $("#id_accounts").select2({
-            placeholder: "{% trans "Accounts" %}",
+            placeholder: "{% translate "Accounts" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "element",
             ajax: {
@@ -35,7 +35,7 @@
             }
         });
         $("#id_categories").select2({
-            placeholder: "{% trans "Categories" %}",
+            placeholder: "{% translate "Categories" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "element",
             ajax: {
@@ -51,7 +51,7 @@
             }
         });
         $("#id_tags").select2({
-            placeholder: "{% trans "Tags" %}",
+            placeholder: "{% translate "Tags" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "element",
             ajax: {
@@ -67,7 +67,7 @@
             }
         });
         $("#id_units").select2({
-            placeholder: "{% trans "Units" %}",
+            placeholder: "{% translate "Units" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "element",
             ajax: {
@@ -80,30 +80,6 @@
                 processResults: function (data, params) {
                     return { results: data.units }
                 }
-            }
-        });
-
-        $("#iframeFormModal").on("show.bs.modal", function(e) {
-            if ( e.relatedTarget.href.includes("/entry/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")|| e.relatedTarget.href.includes("/duplicate/")) ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/file/") && e.relatedTarget.href.includes("/create/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-upload\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( (e.relatedTarget.href.includes("/entry/") || e.relatedTarget.href.includes("/file/")) && e.relatedTarget.href.includes("/delete/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-danger");
-                $("#iframeFormModalSubmit").removeClass("btn-primary");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/entry/") ) {
-                $(".modal-footer").hide();
             }
         });
     });
@@ -119,13 +95,13 @@
     </div>
     <div class="col-8 text-center">
         {% if form %}
-            {% trans "Filter" as filter_trans %}
+            {% translate "Filter" as filter_translate %}
             {% url "entry_list" as form_url %}
-            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fa-solid fa-search" submit_title=filter_trans %}
+            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fa-solid fa-search" submit_title=filter_translate %}
         {% endif %}
     </div>
    <div class="col-2 text-end">
-        <a class="btn btn-outline-primary" href="{% url "entry_create" %}" title="{% trans "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% trans "Add" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "entry_create" %}" title="{% translate "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add" %}</a>
     </div>
 </div>
 <div class="row mt-2">
@@ -134,12 +110,12 @@
             <table class="table table-hover table-sm">
                 <thead>
                     <tr>
-                        <th scope="col">{% trans "Account" %}</th>
-                        <th scope="col">{% trans "Date" %}</th>
-                        <th scope="col">{% trans "Amount" %}</th>
-                        <th scope="col">{% trans "Category" %}</th>
-                        <th scope="col">{% trans "Text & Tags" %}</th>
-                        <th scope="col">{% trans "Files" %}</th>
+                        <th scope="col">{% translate "Account" %}</th>
+                        <th scope="col">{% translate "Date" %}</th>
+                        <th scope="col">{% translate "Amount" %}</th>
+                        <th scope="col">{% translate "Category" %}</th>
+                        <th scope="col">{% translate "Text & Tags" %}</th>
+                        <th scope="col">{% translate "Files" %}</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -152,7 +128,7 @@
                                 <a href="{% url "entry_detail" entry.pk %}" title="{{ entry }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
                             </th>
                             <td>{{ entry.date|date:"D, d.m.Y" }}</td>
-                            <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% trans "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% trans "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|unitcolorfy:entry.account.unit }}</td>
+                            <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% translate "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% translate "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|unitcolorfy:entry.account.unit }}</td>
                             <td><a href="{% url "entry_list" %}?categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.category }}</a></td>
                             <td>
                                 {% if entry.text %}{{ entry.text }}{% if entry.tags.all %}, {% endif %}{% endif %}
@@ -173,12 +149,12 @@
                                             {{ entry.account.name }} #{{ entry.serial_number }}
                                         </div>
                                         <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url "entry_edit" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Edit entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% trans "Edit" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_duplicate" entry.pk %}" title="{% trans "Duplicate entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-clone"></span> {% trans "Duplicate" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Move down" %}"><span class="fa-solid fa-arrow-down"></span> {% trans "Move down" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% trans "Move up" %}"><span class="fa-solid fa-arrow-up"></span> {% trans "Move up" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% trans "Delete" %}</a>
-                                        <a class="dropdown-item" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% trans "Add file" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_edit" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Edit entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_duplicate" entry.pk %}" title="{% translate "Duplicate entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-clone"></span> {% translate "Duplicate" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% translate "Move down" %}"><span class="fa-solid fa-arrow-down"></span> {% translate "Move down" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% translate "Move up" %}"><span class="fa-solid fa-arrow-up"></span> {% translate "Move up" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
+                                        <a class="dropdown-item" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% translate "Add file" %}</a>
                                     </div>
                                 </div>
                             </td>
@@ -188,14 +164,14 @@
             </table>
         </div>
         {% url "entry_list" as base_path %}
-        {% trans "Entries" as pagination_title %}
+        {% translate "Entries" as pagination_title %}
         {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date accounts=accounts|join:"&accounts=" categories=categories|join:"&categories=" tags=tags|join:"&tags=" units=units|join:"&units=" %}
     </div>
 </div>
 {% else %}
 <div class="row">
     <div class="col text-center">
-        <h3>{% trans "There is no data available." %}</h3>
+        <h3>{% translate "There is no data available." %}</h3>
     </div>
 </div>
 {% endif %}

@@ -16,7 +16,7 @@
             parent.$("#iframeFormModalIframe").attr("src", this.href);
             parent.$("#iframeFormModalSubmit").addClass("btn-danger");
             parent.$("#iframeFormModalSubmit").removeClass("btn-primary");
-            parent.$("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
+            parent.$("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% translate "Yes, I'm sure" %}");
             parent.$(".modal-footer").show();
         });
     });
@@ -28,47 +28,47 @@
 <table class="table table-hover table-borderless">
     <tbody>
         <tr>
-            <th scope="row">{% trans "Created at" %}</th>
+            <th scope="row">{% translate "Created at" %}</th>
             <td>{{ entry.created_at|date:"r" }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Last updated at" %}</th>
+            <th scope="row">{% translate "Last updated at" %}</th>
             <td>{{ entry.updated_at|date:"r" }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Account" %}</th>
+            <th scope="row">{% translate "Account" %}</th>
             <td>{{ entry.account.name }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Serial number" %}</th>
+            <th scope="row">{% translate "Serial number" %}</th>
             <td>{{ entry.serial_number }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Date" %}</th>
+            <th scope="row">{% translate "Date" %}</th>
             <td>{{ entry.date|date:"D, d.m.Y"  }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Amount" %}</th>
+            <th scope="row">{% translate "Amount" %}</th>
             <td>{{ entry.amount|unitcolorfy:entry.account.unit }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Fees" %}</th>
+            <th scope="row">{% translate "Fees" %}</th>
             <td>{{ entry.fees|unitcolorfy:entry.account.unit }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Category" %}</th>
+            <th scope="row">{% translate "Category" %}</th>
             <td>{{ entry.category.name }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Related entry" %}</th>
+            <th scope="row">{% translate "Related entry" %}</th>
             <td>{% if entry.related %}<a class="iframeDetail" href="{% url "entry_detail" entry.related.pk %}" title="{{ entry.related }}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal">{{ entry.related }}</a>{% endif %}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Text" %}</th>
+            <th scope="row">{% translate "Text" %}</th>
             <td>{{ entry.text|default_if_none:"" }}</td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Tags" %}</th>
+            <th scope="row">{% translate "Tags" %}</th>
             <td>
                 {% for tag in entry.tags.all %}
                     {{ tag.name }}{% if not forloop.last %}, {% endif %}
@@ -76,7 +76,7 @@
             </td>
         </tr>
         <tr>
-            <th scope="row">{% trans "Files" %}</th>
+            <th scope="row">{% translate "Files" %}</th>
             <td>
                 <ul class="list-unstyled">
                     {% for file in entry.files.all %}

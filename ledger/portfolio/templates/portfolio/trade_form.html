@@ -18,7 +18,7 @@
                 return false;
             });
         $("#id_position").select2({
-            placeholder: "{% trans "Select a position" %}",
+            placeholder: "{% translate "Select a position" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
@@ -35,13 +35,13 @@
             }
         });
         $("#id_type").select2({
-            placeholder: "{% trans "Select a type" %}",
+            placeholder: "{% translate "Select a type" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
         });
         $("#id_unit").select2({
-            placeholder: "{% trans "Select a unit" %}",
+            placeholder: "{% translate "Select a unit" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",

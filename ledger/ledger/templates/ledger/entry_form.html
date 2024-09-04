@@ -25,7 +25,7 @@
                 selectOtherMonths: true
             });
         $("#id_account").select2({
-            placeholder: "{% trans "Select a account" %}",
+            placeholder: "{% translate "Select a account" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
@@ -42,7 +42,7 @@
             }
         });
         $("#id_category").select2({
-            placeholder: "{% trans "Select a category" %}",
+            placeholder: "{% translate "Select a category" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
@@ -59,7 +59,7 @@
             }
         });
         $("#id_tags").select2({
-            placeholder: "{% trans "Select a tag" %}",
+            placeholder: "{% translate "Select a tag" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
             ajax: {
@@ -75,7 +75,7 @@
             }
         });
         $("#id_related").select2({
-            placeholder: "{% trans "Select a realted entry" %}",
+            placeholder: "{% translate "Select a realted entry" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
             allowClear: true,

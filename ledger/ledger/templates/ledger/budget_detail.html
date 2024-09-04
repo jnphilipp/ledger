@@ -6,15 +6,6 @@
 <script type="text/javascript" src="{% static "js/highcharts/highcharts-more.js" %}"></script>
 <script type="text/javascript" src="{% static "js/highcharts/modules/data.js" %}"></script>
 <script type="text/javascript" src="{% static "js/highcharts/modules/drilldown.js" %}"></script>
-<script type="text/javascript">
-    $(function() {
-        $('#iframeFormModal').on('show.bs.modal', function (e) {
-            $("#iframeFormModalSubmit").addClass("btn-primary");
-            $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
-            $(".modal-footer").show();
-        });
-    });
-</script>
 {% endblock %}
 
 
@@ -169,7 +160,7 @@
                         <th scope="col" class="text-end">{% translate "Yearly" %}</th>
                     </tr>
                 </thead>
-                <tbody class="table-group-divider">
+                <tbody>
                     {% for row in table %}
                         <tr>
                             {% for cell in row %}
@@ -207,7 +198,7 @@
 </div>
 <div class="row">
     <div class="col text-center">
-        <h3>{% trans "There is no data available." %}</h3>
+        <h3>{% translate "There is no data available." %}</h3>
     </div>
 </div>
 {% endif %}

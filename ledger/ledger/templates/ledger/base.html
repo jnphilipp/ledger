@@ -29,9 +29,31 @@
                         },0);
                     });
                 });
+
+                $("#iframeFormModal").on("show.bs.modal", function(e) {
+                    if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
+                        $("#iframeFormModalSubmit").addClass("btn-primary");
+                        $("#iframeFormModalSubmit").removeClass("btn-danger");
+                        if ( e.relatedTarget.href.includes("/file/") ) {
+                            $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-upload\"></span> {% translate "Save" %}");
+                        } else {
+                            $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% translate "Save" %}");
+                        }
+                        $(".modal-footer").show();
+                    }
+                    else if ( e.relatedTarget.href.includes("/delete/") ) {
+                        $("#iframeFormModalSubmit").addClass("btn-danger");
+                        $("#iframeFormModalSubmit").removeClass("btn-primary");
+                        $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% translate "Yes, I'm sure" %}");
+                        $(".modal-footer").show();
+                    }
+                    else {
+                        $(".modal-footer").hide();
+                    }
+                });
             });
         </script>
-        <title>{% block title %}{% trans "Ledger" %}{% endblock %}</title>
+        <title>{% block title %}{% translate "Ledger" %}{% endblock %}</title>
         {% block extrahead %}{% endblock %}
     </head>
     <body>

@@ -2,41 +2,10 @@
 {% load i18n ledger %}
 
 
-{% block extrahead %}
-<script type="text/javascript">
-    $(function() {
-        $('#iframeFormModal').on('show.bs.modal', function (e) {
-            if ( e.relatedTarget.href.includes("/account/") && (e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/")) ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/file/") && e.relatedTarget.href.includes("/create/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-upload\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/account/") && e.relatedTarget.href.includes("/delete/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-danger");
-                $("#iframeFormModalSubmit").removeClass("btn-primary");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/account/") ) {
-                $(".modal-footer").hide();
-            }
-        });
-    });
-</script>
-{% endblock %}
-
-
 {% block content %}
 <div class="row">
     <div class="col text-end">
-        <a class="btn btn-outline-primary" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% trans "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button"><span class="fa-solid fa-plus"></span> {% trans "Add" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% translate "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button"><span class="fa-solid fa-plus"></span> {% translate "Add" %}</a>
     </div>
 </div>
 {% if accounts %}
@@ -46,16 +15,16 @@
             <table class="table table-hover table-sm">
                 <thead>
                     <tr>
-                        <th class="text-center" scope="col">{% trans "Account" %}</th>
-                        <th class="text-center" scope="col">{% trans "Balance" %}</th>
-                        <th class="text-center" scope="col">{% trans "Outstanding" %}</th>
-                        <th class="text-center" scope="col">{% trans "Number of Files" %}</th>
-                        <th class="text-center" scope="col">{% trans "Number of entries" %}</th>
-                        <th class="text-center" scope="col">{% trans "Last entry" %}</th>
+                        <th class="text-center" scope="col">{% translate "Account" %}</th>
+                        <th class="text-center" scope="col">{% translate "Balance" %}</th>
+                        <th class="text-center" scope="col">{% translate "Outstanding" %}</th>
+                        <th class="text-center" scope="col">{% translate "Number of Files" %}</th>
+                        <th class="text-center" scope="col">{% translate "Number of entries" %}</th>
+                        <th class="text-center" scope="col">{% translate "Last entry" %}</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody class="table-group-divider">
+                <tbody>
                     {% for account in accounts %}
                         <tr>
                             <th scope="row"><a href="{% url "account_detail" account.slug %}" title="{{ account.name }}">{{ account.name }}{% if account.closed %} [{% translate "closed" %}]{% endif %}</a></th>
@@ -72,10 +41,10 @@
                                             {{ account.name }}
                                         </div>
                                         <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% trans "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% trans "Edit" %}</a>
-                                        <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% trans "Reopen account" %}{% else %}{% trans "Close account" %}{% endif %}"><span class="fa-solid fa-clone"></span> {% if account.closed %}{% trans "Reopen" %}{% else %}{% trans "Close" %}{% endif %}</a>
-                                        <a class="dropdown-item" href="{% url "account_delete" account.slug %}" title="{% trans "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% trans "Delete" %}</a>
-                                        <a class="dropdown-item" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% trans "Add file" %}</a>
+                                        <a class="dropdown-item" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% translate "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% translate "Reopen account" %}{% else %}{% translate "Close account" %}{% endif %}"><span class="fa-solid fa-clone"></span> {% if account.closed %}{% translate "Reopen" %}{% else %}{% translate "Close" %}{% endif %}</a>
+                                        <a class="dropdown-item" href="{% url "account_delete" account.slug %}" title="{% translate "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
+                                        <a class="dropdown-item" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% translate "Add file" %}</a>
                                     </div>
                                 </div>
                             </td>
@@ -89,7 +58,7 @@
 {% else %}
 <div class="row">
     <div class="col text-center">
-        <h3>{% trans "There are no accounts available." %}</h3>
+        <h3>{% translate "There are no accounts available." %}</h3>
     </div>
 </div>
 {% endif %}

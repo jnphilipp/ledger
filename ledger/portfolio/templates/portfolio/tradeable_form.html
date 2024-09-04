@@ -7,7 +7,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $("#id_currency").select2({
-            placeholder: "{% trans "Select a currency" %}",
+            placeholder: "{% translate "Select a currency" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",
@@ -24,7 +24,7 @@
             }
         });
         $("#id_type").select2({
-            placeholder: "{% trans "Select a type" %}",
+            placeholder: "{% translate "Select a type" %}",
             allowClear: true,
             language: "{{ LANGUAGE_CODE }}",
             width: "100%",

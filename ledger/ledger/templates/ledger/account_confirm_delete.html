@@ -4,22 +4,22 @@
 
 {% block content %}
 <div class="alert alert-danger" role="alert">
-    <h5><b>{% trans "Confirm deletion" %}</b></h5>
-    <p>{% blocktrans %}Are you sure you want to delete this account? All of the following objects and their related items will be deleted:{% endblocktrans %}</p>
+    <h5><b>{% translate "Confirm deletion" %}</b></h5>
+    <p>{% blocktranslate %}Are you sure you want to delete this account? All of the following objects and their related items will be deleted:{% endblocktranslate %}</p>
     <ul>
         <li>
-            {% trans "Account" %}: <em>{{ account.name }}</em>
+            {% translate "Account" %}: <em>{{ account.name }}</em>
             {% if account.entries %}
                 <ul>
                     {% for entry in account.entries.all %}
-                        <li>{% trans "Entry" %}: <em>#{{ entry.serial_number }}: {{ entry.date|date:"D., d. F Y" }} - {{ entry.category.name }}</em></li>
+                        <li>{% translate "Entry" %}: <em>#{{ entry.serial_number }}: {{ entry.date|date:"D., d. F Y" }} - {{ entry.category.name }}</em></li>
                     {% endfor %}
                 </ul>
             {% endif %}
             {% if account.files %}
                 <ul>
                     {% for file in account.files.all %}
-                        <li>{% trans "File" %}: <em>{{ file.name }}</em></li>
+                        <li>{% translate "File" %}: <em>{{ file.name }}</em></li>
                     {% endfor %}
                 </ul>
             {% endif %}

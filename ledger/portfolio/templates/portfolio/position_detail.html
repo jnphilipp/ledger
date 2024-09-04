@@ -8,27 +8,6 @@
 <script type="text/javascript" src="{% static "js/highcharts/highcharts-more.js" %}"></script>
 <script type="text/javascript" src="{% static "js/highcharts/modules/data.js" %}"></script>
 <script src="{% static "js/position.js" %}"></script>
-<script type="text/javascript">
-    $(function() {
-        $('#iframeFormModal').on('show.bs.modal', function (e) {
-            if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-primary");
-                $("#iframeFormModalSubmit").removeClass("btn-danger");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-save\"></span> {% trans "Save" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/delete/") ) {
-                $("#iframeFormModalSubmit").addClass("btn-danger");
-                $("#iframeFormModalSubmit").removeClass("btn-primary");
-                $("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% trans "Yes, I'm sure" %}");
-                $(".modal-footer").show();
-            }
-            else if ( e.relatedTarget.href.includes("/position/") ) {
-                $(".modal-footer").hide();
-            }
-        });
-    });
-</script>
 {% endblock %}
 
 
@@ -70,33 +49,33 @@
                     </tr>
                     {% if not position.closed and position.trades.count > 0 %}
                     <tr>
-                        <th scope="row">{% trans "Invested" %}</th>
+                        <th scope="row">{% translate "Invested" %}</th>
                         <td>{{ position.invested|unitformat:position.content_object.currency }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">{% trans "Units" %}</th>
+                        <th scope="row">{% translate "Units" %}</th>
                         <td>{{ position.units }}</td>
                     </tr>
                     {% endif %}
                     {% if position.trades.count > 0 %}
                     <tr>
-                        <th scope="row">{% trans "Return" %}</th>
+                        <th scope="row">{% translate "Return" %}</th>
                         <td>{{ position.preturn|unitcolorfy:position.content_object.currency }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">{% trans "Win/Loss" %}</th>
+                        <th scope="row">{% translate "Win/Loss" %}</th>
                         <td>{{ position.win_loss|unitcolorfy:position.content_object.currency }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">{% trans "Dividend" %}</th>
+                        <th scope="row">{% translate "Dividend" %}</th>
                         <td>{{ position.dividend|unitcolorfy:position.content_object.currency }}</td>
                     </tr>
                     <tr>
-                        <th scope="col">{% trans "Annual return" %}</th>
+                        <th scope="col">{% translate "Annual return" %}</th>
                         <td>{{ position.annual_return|unitcolorfy:"%.3f%%" }}</td>
                     </tr>
                     <tr>
-                        <th scope="col">{% trans "Yield" %}</th>
+                        <th scope="col">{% translate "Yield" %}</th>
                         <td>{{ position.pyield|unitcolorfy:"%.3f%%" }}</td>
                     </tr>
                     {% endif %}
@@ -116,7 +95,7 @@
 </div>
 <div class="row">
     <div class="col">
-        <div id="chart" style="min-width: 310px; height: 500px;"></div>
+        <div id="chart" style="min-width: 310px; height: 600px;"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 position("{% url "portfolio:position_chart" position.slug %}", "chart");
@@ -138,15 +117,15 @@
             <table class="table table-hover table-sm">
                 <thead>
                     <tr>
-                        <th class="text-center">{% trans "Trade" %}</th>
-                        <th class="text-center" scope="col" colspan="2">{% trans "Date" %}</th>
-                        <th class="text-center" scope="col">{% trans "Type" %}</th>
-                        <th class="text-center" scope="col">{% trans "Units" %}</th>
-                        <th class="text-center" scope="col">{% trans "Price per unit" %}</th>
-                        <th class="text-center" scope="col">{% trans "Extra costs" %}</th>
-                        <th class="text-center" scope="col">{% trans "Exchange rate" %}</th>
-                        <th class="text-center" scope="col">{% trans "Extra costs" %}</th>
-                        <th class="text-center" scope="col">{% trans "Total" %}</th>
+                        <th class="text-center">{% translate "Trade" %}</th>
+                        <th class="text-center" scope="col" colspan="2">{% translate "Date" %}</th>
+                        <th class="text-center" scope="col">{% translate "Type" %}</th>
+                        <th class="text-center" scope="col">{% translate "Units" %}</th>
+                        <th class="text-center" scope="col">{% translate "Price per unit" %}</th>
+                        <th class="text-center" scope="col">{% translate "Extra costs" %}</th>
+                        <th class="text-center" scope="col">{% translate "Exchange rate" %}</th>
+                        <th class="text-center" scope="col">{% translate "Extra costs" %}</th>
+                        <th class="text-center" scope="col">{% translate "Total" %}</th>
                         <th></th>
                     </tr>
                 </thead>
