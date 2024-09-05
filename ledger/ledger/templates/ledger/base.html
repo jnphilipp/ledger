@@ -31,7 +31,7 @@
                 });
 
                 $("#iframeFormModal").on("show.bs.modal", function(e) {
-                    if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") ) {
+                    if ( e.relatedTarget.href.includes("/create/") || e.relatedTarget.href.includes("/edit/") || e.relatedTarget.href.includes("/duplicate/") ) {
                         $("#iframeFormModalSubmit").addClass("btn-primary");
                         $("#iframeFormModalSubmit").removeClass("btn-danger");
                         if ( e.relatedTarget.href.includes("/file/") ) {
