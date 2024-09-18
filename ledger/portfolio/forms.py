@@ -362,7 +362,7 @@ class ClosingForm(forms.ModelForm):
         for i in self.cleaned_data["data"]:
             if "date" in i and "price" in i and "high" in i and "low" in i:
                 closings.append(
-                    Closing.objects.get_or_create(
+                    Closing.objects.update_or_create(
                         content_type=content_type,
                         object_id=self.cleaned_data["tradeable"].pk,
                         date=i["date"],
