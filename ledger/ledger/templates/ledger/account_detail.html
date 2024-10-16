@@ -4,14 +4,17 @@
 
 {% block content %}
 <div class="row">
-    <div class="col text-end">
-        <a class="iframeFormModal" href="{% url "account_edit" account.slug %}" title="{% blocktranslate with name=account.name %}Edit {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+    <div class="col-8">
+        <h1><a href="{% url "entry_list" %}?accounts={{ account.pk }}">{{ account.name }}</a></h1>
+        {% if account.closed %}<div class="alert alert-danger" role="alert">{% translate "This account is currently closed." %}</div>{% endif %}
+    </div>
+    <div class="col-4 text-end">
+        <a class="btn btn-outline-primary" href="{% url "account_edit" account.slug %}" title="{% blocktranslate with name=account.name %}Edit {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+        <a class="btn btn-outline-danger" href="{% url "account_delete" account.slug %}" title="{% blocktranslate with name=account.name %}Delete {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
     </div>
 </div>
 <div class="row">
     <div class="col">
-        <h1><a href="{% url "entry_list" %}?accounts={{ account.pk }}">{{ account.name }}</a></h1>
-        {% if account.closed %}<div class="alert alert-danger" role="alert">{% translate "This account is currently closed." %}</div>{% endif %}
         <table class="table table-hover table-borderless">
             <tbody>
                 <tr>
@@ -47,11 +50,18 @@
     </div>
 </div>
 <div class="row">
-    <div class="col">
+    <div class="col-8">
         <h2>
             {% translate "Files" %}
             <span class="badge rounded-pill text-bg-light">{{ account.files.count }}</span>
         </h2>
+    </div>
+    <div class="col-4 text-end">
+        <a class="btn btn-outline-primary" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% translate "Add file" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add file" %}</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
         <table class="table table-hover table-borderless">
             <tbody>
                 {% for file in account.files.all %}
