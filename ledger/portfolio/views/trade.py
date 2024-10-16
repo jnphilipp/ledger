@@ -19,12 +19,13 @@
 """Portfolio Django app trade views."""
 
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
 from ..forms import TradeForm
-from ..models import Trade
+from ..models import Position, Trade
 
 
 class CreateView(SuccessMessageMixin, generic.edit.CreateView):
@@ -33,13 +34,31 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
     form_class = TradeForm
     model = Trade
     success_message = _('The trade "%(name)s" was successfully created.')
-    success_url = reverse_lazy("create_another_success")
+
+    def get_initial(self):
+        """Get initial."""
+        initial = {}
+        if "position" in self.request.GET:
+            initial["position"] = get_object_or_404(
+                Position, slug=self.request.GET.get("position")
+            )
+        return initial
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
         return self.success_message % {
             "name": f"{self.object.position} - #{self.object.pk}"
         }
+
+    def get_success_url(self):
+        """Get success URL."""
+        return (
+            reverse_lazy("create_another_success")
+            + "?next="
+            + reverse_lazy(
+                "portfolio:position_detail", kwargs={"slug": self.object.position.slug}
+            )
+        )
 
 
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):

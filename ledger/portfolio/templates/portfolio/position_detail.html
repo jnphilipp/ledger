@@ -13,9 +13,13 @@
 
 {% block content %}
 <div class="row">
-    <div class="col">
+    <div class="col-8">
         <h1>{{ position.content_object.name }} [{{ position.start_date|date:"Y-m-d" }}]</h1>
         {% if position.closed %}<div class="alert alert-danger" role="alert">{% translate "This position is currently closed." %}</div>{% endif %}
+    </div>
+    <div class="col-4 text-end">
+        <a class="btn btn-outline-primary" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+        <a class="btn btn-outline-danger" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
     </div>
 </div>
 <div class="row">
@@ -108,7 +112,7 @@
         <h2>{% translate "Trades" %}</h2>
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "portfolio:trade_create" %}" title="{% translate "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add trade" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "portfolio:trade_create" %}?position={{ position.slug }}" title="{% translate "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add trade" %}</a>
     </div>
 </div>
 <div class="row">
