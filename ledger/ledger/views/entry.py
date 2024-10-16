@@ -161,6 +161,7 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
 
     form_class = EntryForm
     model = Entry
+    success_url = reverse_lazy("create_another_success")
 
     def get_initial(self):
         """Get initial."""
@@ -179,10 +180,6 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
             return _('The entry "%(entry)s" was successfully created.') % {
                 "entry": self.object
             }
-
-    def get_success_url(self):
-        """Get success URL."""
-        return reverse_lazy("create_another_success")
 
 
 class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
