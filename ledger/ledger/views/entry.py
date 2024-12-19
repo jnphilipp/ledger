@@ -16,6 +16,8 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 """Ledger Django app entry views."""
 
+import csv
+import io
 import json
 
 from datetime import date
@@ -23,13 +25,14 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import F, TextField, Value
 from django.db.models.functions import Concat
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, FileResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 from typing import Iterable
+from units.templatetags.units import unitformat
 
 from ..dates import get_last_date_current_month
 from ..forms import EntryForm, EntryFilterForm
@@ -68,6 +71,47 @@ class ListView(generic.ListView):
 
     context_object_name = "entries"
     model = Entry
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handle GET request."""
+        if "/download/" in self.request.path:
+            queryset = self.get_queryset()
+            buffer = io.StringIO()
+            writer = csv.DictWriter(
+                buffer,
+                fieldnames=[
+                    "account",
+                    "serial_number",
+                    "date",
+                    "amount",
+                    "category",
+                    "text",
+                    "tags",
+                ],
+                dialect="unix",
+            )
+            writer.writeheader()
+            for entry in queryset:
+                writer.writerow(
+                    {
+                        "account": entry.account.name,
+                        "serial_number": entry.serial_number,
+                        "date": entry.date.strftime("%Y-%m-%d"),
+                        "amount": unitformat(entry.total, entry.account.unit),
+                        "category": entry.category.name,
+                        "text": entry.text,
+                        "tags": ",".join(tag.name for tag in entry.tags.all()),
+                    }
+                )
+
+            content = buffer.getvalue().encode("utf-8")
+            bytes_io = io.BytesIO(content)
+            buffer.close()
+
+            bytes_io.seek(0)
+            return FileResponse(bytes_io, as_attachment=False, filename="ledger.csv")
+        else:
+            return super().get(request, *args, **kwargs)
 
     def get_paginate_by(self, queryset) -> int | None:
         """Get number to paginate by."""

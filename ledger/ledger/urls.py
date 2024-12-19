@@ -50,6 +50,7 @@ from .views import (
 urlpatterns = [
     path("", entry.ListView.as_view(), name="entry_list"),
     path("<int:page>/", entry.ListView.as_view()),
+    path("download/", entry.ListView.as_view(), name="entry_list_download"),
     path("account/", account.ListView.as_view(), name="account_list"),
     path("account/create/", account.CreateView.as_view(), name="account_create"),
     path("account/autocomplete/", account.autocomplete, name="account_autocomplete"),
