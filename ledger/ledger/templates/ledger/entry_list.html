@@ -164,8 +164,10 @@
             </table>
         </div>
         {% url "entry_list" as base_path %}
+        {% if per_page is not None %}
         {% translate "Entries" as pagination_title %}
         {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date accounts=accounts|join:"&accounts=" categories=categories|join:"&categories=" tags=tags|join:"&tags=" units=units|join:"&units=" %}
+        {% endif %}
     </div>
 </div>
 {% else %}

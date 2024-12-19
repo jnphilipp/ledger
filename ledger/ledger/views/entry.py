@@ -68,7 +68,18 @@ class ListView(generic.ListView):
 
     context_object_name = "entries"
     model = Entry
-    paginate_by = 200
+
+    def get_paginate_by(self, queryset) -> int | None:
+        """Get number to paginate by."""
+        self.per_page: int | None = None
+        try:
+            self.per_page = int(self.request.GET.get("per_page", 300))
+            if self.per_page <= 0:
+                self.per_page = None
+                return self.per_page
+            return self.per_page
+        except ValueError:
+            return self.per_page
 
     def get_queryset(self):
         """Get queryset."""
@@ -137,6 +148,7 @@ class ListView(generic.ListView):
         context["categories"] = self.categories
         context["tags"] = self.tags
         context["units"] = self.units
+        context["per_page"] = self.per_page
 
         return context
 
