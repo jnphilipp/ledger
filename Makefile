@@ -180,7 +180,7 @@ build/package/DEBIAN/control: build/package/DEBIAN/md5sums
 	$(Q)echo "Section: utils" >> build/package/DEBIAN/control
 	$(Q)echo "Priority: optional" >> build/package/DEBIAN/control
 	$(Q)echo "Architecture: all" >> build/package/DEBIAN/control
-	$(Q)echo "Depends: python3 (<< 3.11), python3 (>= 3.7), python3:any, python3-gi:any, python3-django (= 4.0~), python3-dateutil (=2.8~)" >> build/package/DEBIAN/control
+	$(Q)echo "Depends: python3 (<< 3.14), python3 (>= 3.10), python3:any, python3-gi:any, python3-django (= 4.2~), python3-dateutil (=2.9~)" >> build/package/DEBIAN/control
 	$(Q)echo "Recommends: systemd" >> build/package/DEBIAN/control
 	$(Q)echo "Installed-Size: `du -sk build/package/usr | grep -oE "[0-9]+"`" >> build/package/DEBIAN/control
 	$(Q)echo "Maintainer: J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>" >> build/package/DEBIAN/control
