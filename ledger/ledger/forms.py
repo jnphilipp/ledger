@@ -65,7 +65,9 @@ class EntryForm(forms.ModelForm):
         label=_("Repeat intervall"),
         required=False,
     )
-    end_date = forms.DateField(label=_("End date"), required=False)
+    end_date = forms.DateField(
+        input_formats=["%Y-%m-%d"], label=_("End date"), required=False
+    )
 
     def __init__(self, *args, **kwargs):
         """Init."""
@@ -96,7 +98,8 @@ class EntryForm(forms.ModelForm):
             '<a id="date_today" href="">%s</a> (%s)'
             % (_("Today"), _("Date format: yyyy-mm-dd"))
         )
-        self.fields["date"].localize = True
+        self.fields["date"].input_formats = ["%Y-%m-%d"]
+        self.fields["date"].widget.format = "%Y-%m-%d"
 
     def clean(self):
         """Clean."""
@@ -234,7 +237,7 @@ class EntryFilterForm(forms.Form):
     """Entry filter form."""
 
     start_date = forms.DateField(
-        localize=True,
+        input_formats=["%Y-%m-%d"],
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("Start date"),
@@ -243,7 +246,7 @@ class EntryFilterForm(forms.Form):
         required=False,
     )
     end_date = forms.DateField(
-        localize=True,
+        input_formats=["%Y-%m-%d"],
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("End date"),
