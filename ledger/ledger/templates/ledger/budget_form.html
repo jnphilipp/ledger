@@ -1,5 +1,5 @@
 {% extends "ledger/popup.html" %}
-{% load bootstrap i18n l10n %}
+{% load django_html_utils i18n l10n %}
 {% get_current_language as LANGUAGE_CODE %}
 
 
@@ -76,5 +76,5 @@
 
 
 {% block content %}
-{% bootstrap_form form=form submit=False %}
+{% form form=form submit=False %}
 {% endblock%}

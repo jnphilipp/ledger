@@ -1,7 +1,7 @@
 {% extends "ledger/popup.html" %}
-{% load bootstrap i18n %}
+{% load django_html_utils i18n %}
 
 
 {% block content %}
-{% bootstrap_form form=form enctype="multipart/form-data" submit=False %}
+{% form form=form enctype="multipart/form-data" submit=False %}
 {% endblock%}

@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load bootstrap i18n l10n ledger static units %}
+{% load django_html_utils i18n l10n ledger static units %}
 {% get_current_language as LANGUAGE_CODE %}
 
 
@@ -97,7 +97,7 @@
         {% if form %}
             {% translate "Filter" as filter_translate %}
             {% url "entry_list" as form_url %}
-            {% bootstrap_form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fa-solid fa-search" submit_title=filter_translate %}
+            {% form csrf=False method="get" form=form url=form_url type="inline" submit_icon="fa-solid fa-search" submit_title=filter_translate %}
         {% endif %}
     </div>
    <div class="col-2 text-end">

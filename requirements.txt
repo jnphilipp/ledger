@@ -1,3 +1,3 @@
 Django>=3.2
 python-dateutil~=2.8.2
-git+https://github.com/jnphilipp/django_bootstrap5.git@0.3.11
+django-html-utils~=0.2.0

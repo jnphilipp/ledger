@@ -77,10 +77,10 @@ EMAIL_SUBJECT_PREFIX = "[ledger] "
 # Application definition
 
 INSTALLED_APPS = [
-    "django_bootstrap5",
     "ledger",
     "portfolio",
     "units",
+    "django_html_utils",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",

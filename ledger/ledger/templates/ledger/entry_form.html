@@ -1,5 +1,5 @@
 {% extends "ledger/popup.html" %}
-{% load bootstrap i18n l10n ledger %}
+{% load django_html_utils i18n l10n ledger %}
 {% get_current_language as LANGUAGE_CODE %}
 
 
@@ -103,5 +103,5 @@
 
 
 {% block content %}
-{% bootstrap_form form=form enctype="multipart/form-data" submit=False %}
+{% form form=form enctype="multipart/form-data" submit=False %}
 {% endblock%}

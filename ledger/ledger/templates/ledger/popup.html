@@ -1,4 +1,4 @@
-{% load bootstrap i18n static %}
+{% load django_html_utils i18n static %}
 {% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
@@ -7,8 +7,8 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="shortcut icon" href="{% static "images/logo.png" %}"/>
-        {% bootstrap_css %}
-        {% bootstrap_js %}
+        {% django_html_utils_css %}
+        {% django_html_utils_js %}
         <link rel="stylesheet" media="all" href="{% static "css/fontawesome.min.css" %}"/>
         <link rel="stylesheet" media="all" href="{% static "css/solid.min.css" %}"/>
         <link rel="stylesheet" media="all" href="{% static "css/brands.min.css" %}"/>
