@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2024 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -150,7 +150,7 @@ class EntryForm(forms.ModelForm):
             self.cleaned_data["end_date"] if "end_date" in self.cleaned_data else None
         )
 
-        if int(intervall) == 0 and end_date is None:
+        if end_date is None:
             if instance.pk is None:
                 try:
                     instance.save()
@@ -187,7 +187,7 @@ class EntryForm(forms.ModelForm):
                     instance.related.category = instance.account.category
                     instance.related.save()
                 return instance
-        else:
+        elif end_date is not None:
             entries = []
             try:
                 account = Account.objects.get(category__pk=instance.category.pk)

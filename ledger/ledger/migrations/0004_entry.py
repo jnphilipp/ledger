@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -27,30 +25,79 @@ import ledger.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ledger', '0003_account'),
+        ("ledger", "0003_account"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Entry',
+            name="Entry",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('serial_number', models.IntegerField(verbose_name='Serial number')),
-                ('date', models.DateField(verbose_name='Date')),
-                ('amount', models.FloatField(default=0., verbose_name='Amount')),
-                ('fees', models.FloatField(default=0., verbose_name='Fees')),
-                ('text', ledger.fields.SingleLineTextField(blank=True, null=True, verbose_name='Text')),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='ledger.account', verbose_name='Account')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='ledger.category', verbose_name='Category')),
-                ('tags', models.ManyToManyField(blank=True, related_name='entries', to='ledger.Tag', verbose_name='Tags')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                ("serial_number", models.IntegerField(verbose_name="Serial number")),
+                ("date", models.DateField(verbose_name="Date")),
+                ("amount", models.FloatField(default=0.0, verbose_name="Amount")),
+                ("fees", models.FloatField(default=0.0, verbose_name="Fees")),
+                (
+                    "text",
+                    ledger.fields.SingleLineTextField(
+                        blank=True, null=True, verbose_name="Text"
+                    ),
+                ),
+                (
+                    "account",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="entries",
+                        to="ledger.account",
+                        verbose_name="Account",
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="entries",
+                        to="ledger.category",
+                        verbose_name="Category",
+                    ),
+                ),
+                (
+                    "tags",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="entries",
+                        to="ledger.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Entry',
-                'verbose_name_plural': 'Entries',
-                'ordering': (django.db.models.expressions.Func(django.db.models.expressions.F('account__name'), function='LOWER'), 'serial_number'),
-                'unique_together': {('account', 'serial_number')},
+                "verbose_name": "Entry",
+                "verbose_name_plural": "Entries",
+                "ordering": (
+                    django.db.models.expressions.Func(
+                        django.db.models.expressions.F("account__name"),
+                        function="LOWER",
+                    ),
+                    "serial_number",
+                ),
+                "unique_together": {("account", "serial_number")},
             },
         ),
     ]

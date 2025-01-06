@@ -1,7 +1,7 @@
 # German translation.
-# Copyright (C) 2014-2024 J. Nathanael Philipp
+# Copyright (C) 2014-2025 J. Nathanael Philipp
 # This file is distributed under the same license as the ledger package.
-# J. Nathanael Philipp <nathanael@philipp.land>, 2014-2024.
+# J. Nathanael Philipp <nathanael@philipp.land>, 2014-2025.
 #
 #, fuzzy
 msgid ""

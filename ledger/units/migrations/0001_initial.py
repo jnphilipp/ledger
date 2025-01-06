@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -26,25 +24,48 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Unit',
+            name="Unit",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('name', ledger.fields.SingleLineTextField(verbose_name='Name')),
-                ('code', models.TextField(max_length=3, unique=True, verbose_name="Currency code (ISO 4217)")),
-                ('symbol', ledger.fields.SingleLineTextField(verbose_name='Symbol')),
-                ('precision', models.PositiveIntegerField(default=2, verbose_name='Precision')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                ("name", ledger.fields.SingleLineTextField(verbose_name="Name")),
+                (
+                    "code",
+                    models.TextField(
+                        max_length=3,
+                        unique=True,
+                        verbose_name="Currency code (ISO 4217)",
+                    ),
+                ),
+                ("symbol", ledger.fields.SingleLineTextField(verbose_name="Symbol")),
+                (
+                    "precision",
+                    models.PositiveIntegerField(default=2, verbose_name="Precision"),
+                ),
             ],
             options={
-                'verbose_name': 'Unit',
-                'verbose_name_plural': 'Units',
-                'ordering': ('name',),
+                "verbose_name": "Unit",
+                "verbose_name_plural": "Units",
+                "ordering": ("name",),
             },
         ),
     ]

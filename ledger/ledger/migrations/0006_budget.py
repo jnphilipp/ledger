@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -24,24 +22,70 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ledger', '0005_file'),
+        ("ledger", "0005_file"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Budget',
+            name="Budget",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('consumption_tags', models.ManyToManyField(blank=True, related_name='consumption_tags', to='ledger.Tag', verbose_name='Consumption tags')),
-                ('income_tags', models.ManyToManyField(blank=True, related_name='income_tags', to='ledger.Tag', verbose_name='Income tags')),
-                ('insurance_tags', models.ManyToManyField(blank=True, related_name='insurance_tags', to='ledger.Tag', verbose_name='Insurance tags')),
-                ('savings_tags', models.ManyToManyField(blank=True, related_name='savings_tags', to='ledger.Tag', verbose_name='Savings tags')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                (
+                    "consumption_tags",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="consumption_tags",
+                        to="ledger.Tag",
+                        verbose_name="Consumption tags",
+                    ),
+                ),
+                (
+                    "income_tags",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="income_tags",
+                        to="ledger.Tag",
+                        verbose_name="Income tags",
+                    ),
+                ),
+                (
+                    "insurance_tags",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="insurance_tags",
+                        to="ledger.Tag",
+                        verbose_name="Insurance tags",
+                    ),
+                ),
+                (
+                    "savings_tags",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="savings_tags",
+                        to="ledger.Tag",
+                        verbose_name="Savings tags",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Budget',
-                'verbose_name_plural': 'Budgets',
+                "verbose_name": "Budget",
+                "verbose_name_plural": "Budgets",
             },
         ),
     ]

@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2023 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -27,27 +25,65 @@ import ledger.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('units', '0002_default_units'),
-        ('ledger', '0002_tag'),
+        ("units", "0002_default_units"),
+        ("ledger", "0002_tag"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Account',
+            name="Account",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('slug', models.SlugField(unique=True, verbose_name='Slug')),
-                ('name', ledger.fields.SingleLineTextField(unique=True, verbose_name='Name')),
-                ('closed', models.BooleanField(default=False, verbose_name='Closed')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='accounts', to='ledger.category', verbose_name='Category')),
-                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='accounts', to='units.unit', verbose_name='Unit')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                ("slug", models.SlugField(unique=True, verbose_name="Slug")),
+                (
+                    "name",
+                    ledger.fields.SingleLineTextField(unique=True, verbose_name="Name"),
+                ),
+                ("closed", models.BooleanField(default=False, verbose_name="Closed")),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="accounts",
+                        to="ledger.category",
+                        verbose_name="Category",
+                    ),
+                ),
+                (
+                    "unit",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="accounts",
+                        to="units.unit",
+                        verbose_name="Unit",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Account',
-                'verbose_name_plural': 'Accounts',
-                'ordering': ('closed', django.db.models.expressions.Func(django.db.models.expressions.F('name'), function='LOWER')),
+                "verbose_name": "Account",
+                "verbose_name_plural": "Accounts",
+                "ordering": (
+                    "closed",
+                    django.db.models.expressions.Func(
+                        django.db.models.expressions.F("name"), function="LOWER"
+                    ),
+                ),
             },
         ),
     ]
