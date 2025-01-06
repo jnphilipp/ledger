@@ -10,7 +10,19 @@
 
 
 {% block content %}
-{% if year and units and table %}
+{% if not year and not units and not table %}
+<div class="row">
+    <div class="text-end">
+        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h3>{% translate "There is no data available." %}</h3>
+    </div>
+</div>
+{% else %}
+{% if year %}
 <div class="row">
     <div class="col">
         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar">
@@ -25,10 +37,12 @@
                     <span class="sr-only">{% translate "Next" %}</span>
                 </a>
             </div>
+            {% if units and table %}
             <div class="btn-group btn-toggle mr-2" role="group" aria-label="{% translate "Chart/Table toggle" %}">
                 <a class="btn btn btn-outline-primary active" data-bs-target="#toggleView" role="button">{% translate "Chart" %}</a>
                 <a class="btn btn btn-outline-secondary" data-bs-target="#toggleView" role="button">{% translate "Table" %}</a>
             </div>
+            {% endif %}
             <div class="btn-group">
                 <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
             </div>
@@ -42,6 +56,8 @@
         </script>
     </div>
 </div>
+{% endif %}
+{% if units and table %}
 <div class="row mt-md-2">
     <div class="col">
         <div id="chart_container">
@@ -190,16 +206,6 @@
         </div>
     </div>
 </div>
-{% else %}
-<div class="row">
-    <div class="text-end">
-        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col text-center">
-        <h3>{% translate "There is no data available." %}</h3>
-    </div>
-</div>
+{% endif %}
 {% endif %}
 {% endblock %}
