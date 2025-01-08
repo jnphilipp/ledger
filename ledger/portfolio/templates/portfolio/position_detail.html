@@ -18,8 +18,8 @@
         {% if position.closed %}<div class="alert alert-danger" role="alert">{% translate "This position is currently closed." %}</div>{% endif %}
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
-        <a class="btn btn-outline-danger" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %} {% translate "Edit" %}</a>
+        <a class="btn btn-outline-danger" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %} {% translate "Delete" %}</a>
     </div>
 </div>
 <div class="row">
@@ -94,7 +94,7 @@
         <h2>{% translate "Win/Loss-chart" %}</h2>
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "portfolio:closing_create" %}" title="{% translate "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add closings" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "portfolio:closing_create" %}" title="{% translate "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "plus" %} {% translate "Add closings" %}</a>
     </div>
 </div>
 <div class="row">
@@ -112,7 +112,7 @@
         <h2>{% translate "Trades" %}</h2>
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "portfolio:trade_create" %}?position={{ position.slug }}" title="{% translate "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add trade" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "portfolio:trade_create" %}?position={{ position.slug }}" title="{% translate "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "plus" %} {% translate "Add trade" %}</a>
     </div>
 </div>
 <div class="row">
@@ -148,8 +148,8 @@
                         <td class="text-end">{{ trade.extra2|unitformat:position.unit }}</td>
                         <td class="text-end">{{ trade.total|unitformat:position.unit }}</td>
                         <td>
-                            <a class="iframeFormModal" href="{% url "portfolio:trade_edit" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Edit trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span></a>
-                            <a class="iframeFormModal" href="{% url "portfolio:trade_delete" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Delete trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span></a>
+                            <a class="iframeFormModal" href="{% url "portfolio:trade_edit" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Edit trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %}</a>
+                            <a class="iframeFormModal" href="{% url "portfolio:trade_delete" trade.pk %}" title="{% blocktranslate with position=trade.position trade=trade.pk %}Delete trade {{ position }} #{{ trade }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %}</a>
                         </td>
                     </tr>
                     {% endfor %}

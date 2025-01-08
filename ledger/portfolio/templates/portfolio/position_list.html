@@ -42,7 +42,7 @@
     </div>
    <div class="col text-end">
         <div class="dropdown">
-            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="fa-solid fa-plus"></span> {% translate "Add" %}</a>
+            <a href="#" class="dropdown-toggle btn btn-outline-primary" id="add_dropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false">{% fa "plus" %} {% translate "Add" %}</a>
             <div class="dropdown-menu" aria-labelledby="add_dropdown">
                 {% if positions %}
                     <a class="dropdown-item" href="{% url "portfolio:trade_create" %}" title="{% translate "Add trade" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% translate "Trade" %}</a>
@@ -119,15 +119,15 @@
                         <td class="text-end">{{ position|duration }}</td>
                         <td>
                             <div class="dropdown">
-                                <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{position.pk}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span class="fa-solid fa-ellipsis-h"></span></a>
+                                <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{position.pk}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false">{% fa "ellipsis-h" %}</a>
                                 <div class="dropdown-menu" aria-labelledby="options-{position.pk}">
                                     <div class="dropdown-item text-muted">{{ position }}</div>
                                     <div><hr class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+                                    <a class="dropdown-item" href="{% url "portfolio:position_edit" position.slug %}" title="{% blocktranslate with position=position %}Edit position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %} {% translate "Edit" %}</a>
                                     {% if not position.closed %}
-                                    <a class="dropdown-item" href="{% url "portfolio:position_close" position.slug %}" title="{% blocktranslate with position=position %}Close position {{ position }}{% endblocktranslate %}"><span class="fa-solid fa-clone"></span> {% translate "Close" %}</a>
+                                    <a class="dropdown-item" href="{% url "portfolio:position_close" position.slug %}" title="{% blocktranslate with position=position %}Close position {{ position }}{% endblocktranslate %}">{% fa "clone" %} {% translate "Close" %}</a>
                                     {% endif %}
-                                    <a class="dropdown-item" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
+                                    <a class="dropdown-item" href="{% url "portfolio:position_delete" position.slug %}" title="{% blocktranslate with position=position %}Delete position {{ position }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %} {% translate "Delete" %}</a>
                                 </div>
                             </div>
                         </td>

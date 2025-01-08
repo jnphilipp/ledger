@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load i18n ledger static %}
+{% load django_html_utils i18n ledger static %}
 
 {% block extrahead %}
 <script type="text/javascript" src="{% static "js/highcharts/highcharts.js" %}"></script>
@@ -13,7 +13,7 @@
 {% if not year and not units and not table %}
 <div class="row">
     <div class="text-end">
-        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+        <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}">{% fa "edit" %} {% translate "Edit" %}</a>
     </div>
 </div>
 <div class="row">
@@ -44,7 +44,7 @@
             </div>
             {% endif %}
             <div class="btn-group">
-                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
+                <a href="{% url "budget_edit" %}?reload=True" class="btn btn-outline-primary" role="button" data-bs-toggle="modal" data-bs-target="#iframeFormModal" title="{% translate "Edit budget" %}">{% fa "edit" %} {% translate "Edit" %}</a>
             </div>
         </div>
         <script type="text/javascript">

@@ -1,5 +1,5 @@
 {% extends "ledger/base.html" %}
-{% load i18n ledger %}
+{% load django_html_utils i18n ledger %}
 
 
 {% block content %}
@@ -9,8 +9,8 @@
         {% if account.closed %}<div class="alert alert-danger" role="alert">{% translate "This account is currently closed." %}</div>{% endif %}
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "account_edit" account.slug %}" title="{% blocktranslate with name=account.name %}Edit {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
-        <a class="btn btn-outline-danger" href="{% url "account_delete" account.slug %}" title="{% blocktranslate with name=account.name %}Delete {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "account_edit" account.slug %}" title="{% blocktranslate with name=account.name %}Edit {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %} {% translate "Edit" %}</a>
+        <a class="btn btn-outline-danger" href="{% url "account_delete" account.slug %}" title="{% blocktranslate with name=account.name %}Delete {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %} {% translate "Delete" %}</a>
     </div>
 </div>
 <div class="row">
@@ -57,7 +57,7 @@
         </h2>
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% translate "Add file" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add file" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% translate "Add file" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "plus" %} {% translate "Add file" %}</a>
     </div>
 </div>
 <div class="row">
@@ -67,7 +67,7 @@
                 {% for file in account.files.all %}
                 <tr>
                     <th><a href="{% url "file_detail" file.slug %}">{{ file.name }}</a></th>
-                    <td><a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span></a></td>
+                    <td><a class="iframeFormModal" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

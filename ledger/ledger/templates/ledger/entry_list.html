@@ -19,7 +19,7 @@
             selectOtherMonths: true
         });
         $("#id_choices").select2({
-            placeholder: "{% translate "Accounts, Categories, Tags, Units" %}",
+            placeholder: "{% translate "Accounts, Categories, Tags, nits" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "element",
             templateSelection: function (data) {
@@ -123,7 +123,7 @@
                                         <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?per_page={{ per_page }}{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if choices %}&choices={% for c in choices %}{{ c }}{% if not forloop.last %}&choices={% endif %}{% endfor %}{% endif %}" title="{% translate "Move down" %}">{% fa "arrow-down" %} {% translate "Move down" %}</a>
                                         <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?per_page={{ per_page }}{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if choices %}&choices={% for c in choices %}{{ c }}{% if not forloop.last %}&choices={% endif %}{% endfor %}{% endif %}" title="{% translate "Move up" %}">{% fa "arrow-up" %} {% translate "Move up" %}</a>
                                         <a class="dropdown-item" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %} {% translate "Delete" %}</a>
-                                        <a class="dropdown-item" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% translate "Add file" %}</a>
+                                        <a class="dropdown-item" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "upload" %} {% translate "Add file" %}</a>
                                     </div>
                                 </div>
                             </td>

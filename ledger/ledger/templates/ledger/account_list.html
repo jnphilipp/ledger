@@ -1,11 +1,11 @@
 {% extends "ledger/base.html" %}
-{% load i18n ledger %}
+{% load django_html_utils i18n l10n ledger %}
 
 
 {% block content %}
 <div class="row">
     <div class="col text-end">
-        <a class="btn btn-outline-primary" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% translate "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button"><span class="fa-solid fa-plus"></span> {% translate "Add" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "account_create" %}?next={% url "account_list" %}" title="{% translate "Add account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal" role="button">{% fa "plus" %} {% translate "Add" %}</a>
     </div>
 </div>
 {% if accounts %}
@@ -35,16 +35,16 @@
                             <td class="text-end">{{ account.entries.last.date|date:"l, d. F Y" }}</td>
                             <td>
                                 <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa-solid fa-ellipsis-h"></span></a>
+                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% fa "ellipsis-h" %}</a>
                                     <div class="dropdown-menu" aria-labelledby="options-{entry.id}">
                                         <div class="dropdown-item text-muted">
                                             {{ account.name }}
                                         </div>
                                         <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% translate "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
-                                        <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% translate "Reopen account" %}{% else %}{% translate "Close account" %}{% endif %}"><span class="fa-solid fa-clone"></span> {% if account.closed %}{% translate "Reopen" %}{% else %}{% translate "Close" %}{% endif %}</a>
-                                        <a class="dropdown-item" href="{% url "account_delete" account.slug %}" title="{% translate "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
-                                        <a class="dropdown-item" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% translate "Add file" %}</a>
+                                        <a class="dropdown-item" href="{% url "account_edit" account.slug %}?next={% url "account_list" %}" title="{% translate "Edit account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %} {% translate "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "account_close" account.slug %}" title="{% if account.closed %}{% translate "Reopen account" %}{% else %}{% translate "Close account" %}{% endif %}">{% fa "clone" %} {% if account.closed %}{% translate "Reopen" %}{% else %}{% translate "Close" %}{% endif %}</a>
+                                        <a class="dropdown-item" href="{% url "account_delete" account.slug %}" title="{% translate "Delete account" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %} {% translate "Delete" %}</a>
+                                        <a class="dropdown-item" href="{% url "file_create" account|content_type_pk account.pk %}" title="{% blocktranslate with name=account.name %}Add file to account {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "upload" %} {% translate "Add file" %}</a>
                                     </div>
                                 </div>
                             </td>

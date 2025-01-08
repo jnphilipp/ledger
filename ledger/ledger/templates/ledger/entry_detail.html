@@ -1,5 +1,5 @@
 {% extends "ledger/popup.html" %}
-{% load i18n l10n ledger units %}
+{% load django_html_utils i18n l10n ledger units %}
 {% get_current_language as LANGUAGE_CODE %}
 
 
@@ -16,7 +16,7 @@
             parent.$("#iframeFormModalIframe").attr("src", this.href);
             parent.$("#iframeFormModalSubmit").addClass("btn-danger");
             parent.$("#iframeFormModalSubmit").removeClass("btn-primary");
-            parent.$("#iframeFormModalSubmit").html("<span class=\"fa-solid fa-trash\"></span> {% translate "Yes, I'm sure" %}");
+            parent.$("#iframeFormModalSubmit").html('{% fa "trash" %} {% translate "Yes, I'm sure" %}");
             parent.$(".modal-footer").show();
         });
     });
@@ -82,7 +82,7 @@
                     {% for file in entry.files.all %}
                         <li>
                             <a href="{% url "file_detail" file.slug %}">{{ file.name }}</a>
-                            <a class="iframeDelete" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal"><span class="fa-solid fa-trash"></span></a>
+                            <a class="iframeDelete" href="{% url "file_delete" file.slug %}" title="{% blocktranslate with name=file.name %}Delete file {{ name }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="parent.#iframeFormModal">{% fa "trash" %}</a>
                         </li>
                     {% endfor %}
                 </ul>
