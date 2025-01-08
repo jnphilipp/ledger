@@ -18,67 +18,36 @@
             showOtherMonths: true,
             selectOtherMonths: true
         });
-        $("#id_accounts").select2({
-            placeholder: "{% translate "Accounts" %}",
+        $("#id_choices").select2({
+            placeholder: "{% translate "Accounts, Categories, Tags, Units" %}",
             language: "{{ LANGUAGE_CODE }}",
             width: "element",
-            ajax: {
-                url: "{% url "account_autocomplete" %}",
-                dataType: "json",
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data, params) {
-                    return { results: data.accounts }
+            templateSelection: function (data) {
+                if ( data.id.startsWith("a") ) {
+                    return "{% translate "Account" %}: " + data.text;
                 }
-            }
-        });
-        $("#id_categories").select2({
-            placeholder: "{% translate "Categories" %}",
-            language: "{{ LANGUAGE_CODE }}",
-            width: "element",
-            ajax: {
-                url: "{% url "category_autocomplete" %}",
-                dataType: "json",
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data, params) {
-                    return { results: data.categories }
+                else if ( data.id.startsWith("c") ) {
+                    return "{% translate "Category" %}: " + data.text;
                 }
-            }
-        });
-        $("#id_tags").select2({
-            placeholder: "{% translate "Tags" %}",
-            language: "{{ LANGUAGE_CODE }}",
-            width: "element",
-            ajax: {
-                url: "{% url "tag_autocomplete" %}",
-                dataType: "json",
-                delay: 250,
-                data: function (params) {
-                    return { q: params.term };
-                },
-                processResults: function (data, params) {
-                    return { results: data.tags }
+                else if ( data.id.startsWith("t") ) {
+                    return "{% translate "Tag" %}: " + data.text;
                 }
-            }
-        });
-        $("#id_units").select2({
-            placeholder: "{% translate "Units" %}",
-            language: "{{ LANGUAGE_CODE }}",
-            width: "element",
+                else if ( data.id.startsWith("u") ) {
+                    return "{% translate "Unit" %}: " + data.text;
+                }
+                else {
+                    return data.text;
+                }
+            },
             ajax: {
-                url: "{% url "units:unit_autocomplete" %}",
+                url: "{% url "choices_autocomplete" %}",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {
                     return { q: params.term };
                 },
                 processResults: function (data, params) {
-                    return { results: data.units }
+                    return { results: data.choices }
                 }
             }
         });
@@ -88,7 +57,7 @@
 
 
 {% block content %}
-{% if entries %}
+{% if entries or choices|length > 0 %}
 <div class="row">
     <div class="col-2">
         {% balances %}
@@ -101,7 +70,7 @@
         {% endif %}
     </div>
    <div class="col-2 text-end">
-        <a class="btn btn-outline-primary" href="{% url "entry_create" %}" title="{% translate "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-plus"></span> {% translate "Add" %}</a>
+       <a class="btn btn-outline-primary" href="{% url "entry_create" %}" title="{% translate "Add entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "plus" %} {% translate "Add" %}</a>
     </div>
 </div>
 <div class="row mt-2">
@@ -124,16 +93,16 @@
                     {% for entry in entries %}
                         <tr {% if entry.date|date:"Y-m-d" == today %}class="table-info"{% endif %}>
                             <th scope="row">
-                                <a href="{% url "entry_list" %}?per_page={{ per_page }}&accounts={{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}" title="{{ entry.account.name }}">{{ entry.account.name }}</a>
+                                <a href="{% url "entry_list" %}?per_page={{ per_page }}&choices=a{{ entry.account.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}" title="{{ entry.account.name }}">{{ entry.account.name }}</a>
                                 <a href="{% url "entry_detail" entry.pk %}" title="{{ entry }}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">#{{ entry.serial_number }}</a>
                             </th>
                             <td>{{ entry.date|date:"D, d.m.Y" }}</td>
                             <td class="text-end"{% if entry.fees != 0 %} data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{% translate "Amount" %}: {{ entry.amount|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}<br>{% translate "Fees" %}: {{ entry.fees|floatformat:entry.account.unit.precision }} {{ entry.account.unit.symbol }}"{% endif %}>{{ entry.total|unitcolorfy:entry.account.unit }}</td>
-                            <td><a href="{% url "entry_list" %}?per_page={{ per_page }}&categories={{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.category }}</a></td>
+                            <td><a href="{% url "entry_list" %}?per_page={{ per_page }}&choices=c{{ entry.category.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ entry.category }}</a></td>
                             <td>
                                 {% if entry.text %}{{ entry.text }}{% if entry.tags.all %}, {% endif %}{% endif %}
                                 {% for tag in entry.tags.all %}
-                                    <a href="{% url "entry_list" %}?per_page={{ per_page }}&tags={{ tag.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                                    <a href="{% url "entry_list" %}?per_page={{ per_page }}&choices=t{{ tag.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </td>
                             <td>
@@ -143,17 +112,17 @@
                             </td>
                             <td>
                                 <div class="dropdown">
-                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false"><span class="fa-solid fa-ellipsis-h"></span></a>
+                                    <a href="#" class="dropdown-toggle menu-dropdown-toggle" id="options-{entry.id}" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-haspopup="true" aria-expanded="false">{% fa "ellipsis-h" %}</a>
                                     <div class="dropdown-menu" aria-labelledby="options-{entry.id}">
                                         <div class="dropdown-item text-muted">
                                             {{ entry.account.name }} #{{ entry.serial_number }}
                                         </div>
                                         <div><hr class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{% url "entry_edit" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Edit entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-edit"></span> {% translate "Edit" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_duplicate" entry.pk %}" title="{% translate "Duplicate entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-clone"></span> {% translate "Duplicate" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?per_page={{ per_page }}{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% translate "Move down" %}"><span class="fa-solid fa-arrow-down"></span> {% translate "Move down" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?per_page={{ per_page }}{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if accounts %}&accounts={% for a in accounts %}{{ a }}{% if not forloop.last %}&accounts={% endif %}{% endfor %}{% endif %}{% if categories %}&categories={% for c in categories %}{{ c }}{% if not forloop.last %}&categories={% endif %}{% endfor %}{% endif %}{% if tags %}&tags={% for t in tags %}{{ t }}{% if not forloop.last %}&tags={% endif %}{% endfor %}{% endif %}{% if units %}&units={% for u in units %}{{ u }}{% if not forloop.last %}&units={% endif %}{% endfor %}{% endif %}" title="{% translate "Move up" %}"><span class="fa-solid fa-arrow-up"></span> {% translate "Move up" %}</a>
-                                        <a class="dropdown-item" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-trash"></span> {% translate "Delete" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_edit" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Edit entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %} {% translate "Edit" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_duplicate" entry.pk %}" title="{% translate "Duplicate entry" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "clone" %} {% translate "Duplicate" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "down" %}?per_page={{ per_page }}{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if choices %}&choices={% for c in choices %}{{ c }}{% if not forloop.last %}&choices={% endif %}{% endfor %}{% endif %}" title="{% translate "Move down" %}">{% fa "arrow-down" %} {% translate "Move down" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_swap" entry.pk "up" %}?per_page={{ per_page }}{% if start_date %}&start_date={{ start_date|date:"Y-m-d" }}{% endif %}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}{% if choices %}&choices={% for c in choices %}{{ c }}{% if not forloop.last %}&choices={% endif %}{% endfor %}{% endif %}" title="{% translate "Move up" %}">{% fa "arrow-up" %} {% translate "Move up" %}</a>
+                                        <a class="dropdown-item" href="{% url "entry_delete" entry.pk %}" title="{% blocktranslate with account=entry.account.name entry_no=entry.serial_number %}Delete entry {{ account }} #{{ entry_no }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "trash" %} {% translate "Delete" %}</a>
                                         <a class="dropdown-item" href="{% url "file_create" entry|content_type_pk entry.pk %}" title="{% blocktranslate with account=entry.account.name entry=entry.serial_number %}Add file to entry {{ account }} #{{ entry }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal"><span class="fa-solid fa-upload"></span> {% translate "Add file" %}</a>
                                     </div>
                                 </div>
@@ -166,7 +135,7 @@
         {% url "entry_list" as base_path %}
         {% if per_page is not None %}
         {% translate "Entries" as pagination_title %}
-        {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date per_page=per_page accounts=accounts|join:"&accounts=" categories=categories|join:"&categories=" tags=tags|join:"&tags=" units=units|join:"&units=" %}
+        {% pagination paginator page_obj base_path pagination_title start_date=start_date end_date=end_date per_page=per_page choices=choices|join:"&choices=" %}
         {% endif %}
     </div>
 </div>

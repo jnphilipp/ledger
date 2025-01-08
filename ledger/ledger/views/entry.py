@@ -133,10 +133,7 @@ class ListView(generic.ListView):
         self.form = None
         self.start_date = None
         self.end_date = None
-        self.accounts = []
-        self.categories = []
-        self.tags = []
-        self.units = []
+        self.choices = []
         if entries.count() > 0:
             self.form = EntryFilterForm(self.request.GET)
             if self.form.is_valid():
@@ -149,29 +146,33 @@ class ListView(generic.ListView):
                     self.end_date = self.form.cleaned_data["end_date"]
                     entries = entries.filter(date__lte=self.end_date)
                 if (
-                    "accounts" in self.form.cleaned_data
-                    and self.form.cleaned_data["accounts"]
+                    "choices" in self.form.cleaned_data
+                    and self.form.cleaned_data["choices"]
                 ):
                     filtered = True
-                    self.accounts = [a.pk for a in self.form.cleaned_data["accounts"]]
-                    entries = entries.filter(account__in=self.accounts)
-                if self.form.cleaned_data["categories"]:
-                    filtered = True
-                    self.categories = [
-                        c.pk for c in self.form.cleaned_data["categories"]
-                    ]
-                    entries = entries.filter(category__in=self.categories)
-                if "tags" in self.form.cleaned_data and self.form.cleaned_data["tags"]:
-                    filtered = True
-                    self.tags = [t.pk for t in self.form.cleaned_data["tags"]]
-                    entries = entries.filter(tags__in=self.tags)
-                if (
-                    "units" in self.form.cleaned_data
-                    and self.form.cleaned_data["units"]
-                ):
-                    filtered = True
-                    self.units = [u.pk for u in self.form.cleaned_data["units"]]
-                    entries = entries.filter(account__unit__in=self.units)
+
+                    accounts = []
+                    categories = []
+                    tags = []
+                    units = []
+                    for choice in self.form.cleaned_data["choices"]:
+                        self.choices.append(choice)
+                        if choice.startswith("a"):
+                            accounts.append(int(choice.replace("a", "")))
+                        if choice.startswith("c"):
+                            categories.append(int(choice.replace("c", "")))
+                        if choice.startswith("t"):
+                            tags.append(int(choice.replace("t", "")))
+                        if choice.startswith("u"):
+                            units.append(int(choice.replace("u", "")))
+                    if len(accounts) > 0:
+                        entries = entries.filter(account__in=accounts)
+                    if len(categories) > 0:
+                        entries = entries.filter(category__in=categories)
+                    if len(tags) > 0:
+                        entries = entries.filter(tags__in=tags)
+                    if len(units) > 0:
+                        entries = entries.filter(account__unit__in=units)
 
         if not filtered:
             self.end_date = get_last_date_current_month()
@@ -188,10 +189,7 @@ class ListView(generic.ListView):
         context["form"] = self.form
         context["start_date"] = self.start_date
         context["end_date"] = self.end_date
-        context["accounts"] = self.accounts
-        context["categories"] = self.categories
-        context["tags"] = self.tags
-        context["units"] = self.units
+        context["choices"] = self.choices
         context["per_page"] = self.per_page
 
         return context

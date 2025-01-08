@@ -23,7 +23,7 @@ from . import entry
 from . import file
 from . import statistics
 from . import tag
-from .base import AnotherSuccessView
+from .base import AnotherSuccessView, choices_autocomplete
 
 
 __all__ = (
@@ -31,6 +31,7 @@ __all__ = (
     "account",
     "budget",
     "category",
+    "choices_autocomplete",
     "entry",
     "file",
     "statistics",

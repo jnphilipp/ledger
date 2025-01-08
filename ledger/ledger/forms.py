@@ -254,20 +254,11 @@ class EntryFilterForm(forms.Form):
         ),
         required=False,
     )
-    accounts = forms.ModelMultipleChoiceField(
-        queryset=Account.objects.all(),
-        required=False,
-    )
-    categories = forms.ModelMultipleChoiceField(
-        queryset=Category.objects.all(),
-        required=False,
-    )
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        required=False,
-    )
-    units = forms.ModelMultipleChoiceField(
-        queryset=Unit.objects.all(),
+    choices = forms.MultipleChoiceField(
+        choices=[(f"a{a.pk}", a.name) for a in Account.objects.all()]
+        + [(f"c{c.pk}", c.name) for c in Category.objects.all()]
+        + [(f"t{t.pk}", t.name) for t in Tag.objects.all()]
+        + [(f"u{u.pk}", u.name) for u in Unit.objects.all()],
         required=False,
     )
 
@@ -275,21 +266,9 @@ class EntryFilterForm(forms.Form):
         """Init."""
         super().__init__(*args, **kwargs)
 
-        self.fields["accounts"].widget.attrs[
+        self.fields["choices"].widget.attrs[
             "style"
-        ] = "min-width: 113px !important; max-width: 227px !important;"
-        self.fields["categories"].widget.attrs[
-            "style"
-        ] = "min-width: 113px !important; max-width: 227px !important;"
-        self.fields["tags"].widget.attrs[
-            "style"
-        ] = "min-width: 113px !important; max-width: 227px !important;"
-        self.fields["units"].widget.attrs[
-            "style"
-        ] = "min-width: 113px !important; max-width: 227px !important;"
-
-        if Tag.objects.count() == 0:
-            del self.fields["tags"]
+        ] = "min-width: 340px !important; max-width: 566px !important;"
 
 
 class FileForm(forms.ModelForm):
