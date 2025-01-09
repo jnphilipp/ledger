@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2021 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -25,28 +23,65 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('portfolio', '0004_closing'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("portfolio", "0004_closing"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Position',
+            name="Position",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('slug', models.SlugField(max_length=1024, unique=True, verbose_name='Slug')),
-                ('object_id', models.PositiveIntegerField()),
-                ('closed', models.BooleanField(default=False, verbose_name='Closed')),
-                ('trailing_stop_atr_factor', models.FloatField(default=3, verbose_name='Trailing-stop ATR factor')),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='positions', to='contenttypes.contenttype')),
-                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='positions', to='units.unit', verbose_name='Unit')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                (
+                    "slug",
+                    models.SlugField(max_length=1024, unique=True, verbose_name="Slug"),
+                ),
+                ("object_id", models.PositiveIntegerField()),
+                ("closed", models.BooleanField(default=False, verbose_name="Closed")),
+                (
+                    "trailing_stop_atr_factor",
+                    models.FloatField(
+                        default=3, verbose_name="Trailing-stop ATR factor"
+                    ),
+                ),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="positions",
+                        to="contenttypes.contenttype",
+                    ),
+                ),
+                (
+                    "unit",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="positions",
+                        to="units.unit",
+                        verbose_name="Unit",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Position',
-                'verbose_name_plural': 'Positions',
-                'ordering': ('closed', 'slug'),
+                "verbose_name": "Position",
+                "verbose_name_plural": "Positions",
+                "ordering": ("closed", "slug"),
             },
         ),
     ]

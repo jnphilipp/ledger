@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-# Copyright (C) 2014-2021 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
+# Copyright (C) 2014-2025 J. Nathanael Philipp (jnphilipp) <nathanael@philipp.land>
 #
 # This file is part of ledger.
 #
@@ -28,29 +26,88 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('units', '0001_initial'),
+        ("units", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Stock',
+            name="Stock",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('slug', models.SlugField(unique=True, verbose_name='Slug')),
-                ('name', models.CharField(max_length=1024, unique=True, verbose_name='Name')),
-                ('isin', models.CharField(blank=True, max_length=12, null=True, unique=True, verbose_name='ISIN')),
-                ('wkn', models.CharField(blank=True, max_length=6, null=True, unique=True, verbose_name='WKN')),
-                ('symbol', models.CharField(blank=True, max_length=12, null=True, unique=True, verbose_name='Symbol')),
-                ('traded', models.BooleanField(default=True, verbose_name='Traded')),
-                ('currency', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='%(class)ss', related_query_name='%(app_label)s_%(class)ss', to='units.unit', verbose_name='Currency')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                ("slug", models.SlugField(unique=True, verbose_name="Slug")),
+                (
+                    "name",
+                    models.CharField(max_length=1024, unique=True, verbose_name="Name"),
+                ),
+                (
+                    "isin",
+                    models.CharField(
+                        blank=True,
+                        max_length=12,
+                        null=True,
+                        unique=True,
+                        verbose_name="ISIN",
+                    ),
+                ),
+                (
+                    "wkn",
+                    models.CharField(
+                        blank=True,
+                        max_length=6,
+                        null=True,
+                        unique=True,
+                        verbose_name="WKN",
+                    ),
+                ),
+                (
+                    "symbol",
+                    models.CharField(
+                        blank=True,
+                        max_length=12,
+                        null=True,
+                        unique=True,
+                        verbose_name="Symbol",
+                    ),
+                ),
+                ("traded", models.BooleanField(default=True, verbose_name="Traded")),
+                (
+                    "currency",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="%(class)ss",
+                        related_query_name="%(app_label)s_%(class)ss",
+                        to="units.unit",
+                        verbose_name="Currency",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Stock',
-                'verbose_name_plural': 'Stocks',
-                'ordering': (django.db.models.expressions.Func(django.db.models.expressions.F('name'), function='LOWER'),),
-                'abstract': False,
+                "verbose_name": "Stock",
+                "verbose_name_plural": "Stocks",
+                "ordering": (
+                    django.db.models.expressions.Func(
+                        django.db.models.expressions.F("name"), function="LOWER"
+                    ),
+                ),
+                "abstract": False,
             },
         ),
     ]
