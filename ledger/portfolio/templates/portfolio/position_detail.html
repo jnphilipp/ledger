@@ -94,7 +94,7 @@
         <h2>{% translate "Win/Loss-chart" %}</h2>
     </div>
     <div class="col-4 text-end">
-        <a class="btn btn-outline-primary" href="{% url "portfolio:closing_create" %}" title="{% translate "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "plus" %} {% translate "Add closings" %}</a>
+        <a class="btn btn-outline-primary" href="{% url "portfolio:closing_create" %}?tradeable={{ position.content_object.slug }}" title="{% translate "Add closings" %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "plus" %} {% translate "Add closings" %}</a>
     </div>
 </div>
 <div class="row">

@@ -36,6 +36,13 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
         "num_closings",
     )
 
+    def get_initial(self):
+        """Get initial."""
+        initial = {}
+        if "tradeable" in self.request.GET:
+            initial["tradeable"] = self.request.GET.get("tradeable")
+        return initial
+
     def get_success_message(self, cleaned_data):
         """Get success message."""
         return self.success_message % {
