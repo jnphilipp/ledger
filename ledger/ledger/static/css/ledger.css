@@ -11,6 +11,10 @@ body {
     max-width: 500px;
 }
 
+#ui-datepicker-div {
+    z-index: 1200 !important;
+}
+
 
 
 /*### entries ###*/

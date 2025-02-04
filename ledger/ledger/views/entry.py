@@ -177,7 +177,12 @@ class ListView(generic.ListView):
         if not filtered:
             self.end_date = get_last_date_current_month()
             if entries.count() > 0:
-                self.form = EntryFilterForm(initial={"end_date": self.end_date})
+                self.form = EntryFilterForm(
+                    initial={
+                        "start_date": entries.dates("date", "day")[0],
+                        "end_date": self.end_date,
+                    }
+                )
             entries = entries.filter(date__lte=self.end_date)
 
         return entries.annotate(total=F("amount") + F("fees")).distinct()
@@ -187,6 +192,7 @@ class ListView(generic.ListView):
         context = super().get_context_data(*args, **kwargs)
 
         context["form"] = self.form
+        context["min_date"] = Entry.objects.dates("date", "day")[0]
         context["start_date"] = self.start_date
         context["end_date"] = self.end_date
         context["choices"] = self.choices

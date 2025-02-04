@@ -10,13 +10,15 @@
             dateFormat: "yy-mm-dd",
             firstDay: 1,
             showOtherMonths: true,
-            selectOtherMonths: true
+            selectOtherMonths: true,
+            minDate: "{{ min_date|date:"Y-m-d" }}"
         });
         $("#id_end_date").datepicker({
             dateFormat: "yy-mm-dd",
             firstDay: 1,
             showOtherMonths: true,
-            selectOtherMonths: true
+            selectOtherMonths: true,
+            minDate: "{{ min_date|date:"Y-m-d" }}"
         });
         $("#id_choices").select2({
             placeholder: "{% translate "Accounts, Categories, Tags, Units" %}",
