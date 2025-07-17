@@ -53,41 +53,44 @@
         {% block extrahead %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-expand-lg bg-white">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{% url "entry_list" %}">
-                    <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <div>
+            <nav class="navbar navbar-expand-lg bg-white">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{% url "entry_list" %}">
+                        <img alt="Brand" src="{% static "images/logo.png" %}" style="margin-top: -5px; height: 30px; display: inline-block;"/>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-                <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            {% url "entry_list" as entry_list_url %}
-                            <a class="nav-link{% if request.path == entry_list_url %} active{% endif %}" {% if request.path == entry_list_url %}aria-current="page"{% endif %} href="{{ entry_list_url }}" title="{% translate "Ledger" %}">{% translate "Ledger" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "account_list" as account_list_url %}
-                            <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" {% if request.path|startswith:account_list_url %}aria-current="page"{% endif %} href="{{ account_list_url }}" title="{% translate "Accounts" %}">{% translate "Accounts" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "budget_detail" as budget_detail_url %}
-                            <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" {% if request.path|startswith:budget_detail_url %}aria-current="page"{% endif %} href="{{ budget_detail_url }}" title="{% translate "Budget" %}">{% translate "Budget" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "portfolio:position_list" as position_list_url %}
-                            <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" {% if request.path|startswith:position_list_url %}aria-current="page"{% endif %} href="{{ position_list_url }}" title="{% translate "Portfolio" %}">{% translate "Portfolio" %}</a>
-                        </li>
-                        <li class="nav-item">
-                            {% url "statistics_detail" as statistics_detail_url %}
-                            <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" {% if request.path|startswith:statistics_detail_url %}aria-current="page"{% endif %} href="{{ statistics_detail_url }}" title="{% translate "Statistics" %}">{% translate "Statistics" %}</a>
-                        </li>
-                    </ul>
+                    <div class="collapse navbar-collapse" id="navbarContent" role="navbar">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                {% url "entry_list" as entry_list_url %}
+                                <a class="nav-link{% if request.path == entry_list_url %} active{% endif %}" {% if request.path == entry_list_url %}aria-current="page"{% endif %} href="{{ entry_list_url }}" title="{% translate "Ledger" %}">{% translate "Ledger" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                {% url "account_list" as account_list_url %}
+                                <a class="nav-link{% if request.path|startswith:account_list_url %} active{% endif %}" {% if request.path|startswith:account_list_url %}aria-current="page"{% endif %} href="{{ account_list_url }}" title="{% translate "Accounts" %}">{% translate "Accounts" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                {% url "budget_detail" as budget_detail_url %}
+                                <a class="nav-link{% if request.path|startswith:budget_detail_url %} active{% endif %}" {% if request.path|startswith:budget_detail_url %}aria-current="page"{% endif %} href="{{ budget_detail_url }}" title="{% translate "Budget" %}">{% translate "Budget" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                {% url "portfolio:position_list" as position_list_url %}
+                                <a class="nav-link{% if request.path|startswith:position_list_url %} active{% endif %}" {% if request.path|startswith:position_list_url %}aria-current="page"{% endif %} href="{{ position_list_url }}" title="{% translate "Portfolio" %}">{% translate "Portfolio" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                {% url "statistics_detail" as statistics_detail_url %}
+                                <a class="nav-link{% if request.path|startswith:statistics_detail_url %} active{% endif %}" {% if request.path|startswith:statistics_detail_url %}aria-current="page"{% endif %} href="{{ statistics_detail_url }}" title="{% translate "Statistics" %}">{% translate "Statistics" %}</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+            {% block stiky_content %}{% endblock %}
+        </div>
         <div class="container-fluid mt-3">
             <div class="row">
                 <div class="col-10 offset-1">
