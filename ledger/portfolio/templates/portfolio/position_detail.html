@@ -1,4 +1,4 @@
-{% extends "ledger/base.html" %}
+{% extends "base.html" %}
 {% load django_html_utils i18n l10n ledger portfolio static units %}
 {% get_current_language as LANGUAGE_CODE %}
 
@@ -41,7 +41,34 @@
                     </tr>
                     <tr>
                         <th scope="row">{% translate "Tradeable" %}</th>
-                        <td>{{ position.content_object.name }}</td>
+                        <td>
+                            <table class="table table-hover table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">{% translate "Name" %}</th>
+                                        <td>
+                                            {{ position.content_object.name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">{% translate "ISIN" %}</th>
+                                        <td>{{ position.content_object.isin }}</td>
+                                    </tr>
+                                    {% if position.content_object.wkn %}
+                                    <tr>
+                                        <th scope="row">{% translate "WKN" %}</th>
+                                        <td>{{ position.content_object.wkn }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if position.content_object.symbol %}
+                                    <tr>
+                                        <th scope="row">{% translate "Symbol" %}</th>
+                                        <td>{{ position.content_object.symbol }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </td>
                     </tr>
                     <tr>
                         <th scope="row">{% translate "Trailing-stop ATR factor" %}</th>
