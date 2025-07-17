@@ -48,6 +48,7 @@
                                         <th scope="row">{% translate "Name" %}</th>
                                         <td>
                                             {{ position.content_object.name }}
+                                            <a class="iframeFormModal" href="{% url "portfolio:tradeable_edit" position.content_object.slug %}" title="{% blocktranslate with tradeable=position.content_object.name %}Edit tradeable {{ tradeable }}{% endblocktranslate %}" data-bs-toggle="modal" data-bs-target="#iframeFormModal">{% fa "edit" %}</a>
                                         </td>
                                     </tr>
                                     <tr>

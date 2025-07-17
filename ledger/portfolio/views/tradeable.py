@@ -20,7 +20,7 @@ import json
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Count, Q
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -104,7 +104,6 @@ class CreateView(SuccessMessageMixin, generic.edit.CreateView):
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        print(self.object)
         return self.success_message % {
             "type": self.object._meta.verbose_name.title(),
             "name": self.object.name,
@@ -116,12 +115,27 @@ class UpdateView(SuccessMessageMixin, generic.edit.UpdateView):
 
     form_class = TradeableForm
     model = Tradeable
-    success_message = _('The tradeable (%(type)s) "%(name)s" was successfully update.')
+    success_message = _('The tradeable (%(type)s) "%(name)s" was successfully updated.')
     success_url = reverse_lazy("create_another_success")
+    template_name = "portfolio/tradeable_form.html"
+
+    def get_object(self, queryset=None):
+        """Get object."""
+        try:
+            obj = super().get_object(ETF.objects.all())
+        except Http404:
+            try:
+                obj = super().get_object(Fund.objects.all())
+            except Http404:
+                obj = super().get_object(Stock.objects.all())
+        return obj
 
     def get_success_message(self, cleaned_data):
         """Get success message."""
-        return self.success_message % {"name": self.object.name}
+        return self.success_message % {
+            "type": self.object._meta.verbose_name.title(),
+            "name": self.object.name,
+        }
 
 
 class DeleteView(SuccessMessageMixin, generic.edit.DeleteView):

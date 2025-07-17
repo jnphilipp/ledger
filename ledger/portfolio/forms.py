@@ -43,16 +43,34 @@ class TradeableForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init."""
+        type_initial = None
         if "initial" in kwargs and kwargs["initial"]:
             if isinstance(kwargs["initial"], ETF):
+                type_initial = 0
                 self._meta.model = ETF
             elif isinstance(kwargs["initial"], Fund):
                 self._meta.model = Fund
+                type_initial = 1
             elif isinstance(kwargs["initial"], Stock):
                 self._meta.model = Stock
+                type_initial = 2
+        elif "instance" in kwargs and kwargs["instance"]:
+            if isinstance(kwargs["instance"], ETF):
+                type_initial = 0
+                self._meta.model = ETF
+            elif isinstance(kwargs["instance"], Fund):
+                self._meta.model = Fund
+                type_initial = 1
+            elif isinstance(kwargs["instance"], Stock):
+                self._meta.model = Stock
+                type_initial = 2
         else:
-            self._meta.model = ETF
+            self._meta.model = Stock
+            type_initial = 2
         super().__init__(*args, **kwargs)
+        self.fields["type"].initial = type_initial
+        if "instance" in kwargs and kwargs["instance"]:
+            self.fields["type"].widget = forms.HiddenInput()
 
     def clean_type(self):
         """Clean type."""
@@ -76,6 +94,8 @@ class TradeableForm(forms.ModelForm):
 
     def save(self, commit=True):
         """Save."""
+        if self.instance is not None and self.instance.pk is not None:
+            return super().save(commit=commit)
         if self.cleaned_data["type"] == 0:
             etf = ETF(
                 name=self.cleaned_data["name"],

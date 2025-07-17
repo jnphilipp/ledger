@@ -54,4 +54,9 @@ urlpatterns = [
         "tradeable/autocomplete/", tradeable.autocomplete, name="tradeable_autocomplete"
     ),
     path("tradeable/create/", tradeable.CreateView.as_view(), name="tradeable_create"),
+    path(
+        "tradeable/<slug:slug>/edit/",
+        tradeable.UpdateView.as_view(),
+        name="tradeable_edit",
+    ),
 ]
