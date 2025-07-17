@@ -76,7 +76,6 @@ class TradeableForm(forms.ModelForm):
 
     def save(self, commit=True):
         """Save."""
-        print(self.cleaned_data)
         if self.cleaned_data["type"] == 0:
             etf = ETF(
                 name=self.cleaned_data["name"],
@@ -184,7 +183,7 @@ class PositionFilterForm(forms.Form):
     closed = forms.ChoiceField(
         choices=[
             (0, _("All positions")),
-            (False, _("Opened positions")),
+            (False, _("Open positions")),
             (True, _("Closed positions")),
         ],
         required=False,
@@ -230,7 +229,8 @@ class TradeForm(forms.ModelForm):
             '<a id="date_today" href="">%s</a> (%s)'
             % (_("Today"), _("Date format: yyyy-mm-dd"))
         )
-        self.fields["date"].localize = True
+        self.fields["date"].input_formats = ["%Y-%m-%d"]
+        self.fields["date"].widget.format = "%Y-%m-%d"
 
     def clean_exchange_rate(self):
         """Clean exchange_rate."""
