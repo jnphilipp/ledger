@@ -69,7 +69,6 @@
                     <tr>
                         <th class="text-center" scope="col">{% translate "Position" %}</th>
                         <th class="text-center" scope="col">{% translate "Closed" %}</th>
-                        <th class="text-center" scope="col">{% translate "Tradeable" %}</th>
                         <th class="text-center" scope="col">{% translate "Number of trades" %}</th>
                         <th class="text-center" scope="col">{% translate "Invested" %}</th>
                         <th class="text-center" scope="col">{% translate "Units" %}</th>
@@ -102,11 +101,11 @@
                 <tbody class="table-group-divider">
                     {% for position in positions %}
                     <tr>
-                        <th scope="row"><a href="{% url "portfolio:position_detail" position.slug %}">{{ position.content_object.name }} <small>[{{ position.start_date|date:"Y-m-d" }}]</small></a></th>
+                        <th scope="row">
+                            <a href="{% url "portfolio:position_list" %}?tradeables={{ position.content_type.model.lower }}:{{ position.content_object.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{{ position.content_object|as_title }}">{{ position.content_object.name }}</a>
+                            <a href="{% url "portfolio:position_detail" position.slug %}" title="{% blocktranslate with name=position %}Position: {{ name }}{% endblocktranslate %}">[{{ position.start_date|date:"Y-m-d" }}]</a>
+                        </th>
                         <td class="text-center">{% if position.closed %}{% translate "yes" %}{% else %}{% translate "no" %}{% endif %}</td>
-                        <td data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title="{{ position.content_object|as_title }}">
-                            <a href="{% url "portfolio:position_list" %}?tradeables={{ position.content_type.model.lower }}:{{ position.content_object.pk }}{% if end_date %}&end_date={{ end_date|date:"Y-m-d" }}{% endif %}">{{ position.content_object.name }}</a>
-                        </td>
                         <td class="text-end">{{ position.trades.count }}</td>
                         <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitformat:position.unit }}{% endif %}</td>
                         <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units }}{% endif %}</td>
