@@ -490,7 +490,7 @@ class Trade(models.Model):
             total = self.unit_price * self.units - self.extra
         total = round(total, self.unit.precision)
         if self.exchange_rate:
-            total = round(total / self.exchange_rate, self.position.unit.precision)
+            total /= self.exchange_rate
             if (
                 self.type == Trade.TradeType.BUY
                 or self.type == Trade.TradeType.PRE_EMPTION_RIGHT
@@ -502,6 +502,7 @@ class Trade(models.Model):
                 or self.type == Trade.TradeType.DIVIDEND
             ):
                 total -= self.extra2
+            total = round(total, self.position.unit.precision)
         return total
 
     def save(self, *args, **kwargs):
