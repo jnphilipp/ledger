@@ -87,17 +87,23 @@ def chart(request, slug):
     win_loss_data = []
     for trading_date in daterange(position.start_date(), position.end_date(), "days"):
         for trade in position.trades.filter(date=trading_date):
-            if trade.type == Trade.TradeType.BUY:
-                units += trade.units
-                costs += trade.units * trade.unit_price + trade.extra
+            if (
+                trade.type == Trade.TradeType.BUY
+                or trade.type == Trade.TradeType.CORPORATE_ACTION
+            ):
+                units = round(units + trade.units, 6)
+                costs += trade.total()
             elif trade.type == Trade.TradeType.SELL:
-                units -= trade.units
-                costs -= trade.units * trade.unit_price - trade.extra
+                units = round(units - trade.units, 6)
+                costs -= trade.total()
             elif trade.type == Trade.TradeType.DIVIDEND:
-                costs -= trade.units * trade.unit_price + trade.extra
+                costs -= trade.total()
 
-        win_loss = round(costs / units, position.unit.precision) if units else last
-        last = round(costs / units, position.unit.precision) if units != 0 else last
+        last = win_loss = (
+            round((costs if costs >= 0.0 else 0) / units, position.unit.precision)
+            if units != 0
+            else last
+        )
 
         if position.content_object.closings.filter(date=trading_date).exists():
             closing = position.content_object.closings.get(date=trading_date)
@@ -167,9 +173,7 @@ class ListView(generic.ListView):
 
         self.closed = None
         self.tradeables = []
-        self.form = PositionFilterForm(
-            self.request.GET,
-        )
+        self.form = PositionFilterForm(self.request.GET)
         if self.form.is_valid():
             if self.form.cleaned_data["closed"]:
                 self.closed = self.form.cleaned_data["closed"]
