@@ -295,9 +295,9 @@ class ClosingForm(forms.ModelForm):
 
         self.fields["tradeable"].choices = (
             [(None, "")]
-            + [(f"etf:{etf.pk}", etf.name) for etf in ETF.objects.all()]
-            + [(f"fund:{fund.pk}", fund.name) for fund in Fund.objects.all()]
-            + [(f"stock:{stock.pk}", stock.name) for stock in Stock.objects.all()]
+            + [(etf.slug, etf.name) for etf in ETF.objects.all()]
+            + [(fund.slug, fund.name) for fund in Fund.objects.all()]
+            + [(stock.slug, stock.name) for stock in Stock.objects.all()]
         )
         self.fields["tradeable"].widget.attrs[
             "style"
