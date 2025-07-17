@@ -181,7 +181,7 @@
                         <tr>
                             {% for cell in row %}
                                 {% if forloop.counter0|divisibleby:3 %}
-                                    <th scope="row" {% if forloop.counter0 > 1 %}style="border-left: 2px solid rgb(222, 226, 230);"{% endif %}>{% if cell|length == 2 %}<a href="{% url "entry_list" %}?start_date={{ year }}-01-01&end_date={{ year }}-12-31&tags={{ cell|get_item:0 }}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
+                                    <th scope="row" {% if forloop.counter0 > 1 %}style="border-left: 2px solid rgb(222, 226, 230);"{% endif %}>{% if cell|length == 2 %}<a href="{% url "entry_list" %}?start_date={{ year }}-01-01&end_date={{ year }}-12-31&choices=t{{ cell|get_item:0 }}">{{ cell|get_item:1 }}</a>{% else %}{{ cell }}{% endif %}</th>
                                 {% else %}
                                     <td class="text-end"{% if forloop.counter0|mod:3 == 2 and forloop.counter0 != 11 %} style="border-right: 1px solid rgb(222, 226, 230);"{% endif %}>{{ cell }}</td>
                                 {% endif %}
