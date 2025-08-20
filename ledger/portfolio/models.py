@@ -149,7 +149,6 @@ class Closing(models.Model):
             .last()
         )
         if prev:
-            print(prev.date, self.date)
             self.change_previous = prev.price - self.price
             self.change_previous_percent = self.change_previous / prev.price * 100
         super().save(*args, **kwargs)

@@ -20,6 +20,7 @@
 from datetime import datetime
 from django import forms
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.utils import formats
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -355,19 +356,16 @@ class ClosingForm(forms.ModelForm):
                         )
 
         tradeable = cleaned_data["tradeable"]
-        if tradeable.startswith("etf:"):
-            tradeable, created = ETF.objects.get_or_create(
-                pk=tradeable.replace("etf:", "")
+        if ETF.objects.filter(slug=tradeable).exists():
+            cleaned_data["tradeable"] = ETF.objects.get(slug=tradeable)
+        elif Fund.objects.filter(slug=tradeable).exists():
+            cleaned_data["tradeable"] = Fund.objects.get(slug=tradeable)
+        elif Stock.objects.filter(slug=tradeable).exists():
+            cleaned_data["tradeable"] = Stock.objects.get(slug=tradeable)
+        else:
+            raise ValidationError(
+                _("Tradeable %(name)s not found."), code="invalid", params=(tradeable,)
             )
-        elif tradeable.startswith("fund:"):
-            tradeable, created = Fund.objects.get_or_create(
-                pk=tradeable.replace("fund:", "")
-            )
-        elif tradeable.startswith("stock:"):
-            tradeable, created = Stock.objects.get_or_create(
-                pk=tradeable.replace("stock:", "")
-            )
-        cleaned_data["tradeable"] = tradeable
 
         return cleaned_data
 
