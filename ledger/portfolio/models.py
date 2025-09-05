@@ -264,7 +264,7 @@ class Position(models.Model):
         sold = trades.filter(type=Trade.TradeType.SELL).aggregate(
             units=Coalesce(Sum("units"), 0.0)
         )["units"]
-        return round(bought - sold, 5)
+        return round(bought - sold, 6)
 
     def preturn(self) -> Optional[float]:
         """Return."""
