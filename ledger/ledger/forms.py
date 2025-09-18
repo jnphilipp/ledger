@@ -255,10 +255,7 @@ class EntryFilterForm(forms.Form):
         required=False,
     )
     choices = forms.MultipleChoiceField(
-        choices=[(f"a{a.pk}", a.name) for a in Account.objects.all()]
-        + [(f"c{c.pk}", c.name) for c in Category.objects.all()]
-        + [(f"t{t.pk}", t.name) for t in Tag.objects.all()]
-        + [(f"u{u.pk}", u.name) for u in Unit.objects.all()],
+        choices=[],
         required=False,
     )
 
@@ -269,6 +266,12 @@ class EntryFilterForm(forms.Form):
         self.fields["choices"].widget.attrs[
             "style"
         ] = "min-width: 340px !important; max-width: 566px !important;"
+        self.fields["choices"].choices = (
+            [(f"a{a.pk}", a.name) for a in Account.objects.all()]
+            + [(f"c{c.pk}", c.name) for c in Category.objects.all()]
+            + [(f"t{t.pk}", t.name) for t in Tag.objects.all()]
+            + [(f"u{u.pk}", u.name) for u in Unit.objects.all()]
+        )
 
 
 class FileForm(forms.ModelForm):
