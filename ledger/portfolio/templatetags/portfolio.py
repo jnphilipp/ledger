@@ -16,18 +16,21 @@
 # along with ledger.  If not, see <http://www.gnu.org/licenses/>.
 """Portfolio Django app portfolio templatetags."""
 
+from django.db.models import Q, QuerySet, Sum
+from django.db.models.functions import Coalesce
 from django.template import Library
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, ngettext_lazy
-
 from units.templatetags.units import unitcolorfy, unitformat
+
+from ..models import Position, Trade, Tradeable
 
 
 register = Library()
 
 
 @register.filter
-def as_title(tradeable):
+def as_title(tradeable: Tradeable) -> str:
     """Format tradeable information as tooltip title template filter."""
     return mark_safe(
         f"{_('Name')}: {tradeable.name}<br>"
@@ -40,7 +43,7 @@ def as_title(tradeable):
 
 
 @register.filter
-def duration(position):
+def duration(position: QuerySet[Position]) -> str:
     """Position duration template filter."""
     return ngettext_lazy("%(days)d day", "%(days)d days", "days") % {
         "days": (position.end_date() - position.start_date()).days
@@ -48,7 +51,7 @@ def duration(position):
 
 
 @register.simple_tag
-def invested(positions) -> float:
+def invested(positions: QuerySet[Position]) -> str:
     """Sum of positions invested simple template tag."""
     sums = {}
     for position in positions:
@@ -61,7 +64,7 @@ def invested(positions) -> float:
 
 
 @register.simple_tag
-def win_loss(positions) -> float:
+def win_loss(positions: QuerySet[Position]) -> str:
     """Sum of positions win/loss simple template tag."""
     sums = {}
     for position in positions:
@@ -74,7 +77,7 @@ def win_loss(positions) -> float:
 
 
 @register.simple_tag
-def dividend(positions) -> float:
+def dividend(positions: QuerySet[Position]) -> str:
     """Sum of positions dividend simple template tag."""
     sums = {}
     for position in positions:
@@ -84,3 +87,59 @@ def dividend(positions) -> float:
             sums[position.unit] = 0.0
         sums[position.unit] += position.dividend()
     return mark_safe("<br>".join([unitformat(v, k) for k, v in sums.items()]))
+
+
+@register.simple_tag
+def annual_return(positions: QuerySet[Position]) -> str:
+    """Annual return of positions simple template tag."""
+    trades = Trade.objects.filter(position__in=positions).order_by("-serial_number")
+    if trades.count() == 0:
+        return mark_safe("")
+
+    total_costs = 0.0
+    total_gain = 0.0
+    time = 0
+    for position in positions:
+        costs = sum(
+            [
+                trade.total()
+                for trade in position.trades.filter(
+                    Q(type=Trade.TradeType.BUY)
+                    | Q(type=Trade.TradeType.PRE_EMPTION_RIGHT)
+                    | Q(type=Trade.TradeType.CORPORATE_ACTION)
+                )
+            ]
+        )
+        bought = position.trades.filter(
+            Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.CORPORATE_ACTION)
+        ).aggregate(units=Coalesce(Sum("units"), 0.0))["units"]
+        gain = sum(
+            [
+                trade.total()
+                for trade in position.trades.filter(type=Trade.TradeType.SELL)
+            ]
+        )
+        sold = position.trades.filter(type=Trade.TradeType.SELL).aggregate(
+            units=Coalesce(Sum("units"), 0.0)
+        )["units"]
+
+        if position.content_object.closings.count() == 0 and not position.closed:
+            gain += position.trades.filter(
+                Q(type=Trade.TradeType.BUY) | Q(type=Trade.TradeType.SELL)
+            ).first().unit_price * (bought - sold)
+        elif not position.closed:
+            gain += position.content_object.closings.first().price * (bought - sold)
+
+        total_costs += costs
+        total_gain += gain
+        time = max(time, position.duration())
+    return mark_safe(
+        unitcolorfy(
+            (
+                (pow(total_gain / total_costs, 365 / time) - 1) * 100
+                if time > 0 and total_costs > 0
+                else 0.0
+            ),
+            "%.3f%%",
+        )
+    )
