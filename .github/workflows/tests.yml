@@ -53,5 +53,5 @@ jobs:
           pip install Django~=${{ matrix.django-version }}
       - name: Run Tests
         run: |
-          echo "DEBUG = True" >> ledger/ledger/settings.py
+          sed -i 's/DEBUG = False/DEBUG = True/g' filename
           make test
