@@ -193,12 +193,11 @@ class ListView(generic.ListView):
                         funds.append(t.replace("fund:", ""))
                     if t.startswith("stock:"):
                         stocks.append(t.replace("stock:", ""))
-                if funds:
-                    positions = positions.filter(portfolio_funds__in=funds)
-                if etfs:
-                    positions = positions.filter(portfolio_etfs__in=etfs)
-                if stocks:
-                    positions = positions.filter(portfolio_stocks__in=stocks)
+                positions = positions.filter(
+                    Q(portfolio_funds__in=funds)
+                    | Q(portfolio_etfs__in=etfs)
+                    | Q(portfolio_stocks__in=stocks)
+                )
         return positions.annotate(Min("trades__date")).order_by(
             "closed", "-trades__date__min"
         )
