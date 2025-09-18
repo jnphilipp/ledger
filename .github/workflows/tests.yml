@@ -54,4 +54,6 @@ jobs:
       - name: Run Tests
         run: |
           sed -i 's/DEBUG = False/DEBUG = True/g' ledger/ledger/settings.py
-          make test
+          cd ledger
+          python manage.py migrate
+          python manage.py test
