@@ -107,7 +107,7 @@
                         <td class="text-center">{% if position.closed %}{% translate "yes" %}{% else %}{% translate "no" %}{% endif %}</td>
                         <td class="text-end">{{ position.trades.count }}</td>
                         <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.invested|unitformat:position.unit }}{% endif %}</td>
-                        <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units }}{% endif %}</td>
+                        <td class="text-end">{% if not position.closed and position.trades.count > 0 %}{{ position.units|floatformat:6 }}{% endif %}</td>
                         <td class="text-end">{% if position.trades.count > 0 %}{{ position.preturn|unitformat:position.unit }}{% endif %}</td>
                         <td class="text-end">{% if position.trades.count > 0 %}{{ position.win_loss|unitcolorfy:position.unit }}{% endif %}</td>
                         <td class="text-end">{% if position.trades.count > 0 %}{{ position.dividend|unitformat:position.unit }}{% endif %}</td>

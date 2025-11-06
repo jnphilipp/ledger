@@ -86,7 +86,7 @@
                     </tr>
                     <tr>
                         <th scope="row">{% translate "Units" %}</th>
-                        <td>{{ position.units }}</td>
+                        <td>{{ position.units|floatformat:6 }}</td>
                     </tr>
                     {% endif %}
                     {% if position.trades.count > 0 %}
@@ -169,7 +169,7 @@
                         <td>{{ trade.date|date:"d.m.Y" }}</td>
                         <td>{{ trade.date|date:"D" }}</td>
                         <td>{{ trade.get_type_display }}</td>
-                        <td class="text-end">{{ trade.units|floatformat:5 }}</td>
+                        <td class="text-end">{{ trade.units|floatformat:6 }}</td>
                         <td class="text-end">{{ trade.unit_price|unitformat:trade.unit }}</td>
                         <td class="text-end">{{ trade.extra|unitformat:trade.unit }}</td>
                         <td class="text-end">{{ trade.exchange_rate|default_if_none:"" }}</td>
